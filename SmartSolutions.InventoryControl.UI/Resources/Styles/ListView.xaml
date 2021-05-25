@@ -1,0 +1,29 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ControlExtension="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
+                    xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Resources.Styles">
+
+    <ControlTemplate x:Key="NoSelectionListViewItemTemplate" TargetType="ListViewItem">
+        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding ControlExtension:MiscControlExtensions.CornerRadius}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
+            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+        </Border>
+    </ControlTemplate>
+
+    <Style x:Key="ListViewItemBase" TargetType="ListViewItem">
+        <Style.Setters>
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="ControlExtension:MiscControlExtensions.CornerRadius" Value="5" />
+            <Setter Property="IsEnabled" Value="True" />
+            <!--<Setter Property="Template" Value="{StaticResource NoSelectionListViewItemTemplate}" />-->
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="IsTabStop" Value="False" />
+        </Style.Setters>
+    </Style>
+
+    <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemBase}" />
+
+</ResourceDictionary>

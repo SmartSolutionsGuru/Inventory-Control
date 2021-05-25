@@ -1,0 +1,357 @@
+﻿<Window x:Class="SmartSolutions.InventoryControl.UI.Views.ShellView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views"
+        xmlns:converter="clr-namespace:SmartSolutions.InventoryControl.UI.Converters"
+        xmlns:Ap="clr-namespace:SmartSolutions.InventoryControl.UI.AttachedProperties"
+        mc:Ignorable="d"
+        Title="InventoryControl"
+        MinWidth="{Binding WindowMinimumWidth,Mode=OneWay}"
+        MinHeight="{Binding WindowMinimumHeight,Mode=OneWay}"
+        Activated="OnActivated"
+        Deactivated="OnDeactivated"
+        WindowState="Maximized"
+        AllowsTransparency="True" 
+        WindowStyle="None">
+    <Window.Resources>
+        <converter:BooleanToBorderThicknessConverter x:Key="BooleanToBorderThicknessConverter"/>
+        <!--Design for Main Window-->
+    <Style TargetType="{x:Type local:ShellView}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:ShellView}">
+                    <!-- Outer border with the drop shadow margin -->
+                    <Border Padding="{Binding OuterMarginSize, FallbackValue=0,TargetNullValue=0}" BorderBrush="#bdbdbd" BorderThickness="{Binding FlatBorderThickness}">
+
+                        <!-- Main window outline -->
+                        <Grid>
+                            <!-- Outer dragging border -->
+                            <Border BorderThickness="{Binding BeingMoved, Converter={StaticResource BooleanToBorderThicknessConverter}}"
+                                        Panel.ZIndex="2"
+                                        CornerRadius="{Binding WindowCornerRadius, FallbackValue=10,TargetNullValue=10}"
+                                        BorderBrush="#ffa800" />
+
+                            <!-- Opacity mask for corners on grid -->
+                            <Border x:Name="Container"
+                                        Background="#efefef"
+                                        CornerRadius="{Binding WindowCornerRadius, FallbackValue=10,TargetNullValue=10}" />
+
+                            <!-- Window border and drop shadow -->
+                            <Border CornerRadius="{Binding WindowCornerRadius, FallbackValue=10,TargetNullValue=10}"
+                                    Background="#ffffff">
+                                <Border.Effect>
+                                    <DropShadowEffect ShadowDepth="0.5" Opacity="0.2" />
+                                </Border.Effect>
+                            </Border>
+
+                            <!-- The main window content -->
+                            <Grid>
+                                <!-- Corner clipping -->
+                                <Grid.OpacityMask>
+                                    <VisualBrush Visual="{Binding ElementName=Container}" />
+                                </Grid.OpacityMask>
+
+                                <Grid.RowDefinitions>
+
+                                    <!-- Title Bar -->
+                                    <RowDefinition Height="{Binding TitleHeightGridLength, FallbackValue=42,TargetNullValue=42}" />
+
+                                    <!-- Window Content -->
+                                    <RowDefinition Height="*" />
+                                    <!-- Internet Connection Bar -->
+                                    <RowDefinition Height="Auto" />
+
+                                </Grid.RowDefinitions>
+
+                                <!-- Title Bar -->
+                                <Grid Grid.Column="0" Panel.ZIndex="1">
+
+                                    <Grid.ColumnDefinitions>
+                                        <!-- Icon -->
+                                        <ColumnDefinition Width="Auto" />
+                                        <!-- Title -->
+                                        <ColumnDefinition Width="*" />
+                                        <!-- Windows Button -->
+                                        <ColumnDefinition Width="Auto" />
+
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Icon -->
+                                    <Button Command="{Binding MenuCommand}">
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}">
+                                                <Setter Property="Background" Value="Transparent" />
+                                                <Setter Property="BorderThickness" Value="0" />
+                                                <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type Button}">
+                                                            <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                                                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                        <Image Source="/Assets/books.png" Opacity="0.7" Margin="10 0 0 0" Width="30" Height="30"/>
+
+                                    </Button>
+
+                                    <Grid Grid.Column="1" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="0.2*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <!-- Title Of Application-->
+                                        <Viewbox Grid.Column="0" Grid.ColumnSpan="3" Margin="5">
+                                            <StackPanel>
+                                                <TextBlock  FontSize="{StaticResource SubHeadingSize}" FontFamily="{StaticResource BoldFont}" Margin="0,0,0,-5">
+                                                    <Run Text="I" Foreground="{StaticResource YellowColorBrush}" />
+                                                    <Run Text="n" Foreground="{StaticResource BlueColorBrush}" />
+                                                    <Run Text="v" Foreground="{StaticResource RedColorBrush}" />
+                                                    <Run Text="e" Foreground="{StaticResource GreenColorBrush}"/>
+                                                    <Run Text="o" Foreground="{StaticResource BlueColorBrush}"/>
+                                                    <Run Text="n" Foreground="{StaticResource RedColorBrush}" />
+                                                    <Run Text="t" Foreground="{StaticResource GreenColorBrush}" />
+                                                    <Run Text="r" Foreground="{StaticResource BlueColorBrush}"/>
+                                                    <Run Text="o" Foreground="{StaticResource LightBlueColorBrush}" />
+                                                    <Run Text="r" Foreground="{StaticResource YellowColorBrush}" />
+                                                    <Run Text="y  " Foreground="{StaticResource BlueColorBrush}"  />
+                                                    <Run Text="C" Foreground="{StaticResource RedColorBrush}" />
+                                                    <Run Text="o" Foreground="{StaticResource GreenColorBrush}" />
+                                                    <Run Text="n" Foreground="{StaticResource BlueColorBrush}" />
+                                                    <Run Text="t" Foreground="{StaticResource YellowColorBrush}" />
+                                                    <Run Text="r" Foreground="{StaticResource RedColorBrush}"/><Run Text="o" Foreground="{StaticResource GreenColorBrush}"/><Run Text="l" Foreground="{StaticResource LightBlueColorBrush}" />
+                                                </TextBlock>
+                                                <TextBlock Text="By Smart Solutions" Foreground="#bdbdbd" TextAlignment="Center" />
+                                            </StackPanel>
+                                        </Viewbox>
+
+
+
+                                        <!--ToggleButton For Mac and Window Selection-->
+                                        <!--<ToggleButton Grid.Column="1"
+                                                          Background="Transparent"
+                                                          Margin="5"
+                                                          Checked="ToggleButton_Checked"
+                                                          Unchecked="OnUncheckedToggleButton"
+                                                          WindowChrome.IsHitTestVisibleInChrome="True"
+                                                          BorderThickness="0">
+                                            <ToggleButton.Style>
+                                                <Style TargetType="ToggleButton" BasedOn="{StaticResource ToggleButtonWithPathStyle}">
+                                                    <Setter Property="IsEnabled" Value="True"/>
+                                                    <Setter Property="ToolTip" Value="Mac ShortCut"/>
+                                                    <Setter Property="Content">
+                                                        <Setter.Value>
+                                                            <Path x:Name="DefaultDisplayPath"
+                                                                      Height="30" 
+                                                                      Width="30"
+                                                                      Fill="{StaticResource BlueColorBrush}"
+                                                                      Stretch="Uniform" 
+                                                                      Data="F1M189.961,364.104C197.394,366.485 204.6,369.707 212.548,370.166 216.269,370.121 219.99,370.076 223.711,370.031 223.711,370.032 223.687,370.079 223.687,370.079 225.138,367.802 227.777,368.618 229.784,367.766 231.45,367.06 233.243,366.655 234.981,366.116 236.534,363.544 239.447,362.702 241.682,361.023 249.496,355.156 256.14,348.23 261.867,340.363 262.889,338.959 264.001,337.623 265.071,336.254 265.583,334.044 267.594,332.906 268.726,331.138 269.815,328.831 271.124,326.685 273.206,325.115 274.635,320.831 277.537,317.434 280.036,313.794 280.205,313.775 280.371,313.789 280.533,313.834 281.286,309.569 284.336,306.407 285.955,302.558 287.171,299.264 288.57,296.073 291.031,293.475 291.091,292.756 291.151,292.038 291.212,291.319 292.742,287.552 294.272,283.787 295.802,280.02 295.794,279.897 295.736,279.746 295.786,279.654 298.591,274.516 296.77,271.095 291.785,268.84 291.783,268.84 291.527,268.88 291.527,268.88L291.27,268.871C286.931,266.872 283.058,264.217 279.795,260.706 277.889,260.56 276.632,259.614 276.135,257.734 273.876,257.004 272.528,255.089 271.171,253.429 267.297,248.694 263.163,244.146 259.902,238.934 259.18,237.779 258.723,236.491 258.686,235.094 257.728,235.027 257.509,234.374 257.478,233.571 255.593,230.562 253.607,227.593 253.583,223.839 251.815,220.281 250.435,216.626 250.772,212.544 248.179,209.21 249.562,205.103 248.612,201.45 248.857,197.166 247.64,192.808 249.264,188.594 249.771,185.361 250.278,182.128 250.785,178.895 251.441,174.929 252.609,171.132 254.532,167.585 254.397,165.069 256.642,163.381 256.834,160.98 257.835,159.407 258.835,157.833 259.835,156.258 264.475,147.716 270.657,140.438 278.027,134.15 280.446,132.086 282.798,129.873 285.478,128.207 288.088,126.583 287.874,125.179 286.018,123.326 284.624,119.862 281.093,118.144 279.254,115.043 277.965,114.001 276.472,113.135 276.056,111.339 273.305,110.001 271.125,107.874 268.727,106.049 265.803,103.927 262.264,102.738 259.689,100.087 258.685,100.105 257.639,100.196 257.476,98.786 253.464,97.765 249.573,96.441 246.047,94.208 242.052,94.753 238.821,91.775 234.94,91.8 225.819,91.066 216.767,88.828 207.525,90.813 205.488,91.25 203.317,91.066 201.209,91.168 197.502,92.168 193.796,93.168 190.089,94.168 186.444,95.841 182.785,97.476 178.858,98.4 177.248,99.353 175.679,100.435 173.647,100.089 172.273,102.459 169.535,102.007 167.519,103.048 163.872,104.492 160.463,106.813 156.233,106.094 152.48,109.068 148.725,107.282 144.971,106.094 141.653,105.684 138.627,104.455 135.552,103.171 131.212,101.358 126.588,100.231 122.479,97.833 118.624,96.902 114.847,95.74 111.234,94.083 107.289,94.026 103.873,91.442 99.862,91.698 96.216,90.74 92.481,91.22 88.787,91.026 85.038,91.685 81.269,92.051 77.457,91.818 74.017,93.951 70.023,94.053 66.228,94.886 62.774,97.042 58.817,97.959 55.077,99.406 54.743,100.022 54.141,100.1 53.536,100.175 50.707,102.643 47.392,104.222 43.881,105.44 42.072,108.348 39.252,109.981 36.306,111.455 35.759,113.435 34.103,114.245 32.476,115.086 30.301,117.917 27.806,120.437 25.061,122.713 24.434,124.699 23.681,126.582 21.374,127.182 20.487,129.873 19.11,132.237 16.815,133.986 14.406,139.389 12.225,144.913 9.482,150.141 8.275,152.439 8.683,155.389 6.421,157.163 5.52,160.712 5.261,164.45 3.299,167.684 3.042,171.95 2.972,176.242 1.537,180.345 -0.614,191.425 0.066,202.646 0.237,213.798 0.327,219.657 1.805,225.505 2.796,231.334 3.006,232.569 3.24,233.764 3.148,235.011 3.159,238.958 5.136,242.52 5.392,246.419 6.156,250.168 8.168,253.583 8.357,257.487 10.519,265.15 13.112,272.666 15.973,280.094 17.47,283.836 18.966,287.58 20.463,291.322 21.216,292.192 22.285,292.901 21.994,294.307 23.148,297.099 25.475,299.37 25.674,302.585 27.827,306.249 30.494,309.63 31.782,313.766 32.064,314.26 32.344,314.754 32.624,315.248 35.029,318.203 37.751,320.961 38.61,324.876 39.786,325.027 40.146,326.042 40.641,326.865 44.328,332.985 49.087,338.297 53.434,343.921 54.249,344.977 55.222,346.03 55.005,347.561 59.594,350.487 63.335,354.26 66.273,358.836L66.23,358.792C70.486,360.888 74.424,363.429 77.636,366.982 80.263,367.587 83.299,367.14 85.094,369.883 86.282,369.977 87.47,370.072 88.657,370.166 92.458,370.771 96.258,371.349 100.061,370.18 103.985,370.019 107.68,369.378 111.443,367.803 114.972,366.326 118.452,364.21 122.493,364.069 125.6,361.111 129.743,360.667 133.587,359.496 141.003,357.61 148.263,354.754 156.16,355.908 159.93,356.18 163.789,354.964 167.479,356.585 170.483,356.616 173.555,356.399 175.92,358.835 177.14,358.959 178.468,358.472 179.527,359.483 183.032,360.962 186.88,361.668 189.961,364.104 M190.101,10.165C193.857,8.541 197.611,6.917 201.367,5.292 207.443,3.365 213.404,1.102 219.769,0.101 221.976,-0.247 222.408,0.269 222.357,2.179 222.234,6.783 222.163,11.387 222.072,15.992 221.118,16.218 220.684,16.766 220.978,17.765 220.942,18.915 220.907,20.065 220.871,21.216 219.836,25.021 218.802,28.825 217.767,32.629 216.223,36.365 214.68,40.102 213.136,43.838 212.915,44.115 212.694,44.391 212.474,44.666 211.008,48.475 207.474,51.071 206.361,55.088 204.09,56.665 202.814,59.078 201.218,61.221 199.702,62.951 197.508,64.067 196.589,66.337 194.375,68.098 192.161,69.858 189.947,71.619 187.103,73.769 183.608,74.953 181.085,77.581 180.023,77.566 179.225,78.007 178.728,78.959L167.563,82.924C163.661,83.08 160.221,85.622 156.193,85.122 148.071,84.938 148.931,86.368 148.641,77.672 148.921,73.896 149.202,70.12 149.482,66.343 150.672,62.636 152.247,59.035 152.557,55.087 156.558,47.634 160.56,40.18 164.562,32.726 166.272,32.009 166.874,30.417 167.581,28.907 170.171,26.746 172.492,24.339 174.333,21.496 176.422,20.91 178.108,19.841 178.894,17.692 182.451,15.648 186.396,14.114 188.617,10.311 189.112,10.262 189.607,10.213 190.101,10.165"/>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsOsShortCutSelected,Mode=TwoWay}" Value="True">
+                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsDisplayWindowShortcuts,Mode=TwoWay}" Value="True">
+                                                            <Setter Property="IsChecked" Value="True"/>
+                                                            <Setter Property="ToolTip" Value="Windows ShortCut"/>
+                                                            <Setter Property="Content">
+                                                                <Setter.Value>
+                                                                    <Path x:Name="DisplayPath"
+                                                                              Height="30"
+                                                                              Fill="{StaticResource BlueColorBrush}"
+                                                                              Width="30"
+                                                                              Stretch="Uniform" 
+                                                                              Data="F1M98.065,75.043C103.782,58.423 109.442,41.981 115.091,25.535 116.007,22.87 117.208,20.24 117.636,17.493 117.877,15.952 117.342,13.542 116.244,12.65 98.291,-1.913 71.276,-4.16 51.112,7.252 49.174,8.349 47.377,10.56 46.582,12.658 42.704,22.888 39.172,33.249 35.549,43.575 32.503,52.254 29.501,60.948 26.166,70.537 51.309,62.105 75.013,63.416 98.065,75.043 M91.7,97.049C92.088,95.877 91.211,93.491 90.161,92.752 69.563,78.25 47.847,75.478 25.067,87.305 23.12,88.315 21.299,90.583 20.526,92.676 15.647,105.882 11.083,119.205 6.408,132.487 4.399,138.194 2.374,143.897 0,150.609 25.148,142.196 48.826,143.478 71.978,155.166 78.663,135.598 85.29,116.359 91.7,97.049 M131.973,27.486C125.988,45.003 120.2,61.951 114.406,78.897 111.038,88.75 110.956,88.889 120.095,93.999 139.317,104.748 158.892,105.691 178.63,95.425 180.411,94.499 182.442,92.877 183.08,91.116 190.077,71.785 196.82,52.362 204.003,31.909 178.775,40.31 155.076,38.95 131.973,27.486 M84.523,166.839C91.492,146.531 98.312,126.654 105.288,106.322 128.448,117.896 152.091,119.219 177.165,110.813 175.295,116.3 173.75,120.939 172.135,125.554 167.212,139.629 162.439,153.762 157.172,167.708 156.127,170.479 153.613,173.453 150.992,174.75 129.601,185.341 108.954,183.152 89.189,170.238 87.672,169.247 86.253,168.106 84.523,166.839"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ToggleButton.Style>
+                                        </ToggleButton>-->
+                                    </Grid>
+                                    <!-- Window Buttons -->
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                        <Button x:Name="MinimizeWindow" Click="ClickMinimize" ToolTip="Minimize" Content="_" >
+                                            <Button.Style>
+                                                <Style TargetType="{x:Type Button}">
+                                                    <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="Padding" Value="8"/>
+                                                    <Setter Property="VerticalAlignment" Value="Stretch"/>
+                                                    <Setter Property="Foreground" Value="#686868"/>
+                                                    <Setter Property="LayoutTransform">
+                                                        <Setter.Value>
+                                                            <ScaleTransform ScaleX="1.5" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                                <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                                                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{TemplateBinding Content}" />
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#efefef" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                        <Button  Click="MaximizeClick" ToolTip="Maximize" Content="[ ]">
+                                            <Button.Style>
+                                                <Style TargetType="{x:Type Button}">
+                                                    <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="Padding" Value="8"/>
+                                                    <Setter Property="VerticalAlignment" Value="Stretch"/>
+                                                    <Setter Property="Foreground" Value="#686868"/>
+
+                                                    <Setter Property="LayoutTransform">
+                                                        <Setter.Value>
+                                                            <ScaleTransform ScaleX="1.5" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                                <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                                                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{TemplateBinding Content}" />
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#efefef" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+
+                                        </Button>
+                                        <Button  ToolTip="Close" Click="CloseClick"  Content="X" >
+                                            <Button.Style>
+                                                <Style TargetType="{x:Type Button}">
+                                                    <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="Padding" Value="8"/>
+                                                    <Setter Property="VerticalAlignment" Value="Stretch"/>
+                                                    <Setter Property="Foreground" Value="#686868"/>
+                                                    <Setter Property="LayoutTransform">
+                                                        <Setter.Value>
+                                                            <ScaleTransform ScaleX="1.5" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                                <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                                                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{TemplateBinding Content}" />
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="Red" />
+                                                            <Setter Property="Foreground" Value="#ffffff" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Page Content -->
+                                <Border Grid.Row="1" Padding="{Binding InnerContentPadding}" ClipToBounds="True">
+                                    <ContentPresenter Content="{TemplateBinding Content}" />
+                                </Border>
+                                <!--Fotter for Comany Name-->
+                                <Border x:Name="FooterBorder"  Grid.Row="2" Background="{StaticResource PureWhiteColorBrush}" Margin="100,0" ClipToBounds="True" Width="1000" >
+                                    <Canvas x:Name="canMain" Canvas.Right="-50" Loaded="canMain_Loaded" Margin="0,0,0 0" Height="30" Width="500" >
+                                        <TextBlock x:Name="FooterText" Loaded="FooterText_Loaded" FontSize="{StaticResource MediumSize}" Margin="0 0 0 0" HorizontalAlignment="Center" Text="Created By : " Foreground="{StaticResource DarkBlueColorBrush}"><Run Text="Smart " Foreground="{StaticResource OrangeColorBrush}" FontFamily="{StaticResource Italic}" FontSize="{StaticResource ExtraNormalSize}"/><Run Text="Solutions" FontFamily="{StaticResource Italic}" FontSize="{StaticResource ExtraNormalSize}" Foreground="{StaticResource RedColorBrush}" FontWeight="Normal"/><Run Text=" Ph# 092 323 0437552"></Run> <Run Text="Gmail :" Foreground="{StaticResource OrangeColorBrush}"/><Run Text="SmartSolutionsGuruOnline@gmail.com" Foreground="{StaticResource DarkBlueColorBrush}"/> <Run Text="Git Repo" Foreground="{StaticResource OrangeColorBrush}"/> <Run Foreground="{StaticResource RedColorBrush}" Text="SmartSolutionsGuru"/></TextBlock>
+                                        <!--</Canvas>-->
+                                    </Canvas>
+                                </Border>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--Styles-->
+    <Style x:Key="FocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{StaticResource LightGrayColorBrush}" StrokeThickness="5" StrokeDashArray="1 2"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="OptionMarkFocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="true" Stroke="{StaticResource LightGrayColorBrush}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="FocusVisual2">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    </Window.Resources>
+    <!--Style For Window Transerancey-->
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+            ResizeBorderThickness="{Binding ResizeBorderThickness}"
+            CaptionHeight="{Binding TitleHeight}"
+            CornerRadius="0"
+            GlassFrameThickness="0"/>
+    </WindowChrome.WindowChrome>
+    <Grid>
+        <!--#region Main Grid-->
+        <Grid Background="Transparent">
+            <ContentControl x:Name="ActiveItem"/>
+
+            <!--Dialog For Displaying Content On Main Window-->
+            <ContentControl x:Name="Dialog"
+                        VerticalContentAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch" 
+                        IsHitTestVisible="True"
+                       Ap:AnimateSlideInFromBottomMarginProperty.Value="True"/>
+            <!--Dimwd Overlay-->
+            <Border Grid.ColumnSpan="2"
+                        Grid.RowSpan="2"
+                        Opacity="0.1">
+                <Border Background="{StaticResource PureBlackColorBrush}"
+                        Ap:AnimateFadeInProperty.Value="{Binding DimmableOverlayVisible}"/>
+            </Border>
+            <!--#endregion-->
+        </Grid>
+    </Grid>
+</Window>
