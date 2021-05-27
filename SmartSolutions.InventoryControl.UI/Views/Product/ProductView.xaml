@@ -21,61 +21,74 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="AddProduct" Margin="30,10"  Content="Add Product" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource NormalSize}">
-                    <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
-                            <Setter Property="Background" Value="{StaticResource GreenColorBrush}"/>
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="Foreground" Value="White"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsAddProductPressed}" Value="True">
-                                    <Setter Property="Background" Value="White"/>
-                                    <Setter Property="BorderThickness" Value="1"/>
-                                    <Setter Property="BorderBrush" Value="{StaticResource GreenColorBrush}"/>
-                                    <Setter Property="Foreground" Value="{StaticResource GreenColorBrush}"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <RadioButton  Grid.Column="1">
+                <RadioButton Grid.Column="0" 
+                             BorderBrush="{StaticResource GreenColorBrush}" 
+                             BorderThickness="1" 
+                             ControlExtensions:MiscControlExtensions.CornerRadius="5" 
+                             Content="Add Product" 
+                             HorizontalContentAlignment="Center" 
+                             VerticalContentAlignment="Center" 
+                             Margin="30,10"
+                             GroupName="ProductGroup"
+                             IsChecked="{Binding IsAddProductPressed,Mode=TwoWay}"
+                             Background="{StaticResource GreenColorBrush}" >
                     <RadioButton.Style>
-                        <Style TargetType="RadioButton">
-                            <Setter Property="Height" Value="40"/>
-                            <Setter Property="Width" Value="150"/>
-                            <Setter Property="Background" Value="{StaticResource OrangeColorBrush}"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="RadioButton">
-                                        <Border Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" BorderThickness="1.5" BorderBrush="{TemplateBinding Background}" CornerRadius="10">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock x:Name="ContentText" Grid.Column="1" Text="Shabab Butt" Foreground="{TemplateBinding Foreground}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="{StaticResource MediumFont}"/>
-                                            </Grid>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Setter Property="Foreground" TargetName="ContentText" Value="{Binding Background}" />
-                                                <Setter Property="Background" Value="{StaticResource PureWhiteColorBrush}"/>
-                                            </Trigger>
-                                            <Trigger Property="IsChecked" Value="False">
-                                                <Setter Property="Foreground" TargetName="ContentText" Value="{StaticResource PureWhiteColorBrush}" />
-                                                <Setter Property="Background" Value="{Binding Background}"/>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
+                        <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="False">
+                                    <Setter Property="Foreground" Value="{StaticResource GreenColorBrush}"/>
+                                </Trigger>
+                            </Style.Triggers>
                         </Style>
                     </RadioButton.Style>
                 </RadioButton>
-                <!--<Button x:Name="UpdateProduct" Grid.Column="1"  Margin="30,10" Style="{StaticResource ContentButton}" Background="{StaticResource OrangeColorBrush}" Content="Update Product" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource NormalSize}"/>
-                <Button x:Name="DeleteProduct" Grid.Column="2" Margin="30,10" Style="{StaticResource ContentButton}" Background="{StaticResource RedColorBrush}" Content="Delete Product" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource NormalSize}"/>-->
+                <RadioButton Grid.Column="1" 
+                             BorderBrush="{StaticResource OrangeColorBrush}" 
+                             BorderThickness="1" 
+                             ControlExtensions:MiscControlExtensions.CornerRadius="5" 
+                             Content="Update Product" 
+                             HorizontalContentAlignment="Center" 
+                             VerticalContentAlignment="Center" 
+                             Margin="30,10"
+                             GroupName="ProductGroup"
+                             IsChecked="{Binding IsUpdateProduct,Mode=TwoWay}"
+                             ControlExtensions:MiscControlExtensions.UncheckedForeground="{StaticResource RedColorBrush}"
+                            
+                             Background="{StaticResource OrangeColorBrush}" >
+                    <RadioButton.Style>
+                        <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="False">
+                                    <Setter Property="Foreground" Value="{StaticResource OrangeColorBrush}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </RadioButton.Style>
+                </RadioButton>
+                <RadioButton Grid.Column="2" 
+                             Margin="30,10"
+                             Content="Remove Product"
+                             HorizontalContentAlignment="Center"
+                             VerticalContentAlignment="Center"
+                             FontFamily="{StaticResource MediumFont}"
+                             FontSize="{StaticResource NormalSize}"
+                             BorderThickness="1"
+                             GroupName="ProductGroup"
+                             IsChecked="{Binding IsRemoveProduct,Mode=TwoWay}"
+                             BorderBrush="{StaticResource RedColorBrush}"
+                             Background="{StaticResource RedColorBrush}">
+                    <RadioButton.Style>
+                        <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="False">
+                                    <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </RadioButton.Style>
+                </RadioButton>
             </Grid>
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="1" Visibility="{Binding IsAddProductPressed,Mode=OneWay,Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
@@ -94,7 +107,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <TextBlock Text="Select Product Type" 
-                                   Margin="10 0 0 3" 
+                                   Margin="30 0 0 3" 
                                    FontSize="{StaticResource MediumSize}"  
                                    FontFamily="{StaticResource RegularFont}" 
                                    Foreground="{StaticResource GrayColorBrush}" 
@@ -112,8 +125,8 @@
                                        HorizontalContentAlignment="Left"
                                        VerticalContentAlignment="Center"
                                        Padding="10 0 0 0"
-                                       Margin="10 0 10 0"
-                                       Width="180"
+                                       Margin="30 0 10 0"
+                                       Width="200"
                                        Foreground="{StaticResource GrayColorBrush}"
                                        BorderBrush="{StaticResource LightBlueColorBrush}"
                                        Style="{StaticResource BaseComboBox}" 
@@ -145,19 +158,19 @@
                         </StackPanel>
                         <StackPanel Grid.Row="2" Orientation="Horizontal">
                             <TextBox Height="45" 
-                                     Width="180"
+                                     Width="200"
                                      BorderThickness="1.5"
                                      Style='{StaticResource TextBoxVisibilityPathIconStyle}'
                                      BorderBrush="{StaticResource BlueColorBrush}"
                                      Text="{Binding ProductType,Mode=TwoWay}"
                                      ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Product Type"
                                      HorizontalAlignment="Left" 
-                                     Margin="10 0 0 0"/>
+                                     Margin="30 0 0 0"/>
                             <Button x:Name="AddProductType"
                                     cal:Message.Attach="AddProductType($dataContext)"
                                     Height="30" 
                                     Background="Transparent"
-                                    Margin="5 0 0 0"
+                                    Margin="10 0 0 0"
                                     Width="30" 
                                     Style="{StaticResource ContentButton}">
                                 <Path Height="20" Width="20" Stretch="UniformToFill" Fill="{StaticResource GreenColorBrush}" Data="{StaticResource Shape_Tick2}"/>
@@ -193,7 +206,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock Text="Select Product Sub Type" 
-                                   Margin="10 0 0 3" 
+                                   Margin="30 0 0 3" 
                                    FontSize="{StaticResource MediumSize}"  
                                    FontFamily="{StaticResource RegularFont}" 
                                    Foreground="{StaticResource GrayColorBrush}" 
@@ -203,7 +216,6 @@
                             <ComboBox  Height="45"
                                        Grid.Row="1"
                                        BorderThickness="1.5"
-                                    
                                        ItemsSource="{Binding ProductSubTypes,Mode=TwoWay}"
                                        SelectedItem="{Binding SelectedProductSubType,Mode=TwoWay}"
                                        HorizontalAlignment="Center"
@@ -212,8 +224,8 @@
                                        HorizontalContentAlignment="Left"
                                        VerticalContentAlignment="Center"
                                        Padding="10 0 0 0"
-                                       Margin="10 0 10 0"
-                                       Width="180"
+                                       Margin="30 0 10 0"
+                                       Width="200"
                                        Foreground="{StaticResource GrayColorBrush}"
                                        BorderBrush="{StaticResource LightBlueColorBrush}"
                                        Style="{StaticResource BaseComboBox}" 
@@ -245,14 +257,14 @@
                         </StackPanel>
                         <StackPanel Grid.Row="2" Orientation="Horizontal">
                             <TextBox Height="45" 
-                                     Width="180"
+                                     Width="200"
                                      BorderThickness="1.5"
                                      Style='{StaticResource TextBoxVisibilityPathIconStyle}'
                                      BorderBrush="{StaticResource BlueColorBrush}"
                                      Text="{Binding ProductSubType,Mode=TwoWay}"
                                      ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Product Type"
                                      HorizontalAlignment="Left" 
-                                     Margin="10 0 0 0"/>
+                                     Margin="30 0 0 0"/>
                             <Button x:Name="AddProductSubType"
                                     Height="30" 
                                     Background="Transparent"
@@ -307,7 +319,7 @@
                             </TextBlock.Style>
                         </TextBlock>
                     </Grid>
-                    <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 30">
+                    <StackPanel Grid.Column="2"  HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 50 30">
                         <TextBlock Text="Please Enter the Product Name" 
                                    FontSize="{StaticResource MediumSize}" 
                                    FontFamily="{StaticResource MediumFont}" 
@@ -337,13 +349,13 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <TextBlock Text="Select Colors" 
-                                   Margin="10 0 0 3" 
+                                   Margin="30 0 0 3" 
                                    FontSize="{StaticResource MediumSize}"  
                                    FontFamily="{StaticResource RegularFont}" 
                                    Foreground="{StaticResource GrayColorBrush}" 
                                    HorizontalAlignment="Left" 
                                    VerticalAlignment="Bottom"/>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20 0 0 0">
                             <ComboBox  Height="45"
                                        Grid.Row="1"
                                        BorderThickness="1.5"
@@ -356,7 +368,7 @@
                                        VerticalContentAlignment="Center"
                                        Padding="10 0 0 0"
                                        Margin="10 0 10 0"
-                                       Width="180"
+                                       Width="200"
                                        Foreground="{StaticResource GrayColorBrush}"
                                        BorderBrush="{StaticResource LightBlueColorBrush}"
                                        Style="{StaticResource BaseComboBox}" 
@@ -386,9 +398,9 @@
                                 <Path Height="20" Width="10" Fill="{StaticResource PureWhiteColorBrush}" Stretch="Uniform" Data="{StaticResource Shape_Minus}"/>
                             </Button>
                         </StackPanel>
-                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20 0 0 0">
                             <TextBox Height="45" 
-                                     Width="180"
+                                     Width="200"
                                      BorderThickness="1.5"
                                      Style='{StaticResource TextBoxVisibilityPathIconStyle}'
                                      BorderBrush="{StaticResource BlueColorBrush}"
@@ -434,13 +446,13 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <TextBlock Text="Select Size" 
-                                   Margin="10 0 0 3" 
+                                   Margin="30 0 0 3" 
                                    FontSize="{StaticResource MediumSize}"  
                                    FontFamily="{StaticResource RegularFont}" 
                                    Foreground="{StaticResource GrayColorBrush}" 
                                    HorizontalAlignment="Left" 
                                    VerticalAlignment="Bottom"/>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20 0 0 0">
                             <ComboBox  Height="45"
                                        Grid.Row="1"
                                        BorderThickness="1.5"
@@ -453,7 +465,7 @@
                                        VerticalContentAlignment="Center"
                                        Padding="10 0 0 0"
                                        Margin="10 0 10 0"
-                                       Width="180"
+                                       Width="200"
                                        Foreground="{StaticResource GrayColorBrush}"
                                        BorderBrush="{StaticResource LightBlueColorBrush}"
                                        Style="{StaticResource BaseComboBox}" 
@@ -483,9 +495,9 @@
                                 <Path Height="20" Width="10" Fill="{StaticResource PureWhiteColorBrush}" Stretch="Uniform" Data="{StaticResource Shape_Minus}"/>
                             </Button>
                         </StackPanel>
-                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20 0 0 0">
                             <TextBox Height="45" 
-                                     Width="180"
+                                     Width="200"
                                      BorderThickness="1.5"
                                      Style='{StaticResource TextBoxVisibilityPathIconStyle}'
                                      BorderBrush="{StaticResource BlueColorBrush}"

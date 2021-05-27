@@ -22,6 +22,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <TextBlock TextAlignment="Center" Margin="0 0 0 0"
@@ -92,8 +93,62 @@
                     </Button.Style>
                 </Button>
 
-                <Button Name="Purchase" 
+                <Button Name="BussinessPartner" 
                         Grid.Row="3" 
+                        Margin="5 0 5 5" 
+                        Padding="10" 
+                        VerticalContentAlignment="Center" 
+                        HorizontalContentAlignment="Center" 
+                        FontFamily="{StaticResource MediumFont}" 
+                        BorderThickness="1" 
+                        BorderBrush="{StaticResource BlueColorBrush}">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Margin="0,0,10,0" 
+                              Height="20"  
+                              Data="{StaticResource Shape_Partner}" 
+                              Stretch="Uniform" >
+                            <Path.Style>
+                                <Style TargetType="Path">
+                                    <Setter Property="Fill" Value="White"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsHomePresed}" Value="True">
+                                            <Setter Property="Fill" Value="{StaticResource BlueColorBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Path.Style>
+                        </Path>
+                        <TextBlock  x:Name="bBox" TextAlignment="Center" Text="PARTNERS" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="0,5" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsHomePresed}" Value="True">
+                                            <Setter Property="Foreground" Value="{StaticResource BlueColorBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
+                            <Setter Property="Background" Value="{StaticResource BlueColorBrush}"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsHomePresed}" Value="True">
+                                    <Setter Property="Background" Value="White"/>
+                                    <Setter Property="BorderThickness" Value="1"/>
+                                    <Setter Property="Foreground" Value="#FFb14b4b"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Name="Purchase" 
+                        Grid.Row="4" 
                         Margin="5" 
                         Padding="10" 
                         VerticalContentAlignment="Center" 
@@ -154,7 +209,7 @@
                 </Button>
 
                 <Button Name="Sales" 
-                        Grid.Row="4" 
+                        Grid.Row="5" 
                         Margin="5" 
                         Padding="10" 
                         VerticalContentAlignment="Center" 
@@ -209,7 +264,7 @@
                 </Button>
 
                 <Button Name="Stock" 
-                        Grid.Row="5" 
+                        Grid.Row="6" 
                         Margin="5" 
                         Padding="10"
                         VerticalContentAlignment="Center" 
@@ -260,7 +315,7 @@
                 </Button>
 
                 <Button Name="Bank" 
-                        Grid.Row="6" 
+                        Grid.Row="7" 
                         Margin="5" Padding="10"
                         HorizontalContentAlignment="Center" 
                         VerticalContentAlignment="Center"  
@@ -339,19 +394,55 @@
                             </Path>
                         </Button>
                         <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" />
-                        <Button Background="Transparent" Margin="{StaticResource HeaderLogoMargin}" Style="{StaticResource IconGrowButton}">
-                            <Path Stretch="Uniform" Data="{StaticResource Shape_SMS}" ToolTip="{Binding PrinterName}">
-                                <Path.Style>
-                                    <Style TargetType="Path">
-                                        <Setter Property="Fill" Value="{StaticResource GrayColorBrush}" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsPrinterAvailable}" Value="True">
-                                                <Setter Property="Fill" Value="{StaticResource GreenColorBrush}" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Path.Style>
-                            </Path>
+                        <Button Background="Transparent" Margin="{StaticResource HeaderLogoMargin}" FontSize="20" Style="{StaticResource ContentButton}" >
+                            <Button.Content>
+                                <Border x:Name="border">
+                                    <Path Stretch="Uniform"  Data="{StaticResource Shape_SMS}" ToolTip="{Binding PrinterName}">
+                                        <Path.Style>
+                                            <Style TargetType="Path">
+                                                <Setter Property="Fill" Value="{StaticResource GrayColorBrush}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsPrinterAvailable}" Value="True">
+                                                        <Setter Property="Fill" Value="{StaticResource GreenColorBrush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Path.Style>
+                                    </Path>
+                                    <!-- Add a render scale transform -->
+                                    <Border.RenderTransform>
+                                        <ScaleTransform />
+                                    </Border.RenderTransform>
+                                    <Border.RenderTransformOrigin>
+                                        <Point X="0.5" Y="0.5" />
+                                    </Border.RenderTransformOrigin>
+                                    <!--<Border.Style>
+                                        <Style TargetType="Border">
+                                            <Style.Triggers>
+                                                <EventTrigger RoutedEvent="MouseEnter">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation To="1.4" Duration="0:0:0.15" Storyboard.TargetName="border" Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)" />
+                                                            <DoubleAnimation To="1.4" Duration="0:0:0.15" Storyboard.TargetName="border" Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)" />
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                                <EventTrigger RoutedEvent="MouseLeave">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation To="1" Duration="0:0:0.15" Storyboard.TargetName="border" Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)" />
+                                                            <DoubleAnimation To="1" Duration="0:0:0.15" Storyboard.TargetName="border" Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)" />
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Background" TargetName="border" Value="{StaticResource GrayColorBrush}"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>-->
+                                </Border>
+                            </Button.Content>
                         </Button>
 
                         <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" />

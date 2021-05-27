@@ -35,6 +35,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
            Handle(IoC.Get<Product.ProductViewModel>());
         }
+        public void BussinessPartner()
+        {
+            Handle(IoC.Get<BussinessPartner.BussinessPartnerViewModel>());
+        }
         public void Purchase()
         {
 
@@ -48,7 +52,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             public void Handle(Screen screen)
             {
 
-                if (screen is Product.ProductViewModel)
+                if (screen is Product.ProductViewModel || screen is BussinessPartner.BussinessPartnerViewModel)
                 {
                     ActivateItem(screen);
                 }

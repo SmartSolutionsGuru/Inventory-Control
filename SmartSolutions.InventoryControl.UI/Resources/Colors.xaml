@@ -13,11 +13,11 @@
     <Color x:Key="BlueColor">#3099c5</Color>
     <SolidColorBrush x:Key="BlueColorBrush" Color="{StaticResource BlueColor}" />
 
+    <Color x:Key="LightBlue">#45b6e5</Color>
+    <SolidColorBrush x:Key="LightBlueColorBrush" Color="{StaticResource LightBlue}" />
+
     <Color x:Key="TransparentBlueColor">#003099c5</Color>
     <SolidColorBrush x:Key="TransparentBlueColorBrush" Color="{StaticResource TransparentBlueColor}" />
-
-    <Color x:Key="LightBlueColor">#45b6e5</Color>
-    <SolidColorBrush x:Key="LightBlueColorBrush" Color="{StaticResource LightBlueColor}" />
 
     <Color x:Key="VeryLightBlueColor">#c3e5f3</Color>
     <SolidColorBrush x:Key="VeryLightBlueColorBrush" Color="{StaticResource VeryLightBlueColor}" />

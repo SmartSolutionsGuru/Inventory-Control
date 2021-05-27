@@ -44,7 +44,7 @@ namespace SmartSolutions.InventoryControl.UI
             }
             plugins.Add("SmartSolutions.InventoryControl.Core.dll");
             plugins.Add("SmartSolutions.InventoryControl.DAL.dll");
-            plugins.Add("SmartSolutions.InventoryControl.Repositories.SQLiteCipher.dll");
+            plugins.Add("SmartSolutions.SQLiteCipher.dll");
             //if (!Execute.InDesignMode)
             //{
             //    string iniPath = Path.Combine(Helpers.SettingHelper.AppSettings.AppDirectory + "Config.ini");

@@ -35,11 +35,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
             _productSubTypeManager = productSubTypeManager;
             _productSizeManager = productSizeManager;
             _productColorManager = productColorManager;
-            //ProductTypes = new List<string> { "Button", "Broches", "koli", "xyz" };
-            //ProductSubTypes = new List<string> { "Plastic Button", "Metal Button", "Koli Button" };
-            //ProductColors = new List<string> { "Blue", "Brawn", "Steel", "Silver", "Black" };
-            //ProductSizes = new List<string> { "3 x 3", "6 x 6", "9 x 9" };
-
         }
         #endregion
 
@@ -151,7 +146,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         }
         public void RemoveProductColors()
         {
-            _productColorManager.RemoveProductColorAsync(ProductSelectedColor.Id);
+            _productColorManager.RemoveProductColorAsync(ProductSelectedColor?.Id);
         }
         public async void AddProductColors()
         {
@@ -201,27 +196,23 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
             }
         }
         #endregion
-        public void Clear()
-        {
-            TryClose();
-        }
+
+        #region Product
         public async void SaveProduct(ProductModel model)
         {
             try
             {
                 if (model == null)
                     model = new ProductModel();
-                //TODO: here we verify that all the Products are Fill
-                //if (string.IsNullOrEmpty(ProductName))
-                //    IoC.Get<IDialogManager>().ShowDialogAsync();
+                VerifyIsDataFilled();
                 model.Name = ProductName;
                 model.ProductType = SelectedProductType;
                 model.ProductSubType = SelectedProductSubType;
                 model.ProductColor = ProductSelectedColor;
                 model.ProductSize = ProductSelectedSize;
                 model.Image = ProductImage;
-               bool result =  await _productManager.AddProductAsync(model);
-                if(result)
+                bool result = await _productManager.AddProductAsync(model);
+                if (result)
                 {
                     SelectedProductType = null;
                     SelectedProductSubType = null;
@@ -233,7 +224,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                 }
                 else
                 {
-                    //TODO: Display some Friendly Message Product is Not save Try Again
+                    //Friendly Message Product is Not save Try Again
+                    await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Sorry Product is Not Saved Please Try Again", options: Dialogs.MessageBoxOptions.Ok);
                 }
             }
             catch (Exception ex)
@@ -241,6 +233,36 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
+        #endregion
+
+        #region Private Helpers
+        private void VerifyIsDataFilled()
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(ProductName))
+                    IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Enter the Product Name", options: Dialogs.MessageBoxOptions.Ok);
+                if(SelectedProductType == null)
+                    IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Select the Product Type", options: Dialogs.MessageBoxOptions.Ok);
+                if (SelectedProductSubType == null)
+                    IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Select the Product Sub Type", options: Dialogs.MessageBoxOptions.Ok);
+                if (ProductSelectedColor == null)
+                    IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Select the Product Color", options: Dialogs.MessageBoxOptions.Ok);
+                if (ProductSelectedSize == null)
+                    IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Select the Product Size", options: Dialogs.MessageBoxOptions.Ok);
+
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+        #endregion
+        public void Clear()
+        {
+            TryClose();
+        }
+
         public List<ProductSubTypeModel> OnProductTypeSelection(int Id)
         {
             try
@@ -256,6 +278,33 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         #endregion
 
         #region Properties
+        private bool _IsAddProductPressed;
+        /// <summary>
+        /// Verify this button is Pressed
+        /// </summary>
+        public bool IsAddProductPressed
+        {
+            get { return _IsAddProductPressed; }
+            set { _IsAddProductPressed = value; NotifyOfPropertyChange(nameof(IsAddProductPressed)); }
+        }
+        private bool _IsUpdateProduct;
+        /// <summary>
+        /// Product Update Button Clicked
+        /// </summary>
+        public bool IsUpdateProduct
+        {
+            get { return _IsUpdateProduct; }
+            set { _IsUpdateProduct = value; NotifyOfPropertyChange(nameof(IsUpdateProduct)); }
+        }
+        private bool _IsRemoveProduct;
+        /// <summary>
+        /// Remove Product Button Clicked
+        /// </summary>
+        public bool IsRemoveProduct
+        {
+            get { return _IsRemoveProduct; }
+            set { _IsRemoveProduct = value; NotifyOfPropertyChange(nameof(IsRemoveProduct)); }
+        }
 
 
         private string _ProductSize;
@@ -288,15 +337,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
             set { _ProductSubTypeFooter = value; NotifyOfPropertyChange(nameof(ProductSubTypeFooter)); }
         }
 
-        private bool _IsAddProductPressed;
-        /// <summary>
-        /// Verify this button is Pressed
-        /// </summary>
-        public bool IsAddProductPressed
-        {
-            get { return _IsAddProductPressed; }
-            set { _IsAddProductPressed = value; NotifyOfPropertyChange(nameof(IsAddProductPressed)); }
-        }
+
 
         private List<ProductTypeModel> _ProductTypes;
         /// <summary>

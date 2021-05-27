@@ -135,6 +135,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\BussinessPartner\BussinessPartnerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\DialogBaseView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -183,6 +191,12 @@
     <Compile Include="Helpers\PageHelper\WindowResizer.cs" />
     <Compile Include="Helpers\Tasks\BaseTaskExtension.cs" />
     <Compile Include="Helpers\Tasks\ITaskExtension.cs" />
+    <Compile Include="Views\BussinessPartner\BussinessPartnerView.xaml.cs">
+      <DependentUpon>BussinessPartnerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\DialogBaseView.xaml.cs">
+      <DependentUpon>DialogBaseView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
@@ -242,9 +256,17 @@
       <Project>{d6ad0e87-5236-4d0a-8e8f-f4fb6b00ecde}</Project>
       <Name>SmartSolutions.InventoryControl.Plugins</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SmartSolutions.SQLiteCipher\SmartSolutions.SQLiteCipher.csproj">
+      <Project>{5e92a74e-28f3-425a-ade7-91008e079acc}</Project>
+      <Name>SmartSolutions.SQLiteCipher</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SmartSolutions.Util\SmartSolutions.Util.csproj">
       <Project>{b16ec17b-087b-4df7-b683-702a9ac76a9f}</Project>
       <Name>SmartSolutions.Util</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\sqlite-net-master\nuget\SQLite-net-sqlcipher\SQLite-net-sqlcipher.csproj">
+      <Project>{efc210a5-5ad2-4442-80f6-96800dc8d861}</Project>
+      <Name>SQLite-net-sqlcipher</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartSolutions.InventoryCon
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLite-net-sqlcipher", "sqlite-net-master\nuget\SQLite-net-sqlcipher\SQLite-net-sqlcipher.csproj", "{EFC210A5-5AD2-4442-80F6-96800DC8D861}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSolutions.SQLiteCipher", "SmartSolutions.InventoryControl.Repositories.SQLiteCipher\SmartSolutions.SQLiteCipher.csproj", "{2614D8BB-1905-4CFA-97E8-991A5738F11A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSolutions.SQLiteCipher", "SmartSolutions.SQLiteCipher\SmartSolutions.SQLiteCipher.csproj", "{5E92A74E-28F3-425A-ADE7-91008E079ACC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -119,18 +119,18 @@ Global
 		{EFC210A5-5AD2-4442-80F6-96800DC8D861}.Release|iPhone.Build.0 = Release|Any CPU
 		{EFC210A5-5AD2-4442-80F6-96800DC8D861}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{EFC210A5-5AD2-4442-80F6-96800DC8D861}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{2614D8BB-1905-4CFA-97E8-991A5738F11A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2614D8BB-1905-4CFA-97E8-991A5738F11A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2614D8BB-1905-4CFA-97E8-991A5738F11A}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{2614D8BB-1905-4CFA-97E8-991A5738F11A}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{2614D8BB-1905-4CFA-97E8-991A5738F11A}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{2614D8BB-1905-4CFA-97E8-991A5738F11A}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{2614D8BB-1905-4CFA-97E8-991A5738F11A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2614D8BB-1905-4CFA-97E8-991A5738F11A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2614D8BB-1905-4CFA-97E8-991A5738F11A}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{2614D8BB-1905-4CFA-97E8-991A5738F11A}.Release|iPhone.Build.0 = Release|Any CPU
-		{2614D8BB-1905-4CFA-97E8-991A5738F11A}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{2614D8BB-1905-4CFA-97E8-991A5738F11A}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{5E92A74E-28F3-425A-ADE7-91008E079ACC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E92A74E-28F3-425A-ADE7-91008E079ACC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E92A74E-28F3-425A-ADE7-91008E079ACC}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{5E92A74E-28F3-425A-ADE7-91008E079ACC}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{5E92A74E-28F3-425A-ADE7-91008E079ACC}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{5E92A74E-28F3-425A-ADE7-91008E079ACC}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{5E92A74E-28F3-425A-ADE7-91008E079ACC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E92A74E-28F3-425A-ADE7-91008E079ACC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E92A74E-28F3-425A-ADE7-91008E079ACC}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{5E92A74E-28F3-425A-ADE7-91008E079ACC}.Release|iPhone.Build.0 = Release|Any CPU
+		{5E92A74E-28F3-425A-ADE7-91008E079ACC}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{5E92A74E-28F3-425A-ADE7-91008E079ACC}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -138,7 +138,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{726625FB-E9BC-4B74-BE3F-A21DB712C399} = {59AEB55A-92CB-49C1-9B13-D6752180DF37}
 		{EFC210A5-5AD2-4442-80F6-96800DC8D861} = {37FF2BB3-41A6-4009-9C58-86668AFFF6A0}
-		{2614D8BB-1905-4CFA-97E8-991A5738F11A} = {726625FB-E9BC-4B74-BE3F-A21DB712C399}
+		{5E92A74E-28F3-425A-ADE7-91008E079ACC} = {726625FB-E9BC-4B74-BE3F-A21DB712C399}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5E802663-9FFC-443E-8E87-87B61E156A6D}
