@@ -13,16 +13,22 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
     {
         #region Private Members
         private readonly IEventAggregator _eventAggregator;
+        private readonly IWindowManager _windowManager;
         private string DirectoryName = "Config";
+        private readonly IDialogManager _dialog;
         private static string dbFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\InventoryControl.db";
         #endregion
 
         #region Constructor
 
         [ImportingConstructor]
-        public ShellViewModel(IEventAggregator eventAggregator)
+        public ShellViewModel(IEventAggregator eventAggregator
+                              ,IWindowManager windowManager
+                              , IDialogManager dialogManager)
         {
             _eventAggregator = eventAggregator;
+            _windowManager = windowManager;
+            _dialog = dialogManager;
         }
         public ShellViewModel(object window)
         {
@@ -31,7 +37,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Public Properties
-        public IDialogManager Dialog { get; set; }
+        public IDialogManager Dialog => _dialog;
         #endregion
 
         public void Handle(Screen screen)

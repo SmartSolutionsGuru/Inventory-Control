@@ -340,10 +340,10 @@
 
             <!--Dialog For Displaying Content On Main Window-->
             <ContentControl x:Name="Dialog"
-                        VerticalContentAlignment="Stretch"
-                        HorizontalContentAlignment="Stretch" 
-                        IsHitTestVisible="True"
-                       Ap:AnimateSlideInFromBottomMarginProperty.Value="True"/>
+                            VerticalContentAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch" 
+                            IsHitTestVisible="True"
+                            Ap:AnimateSlideInFromBottomMarginProperty.Value="True"/>
             <!--Dimwd Overlay-->
             <Border Grid.ColumnSpan="2"
                         Grid.RowSpan="2"

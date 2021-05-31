@@ -15,18 +15,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
     {
         #region Private Members
         private readonly IWindowManager _windowManager;
-        readonly Func<IMessageBox> createMessageBox;
+        private readonly Func<IMessageBox> createMessageBox;
         #endregion
 
         #region Constructor
         public DialogBaseViewModel() { }
-
         [ImportingConstructor]
+
         public DialogBaseViewModel(IWindowManager windowManager
-                                   , Func<IMessageBox> messageBoxFactory)
+                                 /*   ,Func<IMessageBox> messageBoxFactory*/)
         {
             _windowManager = windowManager;
-            createMessageBox = messageBoxFactory;
+            //createMessageBox = messageBoxFactory;
         }
         #endregion
 

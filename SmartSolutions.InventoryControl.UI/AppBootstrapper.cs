@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using SmartSolutions.InventoryControl.Core.ViewModels;
 using SmartSolutions.InventoryControl.Core.ViewModels.Dialogs;
 using SmartSolutions.InventoryControl.Plugins.IoC;
 using SmartSolutions.InventoryControl.UI.Helpers.SettingHelper;
@@ -88,6 +89,7 @@ namespace SmartSolutions.InventoryControl.UI
             IoCContanier.IoC.AddExportedValue<IEventAggregator>(new EventAggregator());
             //IoCContanier.IoC.AddExportedValue(new ApplicationCloseStrategy());
             IoCContanier.IoC.AddExportedValue<Func<IMessageBox>>(() => IoCContanier.IoC.GetExportedValue<IMessageBox>());
+            //IoCContanier.IoC.AddExportedValue<IDialogManager>(new DialogBaseViewModel());
             IoCContanier.IoC.Compose();
             
         }

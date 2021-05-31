@@ -5,6 +5,6 @@ namespace SmartSolutions.InventoryControl.Core
 {
     public interface IShell :IConductor
     {
-        IDialogManager Dialog { get; set; }
+        IDialogManager Dialog { get; }
     }
 }

@@ -23,6 +23,7 @@ namespace SmartSolutions.Util.DateAndTimeUtils
                     {
                         if (DateTime.TryParseExact(stringText,format, null, System.Globalization.DateTimeStyles.None, out resultValue)) return resultValue;
                     }
+                    return defaultValue;
 
                 }
             }
