@@ -7,6 +7,7 @@
     <converter:BytesToBitmapImageConverter x:Key="BytesToBitmapImageConverter"/>
     <converter:StringToImageConverter x:Key="StringToImageConverter"/>
     <converter:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    <converter:CalendarDayNameConverter x:Key="CalendarDayNameConverter"/>
     <!-- design for scroll Viewer-->
     <Style x:Key="ScrollBarThumb" TargetType="{x:Type Thumb}">
         <Setter Property="OverridesDefaultStyle" Value="true"/>

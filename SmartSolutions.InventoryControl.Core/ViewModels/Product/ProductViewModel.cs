@@ -159,6 +159,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                 }
                 await _productColorManager.AddProductColorAsync(model);
                 IsAddProductColor = false;
+                ProductColor = string.Empty;
                 ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
             }
             catch (Exception ex)
@@ -186,6 +187,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                     model.Size = ProductSize;
                 await _productSizeManager.AddProductSizeAsync(model);
                 IsAddProductSize = false;
+                ProductSize = string.Empty;
                 ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
 
             }
@@ -204,28 +206,36 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
             {
                 if (model == null)
                     model = new ProductModel();
-                VerifyIsDataFilled();
-                model.Name = ProductName;
-                model.ProductType = SelectedProductType;
-                model.ProductSubType = SelectedProductSubType;
-                model.ProductColor = ProductSelectedColor;
-                model.ProductSize = ProductSelectedSize;
-                model.Image = ProductImage;
-                bool result = await _productManager.AddProductAsync(model);
-                if (result)
-                {
-                    SelectedProductType = null;
-                    SelectedProductSubType = null;
-                    ProductSelectedColor = null;
-                    ProductSelectedSize = null;
-                    ProductImage = null;
-                    ProductName = string.Empty;
+                bool erroResult = VerifyIsDataFilled();
 
+                if (erroResult == false)
+                {
+                    model.Name = ProductName;
+                    model.ProductType = SelectedProductType;
+                    model.ProductSubType = SelectedProductSubType;
+                    model.ProductColor = ProductSelectedColor;
+                    model.ProductSize = ProductSelectedSize;
+                    model.Image = ProductImage;
+                    bool result = await _productManager.AddProductAsync(model);
+                    if (result)
+                    {
+                        SelectedProductType = null;
+                        SelectedProductSubType = null;
+                        ProductSelectedColor = null;
+                        ProductSelectedSize = null;
+                        ProductImage = null;
+                        ProductName = string.Empty;
+
+                    }
+                    else
+                    {
+                        //Friendly Message Product is Not save Try Again
+                        await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Sorry Product is Not Saved Please Try Again", options: Dialogs.MessageBoxOptions.Ok);
+                    }
                 }
                 else
                 {
-                    //Friendly Message Product is Not save Try Again
-                    await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Sorry Product is Not Saved Please Try Again", options: Dialogs.MessageBoxOptions.Ok);
+                    return;
                 }
             }
             catch (Exception ex)
@@ -236,26 +246,42 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         #endregion
 
         #region Private Helpers
-        private void VerifyIsDataFilled()
+        private bool VerifyIsDataFilled()
         {
+            bool retVal = false;
             try
             {
                 if (string.IsNullOrEmpty(ProductName))
-                    IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Enter the Product Name", options: Dialogs.MessageBoxOptions.Ok);
-                if(SelectedProductType == null)
-                    IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Select the Product Type", options: Dialogs.MessageBoxOptions.Ok);
-                if (SelectedProductSubType == null)
-                    IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Select the Product Sub Type", options: Dialogs.MessageBoxOptions.Ok);
-                if (ProductSelectedColor == null)
-                    IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Select the Product Color", options: Dialogs.MessageBoxOptions.Ok);
-                if (ProductSelectedSize == null)
-                    IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Select the Product Size", options: Dialogs.MessageBoxOptions.Ok);
-
+                {
+                    ProductNameError = true;
+                    return retVal = true;
+                }
+                else if (SelectedProductType == null)
+                {
+                    ProductTypeError = true;
+                    return retVal = true;
+                }
+                else if (SelectedProductSubType == null)
+                {
+                    ProductSubTyprError = true;
+                    return retVal = true;
+                }
+                else if (ProductSelectedColor == null)
+                {
+                    ProductColorError = true;
+                    return retVal = true;
+                }
+                else if (ProductSelectedSize == null)
+                {
+                    ProductSizeError = true;
+                    return retVal = true;
+                }
             }
             catch (Exception ex)
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
+            return retVal;
         }
         #endregion
         public void Clear()
@@ -278,6 +304,54 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         #endregion
 
         #region Properties
+        private bool _ProductTypeError;
+        /// <summary>
+        /// When Product Type is Not Selected
+        /// </summary>
+        public bool ProductTypeError
+        {
+            get { return _ProductTypeError; }
+            set { _ProductTypeError = value; NotifyOfPropertyChange(nameof(ProductTypeError)); }
+        }
+
+        private bool _ProductSubTyprError;
+        /// <summary>
+        /// When Product Sub Type is Not Selected
+        /// </summary>
+        public bool ProductSubTyprError
+        {
+            get { return _ProductSubTyprError; }
+            set { _ProductSubTyprError = value; NotifyOfPropertyChange(nameof(ProductSubTyprError)); }
+        }
+        private bool _ProductNameError;
+        /// <summary>
+        /// When Product Name is Written
+        /// </summary>
+        public bool ProductNameError
+        {
+            get { return _ProductNameError; }
+            set { _ProductNameError = value; NotifyOfPropertyChange(nameof(ProductNameError)); }
+        }
+
+        private bool _ProductColorError;
+        /// <summary>
+        /// When Product Color Is Not Selected
+        /// </summary>
+        public bool ProductColorError
+        {
+            get { return _ProductColorError; }
+            set { _ProductColorError = value; NotifyOfPropertyChange(nameof(ProductColorError)); }
+        }
+        private bool _ProductSizeError;
+        /// <summary>
+        /// When Product Size is Not Selected
+        /// </summary>
+        public bool ProductSizeError
+        {
+            get { return _ProductSizeError; }
+            set { _ProductSizeError = value; NotifyOfPropertyChange(nameof(ProductSizeError)); }
+        }
+
         private bool _IsAddProductPressed;
         /// <summary>
         /// Verify this button is Pressed
@@ -356,7 +430,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         public ProductTypeModel SelectedProductType
         {
             get { return _SelectedProductType; }
-            set { _SelectedProductType = value; NotifyOfPropertyChange(nameof(SelectedProductType)); OnProductTypeSelection(SelectedProductType.Id.Value); }
+            set
+            {
+                _SelectedProductType = value;
+                NotifyOfPropertyChange(nameof(SelectedProductType));
+                if (SelectedProductType != null)
+                {
+                    OnProductTypeSelection(SelectedProductType.Id.Value);
+                }
+                ProductTypeError = false;
+            }
         }
 
         private List<ProductSubTypeModel> _ProductSubTypes;
@@ -376,7 +459,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         public ProductSubTypeModel SelectedProductSubType
         {
             get { return _SelectedProductSubType; }
-            set { _SelectedProductSubType = value; NotifyOfPropertyChange(nameof(SelectedProductSubType)); }
+            set { _SelectedProductSubType = value; NotifyOfPropertyChange(nameof(SelectedProductSubType)); ProductSubTyprError = false; }
         }
 
         private string _ProductSubType;
@@ -414,7 +497,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         public ProductColorModel ProductSelectedColor
         {
             get { return _ProductSelectedColor; }
-            set { _ProductSelectedColor = value; NotifyOfPropertyChange(nameof(ProductSelectedColor)); }
+            set { _ProductSelectedColor = value; NotifyOfPropertyChange(nameof(ProductSelectedColor)); ProductColorError = false; }
         }
         private List<ProductSizeModel> _ProductSizes;
         /// <summary>

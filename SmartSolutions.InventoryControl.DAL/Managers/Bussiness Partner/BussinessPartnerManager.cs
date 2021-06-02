@@ -36,7 +36,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 string mobilenumbers = string.Empty;
-                parameters["@v_Name"] = partner?.FullName;
+                parameters["@v_Name"] = partner?.Name;
                 parameters["@v_BussinessName"] = partner?.BussinessName;
                 parameters["@v_PhoneNumber"] = partner?.PhoneNumber;
                 parameters["@v_Address"] = partner?.Address;
@@ -82,7 +82,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                     {
                         var partner = new BussinessPartnerModel();
                         partner.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
-                        partner.FullName = value?.GetValueFromDictonary("Name")?.ToString();
+                        partner.Name = value?.GetValueFromDictonary("Name")?.ToString();
                         partner.BussinessName = value?.GetValueFromDictonary("BussinessName")?.ToString();
                         partner.City = value?.GetValueFromDictonary("City")?.ToString();
                         partner.PhoneNumber = value?.GetValueFromDictonary("PhoneNumber")?.ToString();
@@ -116,7 +116,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 var value = values?.FirstOrDefault();
 
                 partner.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
-                partner.FullName = value?.GetValueFromDictonary("Name")?.ToString();
+                partner.Name = value?.GetValueFromDictonary("Name")?.ToString();
                 partner.BussinessName = value?.GetValueFromDictonary("BussinessName")?.ToString();
                 partner.City = value?.GetValueFromDictonary("City")?.ToString();
                 partner.PhoneNumber = value?.GetValueFromDictonary("PhoneNumber")?.ToString();

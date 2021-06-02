@@ -151,7 +151,7 @@
                         <TextBox Grid.Column="1" 
                              Height="45" 
                              Width="250"
-                             Text="{Binding NewBussinessPartner.FullName,Mode=TwoWay}"
+                             Text="{Binding NewBussinessPartner.Name,Mode=TwoWay}"
                              ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Full Name"
                              Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
                     </StackPanel>
@@ -178,12 +178,12 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <TextBlock Text="{Binding MobileMessage,Mode=OneWay}" 
-                               FontSize="{StaticResource NormalSize}" 
-                               FontFamily="{StaticResource MediumFont}" 
-                               HorizontalAlignment="Left" 
-                               VerticalAlignment="Center" 
-                               Margin="40 0 0 0"
-                               Foreground="{StaticResource GrayColorBrush}">
+                                   FontSize="{StaticResource NormalSize}" 
+                                   FontFamily="{StaticResource MediumFont}" 
+                                   HorizontalAlignment="Left" 
+                                   VerticalAlignment="Center" 
+                                   Margin="40 0 0 0"
+                                   Foreground="{StaticResource GrayColorBrush}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
@@ -315,7 +315,7 @@
                               Foreground="{StaticResource GrayColorBrush}"
                               FontFamily="{StaticResource MediumFont}"
                               FontSize="{StaticResource NormalSize}"
-                              DisplayMemberPath="BussinessName"
+                              DisplayMemberPath="FullName"
                               HorizontalAlignment="Left"
                               Margin="40 0 0 5"
                               BorderBrush="{StaticResource BlueColorBrush}"

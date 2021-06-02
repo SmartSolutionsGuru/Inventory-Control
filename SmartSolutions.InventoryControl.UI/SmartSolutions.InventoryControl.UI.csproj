@@ -40,6 +40,9 @@
     <ApplicationIcon>SmartBook.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoCompleteTextBox">
+      <HintPath>..\..\..\..\ShortCuts\ShortCuts.UI\Refrences\AutoCompleteTextBox.dll</HintPath>
+    </Reference>
     <Reference Include="Caliburn.Micro, Version=3.2.0.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
       <HintPath>..\packages\Caliburn.Micro.Core.3.2.0\lib\net45\Caliburn.Micro.dll</HintPath>
     </Reference>
@@ -99,6 +102,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="CustomControls\CustomCalender.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\Colors.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -151,6 +158,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\PurchaseView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Purchase\PurchaseView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -169,9 +180,13 @@
     <Compile Include="Converters\BooleanToBorderThicknessConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\BytesToBitmapImageConverter.cs" />
+    <Compile Include="Converters\CalendarDayNameConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\StringToBrushConverter.cs" />
     <Compile Include="Converters\StringToImageConverter.cs" />
+    <Compile Include="CustomControls\CustomCalender.xaml.cs">
+      <DependentUpon>CustomCalender.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\Animation\AnimationSlideInDirection.cs" />
     <Compile Include="Helpers\Animation\FrameworkElementAnimations.cs" />
     <Compile Include="Helpers\Animation\StoryboardHelpers.cs" />
@@ -202,6 +217,9 @@
     </Compile>
     <Compile Include="Views\Product\ProductView.xaml.cs">
       <DependentUpon>ProductView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PurchaseView.xaml.cs">
+      <DependentUpon>PurchaseView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Purchase\PurchaseView.xaml.cs">
       <DependentUpon>PurchaseView.xaml</DependentUpon>

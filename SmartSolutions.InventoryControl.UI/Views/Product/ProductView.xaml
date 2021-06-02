@@ -110,9 +110,19 @@
                                    Margin="30 0 0 3" 
                                    FontSize="{StaticResource MediumSize}"  
                                    FontFamily="{StaticResource RegularFont}" 
-                                   Foreground="{StaticResource GrayColorBrush}" 
                                    HorizontalAlignment="Left" 
-                                   VerticalAlignment="Bottom"/>
+                                   VerticalAlignment="Bottom">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ProductTypeError,Mode=OneWay}" Value="True">
+                                            <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
                             <ComboBox  Height="45"
                                        Grid.Row="1"
@@ -209,9 +219,19 @@
                                    Margin="30 0 0 3" 
                                    FontSize="{StaticResource MediumSize}"  
                                    FontFamily="{StaticResource RegularFont}" 
-                                   Foreground="{StaticResource GrayColorBrush}" 
                                    HorizontalAlignment="Left" 
-                                   VerticalAlignment="Bottom"/>
+                                   VerticalAlignment="Bottom">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ProductSubTyprError,Mode=OneWay}" Value="True">
+                                            <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
                             <ComboBox  Height="45"
                                        Grid.Row="1"
@@ -323,8 +343,18 @@
                         <TextBlock Text="Please Enter the Product Name" 
                                    FontSize="{StaticResource MediumSize}" 
                                    FontFamily="{StaticResource MediumFont}" 
-                                   Foreground="{StaticResource GrayColorBrush}"
-                                   Margin="0 0 0 5"/>
+                                   Margin="0 0 0 5">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ProductNameError,Mode=OneWay}" Value="True">
+                                            <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                         <TextBox Height="45"
                               Grid.Column="2"
                              Width="250"
@@ -352,9 +382,19 @@
                                    Margin="30 0 0 3" 
                                    FontSize="{StaticResource MediumSize}"  
                                    FontFamily="{StaticResource RegularFont}" 
-                                   Foreground="{StaticResource GrayColorBrush}" 
                                    HorizontalAlignment="Left" 
-                                   VerticalAlignment="Bottom"/>
+                                   VerticalAlignment="Bottom">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ProductColorError,Mode=OneWay}" Value="True">
+                                            <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20 0 0 0">
                             <ComboBox  Height="45"
                                        Grid.Row="1"
@@ -449,9 +489,19 @@
                                    Margin="30 0 0 3" 
                                    FontSize="{StaticResource MediumSize}"  
                                    FontFamily="{StaticResource RegularFont}" 
-                                   Foreground="{StaticResource GrayColorBrush}" 
                                    HorizontalAlignment="Left" 
-                                   VerticalAlignment="Bottom"/>
+                                   VerticalAlignment="Bottom">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ProductSizeError,Mode=OneWay}" Value="True">
+                                            <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20 0 0 0">
                             <ComboBox  Height="45"
                                        Grid.Row="1"
@@ -542,8 +592,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Border Height="150" Width="150" CornerRadius="5" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.5">
-                            <!--<Image Source="{Binding ProductImage,Converter={StaticResource BytesToBitmapImageConverter},Mode=OneWay}" Height="145" Width="145"/>-->
-                            <Image Source="{Binding ProductImage,Mode=TwoWay,Converter={StaticResource BytesToBitmapImageConverter}}" Height="145" Width="145"/>
+                            <Image Source="{Binding ProductImage,Mode=TwoWay,Converter={StaticResource BytesToBitmapImageConverter}}" Stretch="UniformToFill" Height="145" Width="145"/>
                         </Border>
                         <Button x:Name="BrowsePicture" Grid.Column="1" Height="45" Margin="0 0 20 0" Background="{StaticResource BlueColorBrush}" Content="Browse" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  Click="Button_Click" Width="100" Style="{StaticResource ContentButton}"/>
                     </Grid>

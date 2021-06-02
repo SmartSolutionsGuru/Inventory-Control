@@ -1,15 +1,17 @@
 ﻿using Caliburn.Micro;
+using SmartSolutions.InventoryControl.Core.ViewModels.Commands;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.LogUtils;
 using System;
 using System.ComponentModel.Composition;
 using System.IO;
-using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels
 {
     [Export(typeof(IShell)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class ShellViewModel : Conductor<Screen>, IShell, IHandle<Screen>
+    public class ShellViewModel : BaseViewModel, IShell, IHandle<Screen>
     {
         #region Private Members
         private readonly IEventAggregator _eventAggregator;
@@ -20,7 +22,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Constructor
-
+        public ShellViewModel(Window window)
+        {
+            mWindow = window;
+        }
         [ImportingConstructor]
         public ShellViewModel(IEventAggregator eventAggregator
                               ,IWindowManager windowManager
@@ -30,22 +35,22 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             _windowManager = windowManager;
             _dialog = dialogManager;
         }
-        public ShellViewModel(object window)
-        {
-
-        }
         #endregion
 
         #region Public Properties
         public IDialogManager Dialog => _dialog;
         #endregion
 
+        #region Commands
+        public RelayCommand MenuCommand { get; set; }
+        #endregion
+
+        #region Methods
         public void Handle(Screen screen)
         {
             if (screen is MainViewModel)
                 ActivateItem(screen);
         }
-
         protected override void OnInitialize()
         {
             base.OnInitialize();
@@ -57,12 +62,17 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             _eventAggregator.Subscribe(this);
             InitializeDatabaseConnection();
         }
+        protected override void OnViewLoaded(object view)
+        {
+            base.OnViewLoaded(view);
+            GetBaseWindow(view);
+            MenuCommand = new RelayCommand(() => SystemCommands.ShowSystemMenu(mWindow, GetMousePosition()));
+        }
         protected override void OnDeactivate(bool close)
         {
             base.OnDeactivate(close);
             _eventAggregator.Unsubscribe(this);
         }
-
         private bool InitializeDatabaseConnection()
         {
             bool retVal = false;
@@ -102,5 +112,56 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
             return retVal;
         }
+        #endregion
+
+        #region Helper Method
+        public void GetBaseWindow(object view)
+        {
+            // Listen out for the window resizing
+            mWindow = view as Window;
+            if (mWindow != null)
+            {
+                mWindow.StateChanged += (sender, e) =>
+                {
+                    // Fire off events for all properties that are affected by a resize
+                    base.WindowResized();
+                };
+
+                mWindowResizer = new Helpers.WindowHelper.WindowResizer(mWindow);
+
+                // Listen out for dock changes
+                mWindowResizer.WindowDockChanged += (dock) =>
+                {
+                    // Store last position
+                    mDockPosition = dock;
+
+                    // Fire off resize events
+                    WindowResized();
+                };
+
+                // On window being moved/dragged
+                mWindowResizer.WindowStartedMove += () =>
+                {
+                    // Update being moved flag
+                    BeingMoved = true;
+                };
+
+                // Fix dropping an undocked window at top which should be positioned at the
+                // very top of screen
+                mWindowResizer.WindowFinishedMove += () =>
+                {
+                    // Update being moved flag
+                    BeingMoved = false;
+
+                    // Check for moved to top of window and not at an edge
+                    if (mDockPosition == Helpers.WindowHelper.WindowDockPosition.Undocked && mWindow.Top == mWindowResizer.CurrentScreenSize.Top)
+                        // If so, move it to the true top (the border size)
+                        mWindow.Top = -OuterMarginSize.Top;
+                };
+            }
+            else
+                return;
+        }
+        #endregion
     }
 }

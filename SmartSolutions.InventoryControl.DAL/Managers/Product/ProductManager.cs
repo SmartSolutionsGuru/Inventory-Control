@@ -73,6 +73,10 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                     foreach (var value in values)
                     {
                         var product = new ProductModel();
+                        product.ProductType = new ProductTypeModel();
+                        product.ProductSubType = new ProductSubTypeModel();
+                        product.ProductColor = new ProductColorModel();
+                        product.ProductSize = new ProductSizeModel();
                         product.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                         product.Name = value?.GetValueFromDictonary("Name")?.ToString();
                         product.ProductType.Id = value?.GetValueFromDictonary("ProductTypeId")?.ToString()?.ToInt();
