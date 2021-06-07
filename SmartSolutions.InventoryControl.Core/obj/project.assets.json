@@ -213,6 +213,16 @@
           "lib/netstandard2.0/System.Threading.Tasks.Extensions.dll": {}
         }
       },
+      "AutoCompleteTextBox/1.0.1": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.5.2",
+        "compile": {
+          "bin/placeholder/AutoCompleteTextBox.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/AutoCompleteTextBox.dll": {}
+        }
+      },
       "SmartSolutions.InventoryControl.DAL/1.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
@@ -867,6 +877,11 @@
         "version.txt"
       ]
     },
+    "AutoCompleteTextBox/1.0.1": {
+      "type": "project",
+      "path": "../AutoCompleteTextBox/AutoCompleteTextBox.csproj",
+      "msbuildProject": "../AutoCompleteTextBox/AutoCompleteTextBox.csproj"
+    },
     "SmartSolutions.InventoryControl.DAL/1.0.0": {
       "type": "project",
       "path": "../SmartSolutions.InventoryControl.DAL/SmartSolutions.InventoryControl.DAL.csproj",
@@ -885,6 +900,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETStandard,Version=v2.0": [
+      "AutoCompleteTextBox >= 1.0.1",
       "Caliburn.Micro >= 3.2.0",
       "NETStandard.Library >= 2.0.3",
       "SmartSolutions.InventoryControl.DAL >= 1.0.0",
@@ -924,6 +940,9 @@
         "netstandard2.0": {
           "targetAlias": "netstandard2.0",
           "projectReferences": {
+            "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\AutoCompleteTextBox\\AutoCompleteTextBox.csproj": {
+              "projectPath": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\AutoCompleteTextBox\\AutoCompleteTextBox.csproj"
+            },
             "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.DAL\\SmartSolutions.InventoryControl.DAL.csproj": {
               "projectPath": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.DAL\\SmartSolutions.InventoryControl.DAL.csproj"
             },

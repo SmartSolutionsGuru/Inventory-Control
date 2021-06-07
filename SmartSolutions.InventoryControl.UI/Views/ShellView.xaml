@@ -1,6 +1,7 @@
 ﻿<Window x:Class="SmartSolutions.InventoryControl.UI.Views.ShellView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:maha="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views"
@@ -288,7 +289,7 @@
     </WindowChrome.WindowChrome>
     <Grid>
         <!--#region Main Grid-->
-        <Grid Background="Transparent">
+        <Grid Background="{StaticResource PureWhiteColorBrush}">
             <ContentControl x:Name="ActiveItem"/>
 
             <!--Dialog For Displaying Content On Main Window-->
@@ -305,6 +306,7 @@
                         Ap:AnimateFadeInProperty.Value="{Binding DimmableOverlayVisible}"/>
             </Border>
             <!--#endregion-->
+           
         </Grid>
     </Grid>
 </Window>

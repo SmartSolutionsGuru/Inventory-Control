@@ -1,0 +1,236 @@
+﻿<UserControl x:Class="SmartSolutions.InventoryControl.UI.Views.PaymentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:autoComplete="http://wpfcontrols.com/"
+             xmlns:ControlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
+             xmlns:models="clr-namespace:SmartSolutions.InventoryControl.DAL.Models;assembly=SmartSolutions.InventoryControl.DAL"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1366">
+    <UserControl.Resources>
+        <DataTemplate x:Key="NameTemplate" DataType="{x:Type models:BussinessPartnerModel}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="{Binding Path=Name}"
+                           FontSize="{StaticResource MediumSize}"
+                           FontFamily="{StaticResource MediumFont}"
+                           Foreground="{StaticResource GrayColorBrush}"/>
+                <TextBlock Text="{Binding City,Mode=OneWay}"
+                           Grid.Row="1"
+                           FontSize="{StaticResource SmallSize}"
+                           FontFamily="{StaticResource MediumFont}"
+                           Foreground="{StaticResource LightGrayColorBrush}"/>
+                <TextBlock  Grid.Row="2"
+                            Text="{Binding PhoneNumber,Mode=OneWay}"
+                            FontSize="{StaticResource SmallSize}"
+                            Foreground="{StaticResource LightGrayColorBrush}"
+                            FontFamily="{StaticResource MediumFont}"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Border Background="{StaticResource PureWhiteColorBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="1.1*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" 
+                       Text="Payments"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontFamily="{StaticResource MediumFont}" 
+                       FontSize="{StaticResource HeadingSize}" 
+                       Foreground="{StaticResource GreenColorBrush}"/>
+            <Button Grid.Row="1" 
+                    Height="70" 
+                    Width="350" 
+                    Style="{StaticResource ContentButton}" 
+                    Background="{StaticResource BlueColorBrush}" 
+                    HorizontalContentAlignment="Center" 
+                    FontFamily="{StaticResource MediumFont}" 
+                    FontSize="{StaticResource SubHeadingSize}" 
+                    VerticalContentAlignment="Center" 
+                    Content="Amount is 75000"/>
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="Select Partner" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Center" Margin="0 0 0 5"  Foreground="{StaticResource GrayColorBrush}"></TextBlock>
+                    <autoComplete:AutoCompleteTextBox Grid.Column="0" 
+                                                      Height="50"
+                                                      Width="250"
+                                                      Padding="8 0 0 0"
+                                                      Opacity="0.7"
+                                                      Watermark="Enter Vender Name"
+                                                      DisplayMember="Name"
+                                                      Margin="0 5 0 0"
+                                                      FontFamily="{StaticResource MediumFont}"
+                                                      Provider="{Binding PartnerSuggetion,Mode=TwoWay}"
+                                                      SelectedItem="{Binding SelectedPartner,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                      ItemTemplate="{StaticResource NameTemplate}"
+                                                      FontSize="{StaticResource MediumSize}"
+                                                      Foreground="{StaticResource GrayColorBrush}"
+                                                      Style="{StaticResource AutoCompleteTextBoxStyle}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" >
+                    <TextBlock Text="Payment Mode" Margin="0 0 0 5" Foreground="{StaticResource GrayColorBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}"/>
+                    <RadioButton Grid.Column="1" 
+                                 BorderBrush="{StaticResource GreenColorBrush}" 
+                                 BorderThickness="1" 
+                                 Height="50"
+                                 ControlExtensions:MiscControlExtensions.CornerRadius="5" 
+                                 Content="Recive Amount" 
+                                 HorizontalContentAlignment="Center" 
+                                 VerticalContentAlignment="Center" 
+                                 Margin="30,10"
+                                 GroupName="AmountGroup"
+                                 IsChecked="{Binding IsAddProductPressed,Mode=TwoWay}"
+                                 Background="{StaticResource GreenColorBrush}" >
+                        <RadioButton.Style>
+                            <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Foreground" Value="{StaticResource GreenColorBrush}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RadioButton.Style>
+                    </RadioButton>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Payment Mode" Margin="0 0 0 5" Foreground="{StaticResource GrayColorBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}"/>
+                    <RadioButton  BorderBrush="{StaticResource OrangeColorBrush}" 
+                                  BorderThickness="1" 
+                                  Height="50"
+                                  ControlExtensions:MiscControlExtensions.CornerRadius="5" 
+                                  Content="Pay Amount" 
+                                  HorizontalContentAlignment="Center" 
+                                  VerticalContentAlignment="Center" 
+                                  Margin="30,10"
+                                  GroupName="AmountGroup"
+                                  IsChecked="{Binding IsUpdateProduct,Mode=TwoWay}"
+                                  ControlExtensions:MiscControlExtensions.UncheckedForeground="{StaticResource RedColorBrush}"
+                            
+                             Background="{StaticResource OrangeColorBrush}" >
+                        <RadioButton.Style>
+                            <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Foreground" Value="{StaticResource OrangeColorBrush}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RadioButton.Style>
+                    </RadioButton>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Margin="0 10 0 0">
+                    <TextBlock Text="Amount"
+                               Margin="0 0 0 5"
+                               Foreground="{StaticResource GrayColorBrush}" 
+                               FontFamily="{StaticResource MediumFont}" 
+                               FontSize="{StaticResource MediumSize}" 
+                               HorizontalAlignment="Center" />
+                    <TextBox Height="50" 
+                             Width="250"
+                             Margin="0 5 0 0"
+                             FontFamily="{StaticResource MediumFont}"
+                             FontSize="{StaticResource MediumSize}"
+                             ControlExtensions:WaterMarkTextExtension.WatermarkText="Amount"
+                             Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" >
+                    <TextBlock Text="Payment Type" 
+                               Margin="0 0 0 5" 
+                               Foreground="{StaticResource GrayColorBrush}" 
+                               VerticalAlignment="Center" 
+                               HorizontalAlignment="Center" 
+                               FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}"/>
+                    <ComboBox Height="50" 
+                              Width="250"
+                              ItemsSource="{Binding Payment.PaymentType,Mode=OneWay}"
+                              FontFamily="{StaticResource MediumFont}"
+                              FontSize="{StaticResource NormalSize}"
+                              Foreground="{StaticResource GrayColorBrush}"
+                              Margin="0 5 0 0"
+                              ControlExtensions:WaterMarkTextExtension.WatermarkText="Payment Type"
+                              BorderBrush="{StaticResource BlueColorBrush}"
+                              BorderThickness="1.7"
+                              Style="{StaticResource BaseComboBox}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Margin="0 0 0 0">
+                    <TextBlock Text="Payment Picture" Margin="0 0 0 5" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource GrayColorBrush}" HorizontalAlignment="Center"/>
+                    <Button Height="150" Width="150" Margin="0 0 0 0" Style="{StaticResource ContentButton}" Click="Button_Click" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7">
+                        <Image Source="{Binding PaymentImage,Mode=OneWay,Converter={StaticResource BytesToBitmapImageConverter}}" Stretch="UniformToFill"></Image>
+                    </Button>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Description" 
+                               FontFamily="{StaticResource MediumFont}" 
+                               FontSize="{StaticResource MediumSize}" 
+                               Foreground="{StaticResource GrayColorBrush}" 
+                               HorizontalAlignment="Center"/>
+                    <TextBox Height="100" 
+                             Width="250"
+                             TextWrapping="Wrap" 
+                             AcceptsReturn="True"
+                             Opacity="0.7"
+                             BorderThickness="1.7"
+                             ControlExtensions:WaterMarkTextExtension.WatermarkText="Description"
+                             BorderBrush="{StaticResource BlueColorBrush}"
+                             Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="Cancel" 
+                            Height="50" 
+                            Width="130"
+                            Margin="0 0 10 0"
+                            Content="Cancel"
+                            FontSize="{StaticResource NormalSize}"
+                            FontFamily="{StaticResource MediumFont}"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Background="{StaticResource LightGrayColorBrush}"
+                            Style="{StaticResource ContentButton}"/>
+                    <Button x:Name="Save" 
+                            Height="50" 
+                            Width="130"
+                            Content="Save"
+                            Margin="10 0 0 0"
+                            FontSize="{StaticResource NormalSize}"
+                            FontFamily="{StaticResource MediumFont}"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Background="{StaticResource GreenColorBrush}"
+                            Style="{StaticResource ContentButton}"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

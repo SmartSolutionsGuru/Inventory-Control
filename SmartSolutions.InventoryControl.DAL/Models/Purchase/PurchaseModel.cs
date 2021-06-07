@@ -3,31 +3,38 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SmartSolutions.InventoryControl.DAL.Models
+namespace SmartSolutions.InventoryControl.DAL.Models.Purchase
 {
     public class PurchaseModel : BaseModel
     {
+        #region Constructor
         public PurchaseModel()
         {
-            PaymentMode = new List<string> {"Cash","Bank","JazzCash", "Partial","U Paias","Easy Paisa","Other"};
+            Product = new ProductModel();
+            ProductColor = new ProductColorModel();
+            ProductSize = new ProductSizeModel();
         }
-        public ProductModel Product { get; set; }
-        public BussinessPartnerModel Vender { get; set; }
+        #endregion
+
+        #region Properties
+        //public ProductModel Product { get; set; }
+        private ProductModel _Product;
+
+        public ProductModel Product
+        {
+            get { return _Product; }
+            set { _Product = value; NotifyOfPropertyChange(nameof(Product)); }
+        }
+
         public ProductColorModel ProductColor { get; set; }
         public ProductSizeModel ProductSize { get; set; }
-        public List<string> PaymentMode { get; set; }
-        public string SelectedPaymentMode { get; set; }
         public double Price { get; set; }
-        public string Description { get; set; }
-
-        private byte[] _PaymentImage;
-
-        public byte[] PaymentImage
+        public int Quantity { get; set; }
+        public double Total
         {
-            get { return _PaymentImage; }
-            set { _PaymentImage = value; NotifyOfPropertyChange(nameof(PaymentImage)); }
+            get => Quantity * Price;
+            set { value = Quantity * Price;}
         }
-
         public string ProductPrice 
         {
             get => Price.ToString();
@@ -44,7 +51,6 @@ namespace SmartSolutions.InventoryControl.DAL.Models
                
             }
         }
-        public int Quantity { get; set; }
         public string ProductQuantity 
         {
             get => Quantity.ToString();
@@ -61,14 +67,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models
                
             }
         }
-        public double Total
-        {
-            get => Quantity * Price;
-            set { value = Quantity * Price;}
-        }
-
         private string _TotalPrice;
-
         public string TotalPrice
         {
             get { return Total.ToString(); }
@@ -87,14 +86,6 @@ namespace SmartSolutions.InventoryControl.DAL.Models
               
             }
         }
-    }
-    public enum PaymentMode
-    {
-        None = 0,
-        Cah = 1,
-        Bank =2,
-        JazzCash =3,
-        Partial = 4,
-        Other = 5
+        #endregion
     }
 }

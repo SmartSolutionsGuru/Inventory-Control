@@ -1,4 +1,5 @@
 ﻿using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;
+using SmartSolutions.InventoryControl.DAL.Models.Purchase;
 using SmartSolutions.InventoryControl.DAL.Models;
 using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.Util.LogUtils;
@@ -48,17 +49,81 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 Venders = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
                 ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
                 ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
-                PurchaseTransaction = new PurchaseModel();
+                PurchaseTransaction = new PurchaseTransactionModel();
+                int Id = await _purchaseManager.GetLastTransationIdAsync();
+                PurchaseTransaction.TransactionNo = Id + 1;
                 if (Venders != null)
                     PartnerSuggetion = new PartnerSuggestionProvider(Venders);
                 if (Products != null)
                     ProductSuggetion = new ProductSuggestionProvider(Products);
+                //IsLoading = true;
+
             }
             catch (Exception ex)
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
+        public void OnGettingPrice()
+        {
+            if (Quantity > 0 && Price > 0)
+            {
+                TotalPrice = Quantity * Price;
+                NotifyOfPropertyChange(nameof(TotalPrice));
+            }
+            else
+                TotalPrice = 0;
+        }
+        public void AddProduct(ProductModel product)
+        {
+            try
+            {
+                if (CurrentItem != null)
+                {
+                    CurrentItem.Product = SelectedProduct;
+                    CurrentItem.ProductColor = SelectedProductColor;
+                    CurrentItem.ProductSize = SelectedProductSize;
+                    CurrentItem.Price = Price;
+                    CurrentItem.Quantity = Quantity;
+                    CurrentItem.Total = TotalPrice;
+                    PurchaseTransaction?.Products?.Add(CurrentItem);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+        public void RemoveProduct(ProductModel product)
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+        public void SaveTransaction()
+        {
+            try
+            {
+                IsLoading = true;
+                LoadingMessage = "Saving...";
+                //if (string.IsNullOrEmpty(SelectedPurchaseType))
+                //    PurchaseTransaction.SelectedPurchaseType = SelectedPurchaseType;
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+        public void Cancel()
+        {
+            TryClose();
+        }
+
         #endregion
 
         #region Properties
@@ -82,59 +147,84 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             set { _PriceError = value; NotifyOfPropertyChange(nameof(PriceError)); }
         }
 
-        private PurchaseModel _PurchaseTransaction;
+        private int _Quantity;
         /// <summary>
-        /// Transaction Object for transaction
+        /// Quantity Of Product
         /// </summary>
-        public PurchaseModel PurchaseTransaction
+        public int Quantity
         {
-            get { return _PurchaseTransaction; }
-            set { _PurchaseTransaction = value; NotifyOfPropertyChange(nameof(PurchaseTransaction)); NotifyOfPropertyChange(nameof(TotalPrice)); }
+            get { return _Quantity; }
+            set { _Quantity = value; NotifyOfPropertyChange(nameof(Quantity)); }
+        }
+        private double _Price;
+        /// <summary>
+        /// Price Of Product
+        /// </summary>
+        public double Price
+        {
+            get { return _Price; }
+            set { _Price = value; NotifyOfPropertyChange(nameof(Price)); OnGettingPrice(); }
         }
 
+        private double _TotalPrice;
+
+        public double TotalPrice
+        {
+            get { return _TotalPrice; }
+            set { _TotalPrice = value; NotifyOfPropertyChange(nameof(TotalPrice)); }
+        }
+        private double _LastBalance;
+        /// <summary>
+        /// Last Balance Of Partner
+        /// </summary>
+        public double LastBalance
+        {
+            get { return _LastBalance; }
+            set { _LastBalance = value; NotifyOfPropertyChange(nameof(LastBalance)); }
+        }
+
+        private PurchaseTransactionModel _PurchaseTransaction;
+        /// <summary>
+        /// Transaction Object for Purchase Transaction
+        /// </summary>
+        public PurchaseTransactionModel PurchaseTransaction
+        {
+            get { return _PurchaseTransaction; }
+            set { _PurchaseTransaction = value; NotifyOfPropertyChange(nameof(PurchaseTransaction)); }
+        }
 
         private PartnerSuggestionProvider _PartnerSuggetion;
-
+        /// <summary>
+        /// Peoperty for Partner Suggetion
+        /// </summary>
         public PartnerSuggestionProvider PartnerSuggetion
         {
             get { return _PartnerSuggetion; }
             set { _PartnerSuggetion = value; NotifyOfPropertyChange(nameof(PartnerSuggetion)); }
         }
-
         private BussinessPartnerModel _SelectedPartner;
-
         public BussinessPartnerModel SelectedPartner
         {
             get { return _SelectedPartner; }
             set { _SelectedPartner = value; NotifyOfPropertyChange(nameof(SelectedPartner)); }
         }
         private ProductSuggestionProvider _ProductSuggetion;
-         /// <summary>
-         /// List of Product Suggetions
-         /// </summary>
+        /// <summary>
+        /// List of Product Suggetions
+        /// </summary>
         public ProductSuggestionProvider ProductSuggetion
         {
             get { return _ProductSuggetion; }
-            set { _ProductSuggetion = value;  NotifyOfPropertyChange(nameof(ProductSuggetion)); }
+            set { _ProductSuggetion = value; NotifyOfPropertyChange(nameof(ProductSuggetion)); }
         }
         private ProductModel _SelectedProduct;
-         /// <summary>
-         /// SElected Product 
-         /// </summary>
+        /// <summary>
+        /// SElected Product 
+        /// </summary>
         public ProductModel SelectedProduct
         {
             get { return _SelectedProduct; }
             set { _SelectedProduct = value; NotifyOfPropertyChange(nameof(SelectedProduct)); ProductSuggetion = new ProductSuggestionProvider(Products); }
-        }
-
-
-
-        private string _TotalPrice;
-
-        public string TotalPrice
-        {
-            get { return _TotalPrice = PurchaseTransaction?.Total.ToString(); }
-            set { _TotalPrice = value; NotifyOfPropertyChange(nameof(TotalPrice)); }
         }
 
         private bool _ProductSizeError;
@@ -186,6 +276,17 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _PurchaseTypeError; }
             set { _PurchaseTypeError = value; NotifyOfPropertyChange(nameof(PurchaseTypeError)); }
         }
+
+        private PurchaseModel _CurrentItem;
+        /// <summary>
+        /// Current Item For Adding Product
+        /// </summary>
+        public PurchaseModel CurrentItem
+        {
+            get { return _CurrentItem ?? new PurchaseModel(); }
+            set { _CurrentItem = value; NotifyOfPropertyChange(nameof(CurrentItem)); }
+        }
+
 
         private List<string> _PurchaseTypes;
         /// <summary>
@@ -240,7 +341,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _SelectedProductColor; }
             set { _SelectedProductColor = value; NotifyOfPropertyChange(nameof(SelectedProductColor)); }
         }
-
         private List<ProductModel> _Products;
         /// <summary>
         /// List Of Products
@@ -251,19 +351,68 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             set { _Products = value; NotifyOfPropertyChange(nameof(Products)); }
         }
         private List<BussinessPartnerModel> _Venders;
-
         public List<BussinessPartnerModel> Venders
         {
             get { return _Venders; }
             set { _Venders = value; NotifyOfPropertyChange(nameof(Venders)); }
         }
         private BussinessPartnerModel _SelectedVender;
-
         public BussinessPartnerModel SelectedVender
         {
             get { return _SelectedVender; }
             set { _SelectedVender = value; NotifyOfPropertyChange(nameof(SelectedVender)); }
         }
+        private byte[] _PaymentImage;
+        /// <summary>
+        /// Payment Image 
+        /// </summary>
+        public byte[] PaymentImage
+        {
+            get { return _PaymentImage; }
+            set { _PaymentImage = value; NotifyOfPropertyChange(nameof(PaymentImage)); }
+        }
+        private int _Discount;
+        /// <summary>
+        /// Discount In Percentage
+        /// </summary>
+        public int Discount
+        {
+            get { return _Discount; }
+            set { _Discount = value; NotifyOfPropertyChange(nameof(Discount)); }
+        }
+
+        private double _DiscountPrice;
+         /// <summary>
+         /// Price After Calculating Discount
+         /// </summary>
+        public double DiscountPrice
+        {
+            get { return _DiscountPrice; }
+            set { _DiscountPrice = value; NotifyOfPropertyChange(nameof(DiscountPrice)); }
+        }
+
+        private double _GrandTotal;
+         /// <summary>
+         /// Grand Total Amount Of Transaction
+         /// </summary>
+        public double GrandTotal
+        {
+            get { return _GrandTotal; }
+            set { _GrandTotal = value; NotifyOfPropertyChange(nameof(GrandTotal)); }
+        }
+
+        private double _Payment;
+          /// <summary>
+          /// Payment Which is Made to Supply Partner
+          /// </summary>
+        public double Payment
+        {
+            get { return _Payment; }
+            set { _Payment = value; NotifyOfPropertyChange(nameof(Payment)); }
+        }
+
+
+
 
         #endregion
     }

@@ -10,13 +10,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helpers\" />
     <Folder Include="ViewModels\Commands\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AutoCompleteTextBox\AutoCompleteTextBox.csproj" />
     <ProjectReference Include="..\SmartSolutions.InventoryControl.DAL\SmartSolutions.InventoryControl.DAL.csproj" />
     <ProjectReference Include="..\SmartSolutions.Util\SmartSolutions.Util.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="PresentationCore">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\WindowsBase.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

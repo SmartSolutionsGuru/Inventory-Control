@@ -44,7 +44,6 @@ namespace SmartSolutions.InventoryControl.UI.Views.Product
                 string fileName = openFileDialog.FileNames.FirstOrDefault();
                 BitmapImage Image = new BitmapImage(new Uri(fileName));
                 ViewModel.ProductImage =Image?.ToByteArray();
-                //ViewModel.ProductImage = fileName;
             }
         }
     }

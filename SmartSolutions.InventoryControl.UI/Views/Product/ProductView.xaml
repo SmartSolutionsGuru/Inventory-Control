@@ -8,7 +8,7 @@
              xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views.Product"
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1366">
-    <Border Background="{StaticResource PureWhiteColorBrush}">
+    <Border Background="Transparent">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="70"/>

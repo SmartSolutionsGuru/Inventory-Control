@@ -22,6 +22,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Constructor
+        public ShellViewModel() { }
+       
         public ShellViewModel(Window window)
         {
             mWindow = window;
@@ -39,6 +41,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
 
         #region Public Properties
         public IDialogManager Dialog => _dialog;
+        
         #endregion
 
         #region Commands

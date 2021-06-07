@@ -246,7 +246,7 @@
                         <TextBox Grid.Column="2" 
                              Height="150" 
                              Width="350"
-                             Margin="0 0 20 0"
+                             Margin="0 0 0 0"
                              Text="{Binding NewBussinessPartner.Address,Mode=TwoWay}"
                              BorderThickness="1.3"
                              ControlExtensions:MiscControlExtensions.CornerRadius="10"

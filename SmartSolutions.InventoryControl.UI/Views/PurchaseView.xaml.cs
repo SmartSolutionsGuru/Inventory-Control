@@ -43,7 +43,7 @@ namespace SmartSolutions.InventoryControl.UI.Views
             {
                 string fileName = openFileDialog.FileNames.FirstOrDefault();
                 BitmapImage Image = new BitmapImage(new Uri(fileName));
-                ViewModel.PurchaseTransaction.PaymentImage = Image?.ToByteArray();
+                ViewModel.PaymentImage = Image?.ToByteArray();
             }
         }
     }

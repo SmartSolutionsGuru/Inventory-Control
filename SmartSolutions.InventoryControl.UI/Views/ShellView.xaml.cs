@@ -53,6 +53,7 @@ namespace SmartSolutions.InventoryControl.UI.Views
         {
             // Show overlay if we lose focus
             ViewModel.DimmableOverlayVisible = false;
+           
         }
 
         private void OnDeactivated(object sender, EventArgs e)

@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLite-net-sqlcipher", "sql
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSolutions.SQLiteCipher", "SmartSolutions.SQLiteCipher\SmartSolutions.SQLiteCipher.csproj", "{5E92A74E-28F3-425A-ADE7-91008E079ACC}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCompleteTextBox", "AutoCompleteTextBox\AutoCompleteTextBox.csproj", "{26D8B2DC-2D1E-4CF6-BC25-53615F3EC7DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +133,18 @@ Global
 		{5E92A74E-28F3-425A-ADE7-91008E079ACC}.Release|iPhone.Build.0 = Release|Any CPU
 		{5E92A74E-28F3-425A-ADE7-91008E079ACC}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{5E92A74E-28F3-425A-ADE7-91008E079ACC}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{26D8B2DC-2D1E-4CF6-BC25-53615F3EC7DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26D8B2DC-2D1E-4CF6-BC25-53615F3EC7DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26D8B2DC-2D1E-4CF6-BC25-53615F3EC7DF}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{26D8B2DC-2D1E-4CF6-BC25-53615F3EC7DF}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{26D8B2DC-2D1E-4CF6-BC25-53615F3EC7DF}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{26D8B2DC-2D1E-4CF6-BC25-53615F3EC7DF}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{26D8B2DC-2D1E-4CF6-BC25-53615F3EC7DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26D8B2DC-2D1E-4CF6-BC25-53615F3EC7DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26D8B2DC-2D1E-4CF6-BC25-53615F3EC7DF}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{26D8B2DC-2D1E-4CF6-BC25-53615F3EC7DF}.Release|iPhone.Build.0 = Release|Any CPU
+		{26D8B2DC-2D1E-4CF6-BC25-53615F3EC7DF}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{26D8B2DC-2D1E-4CF6-BC25-53615F3EC7DF}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
