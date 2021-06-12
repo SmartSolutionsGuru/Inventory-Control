@@ -58,6 +58,7 @@
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.2.4.5\lib\net47\MahApps.Metro.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.19\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
@@ -167,6 +168,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Dialogs\MessageBoxView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -216,6 +221,7 @@
     <Compile Include="CustomControls\RingControl.xaml.cs">
       <DependentUpon>RingControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\SearchableComboBox.cs" />
     <Compile Include="Helpers\Animation\AnimationSlideInDirection.cs" />
     <Compile Include="Helpers\Animation\FrameworkElementAnimations.cs" />
     <Compile Include="Helpers\Animation\StoryboardHelpers.cs" />
@@ -240,6 +246,9 @@
     </Compile>
     <Compile Include="Views\Dialogs\DialogBaseView.xaml.cs">
       <DependentUpon>DialogBaseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\MessageBoxView.xaml.cs">
+      <DependentUpon>MessageBoxView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>

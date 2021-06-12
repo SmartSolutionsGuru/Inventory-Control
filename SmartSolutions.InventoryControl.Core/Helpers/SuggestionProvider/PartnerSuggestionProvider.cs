@@ -15,6 +15,7 @@ namespace SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider
         #region Private Members
       
         #endregion
+
         #region Properties
         public List<DAL.Models.BussinessPartnerModel> BussinessPartners { get; set; }
         #endregion
@@ -31,7 +32,7 @@ namespace SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider
             try
             {
                 if (string.IsNullOrEmpty(filter)) return null;
-                BussinessPartners = BussinessPartners?.Where(p => p.FullName.ToLower().Contains(filter.ToLower())).ToList();
+                BussinessPartners = BussinessPartners?.Where(p => p.FullName.ToLower().StartsWith(filter.ToLower())).ToList();
             }
             catch (Exception ex)
             {

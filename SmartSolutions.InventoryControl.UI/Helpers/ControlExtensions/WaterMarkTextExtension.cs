@@ -32,6 +32,11 @@ namespace SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions
             return (string)obj.GetValue(WatermarkTextProperty);
         }
 
+
+
+      
+
+
         public static void SetWatermarkText(DependencyObject obj, string value)
         {
             obj.SetValue(WatermarkTextProperty, value);
@@ -214,6 +219,14 @@ namespace SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions
             DependencyProperty.RegisterAttached("WatermarkIconMargin", typeof(Thickness), typeof(WaterMarkTextExtension), new PropertyMetadata(new Thickness()));
 
       
+        public static bool  GetValidationErrorVisible(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(ValidationErrorVisibleProperty);
+        }
+        public static void SetValidationErrorVisible(DependencyObject obj,bool value)
+        {
+            obj.SetValue(ValidationErrorVisibleProperty, value);
+        }
 
         // Using a DependencyProperty as the backing store for ValidationErrorVisible.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ValidationErrorVisibleProperty =

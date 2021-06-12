@@ -130,6 +130,22 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             }
             return partner;
         }
+
+        public async Task<double> GetPartnerCurrentBalanceAsync(int partnerId)
+        {
+            double retVal = 0;
+            try
+            {
+                string query = string.Empty;
+                await Repository.QueryAsync(query);
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
+        }
+
         public async Task<bool> RemoveBussinessPartnerAsync(int? Id)
         {
             bool retVal = false;

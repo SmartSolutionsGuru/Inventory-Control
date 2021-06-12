@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using SmartSolutions.InventoryControl.DAL.Models.Inventory;
 using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.Util.LogUtils;
 using System;
@@ -18,7 +19,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         private readonly DAL.Managers.Product.ProductColor.IProductColorManager _productColorManager;
         private readonly DAL.Managers.Product.ProductSize.IProductSizeManager _productSizeManager;
         private readonly DAL.Managers.Product.IProductManager _productManager;
-
+        private readonly DAL.Managers.Invoice.IInvoiceManager _invoiceManager;
+        private readonly DAL.Managers.Inventory.IInventoryManager _inventoryManager;
         #endregion
 
         #region Constructor
@@ -27,7 +29,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                                 DAL.Managers.Product.ProductSubType.IProductSubTypeManager productSubTypeManager,
                                 DAL.Managers.Product.ProductColor.IProductColorManager productColorManager,
                                 DAL.Managers.Product.ProductSize.IProductSizeManager productSizeManager,
-                                DAL.Managers.Product.IProductManager productManager)
+                                DAL.Managers.Product.IProductManager productManager,
+                                DAL.Managers.Invoice.IInvoiceManager invoiceManager,
+                                DAL.Managers.Inventory.IInventoryManager inventoryManager)
         {
             IsAddProductPressed = true;
             _productTypeManager = productTypeManager;
@@ -35,16 +39,21 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
             _productSubTypeManager = productSubTypeManager;
             _productSizeManager = productSizeManager;
             _productColorManager = productColorManager;
+            _invoiceManager = invoiceManager;
+            _inventoryManager = inventoryManager;
         }
         #endregion
 
         #region Public Methods
         protected async override void OnActivate()
         {
+            IsLoading = true;
+            LoadingMessage = "Loading...";
             base.OnActivate();
             ProductTypes = (await _productTypeManager.GetAllProductsTypesAsync()).ToList();
             ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
             ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
+            IsLoading = false;
         }
 
         #region Product Type
@@ -67,6 +76,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         {
             try
             {
+                IsLoading = true;
+                LoadingMessage = "Saving...";
                 ProductTypeModel model = new ProductTypeModel();
                 model.Name = ProductType;
                 if (ProductType != null)
@@ -74,10 +85,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                 IsAddProduct = false;
                 ProductType = string.Empty;
                 ProductTypes = (await _productTypeManager.GetAllProductsTypesAsync()).ToList();
+                IsLoading = false;
 
             }
             catch (Exception ex)
             {
+                IsLoading = false;
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
@@ -118,18 +131,30 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         {
             try
             {
+                IsLoading = true;
+                LoadingMessage = "Saving...";
                 if (!string.IsNullOrEmpty(ProductSubType))
                 {
                     ProductSubTypeModel model = new ProductSubTypeModel();
                     model.Name = ProductSubType;
-                    await _productSubTypeManager.AddProductSubTypeAsync(SelectedProductType.Id, model);
+                    if(SelectedProductType != null)
+                        await _productSubTypeManager.AddProductSubTypeAsync(SelectedProductType?.Id, model);
+                    else
+                    {
+                        ProductTypeError = true;
+                        IsLoading = false;
+                        return;
+                    }
                     IsAddSubProduct = false;
                     ProductSubType = string.Empty;
                     ProductSubTypes = (await _productSubTypeManager.GetAllProductSubTypeAsync(SelectedProductType.Id)).ToList();
+                    SelectedProductSubType = ProductSubTypes.LastOrDefault();
+                    IsLoading = false;
                 }
             }
             catch (Exception ex)
             {
+                IsLoading = false;
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
@@ -152,6 +177,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         {
             try
             {
+                IsLoading = true;
+                LoadingMessage = "Saving...";
                 var model = new ProductColorModel();
                 if (!string.IsNullOrEmpty(ProductColor))
                 {
@@ -161,9 +188,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                 IsAddProductColor = false;
                 ProductColor = string.Empty;
                 ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
+                ProductSelectedColor = ProductColors.LastOrDefault();
+                IsLoading = false;
             }
             catch (Exception ex)
             {
+                IsLoading = false;
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
@@ -183,17 +213,21 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
             var model = new ProductSizeModel();
             try
             {
+                IsLoading = true;
+                LoadingMessage = "Saving...";
                 if (!string.IsNullOrEmpty(ProductSize))
                     model.Size = ProductSize;
                 await _productSizeManager.AddProductSizeAsync(model);
                 IsAddProductSize = false;
                 ProductSize = string.Empty;
                 ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
+                ProductSelectedSize = ProductSizes.LastOrDefault();
+                IsLoading = false;
 
             }
             catch (Exception ex)
             {
-
+                IsLoading = false;
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
@@ -204,6 +238,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         {
             try
             {
+                IsLoading = true;
+                LoadingMessage = "Saving Product...";
                 if (model == null)
                     model = new ProductModel();
                 bool erroResult = VerifyIsDataFilled();
@@ -219,13 +255,35 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                     bool result = await _productManager.AddProductAsync(model);
                     if (result)
                     {
-                        SelectedProductType = null;
-                        SelectedProductSubType = null;
-                        ProductSelectedColor = null;
-                        ProductSelectedSize = null;
-                        ProductImage = null;
-                        ProductName = string.Empty;
-
+                        if (InitialQuantity > 0)
+                        {
+                            ProductInitialQuantityInvoice = new InvoiceModel();
+                            ProductInitialQuantityInvoice.InvoiceId = _invoiceManager.GenrateInvoiceNumber("IQ");
+                            ProductInitialQuantityInvoice.TransactionType = "Product Initial Quantity";
+                            ProductInitialQuantityInvoice.Description = "Product Initial Quantity Addition";
+                            var transactionResult = await _invoiceManager.SaveInoiceAsync(ProductInitialQuantityInvoice);
+                            if (transactionResult)
+                            {
+                                InitialQuantityInventory = new InventoryModel();
+                                InitialQuantityInventory.InvoiceId = ProductInitialQuantityInvoice.InvoiceId;
+                                InitialQuantityInventory.InvoiceGuid = ProductInitialQuantityInvoice.InvoiceGuid;
+                                InitialQuantityInventory.ProductColor = ProductSelectedColor;
+                                InitialQuantityInventory.ProductSize = ProductSelectedSize;
+                                InitialQuantityInventory.Product = await _productManager.GetLastAddedProduct();
+                                InitialQuantityInventory.Quantity = InitialQuantity;
+                                var inventoryResult = await _inventoryManager.AddInventoryAsync(InitialQuantityInventory);
+                                if(inventoryResult)
+                                {
+                                    SelectedProductType = null;
+                                    SelectedProductSubType = null;
+                                    ProductSelectedColor = null;
+                                    ProductSelectedSize = null;
+                                    ProductImage = null;
+                                    ProductName = string.Empty;
+                                }
+                            }
+                        }
+                        IsLoading = false;
                     }
                     else
                     {
@@ -304,6 +362,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         #endregion
 
         #region Properties
+        public InventoryModel InitialQuantityInventory { get; set; }
+        public InvoiceModel ProductInitialQuantityInvoice { get; set; }
         private bool _ProductTypeError;
         /// <summary>
         /// When Product Type is Not Selected
@@ -412,6 +472,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         }
 
 
+        private int _InitialQuantity;
+        /// <summary>
+        /// Initial Quantity for Stock
+        /// </summary>
+        public int InitialQuantity
+        {
+            get { return _InitialQuantity; }
+            set { _InitialQuantity = value; NotifyOfPropertyChange(nameof(InitialQuantity)); }
+        }
 
         private List<ProductTypeModel> _ProductTypes;
         /// <summary>

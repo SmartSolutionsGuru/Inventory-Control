@@ -16,21 +16,21 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #region Private Members
         private readonly IEventAggregator _eventAggregator;
         private readonly IWindowManager _windowManager;
-        private string DirectoryName = "Config";
+        private string DirectoryName = "Smart Solutions";
         private readonly IDialogManager _dialog;
-        private static string dbFile = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\InventoryControl.db";
+        private static string dbFile = null;
         #endregion
 
         #region Constructor
         public ShellViewModel() { }
-       
+
         public ShellViewModel(Window window)
         {
             mWindow = window;
         }
         [ImportingConstructor]
         public ShellViewModel(IEventAggregator eventAggregator
-                              ,IWindowManager windowManager
+                              , IWindowManager windowManager
                               , IDialogManager dialogManager)
         {
             _eventAggregator = eventAggregator;
@@ -41,11 +41,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
 
         #region Public Properties
         public IDialogManager Dialog => _dialog;
-        
+
+
         #endregion
 
         #region Commands
         public RelayCommand MenuCommand { get; set; }
+
         #endregion
 
         #region Methods
@@ -57,6 +59,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         protected override void OnInitialize()
         {
             base.OnInitialize();
+            dbFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName, "InventoryControl.db");
             Handle(IoC.Get<MainViewModel>());
         }
         protected override void OnActivate()
@@ -82,7 +85,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             try
             {
                 //Get the Db File
-                dbFile = Path.Combine(Environment.CurrentDirectory, DirectoryName) + "\\InventoryControl.db";
+                if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName)))
+                {
+                    Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName));
+                }
                 if (!File.Exists(dbFile))
                 {
                     //Get the Curent Directory
@@ -92,19 +98,22 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     string destinationName = string.Empty;
                     DirectoryInfo directory = null;
                     //Create Config Directory
-                    if (!Directory.Exists(Path.Combine(Environment.CurrentDirectory, DirectoryName)))
-                        directory = Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, DirectoryName));
+                    if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName)))
+                        directory = Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName));
                     //Get the destinationPath and Copy Db   
-                    destinationName = $"{Environment.CurrentDirectory}\\{DirectoryName}\\InventoryControl.db";
+                    destinationName = dbFile;//$"{Environment.SpecialFolder.LocalApplicationData}\\{DirectoryName}\\InventoryControl.db";
                     File.Copy(sourcePath, destinationName);
                     ConnectionInfo.Instance.ConnectionString = destinationName;
                     ConnectionInfo.Instance.Password = "7JByVhs7*ETu5-by";
+                    ConnectionInfo.Instance.Type = DBTypes.SQLITE;
                 }
                 else
                 {
                     ConnectionInfo.Instance.Path = dbFile;
                     ConnectionInfo.Instance.Password = "7JByVhs7*ETu5-by";
+                    ConnectionInfo.Instance.Type = DBTypes.SQLITE;
                 }
+
                 Exception ex = null;
                 retVal = true == IoC.Get<Plugins.Repositories.IRepository>()?.IsValidConnection(out ex);
 

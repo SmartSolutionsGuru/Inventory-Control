@@ -372,7 +372,7 @@
                     </Button>
 
                 </Grid>
-                <Border Grid.Column="1" BorderThickness="1" BorderBrush="{StaticResource LightBlueColorBrush}">
+                <Border Grid.Column="1" BorderThickness="1" BorderBrush="{StaticResource LightGrayColorBrush}">
                     <Grid>
                         <Grid.Background>
                             <ImageBrush ImageSource="/Assets/background.png" Opacity="0.5"  Stretch="UniformToFill" />

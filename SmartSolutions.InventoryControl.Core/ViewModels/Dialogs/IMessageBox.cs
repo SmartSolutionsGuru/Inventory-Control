@@ -12,12 +12,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         bool AlignCenter { get; set; }
         MessageBoxOptions Options { get; set; }
         MessageBoxOptions Selection { get; }
-
         void Ok();
         void Cancel();
         void Yes();
         void No();
-
         bool WasSelected(MessageBoxOptions option);
     }
 }

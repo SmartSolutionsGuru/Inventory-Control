@@ -20,11 +20,10 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Border Height="51" Width="51" CornerRadius="3" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1">
-
                     <Image Source="{Binding Image,Mode=OneWay,Converter={StaticResource BytesToBitmapImageConverter}}" 
-                       Height="50" 
-                       Width="50" 
-                       Stretch="UniformToFill"/>
+                           Height="50" 
+                           Width="50" 
+                           Stretch="UniformToFill"/>
                 </Border>
                 <TextBlock Grid.Column="1" 
                            Text="{Binding Name,Mode=OneWay}"
@@ -43,7 +42,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Text="{Binding Path=Name}"
+                <TextBlock Text="{Binding Path=Name,Mode=OneWay}"
                            FontSize="{StaticResource MediumSize}"
                            FontFamily="{StaticResource MediumFont}"
                            Foreground="{StaticResource GrayColorBrush}"/>
@@ -76,12 +75,12 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Bill #" VerticalAlignment="Center" Margin="20 0 0 0" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource MediumSize}" FontFamily='{StaticResource MediumFont}'/>
-                        <Border BorderBrush="{StaticResource LightGrayColorBrush}" BorderThickness="0 0 0 1" Width="100" Height="30">
-                            <TextBlock Text="{Binding PurchaseTransaction.TransactionNo,Mode=OneWay,FallbackValue='0001',TargetNullValue='0001'}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10 0 0 0" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}"/>
+                        <Border BorderBrush="{StaticResource LightGrayColorBrush}" BorderThickness="0 0 0 1" Width="120" Height="30">
+                            <TextBlock Text="{Binding SaleInvoice.InvoiceId,Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10 0 0 0" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}"/>
                         </Border>
                     </StackPanel>
 
-                    <TextBlock  Grid.Row="0" Grid.Column="1" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource HeadingSize}"  Foreground="{StaticResource BlueColorBrush}" Margin="10 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Center"><Run Text="{Binding SelectedSaleType,Mode=OneWay}"/><Run Text=" Invoice"></Run></TextBlock>
+                    <TextBlock  Grid.Row="0" Grid.Column="1" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource HeadingSize}"  Foreground="{StaticResource BlueColorBrush}" Margin="10 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Center"><Run Text="{Binding SelectedInvoiceType,Mode=OneWay}"/><Run Text=" Invoice"></Run></TextBlock>
                 </Grid>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
@@ -98,7 +97,7 @@
                                 <Style TargetType="TextBlock" >
                                     <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding PurchaseTypeError,Mode=OneWay}" Value="True">
+                                        <DataTrigger Binding="{Binding SaleTypeError,Mode=OneWay}" Value="True">
                                             <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -111,8 +110,8 @@
                                   Opacity="0.7"
                                   ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Sale Type"
                                   BorderBrush="{StaticResource BlueColorBrush}"
-                                  ItemsSource="{Binding SaleTransaction.SalesType,Mode=TwoWay}"
-                                  SelectedItem="{Binding SelectedSaleType,Mode=TwoWay}"
+                                  ItemsSource="{Binding InvoiceTypes,Mode=OneWay}"
+                                  SelectedItem="{Binding SelectedInvoiceType,Mode=TwoWay}"
                                   Foreground="{StaticResource GrayColorBrush}"
                                   FontSize="{StaticResource NormalSize}"
                                   FontFamily="{StaticResource MediumFont}"
@@ -128,7 +127,7 @@
 
                     </Border>
                     <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Text="Please Select Vender" 
+                        <TextBlock Text="Please Select Customer" 
                                Margin="0 0 0 5" 
                                FontFamily="{StaticResource MediumFont}"
                                FontSize="{StaticResource MediumSize}">
@@ -136,7 +135,7 @@
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding VenderError,Mode=OneWay}" Value="True">
+                                        <DataTrigger Binding="{Binding CustomerError,Mode=OneWay}" Value="True">
                                             <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -144,19 +143,19 @@
                             </TextBlock.Style>
                         </TextBlock>
                         <autoComplete:AutoCompleteTextBox Grid.Column="1" 
-                                                      Height="50"
-                                                      Width="250"
-                                                      Padding="8 0 0 0"
-                                                      Opacity="0.7"
-                                                      Watermark="Enter Vender Name"
-                                                      DisplayMember="Name"
-                                                      FontFamily="{StaticResource MediumFont}"
-                                                      Provider="{Binding PartnerSuggetion,Mode=TwoWay}"
-                                                      SelectedItem="{Binding SelectedPartner,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                                      ItemTemplate="{StaticResource NameTemplate}"
-                                                      FontSize="{StaticResource MediumSize}"
-                                                      Foreground="{StaticResource GrayColorBrush}"
-                                                      Style="{StaticResource AutoCompleteTextBoxStyle}"/>
+                                                          Height="50"
+                                                          Width="250"
+                                                          Padding="8 0 0 0"
+                                                          Opacity="0.7"
+                                                          Watermark="Enter Vender Name"
+                                                          DisplayMember="Name"
+                                                          FontFamily="{StaticResource MediumFont}"
+                                                          Provider="{Binding PartnerSuggetion,Mode=TwoWay}"
+                                                          SelectedItem="{Binding SelectedPartner,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                          ItemTemplate="{StaticResource NameTemplate}"
+                                                          FontSize="{StaticResource MediumSize}"
+                                                          Foreground="{StaticResource GrayColorBrush}"
+                                                          Style="{StaticResource AutoCompleteTextBoxStyle}"/>
 
 
                     </StackPanel>
@@ -181,7 +180,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
-
+                                <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="0.5*"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="Item #" Margin="5 0 0 0" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Center"/>
@@ -190,14 +189,15 @@
                             <TextBlock Grid.Column="3" Text="Product Size" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
                             <TextBlock Grid.Column="4" Text="Quantity" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
                             <TextBlock Grid.Column="5" Text="Price" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
-                            <TextBlock Grid.Column="6" Text="Total" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
+                            <TextBlock Grid.Column="6" Text="Available Stock" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
+                            <TextBlock Grid.Column="7" Text="Total" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
 
 
                             <Border Grid.Column="0" Grid.Row="1" Height="25" Margin="0 7 0 0" Width="25" VerticalAlignment="Top" CornerRadius="20" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="2" Background="{StaticResource BlueColorBrush}" >
                                 <TextBlock Margin="0 0 0 0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="1" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource PureWhiteColorBrush}"/>
                             </Border>
                             <autoComplete:AutoCompleteTextBox Height="40"
-                                                               Width="150"
+                                                               Width="130"
                                                               Grid.Row="1"
                                                               Grid.Column="1"
                                                               BorderBrush="{StaticResource BlueColorBrush}"
@@ -217,7 +217,7 @@
                             <ComboBox Height="40"
                                       Grid.Row="1"
                                       Grid.Column="2"
-                                      Width="150"
+                                      Width="130"
                                       Style="{StaticResource BaseComboBox}"
                                       BorderBrush="{StaticResource BlueColorBrush}"
                                       BorderThickness="1.7"
@@ -230,12 +230,12 @@
                                       FontFamily="{StaticResource MediumFont}"
                                       FontSize="{StaticResource NormalSize}"
                                       Foreground="{StaticResource GrayColorBrush}"
-                                      ItemsSource="{Binding SaleTransaction.ProductColors,Mode=TwoWay}"
+                                      ItemsSource="{Binding ProductColors,Mode=TwoWay}"
                                       SelectedItem="{Binding SelectedProductColor,Mode=TwoWay}"/>
                             <ComboBox Height="40"
                                       Grid.Row="1"
                                       Grid.Column="3"
-                                      Width="150"
+                                      Width="130"
                                       VerticalAlignment="Top"
                                       Style="{StaticResource BaseComboBox}"
                                       BorderBrush="{StaticResource BlueColorBrush}"
@@ -250,10 +250,11 @@
                                       Foreground="{StaticResource GrayColorBrush}"
                                       ItemsSource="{Binding ProductSizes,Mode=TwoWay}"
                                       SelectedItem="{Binding SelectedProductSize,Mode=TwoWay}"/>
-                            <TextBox Grid.Row="1" Grid.Column="4" Opacity="0.7" Height="40" Width="150" Foreground="{StaticResource GrayColorBrush}" VerticalAlignment="Top" Text="{Binding Quantity,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Quantity" />
-                            <TextBox Grid.Row="1" Grid.Column="5" Opacity="0.7" Height="40" Width="150"  VerticalAlignment="Top" Text="{Binding Price,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Price" />
-                            <TextBox Grid.Row="1" Grid.Column="6" Opacity="0.7" IsReadOnly="True" Height="40" Width="150" VerticalAlignment="Top" Text="++++YUJHKL{Binding TotalPrice,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Total" />
-                            <StackPanel Grid.Row="1" Grid.Column="7" Orientation="Horizontal" VerticalAlignment="Top" Margin="0 5 0 0">
+                            <TextBox Grid.Row="1" Grid.Column="4" Opacity="0.7" Height="40" Width="130" Foreground="{StaticResource GrayColorBrush}" VerticalAlignment="Top" Text="{Binding Quantity,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Quantity" />
+                            <TextBox Grid.Row="1" Grid.Column="5" Opacity="0.7" Height="40" Width="130"  VerticalAlignment="Top" Text="{Binding Price,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Price" />
+                            <TextBox Grid.Row="1" Grid.Column="6" Opacity="0.7" IsReadOnly="True" Height="40" Width="130" VerticalAlignment="Top" Text="{Binding AvailableStock,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Total" />
+                            <TextBox Grid.Row="1" Grid.Column="7" Opacity="0.7" IsReadOnly="True" Height="40" Width="130" VerticalAlignment="Top" Text="{Binding TotalPrice,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Total" />
+                            <StackPanel Grid.Row="1" Grid.Column="8" Orientation="Horizontal" VerticalAlignment="Top" Margin="0 5 0 0">
                                 <Button Grid.Row="1" Grid.Column="7" cal:Message.Attach="AddProduct($dataContext)" Margin="0 0 10 0" Height="30" Width="30"  Style="{StaticResource ContentButton}" Background="{StaticResource GreenColorBrush}">
                                     <Path Height="20" Width="20" Fill="{StaticResource PureWhiteColorBrush}"  Stretch="UniformToFill" Data="{StaticResource Shape_Plus1}"></Path>
                                 </Button>
@@ -287,7 +288,7 @@
                                            HorizontalAlignment="Left"
                                            VerticalAlignment="Top"
                                            Margin="0 0 0 0"/>
-                                <Button x:Name="BrowsePicture" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.5" Opacity="0.7" Height="80" Width="80" >
+                                <Button x:Name="BrowsePicture" BorderBrush="{StaticResource BlueColorBrush}" Click="BrowsePicture_Click" BorderThickness="1.5" Opacity="0.7" Height="80" Width="80" >
                                     <Button.Style>
                                         <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
                                             <Setter Property="Content">
@@ -297,7 +298,11 @@
                                             </Setter>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding PaymentImage,Converter={StaticResource BytesToBitmapImageConverter}}" Value="{x:Null}">
-                                                    <Setter Property="Content" Value="Browse"/>
+                                                    <Setter Property="Content">
+                                                        <Setter.Value>
+                                                            <TextBlock Text="Browse" Foreground="{StaticResource GrayColorBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}"/>
+                                                        </Setter.Value>
+                                                    </Setter>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -315,7 +320,7 @@
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding VenderError,Mode=OneWay}" Value="True">
+                                                <DataTrigger Binding="{Binding CustomerError,Mode=OneWay}" Value="True">
                                                     <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -327,8 +332,8 @@
                                           Width="150"
                                           Margin="0 0 0 0"
                                           Padding="5 0 0 0"
-                                          ItemsSource="{Binding  PurchaseTransaction.PaymentType,Mode=TwoWay}"
-                                          SelectedItem="{Binding PurchaseTransaction.SelectedPaymentType,Mode=TwoWay}"
+                                          ItemsSource="{Binding  SaleInvoice.PaymentType,Mode=TwoWay}"
+                                          SelectedItem="{Binding SaleInvoice.SelectedPaymentType,Mode=TwoWay}"
                                           Style="{StaticResource BaseComboBox}"
                                           ControlExtensions:WaterMarkTextExtension.WatermarkText="Payment Type"
                                           Foreground="{StaticResource GrayColorBrush}"
@@ -339,6 +344,10 @@
                                           Opacity="0.7"/>
                             </StackPanel>
                             <StackPanel Grid.Column="1">
+                                <TextBlock Text="Discount %" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" HorizontalAlignment="Left" Margin="20 0 0 0" FontSize="{StaticResource MediumSize}"/>
+                                <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150" IsReadOnly="True" Margin="0 5 0 0"  VerticalAlignment="Top" Text="{Binding DiscountPrice,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Discount Price" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
                                 <TextBlock Text="Discount Amount" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" HorizontalAlignment="Left" Margin="20 0 0 0" FontSize="{StaticResource MediumSize}"/>
                                 <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150" IsReadOnly="True" Margin="0 5 0 0"  VerticalAlignment="Top" Text="{Binding DiscountPrice,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Discount Price" />
                             </StackPanel>
@@ -347,7 +356,7 @@
                                 <TextBlock Text="Payment" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" HorizontalAlignment="Left" Margin="20 0 0 0" FontSize="{StaticResource MediumSize}"/>
                                 <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150" Margin="0 5 0 0"  VerticalAlignment="Top" Text="{Binding Price,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Price" />
                             </StackPanel>
-                            <StackPanel Grid.Column="2">
+                            <StackPanel Grid.Column="3">
                                 <TextBlock Text="Invoice Total" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" HorizontalAlignment="Left" Margin="20 0 0 0" FontSize="{StaticResource MediumSize}"/>
                                 <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150" Margin="0 5 0 0"  VerticalAlignment="Top" IsReadOnly="True" Text="{Binding GrandTotal,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Grand Total" />
                             </StackPanel>
@@ -373,7 +382,7 @@
                                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                         ScrollViewer.VerticalScrollBarVisibility="Auto"
                                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
-                                        Text="{Binding PurchaseTransaction.Description,Mode=TwoWay}"
+                                        Text="{Binding SaleInvoice.Description,Mode=TwoWay}"
                                         BorderThickness="1.7"
                                         BorderBrush="{StaticResource BlueColorBrush}"
                                         TextWrapping="Wrap" 
@@ -422,7 +431,7 @@
                     </Grid>
                 </Grid>
             </Grid>
-            <Border Grid.ColumnSpan="2" Grid.RowSpan="2" Background="{StaticResource GrayColorBrush}" CornerRadius="5" Opacity="0.5"  >
+            <Border  Background="{StaticResource GrayColorBrush}" CornerRadius="5" Opacity="0.5"  >
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                     <maha:ProgressRing Height="100" Width="100" IsActive="True" Foreground="{StaticResource BlueColorBrush}"/>
                     <TextBlock Text="{Binding LoadingMessage,Mode=OneWay}" Foreground="{StaticResource PureWhiteColorBrush}" FontSize="40" FontFamily="{StaticResource MediumFont}"/>

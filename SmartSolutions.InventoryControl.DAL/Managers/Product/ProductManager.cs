@@ -101,6 +101,41 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
             }
             return Products;
         }
+
+        public async Task<ProductModel> GetLastAddedProduct()
+        {
+            var product = new ProductModel();
+            try
+            {
+                string query = @"SELECT * FROM  Product Order by 1 DESC LIMIT 1";
+                var values = await Repository.QueryAsync(query);
+                var value = values.FirstOrDefault();
+                product.ProductType = new ProductTypeModel();
+                product.ProductSubType = new ProductSubTypeModel();
+                product.ProductColor = new ProductColorModel();
+                product.ProductSize = new ProductSizeModel();
+                product.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                product.Name = value?.GetValueFromDictonary("Name")?.ToString();
+                product.ProductType.Id = value?.GetValueFromDictonary("ProductTypeId")?.ToString()?.ToInt();
+                product.ProductSubType.Id = value?.GetValueFromDictonary("ProductSubTypeId")?.ToString()?.ToInt();
+                product.ProductColor.Id = value?.GetValueFromDictonary("ProductColorId")?.ToString()?.ToInt();
+                product.ProductSize.Id = value?.GetValueFromDictonary("ProductSizeId")?.ToString()?.ToInt();
+                product.Image = value?.GetValueFromDictonary("Image") as byte[];
+                product.IsActive = value?.GetValueFromDictonary("IsActive")?.ToString()?.ToNullableBoolean();
+                product.IsDeleted = value?.GetValueFromDictonary("IsDeleted")?.ToString()?.ToNullableBoolean();
+                product.CreatedAt = value?.GetValueFromDictonary("CreatedAt")?.ToString()?.ToNullableDateTime();
+                product.CreatedBy = value?.GetValueFromDictonary("CreatedBy")?.ToString();
+                product.UpdatedAt = value?.GetValueFromDictonary("UpdatedAt")?.ToString()?.ToNullableDateTime();
+                product.UpdatedBy = value?.GetValueFromDictonary("UpdatedBy")?.ToString();
+
+            }
+            catch (Exception ex)
+            {
+                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return product;
+        }
+
         public async Task<ProductModel> GetProductByIdAsync(int? Id)
         {
             var product = new ProductModel();

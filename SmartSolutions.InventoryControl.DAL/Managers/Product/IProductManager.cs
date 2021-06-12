@@ -11,5 +11,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
         Task<bool> RemoveProductAsync(int? Id);
         Task<IEnumerable<ProductModel>> GetAllProductsAsync();
         Task<ProductModel> GetProductByIdAsync(int? Id);
+        Task<ProductModel> GetLastAddedProduct();
     }
 }

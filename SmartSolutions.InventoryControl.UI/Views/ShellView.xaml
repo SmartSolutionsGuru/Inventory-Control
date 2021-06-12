@@ -9,6 +9,7 @@
         xmlns:Ap="clr-namespace:SmartSolutions.InventoryControl.UI.AttachedProperties"
         mc:Ignorable="d"
         Title="InventoryControl"
+        MaxHeight="740"
         MinWidth="{Binding WindowMinimumWidth,Mode=OneWay}"
         MinHeight="{Binding WindowMinimumHeight,Mode=OneWay}"
         Activated="OnActivated"
@@ -291,7 +292,8 @@
         <!--#region Main Grid-->
         <Grid Background="{StaticResource PureWhiteColorBrush}">
             <ContentControl x:Name="ActiveItem"/>
-
+            
+            
             <!--Dialog For Displaying Content On Main Window-->
             <ContentControl x:Name="Dialog"
                             VerticalContentAlignment="Stretch"
@@ -306,7 +308,7 @@
                         Ap:AnimateFadeInProperty.Value="{Binding DimmableOverlayVisible}"/>
             </Border>
             <!--#endregion-->
-           
+            
         </Grid>
     </Grid>
 </Window>

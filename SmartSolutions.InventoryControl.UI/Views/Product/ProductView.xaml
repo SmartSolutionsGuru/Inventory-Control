@@ -3,25 +3,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ControlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
              xmlns:cal="http://www.caliburnproject.org"
+             xmlns:maha="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views.Product"
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1366">
-    <Border Background="Transparent">
+    <Border Background="{StaticResource PureWhiteColorBrush}">
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="70"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="100"/>
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <RadioButton Grid.Column="0" 
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="100"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <RadioButton Grid.Column="0" 
                              BorderBrush="{StaticResource GreenColorBrush}" 
                              BorderThickness="1" 
                              ControlExtensions:MiscControlExtensions.CornerRadius="5" 
@@ -32,17 +34,17 @@
                              GroupName="ProductGroup"
                              IsChecked="{Binding IsAddProductPressed,Mode=TwoWay}"
                              Background="{StaticResource GreenColorBrush}" >
-                    <RadioButton.Style>
-                        <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
-                            <Style.Triggers>
-                                <Trigger Property="IsChecked" Value="False">
-                                    <Setter Property="Foreground" Value="{StaticResource GreenColorBrush}"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </RadioButton.Style>
-                </RadioButton>
-                <RadioButton Grid.Column="1" 
+                        <RadioButton.Style>
+                            <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Foreground" Value="{StaticResource GreenColorBrush}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RadioButton.Style>
+                    </RadioButton>
+                    <RadioButton Grid.Column="1" 
                              BorderBrush="{StaticResource OrangeColorBrush}" 
                              BorderThickness="1" 
                              ControlExtensions:MiscControlExtensions.CornerRadius="5" 
@@ -55,17 +57,17 @@
                              ControlExtensions:MiscControlExtensions.UncheckedForeground="{StaticResource RedColorBrush}"
                             
                              Background="{StaticResource OrangeColorBrush}" >
-                    <RadioButton.Style>
-                        <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
-                            <Style.Triggers>
-                                <Trigger Property="IsChecked" Value="False">
-                                    <Setter Property="Foreground" Value="{StaticResource OrangeColorBrush}"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </RadioButton.Style>
-                </RadioButton>
-                <RadioButton Grid.Column="2" 
+                        <RadioButton.Style>
+                            <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Foreground" Value="{StaticResource OrangeColorBrush}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RadioButton.Style>
+                    </RadioButton>
+                    <RadioButton Grid.Column="2" 
                              Margin="30,10"
                              Content="Remove Product"
                              HorizontalContentAlignment="Center"
@@ -77,54 +79,54 @@
                              IsChecked="{Binding IsRemoveProduct,Mode=TwoWay}"
                              BorderBrush="{StaticResource RedColorBrush}"
                              Background="{StaticResource RedColorBrush}">
-                    <RadioButton.Style>
-                        <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
-                            <Style.Triggers>
-                                <Trigger Property="IsChecked" Value="False">
-                                    <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </RadioButton.Style>
-                </RadioButton>
-            </Grid>
-            <Grid Grid.Row="1" Visibility="{Binding IsAddProductPressed,Mode=OneWay,Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Text="Select Product Type" 
+                        <RadioButton.Style>
+                            <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RadioButton.Style>
+                    </RadioButton>
+                </Grid>
+                <Grid Grid.Row="1" Visibility="{Binding IsAddProductPressed,Mode=OneWay,Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1.1*"/>
+                        <RowDefinition Height="1.1*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Select Product Type" 
                                    Margin="30 0 0 3" 
                                    FontSize="{StaticResource MediumSize}"  
                                    FontFamily="{StaticResource RegularFont}" 
                                    HorizontalAlignment="Left" 
                                    VerticalAlignment="Bottom">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ProductTypeError,Mode=OneWay}" Value="True">
-                                            <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal">
-                            <ComboBox  Height="45"
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ProductTypeError,Mode=OneWay}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                <ComboBox  Height="45"
                                        Grid.Row="1"
                                        BorderThickness="1.5"
                                        ItemsSource="{Binding ProductTypes,Mode=TwoWay}"
@@ -146,28 +148,28 @@
                                        ControlExtensions:MiscControlExtensions.CornerRadius="5"
                                        ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Collapsed"
                                        ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Product Type"/>
-                            <Button x:Name="OpenAddProductType"
+                                <Button x:Name="OpenAddProductType"
                                     Style="{StaticResource ContentButton}" 
                                     Background="{StaticResource GreenColorBrush}" 
                                     Height="30" 
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
-                                    Width="30" Margin="0,11,0,10">
-                                <Path Height="12" Width="12" Fill="{StaticResource PureWhiteColorBrush}" Stretch="UniformToFill" Data="{StaticResource Shape_Plus1}"/>
-                            </Button>
-                            <Button x:Name="RemoveProductType"
+                                    Width="30" Margin="0,7,0,10">
+                                    <Path Height="12" Width="12" Fill="{StaticResource PureWhiteColorBrush}" Stretch="UniformToFill" Data="{StaticResource Shape_Plus1}"/>
+                                </Button>
+                                <Button x:Name="RemoveProductType"
                                     Style="{StaticResource ContentButton}"  
-                                    Margin="5 0 5 0"
+                                    Margin="5 0 5 1"
                                     Background="{StaticResource RedColorBrush}" 
                                     Height="30" 
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
                                     Width="30">
-                                <Path Height="20" Width="10" Fill="{StaticResource PureWhiteColorBrush}" Stretch="Uniform" Data="{StaticResource Shape_Minus}"/>
-                            </Button>
-                        </StackPanel>
-                        <StackPanel Grid.Row="2" Orientation="Horizontal">
-                            <TextBox Height="45" 
+                                    <Path Height="20" Width="10" Fill="{StaticResource PureWhiteColorBrush}" Stretch="Uniform" Data="{StaticResource Shape_Minus}"/>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                                <TextBox Height="45" 
                                      Width="200"
                                      BorderThickness="1.5"
                                      Style='{StaticResource TextBoxVisibilityPathIconStyle}'
@@ -176,64 +178,64 @@
                                      ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Product Type"
                                      HorizontalAlignment="Left" 
                                      Margin="30 0 0 0"/>
-                            <Button x:Name="AddProductType"
+                                <Button x:Name="AddProductType"
                                     cal:Message.Attach="AddProductType($dataContext)"
                                     Height="30" 
                                     Background="Transparent"
                                     Margin="10 0 0 0"
                                     Width="30" 
                                     Style="{StaticResource ContentButton}">
-                                <Path Height="20" Width="20" Stretch="UniformToFill" Fill="{StaticResource GreenColorBrush}" Data="{StaticResource Shape_Tick2}"/>
-                            </Button>
-                            <Button x:Name="CloseAddProductType"
+                                    <Path Height="20" Width="20" Stretch="UniformToFill" Fill="{StaticResource GreenColorBrush}" Data="{StaticResource Shape_Tick2}"/>
+                                </Button>
+                                <Button x:Name="CloseAddProductType"
                                     Height="30" 
                                     Background="Transparent"
                                     Margin="5 0 0 0"
                                     Width="30" 
                                     Style="{StaticResource ContentButton }">
-                                <Path Height="18" 
+                                    <Path Height="18" 
                                       Width="18" 
                                       Stretch="UniformToFill" 
                                       Fill="{StaticResource RedColorBrush}" Data="{StaticResource Shape_Close1}"/>
-                            </Button>
-                            <StackPanel.Style>
-                                <Style TargetType="StackPanel">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsAddProduct,Mode=OneWay}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </StackPanel.Style>
-                        </StackPanel>
-                    </Grid>
-                    <Grid Grid.Column="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Text="Select Product Sub Type" 
+                                </Button>
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsAddProduct,Mode=OneWay}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+                            </StackPanel>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="1.5*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Select Product Sub Type" 
                                    Margin="30 0 0 3" 
                                    FontSize="{StaticResource MediumSize}"  
                                    FontFamily="{StaticResource RegularFont}" 
                                    HorizontalAlignment="Left" 
                                    VerticalAlignment="Bottom">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ProductSubTyprError,Mode=OneWay}" Value="True">
-                                            <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal">
-                            <ComboBox  Height="45"
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ProductSubTyprError,Mode=OneWay}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 0 0 0">
+                                <ComboBox  Height="45"
                                        Grid.Row="1"
                                        BorderThickness="1.5"
                                        ItemsSource="{Binding ProductSubTypes,Mode=TwoWay}"
@@ -255,16 +257,16 @@
                                        ControlExtensions:MiscControlExtensions.CornerRadius="5"
                                        ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Collapsed"
                                        ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Product Sub Type"/>
-                            <Button x:Name="OpenAddProductSubType"
+                                <Button x:Name="OpenAddProductSubType"
                                     Style="{StaticResource ContentButton}" 
                                     Background="{StaticResource GreenColorBrush}" 
                                     Height="30" 
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
                                     Width="30">
-                                <Path Height="12" Width="12" Fill="{StaticResource PureWhiteColorBrush}" Stretch="UniformToFill" Data="{StaticResource Shape_Plus1}"/>
-                            </Button>
-                            <Button x:Name="RemoveProductSubType"
+                                    <Path Height="12" Width="12" Fill="{StaticResource PureWhiteColorBrush}" Stretch="UniformToFill" Data="{StaticResource Shape_Plus1}"/>
+                                </Button>
+                                <Button x:Name="RemoveProductSubType"
                                     Style="{StaticResource ContentButton}"  
                                     Margin="5 0 5 0"
                                     Background="{StaticResource RedColorBrush}" 
@@ -272,11 +274,11 @@
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
                                     Width="30">
-                                <Path Height="20" Width="10" Fill="{StaticResource PureWhiteColorBrush}" Stretch="Uniform" Data="{StaticResource Shape_Minus}"/>
-                            </Button>
-                        </StackPanel>
-                        <StackPanel Grid.Row="2" Orientation="Horizontal">
-                            <TextBox Height="45" 
+                                    <Path Height="20" Width="10" Fill="{StaticResource PureWhiteColorBrush}" Stretch="Uniform" Data="{StaticResource Shape_Minus}"/>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 0 0 0">
+                                <TextBox Height="45" 
                                      Width="200"
                                      BorderThickness="1.5"
                                      Style='{StaticResource TextBoxVisibilityPathIconStyle}'
@@ -285,37 +287,37 @@
                                      ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Product Type"
                                      HorizontalAlignment="Left" 
                                      Margin="30 0 0 0"/>
-                            <Button x:Name="AddProductSubType"
+                                <Button x:Name="AddProductSubType"
                                     Height="30" 
                                     Background="Transparent"
                                     Margin="5 0 0 0"
                                     Width="30" 
                                     Style="{StaticResource ContentButton }">
-                                <Path Height="20" Width="20" Stretch="UniformToFill" Fill="{StaticResource GreenColorBrush}" Data="{StaticResource Shape_Tick2}"/>
-                            </Button>
-                            <Button x:Name="CloseAddProductSubType"
+                                    <Path Height="20" Width="20" Stretch="UniformToFill" Fill="{StaticResource GreenColorBrush}" Data="{StaticResource Shape_Tick2}"/>
+                                </Button>
+                                <Button x:Name="CloseAddProductSubType"
                                     Height="30" 
                                     Background="Transparent"
                                     Margin="5 0 0 0"
                                     Width="30" 
                                     Style="{StaticResource ContentButton }">
-                                <Path Height="18" 
+                                    <Path Height="18" 
                                       Width="18" 
                                       Stretch="UniformToFill" 
                                       Fill="{StaticResource RedColorBrush}" Data="{StaticResource Shape_Close1}"/>
-                            </Button>
-                            <StackPanel.Style>
-                                <Style TargetType="StackPanel">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsAddSubProduct,Mode=OneWay}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </StackPanel.Style>
-                        </StackPanel>
-                        <TextBlock Grid.Row="3" VerticalAlignment="Center"><Run Text="*" FontSize="{StaticResource MediumSize}" Foreground="{StaticResource RedColorBrush}"/><Run Text="{Binding ProductSubTypeFooter,Mode=OneWay}" FontSize="{StaticResource SmallSize}">
+                                </Button>
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsAddSubProduct,Mode=OneWay}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+                            </StackPanel>
+                            <TextBlock Grid.Row="3" Margin="0 0 0 0" VerticalAlignment="Center"><Run Text="*" FontSize="{StaticResource MediumSize}" Foreground="{StaticResource RedColorBrush}"/><Run Text="{Binding ProductSubTypeFooter,Mode=OneWay}" FontSize="{StaticResource SmallSize}">
                             <Run.Style>
                                 <Style TargetType="Run">
                                     <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
@@ -327,76 +329,76 @@
                                 </Style>
                             </Run.Style>
                         </Run>
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsAddSubProduct,Mode=OneWay}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </Grid>
-                    <StackPanel Grid.Column="2"  HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 50 30">
-                        <TextBlock Text="Please Enter the Product Name" 
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsAddSubProduct,Mode=OneWay}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                        <StackPanel Grid.Column="2"  HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 50 30">
+                            <TextBlock Text="Please Enter the Product Name" 
                                    FontSize="{StaticResource MediumSize}" 
                                    FontFamily="{StaticResource MediumFont}" 
                                    Margin="0 0 0 5">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ProductNameError,Mode=OneWay}" Value="True">
-                                            <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <TextBox Height="45"
-                              Grid.Column="2"
-                             Width="250"
-                             Text="{Binding ProductName,Mode=TwoWay}"
-                             Margin="0 5 0 0"
-                             ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Product Name"
-                             Foreground="{StaticResource GrayColorBrush}"
-                             BorderBrush="{StaticResource BlueColorBrush}"
-                             Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
-                    </StackPanel>
-                </Grid>
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Text="Select Colors" 
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ProductNameError,Mode=OneWay}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <TextBox Height="45"
+                                     Grid.Column="2"
+                                     Width="250"
+                                     Text="{Binding ProductName,Mode=TwoWay}"
+                                     Margin="0 5 0 0"
+                                     ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Product Name"
+                                     Foreground="{StaticResource GrayColorBrush}"
+                                     BorderBrush="{StaticResource BlueColorBrush}"
+                                     Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Select Colors" 
                                    Margin="30 0 0 3" 
                                    FontSize="{StaticResource MediumSize}"  
                                    FontFamily="{StaticResource RegularFont}" 
                                    HorizontalAlignment="Left" 
                                    VerticalAlignment="Bottom">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ProductColorError,Mode=OneWay}" Value="True">
-                                            <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20 0 0 0">
-                            <ComboBox  Height="45"
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ProductColorError,Mode=OneWay}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20 0 0 0">
+                                <ComboBox  Height="45"
                                        Grid.Row="1"
                                        BorderThickness="1.5"
                                        DisplayMemberPath="Color"
@@ -418,16 +420,16 @@
                                        ControlExtensions:MiscControlExtensions.CornerRadius="5"
                                        ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Collapsed"
                                        ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Product Colors"/>
-                            <Button x:Name="OpenAddColors"
+                                <Button x:Name="OpenAddColors"
                                     Style="{StaticResource ContentButton}" 
                                     Background="{StaticResource GreenColorBrush}" 
                                     Height="30" 
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
                                     Width="30">
-                                <Path Height="12" Width="12" Fill="{StaticResource PureWhiteColorBrush}" Stretch="UniformToFill" Data="{StaticResource Shape_Plus1}"/>
-                            </Button>
-                            <Button x:Name="RemoveProductColors"
+                                    <Path Height="12" Width="12" Fill="{StaticResource PureWhiteColorBrush}" Stretch="UniformToFill" Data="{StaticResource Shape_Plus1}"/>
+                                </Button>
+                                <Button x:Name="RemoveProductColors"
                                     Style="{StaticResource ContentButton}"  
                                     Margin="5 0 5 0"
                                     Background="{StaticResource RedColorBrush}" 
@@ -435,11 +437,11 @@
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
                                     Width="30">
-                                <Path Height="20" Width="10" Fill="{StaticResource PureWhiteColorBrush}" Stretch="Uniform" Data="{StaticResource Shape_Minus}"/>
-                            </Button>
-                        </StackPanel>
-                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20 0 0 0">
-                            <TextBox Height="45" 
+                                    <Path Height="20" Width="10" Fill="{StaticResource PureWhiteColorBrush}" Stretch="Uniform" Data="{StaticResource Shape_Minus}"/>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20 0 0 0">
+                                <TextBox Height="45" 
                                      Width="200"
                                      BorderThickness="1.5"
                                      Style='{StaticResource TextBoxVisibilityPathIconStyle}'
@@ -448,62 +450,62 @@
                                      ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Product Color"
                                      HorizontalAlignment="Left" 
                                      Margin="10 0 0 0"/>
-                            <Button x:Name="AddProductColors"
+                                <Button x:Name="AddProductColors"
                                     Height="30" 
                                     Background="Transparent"
                                     Margin="5 0 0 0"
                                     Width="30" 
                                     Style="{StaticResource ContentButton }">
-                                <Path Height="20" Width="20" Stretch="UniformToFill" Fill="{StaticResource GreenColorBrush}" Data="{StaticResource Shape_Tick2}"/>
-                            </Button>
-                            <Button x:Name="CloseAddProductTypeColors"
+                                    <Path Height="20" Width="20" Stretch="UniformToFill" Fill="{StaticResource GreenColorBrush}" Data="{StaticResource Shape_Tick2}"/>
+                                </Button>
+                                <Button x:Name="CloseAddProductTypeColors"
                                     Height="30" 
                                     Background="Transparent"
                                     Margin="5 0 0 0"
                                     Width="30" 
                                     Style="{StaticResource ContentButton }">
-                                <Path Height="18" 
+                                    <Path Height="18" 
                                       Width="18" 
                                       Stretch="UniformToFill" 
                                       Fill="{StaticResource RedColorBrush}" Data="{StaticResource Shape_Close1}"/>
-                            </Button>
-                            <StackPanel.Style>
-                                <Style TargetType="StackPanel">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsAddProductColor,Mode=OneWay}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </StackPanel.Style>
-                        </StackPanel>
-                    </Grid>
-                    <Grid Grid.Column="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Text="Select Size" 
+                                </Button>
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsAddProductColor,Mode=OneWay}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+                            </StackPanel>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Select Size" 
                                    Margin="30 0 0 3" 
                                    FontSize="{StaticResource MediumSize}"  
                                    FontFamily="{StaticResource RegularFont}" 
                                    HorizontalAlignment="Left" 
                                    VerticalAlignment="Bottom">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ProductSizeError,Mode=OneWay}" Value="True">
-                                            <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20 0 0 0">
-                            <ComboBox  Height="45"
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ProductSizeError,Mode=OneWay}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="20 0 0 0">
+                                <ComboBox  Height="45"
                                        Grid.Row="1"
                                        BorderThickness="1.5"
                                         DisplayMemberPath="Size"
@@ -525,16 +527,16 @@
                                        ControlExtensions:MiscControlExtensions.CornerRadius="5"
                                        ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Collapsed"
                                        ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Product Size"/>
-                            <Button x:Name="OpenAddProductSize"
+                                <Button x:Name="OpenAddProductSize"
                                     Style="{StaticResource ContentButton}" 
                                     Background="{StaticResource GreenColorBrush}" 
                                     Height="30" 
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
                                     Width="30">
-                                <Path Height="12" Width="12" Fill="{StaticResource PureWhiteColorBrush}" Stretch="UniformToFill" Data="{StaticResource Shape_Plus1}"/>
-                            </Button>
-                            <Button x:Name="RemoveProductSize"
+                                    <Path Height="12" Width="12" Fill="{StaticResource PureWhiteColorBrush}" Stretch="UniformToFill" Data="{StaticResource Shape_Plus1}"/>
+                                </Button>
+                                <Button x:Name="RemoveProductSize"
                                     Style="{StaticResource ContentButton}"  
                                     Margin="5 0 5 0"
                                     Background="{StaticResource RedColorBrush}" 
@@ -542,11 +544,11 @@
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
                                     Width="30">
-                                <Path Height="20" Width="10" Fill="{StaticResource PureWhiteColorBrush}" Stretch="Uniform" Data="{StaticResource Shape_Minus}"/>
-                            </Button>
-                        </StackPanel>
-                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20 0 0 0">
-                            <TextBox Height="45" 
+                                    <Path Height="20" Width="10" Fill="{StaticResource PureWhiteColorBrush}" Stretch="Uniform" Data="{StaticResource Shape_Minus}"/>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20 0 0 0">
+                                <TextBox Height="45" 
                                      Width="200"
                                      BorderThickness="1.5"
                                      Style='{StaticResource TextBoxVisibilityPathIconStyle}'
@@ -555,62 +557,83 @@
                                      ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Product Size"
                                      HorizontalAlignment="Left" 
                                      Margin="10 0 0 0"/>
-                            <Button x:Name="AddProductSize"
+                                <Button x:Name="AddProductSize"
                                     Height="30" 
                                     Background="Transparent"
                                     Margin="5 0 0 0"
                                     Width="30" 
                                     Style="{StaticResource ContentButton}">
-                                <Path Height="20" Width="20" Stretch="UniformToFill" Fill="{StaticResource GreenColorBrush}" Data="{StaticResource Shape_Tick2}"/>
-                            </Button>
-                            <Button x:Name="CloseAddProductTypeSize"
+                                    <Path Height="20" Width="20" Stretch="UniformToFill" Fill="{StaticResource GreenColorBrush}" Data="{StaticResource Shape_Tick2}"/>
+                                </Button>
+                                <Button x:Name="CloseAddProductTypeSize"
                                     Height="30" 
                                     Background="Transparent"
                                     Margin="5 0 0 0"
                                     Width="30" 
                                     Style="{StaticResource ContentButton }">
-                                <Path Height="18" 
+                                    <Path Height="18" 
                                       Width="18" 
                                       Stretch="UniformToFill" 
                                       Fill="{StaticResource RedColorBrush}" Data="{StaticResource Shape_Close1}"/>
-                            </Button>
-                            <StackPanel.Style>
-                                <Style TargetType="StackPanel">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsAddProductSize,Mode=OneWay}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </StackPanel.Style>
-                        </StackPanel>
+                                </Button>
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsAddProductSize,Mode=OneWay}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+                            </StackPanel>
+                        </Grid>
+                        <Grid Grid.Column="2" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Height="150" Width="150" CornerRadius="5" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.5" >
+                                <Image Source="{Binding ProductImage,Mode=TwoWay,Converter={StaticResource BytesToBitmapImageConverter}}" Stretch="UniformToFill" Height="145" Width="145"/>
+                            </Border>
+                            <Button x:Name="BrowsePicture" Grid.Column="1" Height="45" Margin="0 0 20 0" Background="{StaticResource BlueColorBrush}" Content="Browse" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  Click="Button_Click" Width="100" Style="{StaticResource ContentButton}"/>
+                        </Grid>
                     </Grid>
-                    <Grid Grid.Column="2">
+                    <Grid Grid.Row="2">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Border Height="150" Width="150" CornerRadius="5" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.5">
-                            <Image Source="{Binding ProductImage,Mode=TwoWay,Converter={StaticResource BytesToBitmapImageConverter}}" Stretch="UniformToFill" Height="145" Width="145"/>
-                        </Border>
-                        <Button x:Name="BrowsePicture" Grid.Column="1" Height="45" Margin="0 0 20 0" Background="{StaticResource BlueColorBrush}" Content="Browse" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  Click="Button_Click" Width="100" Style="{StaticResource ContentButton}"/>
+
+                        <StackPanel Margin="30 15 0 0" >
+                            <TextBlock Text="Initial Stock" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" Margin="0 0 0 5" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            <TextBox Height="50" Width="250" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" Text="{Binding InitialQuantity,Mode=TwoWay,TargetNullValue='0',FallbackValue='0'}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" HorizontalAlignment="Left" Margin="0 5 0 0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                            <Button x:Name="Clear"  Background="Red" Margin="5 0 5 0" Content="Clear" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45" Width="150" Style="{StaticResource ContentButton}"></Button>
+                            <Button x:Name="SaveProduct" cal:Message.Attach="SaveProduct($dataContext)"  Background="Green" Margin="5 0 5 0" Content="Save" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45" Width="150" Style="{StaticResource ContentButton}"></Button>
+                        </StackPanel>
                     </Grid>
                 </Grid>
-                <Grid Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-
-                        <Button x:Name="Clear"  Background="Red" Margin="5 0 5 0" Content="Clear" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45" Width="150" Style="{StaticResource ContentButton}"></Button>
-                        <Button x:Name="SaveProduct" cal:Message.Attach="SaveProduct($dataContext)"  Background="Green" Margin="5 0 5 0" Content="Save" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45" Width="150" Style="{StaticResource ContentButton}"></Button>
-                    </StackPanel>
-                </Grid>
             </Grid>
+            <Border  Background="{StaticResource GrayColorBrush}" CornerRadius="5" Opacity="0.5"  >
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <maha:ProgressRing Height="100" Width="100" IsActive="True" Foreground="{StaticResource BlueColorBrush}"/>
+                    <TextBlock Text="{Binding LoadingMessage,Mode=OneWay}" Foreground="{StaticResource PureWhiteColorBrush}" FontSize="40" FontFamily="{StaticResource MediumFont}"/>
+                </StackPanel>
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsLoading,Mode=OneWay}" Value="True" >
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
         </Grid>
     </Border>
 </UserControl>

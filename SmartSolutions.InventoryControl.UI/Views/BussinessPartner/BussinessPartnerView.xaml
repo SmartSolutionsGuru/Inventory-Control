@@ -195,7 +195,12 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1">
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions> 
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="0">
                             <TextBox Style="{StaticResource TextBoxVisibilityPathIconStyle}"
                                              Height="45"
                                              Width="250"
@@ -220,21 +225,46 @@
                                       Data="{StaticResource Shape_Plus1}"/>
                             </Button>
                         </StackPanel>
+                            <StackPanel Grid.Row="1" Margin="0 0 40 0">
+                                <TextBlock Text="Enter Initial Amount" 
+                                           Foreground="{StaticResource GrayColorBrush}" 
+                                           FontSize="{StaticResource NormalSize}" 
+                                           HorizontalAlignment="Left"
+                                           Margin="40 0 0 0"
+                                           FontFamily="{StaticResource MediumFont}"/>
+                                <TextBox Height="50" 
+                                         Width="250"
+                                         Text="{Binding InitialAmount,Mode=TwoWay}"
+                                         Margin="0 10 0 0"
+                                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter City Name"/>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
-                    <StackPanel Grid.Column="1" Margin="0 0 30 0">
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                    <StackPanel  Margin="0 0 30 0">
                         <TextBlock Text="Enter City Name" 
-                               Foreground="{StaticResource GrayColorBrush}" 
-                               FontSize="{StaticResource NormalSize}" 
-                               HorizontalAlignment="Center"
-                               Margin="0 0 130 0"
-                               FontFamily="{StaticResource MediumFont}"/>
+                                   Foreground="{StaticResource GrayColorBrush}" 
+                                   FontSize="{StaticResource NormalSize}" 
+                                   HorizontalAlignment="Center"
+                                   Margin="0 0 130 0"
+                                   FontFamily="{StaticResource MediumFont}"/>
                         <TextBox Height="50" 
-                             Width="250"
-                             Text="{Binding NewBussinessPartner.City,Mode=TwoWay}"
-                             Margin="0 10 0 0"
-                             Style="{StaticResource TextBoxVisibilityPathIconStyle}"
-                             ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter City Name"/>
+                                 Width="250"
+                                 Text="{Binding NewBussinessPartner.City,Mode=TwoWay}"
+                                 Margin="0 10 0 0"
+                                 Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter City Name"/>
                     </StackPanel>
+                        <StackPanel Grid.Row="1" Margin="0 0 30 0">
+                            <TextBlock Text="Select Amount Type" Margin="40 0 0 5" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}"/>
+                            <ComboBox Height="50" Width="250" Margin="0 5 0 0" ItemsSource="{Binding AmountType,Mode=OneWay}" SelectedItem="{Binding SelectedAmountType,Mode=TwoWay}" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" Style="{StaticResource BaseComboBox}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7"/>
+                        </StackPanel>
+                    </Grid>
                     <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top">
 
                         <TextBlock Text="Enter Address" 

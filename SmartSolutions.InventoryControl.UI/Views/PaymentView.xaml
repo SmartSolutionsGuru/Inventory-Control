@@ -41,7 +41,7 @@
                 <RowDefinition Height="70"/>
                 <RowDefinition Height="10"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="1.1*"/>
+                <RowDefinition Height="1.2*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" 
@@ -54,13 +54,27 @@
             <Button Grid.Row="1" 
                     Height="70" 
                     Width="350" 
-                    Style="{StaticResource ContentButton}" 
                     Background="{StaticResource BlueColorBrush}" 
                     HorizontalContentAlignment="Center" 
                     FontFamily="{StaticResource MediumFont}" 
                     FontSize="{StaticResource SubHeadingSize}" 
-                    VerticalContentAlignment="Center" 
-                    Content="Amount is 75000"/>
+                    VerticalContentAlignment="Center">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
+                        <Setter Property="Content">
+                            <Setter.Value>
+                                <TextBlock FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource SubHeadingSize}" Foreground="{StaticResource PureWhiteColorBrush}"><Run Text="Amount is "/><Run Text="{Binding CurrentPartnerBalance,Mode=OneWay}"/></TextBlock>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedPartner,Mode=TwoWay}" Value="{x:Null}">
+                                <Setter Property="Content" Value="Amount is  0"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                    
+                </Button.Style>
+            </Button>
             <Grid Grid.Row="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -97,7 +111,7 @@
                                  VerticalContentAlignment="Center" 
                                  Margin="30,10"
                                  GroupName="AmountGroup"
-                                 IsChecked="{Binding IsAddProductPressed,Mode=TwoWay}"
+                                 IsChecked="{Binding IsReceiveAmount,Mode=TwoWay}"
                                  Background="{StaticResource GreenColorBrush}" >
                         <RadioButton.Style>
                             <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
@@ -121,9 +135,8 @@
                                   VerticalContentAlignment="Center" 
                                   Margin="30,10"
                                   GroupName="AmountGroup"
-                                  IsChecked="{Binding IsUpdateProduct,Mode=TwoWay}"
+                                  IsChecked="{Binding IsPayAmount,Mode=TwoWay}"
                                   ControlExtensions:MiscControlExtensions.UncheckedForeground="{StaticResource RedColorBrush}"
-                            
                              Background="{StaticResource OrangeColorBrush}" >
                         <RadioButton.Style>
                             <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
@@ -201,6 +214,7 @@
                              TextWrapping="Wrap" 
                              AcceptsReturn="True"
                              Opacity="0.7"
+                             VerticalContentAlignment="Top"
                              BorderThickness="1.7"
                              ControlExtensions:WaterMarkTextExtension.WatermarkText="Description"
                              BorderBrush="{StaticResource BlueColorBrush}"
