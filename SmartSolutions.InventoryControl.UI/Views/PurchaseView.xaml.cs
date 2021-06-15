@@ -46,5 +46,17 @@ namespace SmartSolutions.InventoryControl.UI.Views
                 ViewModel.PaymentImage = Image?.ToByteArray();
             }
         }
+
+        private void TextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            var control = sender as TextBox;
+            var text = control?.Text;
+            if (string.IsNullOrEmpty(text))
+                text = "0";
+            var value = Convert.ToInt32(text);
+            if (value < 0)
+                value = 0;
+            ViewModel.CalculateDiscountPrice(value,0);
+        }
     }
 }

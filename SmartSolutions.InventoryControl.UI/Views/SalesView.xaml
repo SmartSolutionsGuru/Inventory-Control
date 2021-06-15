@@ -5,7 +5,7 @@
              xmlns:autoComplete="http://wpfcontrols.com/"
              xmlns:maha="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:ControlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
-             xmlns:models="clr-namespace:SmartSolutions.InventoryControl.DAL.Models;assembly=SmartSolutions.InventoryControl.DAL"
+             xmlns:models="clr-namespace:SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;assembly=SmartSolutions.InventoryControl.DAL"
              xmlns:productModels="clr-namespace:SmartSolutions.InventoryControl.DAL.Models.Product;assembly=SmartSolutions.InventoryControl.DAL"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 

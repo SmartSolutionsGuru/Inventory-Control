@@ -17,12 +17,12 @@ namespace SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider
         #endregion
 
         #region Properties
-        public List<DAL.Models.BussinessPartnerModel> BussinessPartners { get; set; }
+        public List<DAL.Models.BussinessPartner.BussinessPartnerModel> BussinessPartners { get; set; }
         #endregion
 
         #region Constructor
         [ImportingConstructor]
-        public PartnerSuggestionProvider(List<DAL.Models.BussinessPartnerModel> partners)
+        public PartnerSuggestionProvider(List<DAL.Models.BussinessPartner.BussinessPartnerModel> partners)
         {
             BussinessPartners = partners;
         }

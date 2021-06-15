@@ -80,11 +80,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                 LoadingMessage = "Saving...";
                 ProductTypeModel model = new ProductTypeModel();
                 model.Name = ProductType;
-                if (ProductType != null)
+                if (!string.IsNullOrEmpty(ProductType))
                     await _productTypeManager.AddProductTypeAsync(model);
                 IsAddProduct = false;
                 ProductType = string.Empty;
                 ProductTypes = (await _productTypeManager.GetAllProductsTypesAsync()).ToList();
+                SelectedProductType = ProductTypes.LastOrDefault();
                 IsLoading = false;
 
             }
@@ -271,17 +272,21 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                                 InitialQuantityInventory.ProductSize = ProductSelectedSize;
                                 InitialQuantityInventory.Product = await _productManager.GetLastAddedProduct();
                                 InitialQuantityInventory.Quantity = InitialQuantity;
+                                InitialQuantityInventory.StockInHand = InitialQuantity;
+                                InitialQuantityInventory.IsStockIn = true;
                                 var inventoryResult = await _inventoryManager.AddInventoryAsync(InitialQuantityInventory);
                                 if(inventoryResult)
                                 {
-                                    SelectedProductType = null;
-                                    SelectedProductSubType = null;
-                                    ProductSelectedColor = null;
-                                    ProductSelectedSize = null;
-                                    ProductImage = null;
-                                    ProductName = string.Empty;
+                                    ClearProductDetails();
+                                }
+                                else
+                                {
+                                    await _invoiceManager.RemoveLastInvoiceAsync(ProductInitialQuantityInvoice.InvoiceGuid);
+                                    ClearProductDetails();
+                                    //TODO: Here we Display the USer Frindly Message for not Adding Quantity
                                 }
                             }
+                           
                         }
                         IsLoading = false;
                     }
@@ -300,6 +305,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
+        }
+        private void  ClearProductDetails()
+        {
+            SelectedProductType = null;
+            SelectedProductSubType = null;
+            ProductSelectedColor = null;
+            ProductSelectedSize = null;
+            ProductImage = null;
+            InitialQuantity = 0;
+            ProductName = string.Empty;
         }
         #endregion
 

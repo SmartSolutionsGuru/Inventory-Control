@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,7 +12,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         public InvoiceModel()
         {
             InvoiceGuid = Guid.NewGuid();
-            PaymentType = new List<string> { "Cash", "Bank", "JazzCash", "Easy Paisa", "U Paisa", "Partial", "Other" };
+            PaymentType = new List<string> {"Unknown" ,"Cash", "Bank", "JazzCash", "Easy Paisa", "U Paisa", "Partial", "Other" };
             Products = new List<InventoryModel>();
         }
         #endregion

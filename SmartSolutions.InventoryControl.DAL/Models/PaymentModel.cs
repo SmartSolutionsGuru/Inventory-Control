@@ -1,6 +1,5 @@
-﻿using System;
+﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SmartSolutions.InventoryControl.DAL.Models
 {

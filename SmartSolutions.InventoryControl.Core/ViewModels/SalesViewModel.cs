@@ -5,7 +5,7 @@ using SmartSolutions.InventoryControl.DAL.Managers.Product.ProductColor;
 using SmartSolutions.InventoryControl.DAL.Managers.Product.ProductSize;
 using SmartSolutions.InventoryControl.DAL.Managers.Product;
 using System.Text;
-using SmartSolutions.InventoryControl.DAL.Models;
+using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using System.Linq;
 using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;

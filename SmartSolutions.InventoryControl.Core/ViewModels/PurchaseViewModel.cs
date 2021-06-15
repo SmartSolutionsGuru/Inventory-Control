@@ -1,6 +1,6 @@
 ﻿using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;
 using SmartSolutions.InventoryControl.DAL.Models.Inventory;
-using SmartSolutions.InventoryControl.DAL.Models;
+using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.Util.LogUtils;
 using System;
@@ -9,11 +9,12 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
+using Caliburn.Micro;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels
 {
     [Export(typeof(PurchaseViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
-    public class PurchaseViewModel : BaseViewModel 
+    public class PurchaseViewModel : BaseViewModel
     {
         #region Private Members
         private readonly DAL.Managers.Inventory.IInventoryManager _inventoryManager;
@@ -22,6 +23,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private readonly DAL.Managers.Product.ProductSize.IProductSizeManager _productSizeManager;
         private readonly DAL.Managers.Product.ProductColor.IProductColorManager _productColorManager;
         private readonly DAL.Managers.Invoice.IInvoiceManager _InvoiceManager;
+        private readonly DAL.Managers.Bussiness_Partner.IPartnerLedgerManager _partnerLedgerManager;
         #endregion
 
         #region Constructor
@@ -31,7 +33,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                 , DAL.Managers.Bussiness_Partner.IBussinessPartnerManager bussinessPartnerManager
                                 , DAL.Managers.Product.ProductColor.IProductColorManager productColorManager
                                 , DAL.Managers.Product.ProductSize.IProductSizeManager productSizeManager
-                                , DAL.Managers.Invoice.IInvoiceManager invoiceManager)
+                                , DAL.Managers.Invoice.IInvoiceManager invoiceManager
+                                , DAL.Managers.Bussiness_Partner.IPartnerLedgerManager partnerLedgerManager)
         {
             _inventoryManager = inventoryManager;
             _productManager = productManager;
@@ -39,6 +42,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             _productColorManager = productColorManager;
             _productSizeManager = productSizeManager;
             _InvoiceManager = invoiceManager;
+            _partnerLedgerManager = partnerLedgerManager;
         }
         #endregion
 
@@ -49,7 +53,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             {
                 IsLoading = true;
                 LoadingMessage = "Loading...";
-               
+
                 base.OnActivate();
                 PurchaseTypes = new List<string> { "Purchase", "Purchase Return" };
                 Products = (await _productManager.GetAllProductsAsync()).ToList();
@@ -57,84 +61,62 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
                 ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
                 PurchaseInvoice = new InvoiceModel();
-                PurchaseInvoice.InvoiceId = _InvoiceManager.GenrateInvoiceNumber("p");
+                PurchaseInvoice.InvoiceId = _InvoiceManager.GenrateInvoiceNumber("P");
                 ProductGrid = new ObservableCollection<InventoryModel>();
-                //CurrentItem = new PurchaseModel();
-                AddProduct();
-                int Id = await _inventoryManager.GetLastTransationIdAsync();
-               if (Venders != null)
+                var model = new InventoryModel();
+                AutoId = 0;
+                AddProduct(model);
+                if (Venders != null)
                     PartnerSuggetion = new PartnerSuggestionProvider(Venders);
-                if (Products != null)              
+                if (Products != null)
                     ProductSuggetion = new ProductSuggestionProvider(Products);
                 IsLoading = false;
-                                                                
+
             }
             catch (Exception ex)
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        public void OnGettingPrice()
-        {
-            if (Quantity > 0 && Price > 0)
-            {
-                TotalPrice = Quantity * (double)Price;
-                NotifyOfPropertyChange(nameof(TotalPrice));
-            }
-            else
-                TotalPrice = 0;
-        }
-        public void AddProduct()
+        public void AddProduct(InventoryModel product)
         {
             try
             {
-                //if (CurrentItem != null)
-                //{
-                //CurrentItem.Product = SelectedProduct;
-                //CurrentItem.ProductColor = SelectedProductColor;
-                //CurrentItem.ProductSize = SelectedProductSize;
-                //CurrentItem.Price = Price;
-                //CurrentItem.Quantity = Quantity;
-                //CurrentItem.Total = TotalPrice;
-                //PurchaseTransaction?.Products?.Add(CurrentItem);
-                //if (InvoiceTotal == 0)
-                //    InvoiceTotal = TotalPrice;
-                //else
-                //    InvoiceTotal += TotalPrice;
-                //ClearProduct();
-                //CurrentItem = new PurchaseModel();
                 ++AutoId;
                 var newProduct = new InventoryModel();
                 newProduct.InvoiceGuid = PurchaseInvoice.InvoiceGuid;
                 newProduct.InvoiceId = PurchaseInvoice.InvoiceId;
-               
+                if (product != null)
+                    InvoiceTotal += product.Total;
+                GrandTotal = PreviousBalance + InvoiceTotal;
                 ProductGrid.Add(newProduct);
-
-
-                // }
+                ProductSuggetion = new ProductSuggestionProvider(Products);
             }
             catch (Exception ex)
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        private void ClearProduct()
-        {
-            SelectedProduct = new ProductModel();
-            SelectedProductColor = new ProductColorModel();
-            SelectedProductSize = new ProductSizeModel();
-            Price = 0;
-            Quantity = 0;
-            TotalPrice = 0;
-
-
-        }
-        public void RemoveProduct(ProductModel product)
+        public async void RemoveProduct(InventoryModel product)
         {
             try
             {
-                --AutoId;
-                ProductGrid.Remove(CurrentItem);
+                if (AutoId == 1)
+                {
+                    //CurrentItem = new InventoryModel();
+                    ProductGrid.Remove(product);
+                    product = new InventoryModel();
+                    ProductGrid.Add(product);
+                    ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
+                    ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
+                }
+                else
+                {
+                    --AutoId;
+                    ProductGrid.Remove(product);
+                }
+                InvoiceTotal = ReCalculateInvoicePrice();
+                GrandTotal = InvoiceTotal + PreviousBalance;
             }
             catch (Exception ex)
             {
@@ -166,73 +148,83 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     IsLoading = false;
                     return;
                 }
-                if (SelectedProduct != null)
-                    CurrentItem.Product = SelectedProduct;
-                else
-                {
-                    ProductError = true;
-                    IsLoading = false;
-                    return;
-                }
-                if (SelectedProductColor != null)
-                    CurrentItem.ProductColor = SelectedProductColor;
-                else
-                {
-                    ProductColorError = true;
-                    IsLoading = false;
-                    return;
-                }
-                if (SelectedProductSize != null)
-                    CurrentItem.ProductSize = SelectedProductSize;
-                else
-                {
-                    ProductSizeError = true;
-                    IsLoading = false;
-                    return;
-                }
-                if (Quantity > 0)
-                    CurrentItem.Quantity = Quantity;
-                else
-                {
-                    QuantityError = true;
-                    IsLoading = false;
-                    return;
-                }
-                if (Price > 0)
-                    CurrentItem.Price = Price;
-                else
-                {
-                    PriceError = true;
-                    IsLoading = false;
-                    return;
-                }
+                //if (SelectedProduct != null)
+                //    CurrentItem.Product = SelectedProduct;
+                //else
+                //{
+                //    ProductError = true;
+                //    IsLoading = false;
+                //    return;
+                //}
+                //if (SelectedProductColor != null)
+                //    CurrentItem.ProductColor = SelectedProductColor;
+                //else
+                //{
+                //    ProductColorError = true;
+                //    IsLoading = false;
+                //    return;
+                //}
+                //if (SelectedProductSize != null)
+                //    CurrentItem.ProductSize = SelectedProductSize;
+                //else
+                //{
+                //    ProductSizeError = true;
+                //    IsLoading = false;
+                //    return;
+                //}
+                //if (Quantity > 0)
+                //    CurrentItem.Quantity = Quantity;
+                //else
+                //{
+                //    QuantityError = true;
+                //    IsLoading = false;
+                //    return;
+                //}
+                //if (Price > 0)
+                //    CurrentItem.Price = Price;
+                //else
+                //{
+                //    PriceError = true;
+                //    IsLoading = false;
+                //    return;
+                //}
                 #endregion
 
-                PurchaseInvoice.IsPurchaseInvoice = true;
-                PurchaseInvoice.SelectedPartner = SelectedPartner;
-                PurchaseInvoice.PaymentImage = PaymentImage;
-                PurchaseInvoice.PercentDiscount = PercentDiscount;
-                PurchaseInvoice.Discount = DiscountPrice;
-                PurchaseInvoice.InvoiceTotal = InvoiceTotal;
-                PurchaseInvoice.Payment = Payment;
-                PurchaseInvoice.IsAmountRecived = true;
-                PurchaseInvoice.IsAmountPaid = false;
-                PurchaseInvoice.TransactionType = SelectedPurchaseType;
-                bool transactionResult = await _InvoiceManager.SaveInoiceAsync(PurchaseInvoice);
-                if(transactionResult)
+                if (ProductGrid != null || ProductGrid?.Count > 0)
                 {
-                    var lastRowId = _InvoiceManager.GetLastRowId();
-                    if(lastRowId != null)
+                    var productList = new List<InventoryModel>();
+                    foreach (var product in ProductGrid)
                     {
-                        if(lastRowId > 0)
+                        if (!string.IsNullOrEmpty(product.Product.Name))
                         {
-                          var resultInventory =  await  _inventoryManager.AddBulkInventoryAsync(ProductGrid.ToList());
+                            product.IsStockIn = true;
+                            productList.Add(product);
                         }
                     }
+                    PurchaseInvoice.IsPurchaseInvoice = true;
+                    PurchaseInvoice.SelectedPartner = SelectedPartner;
+                    PurchaseInvoice.PaymentImage = PaymentImage;
+                    PurchaseInvoice.PercentDiscount = PercentDiscount;
+                    PurchaseInvoice.Discount = DiscountPrice;
+                    PurchaseInvoice.InvoiceTotal = InvoiceTotal;
+                    PurchaseInvoice.Payment = Payment;
+                    PurchaseInvoice.IsAmountPaid = true;
+                    PurchaseInvoice.IsAmountRecived = false;
+                    PurchaseInvoice.TransactionType = SelectedPurchaseType;
+                    bool transactionResult = await _InvoiceManager.SaveInoiceAsync(PurchaseInvoice);
+                    if (transactionResult)
+                    {
+                        var lastRowId = _InvoiceManager.GetLastRowId();
+                        if (lastRowId != null)
+                        {
+                            if (lastRowId > 0)
+                            {
+                                var resultInventory = await _inventoryManager.AddBulkInventoryAsync(productList);
+                            }
+                        }
+                    }
+                    IsLoading = false;
                 }
-
-
-
             }
             catch (Exception ex)
             {
@@ -243,67 +235,98 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             TryClose();
         }
+        private async void OnSelectingPartner()
+        {
+            try
+            {
+                if (SelectedPartner == null) return;
+                var selectedPartnerLedger = await _partnerLedgerManager.GetPartnerLedgerLastBalance(SelectedPartner.Id.Value);
+                if (selectedPartnerLedger != null)
+                {
+                    PreviousBalance = selectedPartnerLedger.BalanceAmount;
+                    BalanceType = selectedPartnerLedger.AmountPayable == 1 ? "Payable" : "Receivable";
+                    GrandTotal = PreviousBalance + InvoiceTotal;
+                }
+                else
+                {
+                    PreviousBalance = 0;
+                    BalanceType = "Receivable";
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
 
+        public void CalculateDiscountPrice(int percentDiscount, double discountAmount)
+        {
+            if (percentDiscount != 0)
+            {
+                var newInvoiceTotal = ReCalculateInvoicePrice();
+                if (newInvoiceTotal > 0 && newInvoiceTotal > InvoiceTotal)
+                {
+                    InvoiceTotal = newInvoiceTotal;
+                }
+                DiscountPrice = InvoiceTotal * PercentDiscount / 100;
+                InvoiceTotal = InvoiceTotal - DiscountPrice;
+                GrandTotal = InvoiceTotal + PreviousBalance;
+            }
+            else if (discountAmount != 0)
+            {
+                InvoiceTotal = InvoiceTotal - discountAmount;
+                GrandTotal = InvoiceTotal + PreviousBalance;
+            }
+        }
+        private double ReCalculateInvoicePrice()
+        {
+            var newInvoiceTotal = 0d;
+            if (ProductGrid != null || ProductGrid?.Count > 0)
+            {
+                foreach (var product in ProductGrid)
+                {
+                    newInvoiceTotal += product.Total;
+                }
+                if (PercentDiscount > 0)
+                {
+                    newInvoiceTotal = InvoiceTotal - DiscountPrice;
+                }
+                else if (DiscountPrice > 0)
+                {
+                    newInvoiceTotal = InvoiceTotal - DiscountPrice;
+                }
+            }
+
+            return newInvoiceTotal;
+        }
+        public void OnPaymentRecived()
+        {
+            GrandTotal = PreviousBalance + (InvoiceTotal - Payment);
+        }
         #endregion
 
         #region Properties
+        private string _BalanceType;
+        /// <summary>
+        /// IS it Reciveable or Payable
+        /// </summary>
+        public string BalanceType
+        {
+            get { return _BalanceType; }
+            set { _BalanceType = value; NotifyOfPropertyChange(nameof(BalanceType)); }
+        }
+
+        private double _PreviousBalance;
+        /// <summary>
+        /// Previous Balance Of Selected Partner
+        /// </summary>
+        public double PreviousBalance
+        {
+            get { return _PreviousBalance; }
+            set { _PreviousBalance = value; NotifyOfPropertyChange(nameof(PreviousBalance)); }
+        }
+
         public static int AutoId { get; set; }
-
-        private bool _QuantityError;
-        /// <summary>
-        /// Error Quantity 
-        /// </summary>
-        public bool QuantityError
-        {
-            get { return _QuantityError; }
-            set { _QuantityError = value; NotifyOfPropertyChange(nameof(QuantityError)); }
-        }
-
-        private bool _PriceError;
-        /// <summary>
-        /// Price Error If wrong Value
-        /// </summary>
-        public bool PriceError
-        {
-            get { return _PriceError; }
-            set { _PriceError = value; NotifyOfPropertyChange(nameof(PriceError)); }
-        }
-
-        private int _Quantity;
-        /// <summary>
-        /// Quantity Of Product
-        /// </summary>
-        public int Quantity
-        {
-            get { return _Quantity; }
-            set { _Quantity = value; NotifyOfPropertyChange(nameof(Quantity)); }
-        }
-        private decimal _Price;
-        /// <summary>
-        /// Price Of Product
-        /// </summary>
-        public decimal Price
-        {
-            get { return _Price; }
-            set { _Price = value; NotifyOfPropertyChange(nameof(Price)); OnGettingPrice(); }
-        }
-
-        private double _TotalPrice;
-
-        public double TotalPrice
-        {
-            get { return _TotalPrice; }
-            set { _TotalPrice = value; NotifyOfPropertyChange(nameof(TotalPrice)); }
-        }
-        private double _LastBalance;
-        /// <summary>
-        /// Last Balance Of Partner
-        /// </summary>
-        public double LastBalance
-        {
-            get { return _LastBalance; }
-            set { _LastBalance = value; NotifyOfPropertyChange(nameof(LastBalance)); }
-        }
 
         private InvoiceModel _PurchaseInvoice;
         /// <summary>
@@ -328,7 +351,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public BussinessPartnerModel SelectedPartner
         {
             get { return _SelectedPartner; }
-            set { _SelectedPartner = value; NotifyOfPropertyChange(nameof(SelectedPartner)); }
+            set { _SelectedPartner = value; NotifyOfPropertyChange(nameof(SelectedPartner)); OnSelectingPartner(); PartnerSuggetion = new PartnerSuggestionProvider(Venders); }
         }
         private ProductSuggestionProvider _ProductSuggetion;
         /// <summary>
@@ -338,35 +361,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             get { return _ProductSuggetion; }
             set { _ProductSuggetion = value; NotifyOfPropertyChange(nameof(ProductSuggetion)); }
-        }
-        private ProductModel _SelectedProduct;
-        /// <summary>
-        /// SElected Product 
-        /// </summary>
-        public ProductModel SelectedProduct
-        {
-            get { return _SelectedProduct; }
-            set { _SelectedProduct = value; NotifyOfPropertyChange(nameof(SelectedProduct)); ProductSuggetion = new ProductSuggestionProvider(Products); }
-        }
-
-        private bool _ProductSizeError;
-        /// <summary>
-        /// If Product Size is Not Selected
-        /// </summary>
-        public bool ProductSizeError
-        {
-            get { return _ProductSizeError; }
-            set { _ProductSizeError = value; NotifyOfPropertyChange(nameof(ProductSizeError)); }
-        }
-
-        private bool _ProductColorError;
-        /// <summary>
-        /// If Product Color is Not Selected
-        /// </summary>
-        public bool ProductColorError
-        {
-            get { return _ProductColorError; }
-            set { _ProductColorError = value; NotifyOfPropertyChange(nameof(ProductColorError)); }
         }
 
         private bool _VenderError;
@@ -378,17 +372,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _VenderError; }
             set { _VenderError = value; NotifyOfPropertyChange(nameof(VenderError)); }
         }
-
-        private bool _ProductError;
-        /// <summary>
-        /// Product Selection Error
-        /// </summary>
-        public bool ProductError
-        {
-            get { return _ProductError; }
-            set { _ProductError = value; NotifyOfPropertyChange(nameof(ProductError)); }
-        }
-
         private bool _PurchaseTypeError;
         /// <summary>
         /// Error For Purchase Type
@@ -398,7 +381,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _PurchaseTypeError; }
             set { _PurchaseTypeError = value; NotifyOfPropertyChange(nameof(PurchaseTypeError)); }
         }
-
         private InventoryModel _CurrentItem;
         /// <summary>
         /// Current Item For Adding Product
@@ -408,8 +390,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _CurrentItem; }
             set { _CurrentItem = value; NotifyOfPropertyChange(nameof(CurrentItem)); }
         }
-
-
         private List<string> _PurchaseTypes;
         /// <summary>
         /// Purchase Types Like Return etc..
@@ -435,16 +415,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _ProductSizes; }
             set { _ProductSizes = value; NotifyOfPropertyChange(nameof(ProductSizes)); }
         }
-        private ProductSizeModel _SelectedProductSize;
-        /// <summary>
-        /// Selected Product Size
-        /// </summary>
-        public ProductSizeModel SelectedProductSize
-        {
-            get { return _SelectedProductSize; }
-            set { _SelectedProductSize = value; NotifyOfPropertyChange(nameof(SelectedProductSize)); }
-        }
-
         private List<ProductColorModel> _ProductColors;
         /// <summary>
         /// List of Selected Product Colors
@@ -453,15 +423,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             get { return _ProductColors; }
             set { _ProductColors = value; NotifyOfPropertyChange(nameof(ProductColors)); }
-        }
-        private ProductColorModel _SelectedProductColor;
-        /// <summary>
-        /// Selected Product Color
-        /// </summary>
-        public ProductColorModel SelectedProductColor
-        {
-            get { return _SelectedProductColor; }
-            set { _SelectedProductColor = value; NotifyOfPropertyChange(nameof(SelectedProductColor)); }
         }
         private List<ProductModel> _Products;
         /// <summary>
@@ -477,12 +438,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             get { return _Venders; }
             set { _Venders = value; NotifyOfPropertyChange(nameof(Venders)); }
-        }
-        private BussinessPartnerModel _SelectedVender;
-        public BussinessPartnerModel SelectedVender
-        {
-            get { return _SelectedVender; }
-            set { _SelectedVender = value; NotifyOfPropertyChange(nameof(SelectedVender)); }
         }
         private byte[] _PaymentImage;
         /// <summary>
@@ -500,7 +455,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public int PercentDiscount
         {
             get { return _PercentDiscount; }
-            set { _PercentDiscount = value; NotifyOfPropertyChange(nameof(PercentDiscount)); }
+            set { _PercentDiscount = value; NotifyOfPropertyChange(nameof(PercentDiscount)); /*CalculateDiscountPrice();*/ }
         }
 
         private double _DiscountPrice;
@@ -510,7 +465,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public double DiscountPrice
         {
             get { return _DiscountPrice; }
-            set { _DiscountPrice = value; NotifyOfPropertyChange(nameof(DiscountPrice)); }
+            set { _DiscountPrice = value; NotifyOfPropertyChange(nameof(DiscountPrice)); /*CalculateDiscountPrice(0, DiscountPrice);*/ }
         }
 
         private double _InvoiceTotal;
@@ -541,18 +496,17 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public double Payment
         {
             get { return _Payment; }
-            set { _Payment = value; NotifyOfPropertyChange(nameof(Payment)); }
+            set { _Payment = value; NotifyOfPropertyChange(nameof(Payment)); OnPaymentRecived(); }
         }
-
         private ObservableCollection<InventoryModel> _ProductGrid;
-
+        /// <summary>
+        /// Grid for Display Products
+        /// </summary>
         public ObservableCollection<InventoryModel> ProductGrid
         {
             get { return _ProductGrid; }
             set { _ProductGrid = value; NotifyOfPropertyChange(nameof(ProductGrid)); }
         }
-
-
 
         #endregion
     }

@@ -20,5 +20,11 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Inventory
         Task<bool> AddInventoryAsync(InventoryModel model);
         Task<bool> AddBulkInventoryAsync(List<InventoryModel> models);
         Task<bool> AddInventoryReturnAsync(InventoryModel model);
+        /// <summary>
+        /// Gets the Last Stock In Hand of Specific Product
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<int> GetLastStockInHandAsync(InventoryModel model);
     }
 }

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:autoComplete="http://wpfcontrols.com/"
              xmlns:ControlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
-             xmlns:models="clr-namespace:SmartSolutions.InventoryControl.DAL.Models;assembly=SmartSolutions.InventoryControl.DAL"
+             xmlns:models="clr-namespace:SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;assembly=SmartSolutions.InventoryControl.DAL"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views"

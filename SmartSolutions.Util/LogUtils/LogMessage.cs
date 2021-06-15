@@ -86,7 +86,7 @@ namespace SmartSolutions.Util.LogUtils
                     {
                         //var writeStream = await file.
                         //Windows.Storage.StorageFolder directory = new Windows.Storage.StorageFolder(); 
-                        //Directory.CreateDirectory(filePath);
+                        Directory.CreateDirectory(filePath);
                     }
 
                     var fileStream = new FileStream(filePath + "\\" + nFileName, FileMode.OpenOrCreate, FileAccess.Write);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner;
+using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using System.Text;
 using System.Linq;
 using SmartSolutions.Util.LogUtils;
@@ -15,6 +16,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #region Private Members
         private readonly IBussinessPartnerManager _bussinessPartnerManager;
         #endregion
+
         #region Constructor
         [ImportingConstructor]
         public PaymentViewModel(IBussinessPartnerManager bussinessPartnerManager)
@@ -65,21 +67,21 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             set { _PartnerSuggetion = value; NotifyOfPropertyChange(nameof(PartnerSuggetion)); }
         }
 
-        private List<DAL.Models.BussinessPartnerModel> _BussinessPartners;
+        private List<BussinessPartnerModel> _BussinessPartners;
         /// <summary>
         /// List Of Bussiness Partners
         /// </summary>
-        public List<DAL.Models.BussinessPartnerModel> BussinessPartners
+        public List<BussinessPartnerModel> BussinessPartners
         {
             get { return _BussinessPartners; }
             set { _BussinessPartners = value; NotifyOfPropertyChange(nameof(BussinessPartners)); }
         }
 
-        private DAL.Models.BussinessPartnerModel _SelectedPartner;
+        private BussinessPartnerModel _SelectedPartner;
         /// <summary>
         /// Selected Bussiness Partner for Payments
         /// </summary>
-        public DAL.Models.BussinessPartnerModel SelectedPartner
+        public BussinessPartnerModel SelectedPartner
         {
             get { return _SelectedPartner; }
             set { _SelectedPartner = value; NotifyOfPropertyChange(nameof(SelectedPartner)); GetPartnerBalance(); }

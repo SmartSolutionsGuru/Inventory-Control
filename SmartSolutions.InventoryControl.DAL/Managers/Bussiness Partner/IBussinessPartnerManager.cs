@@ -1,4 +1,4 @@
-﻿using SmartSolutions.InventoryControl.DAL.Models;
+﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,5 +14,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
         Task<bool> UpdateBussinessPartnerAsync(BussinessPartnerModel model);
         Task<bool> RemoveBussinessPartnerAsync(int? Id);
         Task<double> GetPartnerCurrentBalanceAsync(int partnerId);
+        Task<BussinessPartnerModel> GetLastAddedPartner();
     }
 }

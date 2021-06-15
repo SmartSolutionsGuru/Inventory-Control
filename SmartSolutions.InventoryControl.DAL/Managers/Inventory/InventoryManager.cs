@@ -31,7 +31,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Inventory
             bool retVal = false;
             try
             {
-                if(models != null || models.Count > 0)
+                if(models != null || models?.Count > 0)
                 {
                     foreach (var model in models)
                     {
@@ -56,21 +56,25 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Inventory
                 if (model == null) return false;
                 string query = string.Empty;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters["@v_TransactionId"] = model.InvoiceId;
+                parameters["@v_InvoiceId"] = model.InvoiceId;
+                parameters["@v_InvoiceGuid"] = model.InvoiceGuid;
                 parameters["@v_ProductId"] = model.Product.Id;
                 parameters["@v_ProductColorId"] = model.ProductColor.Id;
                 parameters["@v_ProductSizeId"] = model.ProductSize.Id;
                 parameters["@v_Price"] = model.Price;
                 parameters["@v_Quantity"] = model.Quantity;
-                parameters["@v_TotalPrice"] = model.TotalPrice;
-                parameters["@v_IsActive"] = model.IsActive;
+                parameters["@v_StockInHand"] = model.StockInHand;
+                parameters["@v_IsStockIn"] = model.IsStockIn;
+                parameters["@v_IsStockOut"] = model.IsStockOut;
+                parameters["@v_Total"] = model.Total;
+                parameters["@v_IsActive"] = model.IsActive = true;
                 parameters["@v_IsDeleted"] = model.IsDeleted;
-                parameters["@v_CreatedAt"] = model.CreatedAt;
-                parameters["@v_CreatedBy"] = model.CreatedBy;
-                parameters["@v_UpdatedAt"] = model.UpdatedAt;
-                parameters["@v_UpdatedBy"] = model.UpdatedBy;
-                query = @"INSERT INTO Inventory (TransactionId,ProductId,ProductColorId,ProductSizeId,Price,Quantity,TotalPrice,IsActive,IsDeleted,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
-                                        VALUES(@v_TransactionId,@v_ProductId,@v_ProductColorId,@v_ProductSizeId,@v_Price,@v_Quantity,@v_TotalPrice,@v_IsActive,@v_IsDeleted,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
+                parameters["@v_CreatedAt"] = model.CreatedAt == null ? DateTime.Now : model.CreatedAt;
+                parameters["@v_CreatedBy"] = model.CreatedBy == null ? DBNull.Value : (object)model.CreatedBy;
+                parameters["@v_UpdatedAt"] = model.UpdatedAt == null ? DBNull.Value : (object)model.UpdatedAt;
+                parameters["@v_UpdatedBy"] = model.UpdatedBy == null ? DBNull.Value : (object)model.UpdatedBy;
+                query = @"INSERT INTO Inventory (InvoiceId,InvoiceGuid,ProductId,ProductColorId,ProductSizeId,Price,Quantity,IsStockIn,IsStockOut,StockInHand,Total,IsActive,IsDeleted,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                        VALUES(@v_InvoiceId,@v_InvoiceGuid,@v_ProductId,@v_ProductColorId,@v_ProductSizeId,@v_Price,@v_Quantity,@v_IsStockIn,@v_IsStockOut,@v_StockInHand,@v_Total,@v_IsActive,@v_IsDeleted,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
                 var result = await Repository.NonQueryAsync(query, parameters: parameters);
                 retVal = result > 0 ? true : false;
             }
@@ -123,12 +127,28 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Inventory
             return balance;
         }
 
+        public async Task<int> GetLastStockInHandAsync(InventoryModel model)
+        {
+            int retVal = 0;
+            try
+            {
+                string query = string.Empty;
+                await Repository.QueryAsync(query:query);
+            }
+            catch (Exception ex)
+            {
+
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
+        }
+
         public async Task<int> GetLastTransationIdAsync()
         {
             int? Id = 0;
             try
             {
-                string query = @"SELECT MAX(ROWID) FROM PurchaseTransaction";
+                string query = @"SELECT MAX(ROWID) FROM Invoice";
                 var values = await Repository.QueryAsync(query);
                 if (values != null)
                 {

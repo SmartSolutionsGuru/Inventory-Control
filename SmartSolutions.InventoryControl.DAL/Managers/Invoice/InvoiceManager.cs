@@ -68,13 +68,31 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
             {
                 string query = "SELECT last_insert_rowid()";
                 var result = Repository.Query(query);
-                 lastRowId = result?.FirstOrDefault().GetValueFromDictonary("Last(ROW)")?.ToString()?.ToNullableInt();
+                 lastRowId = result?.FirstOrDefault().GetValueFromDictonary("last_insert_rowid()")?.ToString()?.ToNullableInt();
             }
             catch (Exception ex)
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return lastRowId;
+        }
+
+        public async Task<bool> RemoveLastInvoiceAsync(Guid InvoiceGuid)
+        {
+            bool retVal = false;
+            try
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_InvoiceGuid"] =  InvoiceGuid;
+                string query = @"UPDATE Invoice SET IsActive = 0 AND IsDeleted = 1 WHERE InvoiceGuid = @v_InvoiceGuid";
+               var result = await Repository.NonQueryAsync(query: query);
+               retVal =  result > 0 ? true : false;
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
         }
 
         public async Task<bool> SaveInoiceAsync(InvoiceModel invoice)
@@ -100,6 +118,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
                 parameters["@v_DiscountAmount"] = invoice.Discount == 0 ? DBNull.Value : (object)invoice.Discount;
                 parameters["@v_Description"] = invoice.Description == null ? DBNull.Value : (object)invoice.Description;
                 parameters["@v_AmountImage"] = invoice.PaymentImage == null ? DBNull.Value : (object)invoice.PaymentImage;
+                parameters["@v_Payment"] = invoice.Payment;
                 parameters["@v_InvoiceTotal"] = invoice.InvoiceTotal;
                 parameters["@v_IsActive"] = invoice.IsActive = true;
                 parameters["@v_IsDeleted"] = invoice.IsDeleted = false;
@@ -109,7 +128,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
                 parameters["@v_UpdatedBy"] = invoice.UpdatedBy == null ? DBNull.Value : (object)invoice.UpdatedBy;
 
                 query = @"INSERT INTO Invoice (InvoiceId,InvoiceGuid,IsPurchaseInvoice,IsSaleInvoice,IsPurchaseReturnInvoice,IsSaleReturnInvoice,IsAmountRecived,IsAmountPaid,InvoiceType,SelectedPartnerId,SelectedPaymentType,PercentDiscount,DiscountAmount,Description,AmountImage,Payment,InvoiceTotal,IsActive,IsDeleted,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
-                                            VALUES(@v_InvoiceId,@v_InvoiceGuid,@v_IsPurchaseInvoice,@v_IsSaleInvoice,@v_IsPurchaseReturnInvoice,@v_IsSaleReturnInvoice,@v_IsAmountRecived,@v_IsAmountPaid,@v_InvoiceType,@v_SelectedPartnerId,@v_SelectedPaymentType,@v_PercentDiscount,@v_Discount,@v_Description,@v_AmountImage,@v_InviceTotal,@v_IsActive,@v_IsDeleted,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
+                                            VALUES(@v_InvoiceId,@v_InvoiceGuid,@v_IsPurchaseInvoice,@v_IsSaleInvoice,@v_IsPurchaseReturnInvoice,@v_IsSaleReturnInvoice,@v_IsAmountRecived,@v_IsAmountPaid,@v_InvoiceType,@v_SelectedPartnerId,@v_SelectedPaymentType,@v_PercentDiscount,@v_DiscountAmount,@v_Description,@v_AmountImage,@v_Payment,@v_InviceTotal,@v_IsActive,@v_IsDeleted,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
 
                 var result = await Repository.NonQueryAsync(query, parameters: parameters);
                 retVal = result > 0 ? true : false;

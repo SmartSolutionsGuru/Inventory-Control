@@ -25,5 +25,11 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
         /// </summary>
         /// <returns></returns>
         int? GetLastRowId();
+        /// <summary>
+        /// Remove the Last or Specific Invoice 
+        /// </summary>
+        /// <param name="InvoiceGuid"></param>
+        /// <returns></returns>
+        Task<bool> RemoveLastInvoiceAsync(Guid InvoiceGuid);
     }
 }

@@ -1,4 +1,5 @@
-﻿using SmartSolutions.InventoryControl.DAL.Models;
+﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
+using SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.DateAndTimeUtils;
 using SmartSolutions.Util.DictionaryUtils;
@@ -130,7 +131,28 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             }
             return partner;
         }
+        public async Task<BussinessPartnerModel> GetLastAddedPartner()
+        {
+            BussinessPartnerModel partner = null;
+            try
+            {
+                partner = new BussinessPartnerModel();
+                string query = @"SELECT * FROM  BussinessPartner Order by 1 DESC LIMIT 1";
+                var values = await Repository.QueryAsync(query);
+                var value = values.FirstOrDefault();
+                partner.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                partner.Name = value?.GetValueFromDictonary("Name")?.ToString();
+                partner.FullName = value?.GetValueFromDictonary("FullName")?.ToString();
+                partner.BussinessName = value?.GetValueFromDictonary("BussinessName")?.ToString();
+                partner.CreatedAt = value?.GetValueFromDictonary("CreatedAt")?.ToString()?.ToNullableDateTime();
+            }
+            catch (Exception ex)
+            {
 
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return partner;
+        }
         public async Task<double> GetPartnerCurrentBalanceAsync(int partnerId)
         {
             double retVal = 0;
@@ -145,7 +167,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             }
             return retVal;
         }
-
         public async Task<bool> RemoveBussinessPartnerAsync(int? Id)
         {
             bool retVal = false;

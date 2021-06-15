@@ -23,34 +23,39 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         public ProductModel Product { get; set; }
         public ProductColorModel ProductColor { get; set; }
         public ProductSizeModel ProductSize { get; set; }
-        public decimal Price { get; set; }
-        public int Quantity { get; set; }
+        private decimal _Price;
+
+        public decimal Price
+        {
+            get { return _Price; }
+            set { _Price = value; NotifyOfPropertyChange(nameof(Price)); OnPriceChange(); }
+        }
+        private int _Quantity;
+
+        public int Quantity
+        {
+            get { return _Quantity; }
+            set { _Quantity = value; NotifyOfPropertyChange(nameof(Quantity)); }
+        }
+        private double _Total;
+
+        public double Total
+        {
+            get { return _Total = Quantity * (double)Price; }
+            set { _Total = value = Quantity * (double)Price; NotifyOfPropertyChange(nameof(Total)); }
+        }
+
         public bool IsStockIn { get; set; }
         public bool IsStockOut { get; set; }
         public int StockInHand { get; set; }
-        public double Total
+        #endregion
+
+        #region Private Helpers
+        private void OnPriceChange()
         {
-            get => Quantity * (double)Price;
-            set { value = Quantity * (double)Price;}
-        }
-        private string _TotalPrice;
-        public string TotalPrice
-        {
-            get { return Total.ToString(); }
-            set
-            {
-                try
-                {
-                     _TotalPrice = value;
-                    Total = Convert.ToDouble(_TotalPrice);
-                }
-                catch 
-                {
-                    Total = 0;
-                    NotifyOfPropertyChange(nameof(TotalPrice));
-                } 
-              
-            }
+            if (Quantity == 0 || Price == 0) return;
+            Total = Quantity * (double)Price;
+            
         }
         #endregion
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SmartSolutions.InventoryControl.DAL.Models
+namespace SmartSolutions.InventoryControl.DAL.Models.BussinessPartner
 {
     public class BussinessPartnerModel : BaseModel
     {

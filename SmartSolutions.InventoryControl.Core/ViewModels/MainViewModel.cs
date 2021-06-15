@@ -36,7 +36,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
             base.OnActivate();
             NowTime = DateTime.Now;
-            //IsLoading = false;
         }
         public void Product()
         {
