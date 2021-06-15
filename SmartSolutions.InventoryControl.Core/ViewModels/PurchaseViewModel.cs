@@ -148,46 +148,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     IsLoading = false;
                     return;
                 }
-                //if (SelectedProduct != null)
-                //    CurrentItem.Product = SelectedProduct;
-                //else
-                //{
-                //    ProductError = true;
-                //    IsLoading = false;
-                //    return;
-                //}
-                //if (SelectedProductColor != null)
-                //    CurrentItem.ProductColor = SelectedProductColor;
-                //else
-                //{
-                //    ProductColorError = true;
-                //    IsLoading = false;
-                //    return;
-                //}
-                //if (SelectedProductSize != null)
-                //    CurrentItem.ProductSize = SelectedProductSize;
-                //else
-                //{
-                //    ProductSizeError = true;
-                //    IsLoading = false;
-                //    return;
-                //}
-                //if (Quantity > 0)
-                //    CurrentItem.Quantity = Quantity;
-                //else
-                //{
-                //    QuantityError = true;
-                //    IsLoading = false;
-                //    return;
-                //}
-                //if (Price > 0)
-                //    CurrentItem.Price = Price;
-                //else
-                //{
-                //    PriceError = true;
-                //    IsLoading = false;
-                //    return;
-                //}
                 #endregion
 
                 if (ProductGrid != null || ProductGrid?.Count > 0)
