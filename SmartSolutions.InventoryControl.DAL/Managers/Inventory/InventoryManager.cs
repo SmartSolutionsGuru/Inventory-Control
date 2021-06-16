@@ -133,6 +133,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Inventory
             try
             {
                 string query = string.Empty;
+                query = @"SELECT StockInHand FROM Inventory WHERE ";
                 await Repository.QueryAsync(query:query);
             }
             catch (Exception ex)
