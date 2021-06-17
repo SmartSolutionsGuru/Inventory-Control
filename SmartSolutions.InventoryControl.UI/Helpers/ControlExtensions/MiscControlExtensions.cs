@@ -156,6 +156,22 @@ namespace SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions
 
 
 
+        public static bool GetIsBusyProperty(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(IsBusyPropertyProperty);
+        }
+
+        public static void SetIsBusyProperty(DependencyObject obj, bool value)
+        {
+            obj.SetValue(IsBusyPropertyProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for IsBusyProperty.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsBusyPropertyProperty =
+            DependencyProperty.RegisterAttached("IsBusyProperty", typeof(bool), typeof(MiscControlExtensions), new PropertyMetadata(false));
+
+
+
     }
 }
 

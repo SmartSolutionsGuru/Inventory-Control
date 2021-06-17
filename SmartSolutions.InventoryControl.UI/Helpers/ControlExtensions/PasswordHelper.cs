@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace SmartSolutions.InventoryControl.UI.Helpers.ControlHelpers
+namespace SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions
 {
     public static class PasswordHelper
     {   
