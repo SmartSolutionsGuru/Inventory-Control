@@ -2,11 +2,9 @@
 using SmartSolutions.InventoryControl.Core.Helpers;
 using SmartSolutions.InventoryControl.Core.Helpers.WindowHelper;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -18,7 +16,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
 
 
         #region Private Member
-        private readonly IEventAggregator _eventAggregator;
         ///// <summary>
         ///// The window this view model controls
         ///// </summary>

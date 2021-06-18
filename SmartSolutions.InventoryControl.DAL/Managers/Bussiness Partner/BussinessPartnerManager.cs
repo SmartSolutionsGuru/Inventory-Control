@@ -1,5 +1,4 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
-using SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.DateAndTimeUtils;
 using SmartSolutions.Util.DictionaryUtils;
@@ -9,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner

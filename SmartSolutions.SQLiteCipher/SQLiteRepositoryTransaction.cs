@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
+﻿using SmartSolutions.InventoryControl.Plugins.Repositories;
+using System;
 using System.Data.Common;
-using System.Text;
-using System.Threading;
-using System.Linq;
-using SmartSolutions.Util;
-using SmartSolutions.InventoryControl.Plugins.Repositories;
 
 namespace SmartSolutions.InventoryControl.SQLiteCipher
 {

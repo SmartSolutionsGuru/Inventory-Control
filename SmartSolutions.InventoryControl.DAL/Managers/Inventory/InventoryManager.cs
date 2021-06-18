@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.DAL.Managers.Inventory
@@ -115,7 +114,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Inventory
                     {
                         value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                         value?.GetValueFromDictonary("Total")?.ToString()?.ToInt();
-                        value?.GetValueFromDictonary("Balnce")?.ToString()?.ToInt();
+                        value?.GetValueFromDictonary("Balance")?.ToString()?.ToInt();
                     }
                 }
 
@@ -133,7 +132,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Inventory
             try
             {
                 string query = string.Empty;
-                query = @"SELECT StockInHand FROM Inventory WHERE ";
+                query = @"SELECT StockInHand FROM Inventory Order By DESC LIMIT 1 ";
                 await Repository.QueryAsync(query:query);
             }
             catch (Exception ex)
