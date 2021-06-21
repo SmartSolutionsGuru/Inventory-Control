@@ -53,10 +53,15 @@ namespace SmartSolutions.InventoryControl.UI.Views
             var text = control?.Text;
             if (string.IsNullOrEmpty(text))
                 text = "0";
-            var value = Convert.ToInt32(text);
-            if (value < 0)
-                value = 0;
-            ViewModel.CalculateDiscountPrice(value,0);
+            int val = 0;
+            var result = Int32.TryParse(text, out val);
+            if (result)
+            {
+                var value = Convert.ToInt32(text);
+                if (value < 0)
+                    value = 0;
+                ViewModel.CalculateDiscountPrice(value, 0);
+            }
         }
     }
 }

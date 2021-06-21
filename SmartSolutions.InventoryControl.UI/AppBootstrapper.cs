@@ -78,7 +78,7 @@ namespace SmartSolutions.InventoryControl.UI
         protected override IEnumerable<Assembly> SelectAssemblies()
         {
             var assemblies = base.SelectAssemblies().ToList();
-            assemblies.Add(typeof(Core.ViewModels.ShellViewModel).GetTypeInfo().Assembly);
+            assemblies.Add(typeof(ShellViewModel).GetTypeInfo().Assembly);
             return assemblies;
         }
 

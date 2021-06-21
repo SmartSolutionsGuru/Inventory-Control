@@ -53,7 +53,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #region Methods
         public void Handle(Screen screen)
         {
-            if (screen is MainViewModel)
+            if (screen is MainViewModel || screen is Login.LoginViewModel)
                 ActivateItem(screen);
         }
         protected override void OnInitialize()
@@ -115,7 +115,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 }
 
                 Exception ex = null;
-                retVal = true == IoC.Get<Plugins.Repositories.IRepository>()?.IsValidConnection(out ex);
+                retVal = true == IoC.Get<IRepository>()?.IsValidConnection(out ex);
 
             }
             catch (Exception ex)

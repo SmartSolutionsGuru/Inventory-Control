@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using SmartSolutions.InventoryControl.UI.Helpers;
+using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,18 @@ namespace SmartSolutions.InventoryControl.UI.Views
                 string fileName = openFileDialog.FileNames.FirstOrDefault();
                 BitmapImage Image = new BitmapImage(new Uri(fileName));
                 ViewModel.PaymentImage = Image?.ToByteArray();
+            }
+        }
+
+        private void AutoCompleteTextBox_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                var control = sender as TextBox;
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
     }

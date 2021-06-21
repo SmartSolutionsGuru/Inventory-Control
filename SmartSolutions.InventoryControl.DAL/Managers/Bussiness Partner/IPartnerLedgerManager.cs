@@ -11,5 +11,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
     {
         Task<BussinessPartnerLedgerModel> GetPartnerLedgerLastBalance(int partnerId);
         Task<bool> AddPartnerBalance(BussinessPartnerLedgerModel partnerLedger);
+        Task<bool> UpdatePartnerBalance(BussinessPartnerLedgerModel partnerLedger);
     }
 }

@@ -86,9 +86,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 var newProduct = new InventoryModel();
                 newProduct.InvoiceGuid = PurchaseInvoice.InvoiceGuid;
                 newProduct.InvoiceId = PurchaseInvoice.InvoiceId;
-                if (product != null)
-                    InvoiceTotal += product.Total;
-                GrandTotal = PreviousBalance + InvoiceTotal;
+                CalculateInvoiceTotal();
                 ProductGrid.Add(newProduct);
                 ProductSuggetion = new ProductSuggestionProvider(Products);
             }
@@ -103,7 +101,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             {
                 if (AutoId == 1)
                 {
-                    //CurrentItem = new InventoryModel();
                     ProductGrid.Remove(product);
                     product = new InventoryModel();
                     ProductGrid.Add(product);
@@ -123,7 +120,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        public async void SaveTransaction()
+        public async void SaveInvoice()
         {
             try
             {
@@ -170,6 +167,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     PurchaseInvoice.Payment = Payment;
                     PurchaseInvoice.IsAmountPaid = true;
                     PurchaseInvoice.IsAmountRecived = false;
+                    PurchaseInvoice.IsPurchaseInvoice = true;
                     PurchaseInvoice.TransactionType = SelectedPurchaseType;
                     bool transactionResult = await _InvoiceManager.SaveInoiceAsync(PurchaseInvoice);
                     if (transactionResult)
@@ -180,11 +178,35 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                             if (lastRowId > 0)
                             {
                                 var resultInventory = await _inventoryManager.AddBulkInventoryAsync(productList);
+                                if (resultInventory)
+                                {
+
+                                }
                             }
                         }
                     }
                     IsLoading = false;
                 }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+        private void Clear()
+        {
+            try
+            {
+                SelectedPurchaseType = string.Empty;
+                SelectedPartner = new BussinessPartnerModel();
+                ProductGrid = new ObservableCollection<InventoryModel>();
+                InvoiceTotal = 0;
+                PercentDiscount = 0;
+                DiscountPrice = 0;
+                Payment = 0;
+                PaymentImage = null;
+               
+
             }
             catch (Exception ex)
             {
@@ -218,7 +240,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-
+        private void CalculateInvoiceTotal()
+        {
+            if (ProductGrid != null || ProductGrid?.Count > 0)
+            {
+                InvoiceTotal = 0;
+                foreach (var product in ProductGrid)
+                {
+                    InvoiceTotal += product.Total;
+                }
+                GrandTotal = InvoiceTotal + PreviousBalance;
+            }
+        }
         public void CalculateDiscountPrice(int percentDiscount, double discountAmount)
         {
             if (percentDiscount != 0)

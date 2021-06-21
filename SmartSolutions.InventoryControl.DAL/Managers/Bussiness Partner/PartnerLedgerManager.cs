@@ -41,14 +41,16 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 if (partnerLedger == null) return false;
                 string query = string.Empty;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters["@v_PartnerId"] = partnerLedger.Partner?.Id;
-                parameters["@v_InvoiceId"] = partnerLedger.InvoiceId;
-                parameters["@v_InvoiceGuid"] = partnerLedger.InvoiceGuid;
-                parameters["@v_IsBalancePayable"] = partnerLedger.IsBalancePayable;
-                parameters["@v_AmountRecivable"] = partnerLedger.AmountReciveable;
-                parameters["@v_AmountPayable"] = partnerLedger.AmountPayable;
-                parameters["@v_BalanceAmount"] = partnerLedger.BalanceAmount;
-                parameters["@v_Description"] = partnerLedger.Description;
+                parameters["@v_PartnerId"] = partnerLedger?.Partner?.Id;
+                parameters["@v_InvoiceId"] = partnerLedger?.InvoiceId;
+                parameters["@v_InvoiceGuid"] = partnerLedger?.InvoiceGuid;
+                parameters["@v_IsBalancePayable"] = partnerLedger?.IsBalancePayable;
+                parameters["@v_AmountRecivable"] = partnerLedger?.AmountReciveable;
+                parameters["@v_AmountPayable"] = partnerLedger?.AmountPayable;
+                parameters["@v_IsAmountRecived"] = partnerLedger?.IsAmountReceived ?? true;
+                parameters["@v_IsAmountPaid"] = partnerLedger?.IsAmountPaid ?? false;
+                parameters["@v_BalanceAmount"] = partnerLedger?.BalanceAmount;
+                parameters["@v_Description"] = partnerLedger?.Description;
                 parameters["@v_IsActive"] = partnerLedger.IsActive = true;
                 parameters["@v_IsDeleted"] = partnerLedger.IsDeleted = false;
                 parameters["@v_CreatedAt"] = partnerLedger.CreatedAt == null ? DateTime.Now : partnerLedger.CreatedAt;
@@ -56,7 +58,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 parameters["@v_UpdatedAt"] = partnerLedger.UpdatedAt == null ? DBNull.Value : (object)partnerLedger.UpdatedAt;
                 parameters["@v_UpdatedBy"] = partnerLedger.UpdatedBy == null ? DBNull.Value : (object)partnerLedger.UpdatedBy;
 
-                query = @"INSERT INTO PartnerLedger(PartnerId,InvoiceId,InvoiceGuid,IsBalancePayable,AmountReciveable,AmountPayable,BalanceAmount,Description,IsActive,IsDeleted,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                query = @"INSERT INTO PartnerLedger(PartnerId,InvoiceId,InvoiceGuid,IsBalancePayable,AmountReciveable,AmountPayable,IsAmountRecived,IsAmountPaid,BalanceAmount,Description,IsActive,IsDeleted,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
                                     VALUES(@v_PartnerId,@v_InvoiceId,@v_InvoiceGuid,@v_IsBalancePayable,@v_AmountReciveable,@v_AmountPayable,@v_BalanceAmount,@v_Description,@v_IsActive,@v_IsDeleted,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy);";
                var result =  await Repository.NonQueryAsync(query: query, parameters: parameters);
                 retVal = result > 0 ?  true : false;
@@ -94,6 +96,45 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             }
             catch (Exception ex)
             {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
+        }
+
+        public async Task<bool> UpdatePartnerBalance(BussinessPartnerLedgerModel partnerLedger)
+        {
+            bool retVal = false;
+            try
+            {
+
+                if (partnerLedger == null) return false;
+                string query = string.Empty;
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_PartnerId"] = partnerLedger.Partner?.Id;
+                parameters["@v_InvoiceId"] = partnerLedger.InvoiceId;
+                parameters["@v_InvoiceGuid"] = partnerLedger.InvoiceGuid;
+                parameters["@v_IsBalancePayable"] = partnerLedger.IsBalancePayable;
+                parameters["@v_AmountRecivable"] = partnerLedger.AmountReciveable;
+                parameters["@v_AmountPayable"] = partnerLedger.AmountPayable;
+                parameters["@v_IsAmountRecived"] = partnerLedger?.IsAmountReceived ?? true;
+                parameters["@v_IsAmountPaid"] = partnerLedger?.IsAmountPaid ?? false;
+                parameters["@v_BalanceAmount"] = partnerLedger.BalanceAmount;
+                parameters["@v_Description"] = partnerLedger.Description;
+                parameters["@v_IsActive"] = partnerLedger.IsActive = true;
+                parameters["@v_IsDeleted"] = partnerLedger.IsDeleted = false;
+                parameters["@v_CreatedAt"] = partnerLedger.CreatedAt == null ? DateTime.Now : partnerLedger.CreatedAt;
+                parameters["@v_CreatedBy"] = partnerLedger.CreatedBy == null ? DBNull.Value : (object)partnerLedger.CreatedBy;
+                parameters["@v_UpdatedAt"] = partnerLedger.UpdatedAt == null ? DBNull.Value : (object)partnerLedger.UpdatedAt;
+                parameters["@v_UpdatedBy"] = partnerLedger.UpdatedBy == null ? DBNull.Value : (object)partnerLedger.UpdatedBy;
+
+                query = @"INSERT INTO PartnerLedger(PartnerId,InvoiceId,InvoiceGuid,IsBalancePayable,AmountReciveable,AmountPayable,IsAmountRecived,IsAmountPaid,BalanceAmount,Description,IsActive,IsDeleted,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                    VALUES(@v_PartnerId,@v_InvoiceId,@v_InvoiceGuid,@v_IsBalancePayable,@v_AmountReciveable,@v_AmountPayable,@v_BalanceAmount,@v_Description,@v_IsActive,@v_IsDeleted,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy);";
+                var result = await Repository.NonQueryAsync(query: query, parameters: parameters);
+                retVal = result > 0 ? true : false;
+            }
+            catch (Exception ex)
+            {
+
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return retVal;

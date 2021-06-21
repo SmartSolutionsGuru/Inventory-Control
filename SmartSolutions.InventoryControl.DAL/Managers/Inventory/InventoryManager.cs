@@ -1,4 +1,5 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.Inventory;
+using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.DictionaryUtils;
 using SmartSolutions.Util.LogUtils;
@@ -30,7 +31,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Inventory
             bool retVal = false;
             try
             {
-                if(models != null || models?.Count > 0)
+                if (models != null || models?.Count > 0)
                 {
                     foreach (var model in models)
                     {
@@ -52,22 +53,23 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Inventory
             bool retVal = false;
             try
             {
+                var lastStock = await GetLastStockInHandAsync(model?.Product, model?.ProductColor, model?.ProductSize);
                 if (model == null) return false;
                 string query = string.Empty;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters["@v_InvoiceId"] = model.InvoiceId;
-                parameters["@v_InvoiceGuid"] = model.InvoiceGuid;
-                parameters["@v_ProductId"] = model.Product.Id;
-                parameters["@v_ProductColorId"] = model.ProductColor.Id;
-                parameters["@v_ProductSizeId"] = model.ProductSize.Id;
-                parameters["@v_Price"] = model.Price;
-                parameters["@v_Quantity"] = model.Quantity;
-                parameters["@v_StockInHand"] = model.StockInHand;
-                parameters["@v_IsStockIn"] = model.IsStockIn;
-                parameters["@v_IsStockOut"] = model.IsStockOut;
-                parameters["@v_Total"] = model.Total;
+                parameters["@v_InvoiceId"] = model?.InvoiceId;
+                parameters["@v_InvoiceGuid"] = model?.InvoiceGuid;
+                parameters["@v_ProductId"] = model?.Product.Id;
+                parameters["@v_ProductColorId"] = model?.ProductColor.Id;
+                parameters["@v_ProductSizeId"] = model?.ProductSize.Id;
+                parameters["@v_Price"] = model?.Price;
+                parameters["@v_Quantity"] = model?.Quantity;
+                parameters["@v_StockInHand"] = model.StockInHand = (lastStock.StockInHand + model.Quantity);
+                parameters["@v_IsStockIn"] = model.IsStockIn = true;
+                parameters["@v_IsStockOut"] = model.IsStockOut = false;
+                parameters["@v_Total"] = model?.Total;
                 parameters["@v_IsActive"] = model.IsActive = true;
-                parameters["@v_IsDeleted"] = model.IsDeleted;
+                parameters["@v_IsDeleted"] = model.IsDeleted = false;
                 parameters["@v_CreatedAt"] = model.CreatedAt == null ? DateTime.Now : model.CreatedAt;
                 parameters["@v_CreatedBy"] = model.CreatedBy == null ? DBNull.Value : (object)model.CreatedBy;
                 parameters["@v_UpdatedAt"] = model.UpdatedAt == null ? DBNull.Value : (object)model.UpdatedAt;
@@ -89,7 +91,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Inventory
             bool retVal = false;
             try
             {
-
+                string query = string.Empty;
+                await Repository.NonQueryAsync(query);
             }
             catch (Exception ex)
             {
@@ -126,18 +129,27 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Inventory
             return balance;
         }
 
-        public async Task<int> GetLastStockInHandAsync(InventoryModel model)
+        public async Task<InventoryModel> GetLastStockInHandAsync(ProductModel product, ProductColorModel color, ProductSizeModel size)
         {
-            int retVal = 0;
+            var retVal = new InventoryModel();
             try
             {
+                if (product == null || color == null || size == null) return null;
                 string query = string.Empty;
-                query = @"SELECT StockInHand FROM Inventory Order By DESC LIMIT 1 ";
-                await Repository.QueryAsync(query:query);
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_ProductId"] = product?.Id;
+                parameters["@v_ProductColorId"] = color?.Id;
+                parameters["@v_ProductSizeId"] = size?.Id;
+                query = @"SELECT StockInHand,Price FROM Inventory WHERE ProductId = @v_ProductId AND ProductColorId = @v_ProductColorId AND ProductSizeId = @v_ProductSizeId  Order By 1 ASC LIMIT 1;";
+                var values = await Repository.QueryAsync(query: query, parameters: parameters);
+                if (values != null || values?.Count > 0)
+                {
+                    retVal.StockInHand = values?.FirstOrDefault()?.GetValueFromDictonary("StockInHand")?.ToString()?.ToInt() ?? 0;
+                    retVal.Price = values?.FirstOrDefault()?.GetValueFromDictonary("Price")?.ToString()?.ToInt() ?? 0;
+                }
             }
             catch (Exception ex)
             {
-
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return retVal;
@@ -161,6 +173,65 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Inventory
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return Id.Value;
+        }
+
+        public async Task<bool> RemoveBulkInventoryAsync(List<InventoryModel> models)
+        {
+            bool retVal = false;
+            try
+            {
+                if (models != null)
+                {
+                    foreach (var product in models)
+                    {
+                        await RemoveInventoryAsync(product);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
+        }
+
+        public async Task<bool> RemoveInventoryAsync(InventoryModel model)
+        {
+            bool retVal = false;
+            try
+            {
+                var lastStock = await GetLastStockInHandAsync(model?.Product, model?.ProductColor, model?.ProductSize);
+                if (model == null) return false;
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_InvoiceId"] = model?.InvoiceId;
+                parameters["@v_InvoiceGuid"] = model?.InvoiceGuid;
+                parameters["@v_ProductId"] = model?.Product.Id;
+                parameters["@v_ProductColorId"] = model?.ProductColor.Id;
+                parameters["@v_ProductSizeId"] = model?.ProductSize.Id;
+                parameters["@v_Price"] = model?.Price;
+                parameters["@v_Quantity"] = model?.Quantity;
+                parameters["@v_StockInHand"] = model.StockInHand = (lastStock.StockInHand - model.Quantity);
+                parameters["@v_IsStockIn"] = model.IsStockIn = false;
+                parameters["@v_IsStockOut"] = model.IsStockOut = true;
+                parameters["@v_Total"] = model?.Total;
+                parameters["@v_IsActive"] = model.IsActive = true;
+                parameters["@v_IsDeleted"] = model.IsDeleted = false;
+                parameters["@v_CreatedAt"] = model.CreatedAt == null ? DateTime.Now : model.CreatedAt;
+                parameters["@v_CreatedBy"] = model.CreatedBy == null ? DBNull.Value : (object)model.CreatedBy;
+                parameters["@v_UpdatedAt"] = model.UpdatedAt == null ? DBNull.Value : (object)model.UpdatedAt;
+                parameters["@v_UpdatedBy"] = model.UpdatedBy == null ? DBNull.Value : (object)model.UpdatedBy;
+                string query = string.Empty;
+                query = @"INSERT INTO Inventory (InvoiceId,InvoiceGuid,ProductId,ProductColorId,ProductSizeId,Price,Quantity,IsStockIn,IsStockOut,StockInHand,Total,IsActive,IsDeleted,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                        VALUES(@v_InvoiceId,@v_InvoiceGuid,@v_ProductId,@v_ProductColorId,@v_ProductSizeId,@v_Price,@v_Quantity,@v_IsStockIn,@v_IsStockOut,@v_StockInHand,@v_Total,@v_IsActive,@v_IsDeleted,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
+                var result = await Repository.NonQueryAsync(query, parameters: parameters);
+                retVal = result > 0 ? true : false;
+            }
+            catch (Exception ex)
+            {
+
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
         }
         #endregion
     }

@@ -1,28 +1,59 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.Product;
+using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Text;
 
 namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
 {
+    [Export(typeof(InventoryModel)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class InventoryModel : BaseModel
     {
+        private readonly Managers.Inventory.IInventoryManager _inventoryManager;
         #region Constructor
+        [ImportingConstructor]
         public InventoryModel()
         {
 
             Product = new ProductModel();
             ProductColor = new ProductColorModel();
             ProductSize = new ProductSizeModel();
+            _inventoryManager = new Managers.Inventory.InventoryManager();
+
         }
-        #endregion                                                  
+        #endregion
+        #region Private Methods
+        private async void GetStockInHand()
+        {
+            try
+            {
+                if (Product.Id == null || ProductColor.Id == null || ProductSize.Id == null) return;
+                var resultStock  = await _inventoryManager.GetLastStockInHandAsync(Product, ProductColor, ProductSize);
+                 StockInHand = resultStock.StockInHand;
+                ProductLastPrice = resultStock.Price;
+                IsProductSizeSelected = true;
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+        #endregion
 
         #region Properties
         public string InvoiceId { get; set; }
         public Guid InvoiceGuid { get; set; }
         public ProductModel Product { get; set; }
         public ProductColorModel ProductColor { get; set; }
-        public ProductSizeModel ProductSize { get; set; }
+        private ProductSizeModel _ProductSize;
+
+        public ProductSizeModel ProductSize
+        {
+            get { return _ProductSize; }
+            set { _ProductSize = value; NotifyOfPropertyChange(nameof(ProductSize)); GetStockInHand(); }
+        }
+
         private decimal _Price;
 
         public decimal Price
@@ -35,7 +66,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         public int Quantity
         {
             get { return _Quantity; }
-            set { _Quantity = value; NotifyOfPropertyChange(nameof(Quantity)); }
+            set { _Quantity = value; NotifyOfPropertyChange(nameof(Quantity)); StockInHand -= Quantity; }
         }
         private double _Total;
 
@@ -47,7 +78,31 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
 
         public bool IsStockIn { get; set; }
         public bool IsStockOut { get; set; }
-        public int StockInHand { get; set; }
+        private decimal _ProductLastPrice;
+
+        public decimal ProductLastPrice
+        {
+            get { return _ProductLastPrice; }
+            set { _ProductLastPrice = value;  NotifyOfPropertyChange(nameof(ProductLastPrice)); }
+        }
+
+
+        private int _StockInHand;
+
+        public int StockInHand
+        {
+            get { return _StockInHand; }
+            set { _StockInHand = value; NotifyOfPropertyChange(nameof(StockInHand)); }
+        }
+
+        private bool _IsProductSizeSelected;
+
+        public bool IsProductSizeSelected
+        {
+            get { return _IsProductSizeSelected; }
+            set { _IsProductSizeSelected = value; NotifyOfPropertyChange(nameof(IsProductSizeSelected)); }
+        }
+
         #endregion
 
         #region Private Helpers
@@ -55,7 +110,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         {
             if (Quantity == 0 || Price == 0) return;
             Total = Quantity * (double)Price;
-            
+
         }
         #endregion
     }
