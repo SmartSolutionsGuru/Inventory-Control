@@ -9,7 +9,6 @@
         xmlns:Ap="clr-namespace:SmartSolutions.InventoryControl.UI.AttachedProperties"
         mc:Ignorable="d"
         Title="InventoryControl"
-        MaxHeight="740"
         MinWidth="{Binding WindowMinimumWidth,Mode=OneWay}"
         MinHeight="{Binding WindowMinimumHeight,Mode=OneWay}"
         Activated="OnActivated"
@@ -284,13 +283,16 @@
     <WindowChrome.WindowChrome>
         <WindowChrome
             ResizeBorderThickness="{Binding ResizeBorderThickness}"
-            CaptionHeight="{Binding TitleHeight}"
+            CaptionHeight="{Binding TitleHeight,Mode=OneWay}"
             CornerRadius="0"
             GlassFrameThickness="0"/>
     </WindowChrome.WindowChrome>
-    <Grid>
+    <Grid >
         <!--#region Main Grid-->
-        <Grid Background="{StaticResource PureWhiteColorBrush}">
+        <Grid>
+            <Grid.Background>
+                <ImageBrush ImageSource="/Assets/Background.jpg" />
+            </Grid.Background>
             <ContentControl x:Name="ActiveItem"/>
             <!--Dialog For Displaying Content On Main Window-->
             <ContentControl x:Name="Dialog"

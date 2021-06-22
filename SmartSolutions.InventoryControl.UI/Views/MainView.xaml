@@ -374,9 +374,9 @@
                 </Grid>
                 <Border Grid.Column="1" BorderThickness="1" BorderBrush="{StaticResource LightGrayColorBrush}">
                     <Grid>
-                        <Grid.Background>
+                        <!--<Grid.Background>
                             <ImageBrush ImageSource="/Assets/background.png" Opacity="0.5"  Stretch="UniformToFill" />
-                        </Grid.Background>
+                        </Grid.Background>-->
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />

@@ -175,7 +175,7 @@
     <Style TargetType="{x:Type PasswordBox}" x:Key="PasswordBoxVisibilityPathIconStyle">
         <Setter Property="ControlExtensions:WaterMarkTextExtension.IsMonitoring" Value="False"/>
         <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkText" Value="" />
-        <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkColor" Value="{StaticResource GrayColorBrush2}" />
+        <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkColor" Value="{StaticResource LightGrayColorBrush}" />
         <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconPath" Value="{StaticResource Shape_Home}"/>
         <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility" Value="Visible" />
         <Setter Property="ControlExtensions:PasswordHelper.PasswordIconPath" Value="{StaticResource Shape_ShowPassword}"/>
