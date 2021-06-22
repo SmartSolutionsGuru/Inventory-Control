@@ -58,6 +58,7 @@ namespace SmartBooks.Repo.Identity
         #region Private Class for Authenticating User
         private class InternalUserData
         {
+            #region Default Constructor
             public InternalUserData(string username, string email, string hashedPassword, List<RoleModel> roles)
             {
                 Username = username;
@@ -65,29 +66,17 @@ namespace SmartBooks.Repo.Identity
                 HashedPassword = hashedPassword;
                 Roles = roles;
             }
-            public string Username
-            {
-                get;
-                private set;
-            }
+            #endregion
 
-            public string Email
-            {
-                get;
-                private set;
-            }
+            #region Public Properties
+            public string Username { get; private set;}
 
-            public string HashedPassword
-            {
-                get;
-                private set;
-            }
+            public string Email { get; private set;}
 
-            public List<RoleModel> Roles
-            {
-                get;
-                private set;
-            }
+            public string HashedPassword { get; private set;}
+
+            public List<RoleModel> Roles { get;private set;}
+            #endregion
         }
         #endregion
     }

@@ -30,16 +30,16 @@ namespace SmartSolutions.InventoryControl.SQLiteCipher
 
         private static ManualResetEvent transactionEndedEvent = new ManualResetEvent(false);
 
-       
+
         public void Setup(ConnectionInfo info)
         {
             _connectionInfo = info;
-           
+
         }
 
         private void CreateConnection(ConnectionInfo connectionInfo)
         {
-            
+
             var info = connectionInfo ?? _connectionInfo ?? ConnectionInfo.Instance ?? new ConnectionInfo();
             if (string.IsNullOrEmpty(info.Password))
                 info.Password = null;
@@ -48,7 +48,7 @@ namespace SmartSolutions.InventoryControl.SQLiteCipher
                 Dictionary<string, string> param = new Dictionary<string, string>();
                 if (!string.IsNullOrEmpty(info.Path))
                     param["Data Source"] = info.Path;
-              
+
 
                 if (param.Count <= 0) throw new ArgumentException("Error While Creating Connection String");
                 info.ConnectionString = string.Format("{0};", string.Join("; ", param.Select(x => $"{x.Key}={x.Value}")));
@@ -63,141 +63,141 @@ namespace SmartSolutions.InventoryControl.SQLiteCipher
             DbConnection conn = null;
             try
             {
-               
+
                 // Initialize the connection
                 CreateConnection(connectionInfo);
 
                 string uuid = Guid.NewGuid().ToString();
 
-              
-                        try
-                        {
-                            var db_path = (connectionInfo ?? _connectionInfo).Path;
-                            if (transaction?.Connection != null)
-                                conn = transaction?.Connection;
-                            else if (DbConnections.ContainsKey(db_path))
-                                conn = DbConnections[db_path];
-                            else
-                                conn = DbConnections[db_path] = new SmartSQLiteConnection(new SQLite.SQLiteConnection(new SQLite.SQLiteConnectionString((connectionInfo ?? _connectionInfo).Path, key: (connectionInfo ?? _connectionInfo).Password, storeDateTimeAsTicks: false, storeTimeSpanAsTicks: false, openFlags: OpenFlags, dateTimeStringFormat: DB_DATE_FORMAT)));
 
-                            if (transaction == null && conn == ActiveTransaction?.Connection)
-                                transactionEndedEvent.WaitOne();
-                            //lock (conn)
-                            {
-                                if (conn.State == ConnectionState.Closed)
-                                    conn.Open();
+                try
+                {
+                    var db_path = (connectionInfo ?? _connectionInfo).Path;
+                    if (transaction?.Connection != null)
+                        conn = transaction?.Connection;
+                    else if (DbConnections.ContainsKey(db_path))
+                        conn = DbConnections[db_path];
+                    else
+                        conn = DbConnections[db_path] = new SmartSQLiteConnection(new SQLite.SQLiteConnection(new SQLite.SQLiteConnectionString((connectionInfo ?? _connectionInfo).Path, key: (connectionInfo ?? _connectionInfo).Password, storeDateTimeAsTicks: false, storeTimeSpanAsTicks: false, openFlags: OpenFlags, dateTimeStringFormat: DB_DATE_FORMAT)));
+
+                    if (transaction == null && conn == ActiveTransaction?.Connection)
+                        transactionEndedEvent.WaitOne();
+                    //lock (conn)
+                    {
+                        if (conn.State == ConnectionState.Closed)
+                            conn.Open();
 #if DEBUG
-                                write_log = System.Diagnostics.Debugger.IsAttached || write_log;
+                        write_log = System.Diagnostics.Debugger.IsAttached || write_log;
 #endif
-                                if (!string.IsNullOrEmpty(filename))
-                                {
-                                    query = QueryHelper.GetQuery(filename, DBTypes.SQLITE);
-                                    if (write_log)
-                                        LogMessage.Write($"DB QUERY - ({uuid}) filename: {filename}, parameters: {string.Join(" ", (parameters?.Select(x => $"SET {x.Key}={(x.Value == null ? "NULL" : $"'{x.Value}'")};").ToArray() ?? new string[] { "N/A" }))}", LogMessage.Levels.Debug);
-                                }
-                                else if (!string.IsNullOrEmpty(procedure))
-                                {
-                                    query = procedure;
-                                    if (write_log)
-                                        LogMessage.Write($"DB QUERY - ({uuid}) procedure: {procedure}, parameters: {string.Join(" ", (parameters?.Select(x => $"SET {x.Key}={(x.Value == null ? "NULL" : $"'{x.Value}'")};").ToArray() ?? new string[] { "N/A" }))}", LogMessage.Levels.Debug);
-                                }
+                        if (!string.IsNullOrEmpty(filename))
+                        {
+                            query = QueryHelper.GetQuery(filename, DBTypes.SQLITE);
+                            if (write_log)
+                                LogMessage.Write($"DB QUERY - ({uuid}) filename: {filename}, parameters: {string.Join(" ", (parameters?.Select(x => $"SET {x.Key}={(x.Value == null ? "NULL" : $"'{x.Value}'")};").ToArray() ?? new string[] { "N/A" }))}", LogMessage.Levels.Debug);
+                        }
+                        else if (!string.IsNullOrEmpty(procedure))
+                        {
+                            query = procedure;
+                            if (write_log)
+                                LogMessage.Write($"DB QUERY - ({uuid}) procedure: {procedure}, parameters: {string.Join(" ", (parameters?.Select(x => $"SET {x.Key}={(x.Value == null ? "NULL" : $"'{x.Value}'")};").ToArray() ?? new string[] { "N/A" }))}", LogMessage.Levels.Debug);
+                        }
+                        else
+                        {
+                            if (write_log)
+                                LogMessage.Write($"DB QUERY - ({uuid}) query: {query}, parameters: {string.Join(" ", (parameters?.Select(x => $"SET {x.Key}={(x.Value == null ? "NULL" : $"'{x.Value}'")};").ToArray() ?? new string[] { "N/A" }))}", LogMessage.Levels.Debug);
+                        }
+
+                        DbCommand cmd = conn.CreateCommand();
+                        cmd.CommandText = query;
+                        if (timeout.HasValue)
+                            cmd.CommandTimeout = timeout.Value;
+
+                        if (!string.IsNullOrEmpty(procedure) && procedure?.Equals(query) == true)
+                            cmd.CommandType = CommandType.StoredProcedure;
+
+                        if (parameters != null)
+                        {
+                            var keys = parameters.Keys.ToList();
+                            foreach (var key in keys)
+                            {
+                                var value = parameters[key];
+
+                                if ((key == "@p_tablename" || key == "@p_database_name") && value is string)
+                                    cmd.CommandText = cmd.CommandText?.Replace(key, value as string);
+
+                                var parameter = cmd.CreateParameter();
+                                parameter.ParameterName = key;
+                                parameter.DbType = GetDbType(value);
+                                //parameter.SqliteType = GetSqliteType(parameter.DbType);
+                                if (value == null)
+                                    parameter.Value = DBNull.Value;
                                 else
-                                {
-                                    if (write_log)
-                                        LogMessage.Write($"DB QUERY - ({uuid}) query: {query}, parameters: {string.Join(" ", (parameters?.Select(x => $"SET {x.Key}={(x.Value == null ? "NULL" : $"'{x.Value}'")};").ToArray() ?? new string[] { "N/A" }))}", LogMessage.Levels.Debug);
-                                }
+                                    parameter.Value = value;
 
-                                DbCommand cmd = conn.CreateCommand();
-                                cmd.CommandText = query;
-                                if (timeout.HasValue)
-                                    cmd.CommandTimeout = timeout.Value;
-
-                                if (!string.IsNullOrEmpty(procedure) && procedure?.Equals(query) == true)
-                                    cmd.CommandType = CommandType.StoredProcedure;
-
-                                if (parameters != null)
-                                {
-                                    var keys = parameters.Keys.ToList();
-                                    foreach (var key in keys)
-                                    {
-                                        var value = parameters[key];
-
-                                        if ((key == "@p_tablename" || key == "@p_database_name") && value is string)
-                                            cmd.CommandText = cmd.CommandText?.Replace(key, value as string);
-
-                                        var parameter = cmd.CreateParameter();
-                                        parameter.ParameterName = key;
-                                        parameter.DbType = GetDbType(value);
-                                        //parameter.SqliteType = GetSqliteType(parameter.DbType);
-                                        if (value == null)
-                                            parameter.Value = DBNull.Value;
-                                        else
-                                            parameter.Value = value;
-
-                                        cmd.Parameters.Add(parameter);
-                                    }
-                                }
-
-                                if (out_parameters != null)
-                                {
-                                    var keys = out_parameters.Keys.ToList();
-                                    foreach (var key in keys)
-                                    {
-                                        var value = parameters[key];
-
-                                        if ((key == "@p_tablename" || key == "@p_database_name") && value is string)
-                                            cmd.CommandText = cmd.CommandText?.Replace(key, value as string);
-
-                                        var parameter = cmd.CreateParameter();
-                                        parameter.ParameterName = key;
-                                        parameter.DbType = GetDbType(value);
-                                        if (value == null)
-                                            parameter.Value = DBNull.Value;
-                                        else
-                                            parameter.Value = value;
-                                        parameter.Direction = ParameterDirection.Output;
-
-                                        cmd.Parameters.Add(parameter);
-                                    }
-                                }
-
-                                var reader = cmd.ExecuteReader();
-
-                                if (write_log)
-                                    LogMessage.Write($"DB QUERY Completed - ({uuid})", LogMessage.Levels.Debug);
-                                if (reader != null)
-                                {
-                                    while (reader.Read())
-                                    {
-                                        retVal = retVal ?? new List<Dictionary<string, object>>();
-                                        Dictionary<string, object> dict = new Dictionary<string, object>();
-                                        for (int i = 0; i < reader.FieldCount; i++)
-                                        {
-                                            dict[reader.GetName(i)] = reader[i] != DBNull.Value ? reader[i] : null;
-                                        }
-
-                                        retVal.Add(dict);
-                                    }
-                                }
-
-                                if (out_parameters != null)
-                                {
-                                    var keys = out_parameters.Keys.ToList();
-                                    foreach (var key in keys)
-                                    {
-                                        out_parameters[key] = cmd.Parameters[key]?.Value;
-                                    }
-                                }
+                                cmd.Parameters.Add(parameter);
                             }
                         }
-                        catch (Exception ex)
+
+                        if (out_parameters != null)
                         {
-                            error = ex;
+                            var keys = out_parameters.Keys.ToList();
+                            foreach (var key in keys)
+                            {
+                                var value = parameters[key];
+
+                                if ((key == "@p_tablename" || key == "@p_database_name") && value is string)
+                                    cmd.CommandText = cmd.CommandText?.Replace(key, value as string);
+
+                                var parameter = cmd.CreateParameter();
+                                parameter.ParameterName = key;
+                                parameter.DbType = GetDbType(value);
+                                if (value == null)
+                                    parameter.Value = DBNull.Value;
+                                else
+                                    parameter.Value = value;
+                                parameter.Direction = ParameterDirection.Output;
+
+                                cmd.Parameters.Add(parameter);
+                            }
                         }
-                        finally
+
+                        var reader = cmd.ExecuteReader();
+
+                        if (write_log)
+                            LogMessage.Write($"DB QUERY Completed - ({uuid})", LogMessage.Levels.Debug);
+                        if (reader != null)
                         {
-                        
+                            while (reader.Read())
+                            {
+                                retVal = retVal ?? new List<Dictionary<string, object>>();
+                                Dictionary<string, object> dict = new Dictionary<string, object>();
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    dict[reader.GetName(i)] = reader[i] != DBNull.Value ? reader[i] : null;
+                                }
+
+                                retVal.Add(dict);
+                            }
                         }
+
+                        if (out_parameters != null)
+                        {
+                            var keys = out_parameters.Keys.ToList();
+                            foreach (var key in keys)
+                            {
+                                out_parameters[key] = cmd.Parameters[key]?.Value;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    error = ex;
+                }
+                finally
+                {
+
+                }
 
                 if (write_log)
                     LogMessage.Write($"DB QUERY Returning - ({uuid})", LogMessage.Levels.Debug);
@@ -364,7 +364,7 @@ namespace SmartSolutions.InventoryControl.SQLiteCipher
                                 }
                             }
 
-                            
+
 
                             if (out_parameters != null)
                             {
@@ -383,7 +383,7 @@ namespace SmartSolutions.InventoryControl.SQLiteCipher
                     }
                     finally
                     {
-                       
+
                     }
                 }
                 if (write_log)
@@ -539,7 +539,7 @@ namespace SmartSolutions.InventoryControl.SQLiteCipher
                         }
                         finally
                         {
-                           
+
                         }
                     }
                 }

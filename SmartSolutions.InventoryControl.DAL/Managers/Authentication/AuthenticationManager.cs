@@ -80,15 +80,10 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Authentication
                     {
                         var resultRole = selectedUser?.UserRoles?.Where(x => x.RoleId == roleId && x.IsActive == true).FirstOrDefault();
                         if (resultRole.IsActive == true)
-                        {
                             return new IdentityUserModel(selectedUser, string.Empty, role: null, roles.ToList());
-                        }
                         else
-                        {
                             return null;
-                        }
                     }
-
                     return new IdentityUserModel(selectedUser, string.Empty, role: null, roles.ToList());
 
                 }
