@@ -60,8 +60,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             base.OnInitialize();
             dbFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName, "InventoryControl.db");
-            //Handle(IoC.Get<MainViewModel>());
-            Handle(IoC.Get<Login.LoginViewModel>());
+            Handle(IoC.Get<MainViewModel>());
+           // Handle(IoC.Get<Login.LoginViewModel>());
         }
         protected override void OnActivate()
         {
