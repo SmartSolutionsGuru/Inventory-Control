@@ -67,11 +67,12 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Authentication
         {
             #region New Implementation
             IdentityUserModel identityModel = new IdentityUserModel();
+            string hashedPassword = string.Empty;
             allUsers = await GetAllUserAsync();
             if (allUsers.Count() > 0)
             {
-                var hasedPassword = Encryption.Encrypt(Encryption.EncryptionType.MD5, clearTextPassword);
-                var selectedUser = allUsers.Where(x => x.DisplayName == username && x.PasswordHash == hasedPassword).FirstOrDefault();
+                 hashedPassword = Encryption.Encrypt(Encryption.EncryptionType.MD5, clearTextPassword);
+                var selectedUser = allUsers.Where(x => x.FirstName.Equals(username) && x.PasswordHash.Equals(hashedPassword)).FirstOrDefault();
                 if (selectedUser != null)
                 {
                     var roles = await GetUserAllRoleAsync(selectedUser.Id.Value);
@@ -134,7 +135,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Authentication
             List<IdentityUserModel> _users = new List<IdentityUserModel>();
             try
             {
-                query = @"SELECT * From IdentityUser";
+                query = @"SELECT * From IdentityUserModel WHERE IsActive =1 AND IsDeleted = 0";
                 var values = await Repository.QueryAsync(query: query);
 
                 if (values != null)
@@ -146,7 +147,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Authentication
                         user.DisplayName = value.GetValueFromDictonary("DisplayName")?.ToString();
                         user.FirstName = value.GetValueFromDictonary("FirstName")?.ToString();
                         user.LastName = value.GetValueFromDictonary("LastName")?.ToString();
-                        user.PasswordHash = value.GetValueFromDictonary("Password")?.ToString();
+                        user.PasswordHash = value.GetValueFromDictonary("PasswordHash")?.ToString();
                         user.SecretKey = value.GetValueFromDictonary("SecretKey")?.ToString();
                         user.IsActive = Convert.ToBoolean(value.GetValueFromDictonary("IsActive")?.ToString().ToNullableBoolean());
                         _users.Add(user);

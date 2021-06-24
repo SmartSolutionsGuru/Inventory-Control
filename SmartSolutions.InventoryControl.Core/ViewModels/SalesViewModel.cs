@@ -77,6 +77,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             InventoryModel inventoryModel = new InventoryModel();
             AutoId = 0;
             AddProduct(inventoryModel);
+            SelectedInventoryProduct = inventoryModel;
             IsLoading = false;
         }
         public void OnGettingPrice()
@@ -89,13 +90,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             else
                 TotalPrice = 0;
         }
-        public async void GetProductAvailableStock()
+        public async void GetProductAvailableStock(InventoryModel selectedInvetory)
         {
             try
             {
-                if (SelectedProduct == null || SelectedProductColor == null || SelectedProductSize == null) return;
-                var availableStock = await _inventoryManager.GetLastStockInHandAsync(SelectedProduct, SelectedProductColor, SelectedProductSize);
-                AvailableStock = availableStock.StockInHand;
+                if (SelectedInventoryProduct != null)
+                {
+                    if (SelectedProduct == null || SelectedProductColor == null || SelectedProductSize == null) return;
+                    var availableStock = await _inventoryManager.GetLastStockInHandAsync(SelectedProduct, SelectedProductColor, SelectedProductSize);
+                    AvailableStock = availableStock.StockInHand;
+                }
             }
             catch (Exception ex)
             {
@@ -450,7 +454,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public ProductSizeModel SelectedProductSize
         {
             get { return _SelectedProductSize; }
-            set { _SelectedProductSize = value; NotifyOfPropertyChange(nameof(SelectedProductSize)); GetProductAvailableStock(); }
+            set { _SelectedProductSize = value; NotifyOfPropertyChange(nameof(SelectedProductSize)); GetProductAvailableStock(SelectedInventoryProduct); }
         }
         private int _Quantity;
         /// <summary>
@@ -540,9 +544,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             set { _IsProductSizeSelected = value; NotifyOfPropertyChange(nameof(IsProductSizeSelected)); }
         }
         private InventoryModel _SelectedInventoryProduct;
-         /// <summary>
-         /// Selected Incentory from Invoice List
-         /// </summary>
+        /// <summary>
+        /// Selected Incentory from Invoice List
+        /// </summary>
         public InventoryModel SelectedInventoryProduct
         {
             get { return _SelectedInventoryProduct; }

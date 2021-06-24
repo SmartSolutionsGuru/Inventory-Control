@@ -1,9 +1,7 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.Util.LogUtils;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Text;
 
 namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
 {

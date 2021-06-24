@@ -29,6 +29,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         protected async override void OnActivate()
         {
             base.OnActivate();
+            PaymentTypes = new List<string> { "Unknown", "Cash", "Bank", "JazzCash", "Easy Paisa", "U Paisa", "Partial", "Other" };
             Payment = new DAL.Models.PaymentModel();
             BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
             PartnerSuggetion = new Helpers.SuggestionProvider.PartnerSuggestionProvider(BussinessPartners);
@@ -53,12 +54,38 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             if (SelectedPartner == null)
                 return;
-            var balance = await _bussinessPartnerManager.GetPartnerCurrentBalanceAsync(SelectedPartner.Id.Value);
+            var partnerLedger = await _bussinessPartnerManager.GetPartnerCurrentBalanceAsync(SelectedPartner.Id.Value);
+            if (partnerLedger != null)
+            {
+                CurrentPartnerBalance = partnerLedger.BalanceAmount;
+                AmountType = partnerLedger?.IsBalancePayable == true ? "Payable" : "Receivable";
+                IsAmountAvailable = true;
+            }
 
         }
         #endregion
 
         #region Properties
+        private string _AmountType;
+        /// <summary>
+        /// Last Balance Of Partner is Payable or Reciveable
+        /// </summary>
+        public string AmountType
+        {
+            get { return _AmountType; }
+            set { _AmountType = value; NotifyOfPropertyChange(nameof(AmountType)); }
+        }
+
+        private bool _IsAmountAvailable;
+        /// <summary>
+        /// Flag for verifing Amount is Filled or Not
+        /// </summary>
+        public bool IsAmountAvailable
+        {
+            get { return _IsAmountAvailable; }
+            set { _IsAmountAvailable = value; NotifyOfPropertyChange(nameof(IsAmountAvailable)); }
+        }
+
         private Helpers.SuggestionProvider.PartnerSuggestionProvider _PartnerSuggetion;
 
         public Helpers.SuggestionProvider.PartnerSuggestionProvider PartnerSuggetion
@@ -126,6 +153,33 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             get { return _IsPayAmount; }
             set { _IsPayAmount = value; NotifyOfPropertyChange(nameof(IsPayAmount)); }
+        }
+        private decimal _Amount;
+        /// <summary>
+        /// Amount which is paid or Recieved
+        /// </summary>
+        public decimal Amount
+        {
+            get { return _Amount; }
+            set { _Amount = value; NotifyOfPropertyChange(nameof(AmountType)); }
+        }
+        private List<string> _PaymentTypes;
+         /// <summary>
+         /// List Of Payment Types Like Cash, JazzCash etc...
+         /// </summary>
+        public List<string> PaymentTypes
+        {
+            get { return _PaymentTypes; }
+            set { _PaymentTypes = value; NotifyOfPropertyChange(nameof(PaymentTypes)); }
+        }
+        private string _SelectedPaymentType;
+         /// <summary>
+         /// Selected Type Of Payment Like JazzCash etc...
+         /// </summary>
+        public string SelectedPaymentType
+        {
+            get { return _SelectedPaymentType; }
+            set { _SelectedPaymentType = value;  NotifyOfPropertyChange(nameof(SelectedPaymentType)); }
         }
 
         #endregion

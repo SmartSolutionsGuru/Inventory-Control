@@ -1,5 +1,6 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
+using SmartSolutions.Util.BooleanUtils;
 using SmartSolutions.Util.DateAndTimeUtils;
 using SmartSolutions.Util.DictionaryUtils;
 using SmartSolutions.Util.LogUtils;
@@ -28,6 +29,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
         #endregion
 
         #region Public Methods
+
+        #region ADD
         public async Task<bool> AddBussinesPartnerAsync(BussinessPartnerModel partner)
         {
             bool retVal = false;
@@ -67,6 +70,9 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             }
             return retVal;
         }
+        #endregion
+
+        #region GET
         public async Task<IEnumerable<BussinessPartnerModel>> GetAllBussinessPartnersAsync()
         {
             var partners = new List<BussinessPartnerModel>();
@@ -151,20 +157,43 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             }
             return partner;
         }
-        public async Task<double> GetPartnerCurrentBalanceAsync(int partnerId)
+        /// <summary>
+        /// Method That Will return the Current balance of Partner 
+        /// </summary>
+        /// <param name="partnerId"></param>
+        /// <returns></returns>
+        public async Task<BussinessPartnerLedgerModel> GetPartnerCurrentBalanceAsync(int partnerId)
         {
-            double retVal = 0;
+            BussinessPartnerLedgerModel partnerLedger = new BussinessPartnerLedgerModel();
             try
             {
-                string query = string.Empty;
-                await Repository.QueryAsync(query);
+                if (partnerId > 0)
+                {
+                    string query = string.Empty;
+                    Dictionary<string, object> parameters = new Dictionary<string, object>();
+                    parameters["@v_PartnerId"] = partnerId;
+                    query = @"SELECT * FROM PartnerLedger WHERE PartnerId = @v_PartnerId AND IsActive =1 AND IsDeleted = 0 ORDER BY 1 DESC LIMIT 1";
+                    var values = await Repository.QueryAsync(query, parameters: parameters);
+                    if (values != null)
+                    {
+                        var value = values.FirstOrDefault();
+                        partnerLedger.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                        partnerLedger.Partner.Id = value?.GetValueFromDictonary("PartnerId")?.ToString()?.ToInt();
+                        partnerLedger.BalanceAmount = value?.GetValueFromDictonary("BalnceAmount")?.ToString()?.ToNullableInt() ?? 0;
+                        partnerLedger.IsActive = value?.GetValueFromDictonary("IsActive")?.ToString()?.ToNullableBoolean() ?? false;
+                        partnerLedger.IsBalancePayable = value?.GetValueFromDictonary("IsBalancePayable")?.ToString()?.ToNullableBoolean() ?? false;
+                    }
+                }
             }
             catch (Exception ex)
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
-            return retVal;
+            return partnerLedger;
         }
+        #endregion
+
+        #region REMOVE
         public async Task<bool> RemoveBussinessPartnerAsync(int? Id)
         {
             bool retVal = false;
@@ -183,6 +212,9 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             }
             return retVal;
         }
+        #endregion
+
+        #region UPDATE
         public async Task<bool> UpdateBussinessPartnerAsync(BussinessPartnerModel partner)
         {
             bool retVal = false;
@@ -224,6 +256,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             }
             return retVal;
         }
+        #endregion
         #endregion
     }
 }

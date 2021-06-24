@@ -63,7 +63,7 @@
                     <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
                         <Setter Property="Content">
                             <Setter.Value>
-                                <TextBlock FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource SubHeadingSize}" Foreground="{StaticResource PureWhiteColorBrush}"><Run Text="Amount is "/><Run Text="{Binding CurrentPartnerBalance,Mode=OneWay}"/></TextBlock>
+                                <TextBlock FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource SubHeadingSize}" Foreground="{StaticResource PureWhiteColorBrush}"><Run Text="Amount is "/><Run Text="{Binding CurrentPartnerBalance,Mode=OneWay}"/><Run Text="{Binding AmountType,Mode=OneWay}"></Run></TextBlock>
                             </Setter.Value>
                         </Setter>
                         <Style.Triggers>
@@ -72,7 +72,7 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                    
+
                 </Button.Style>
             </Button>
             <Grid Grid.Row="3">
@@ -163,13 +163,16 @@
                                FontFamily="{StaticResource MediumFont}" 
                                FontSize="{StaticResource MediumSize}" 
                                HorizontalAlignment="Center" />
+
                     <TextBox Height="50" 
                              Width="250"
+                             Text="{Binding Amount,Mode=TwoWay}"
                              Margin="0 5 0 0"
                              FontFamily="{StaticResource MediumFont}"
                              FontSize="{StaticResource MediumSize}"
                              ControlExtensions:WaterMarkTextExtension.WatermarkText="Amount"
                              Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
+                   
                 </StackPanel>
                 <StackPanel Grid.Column="1" >
                     <TextBlock Text="Payment Type" 
@@ -180,7 +183,8 @@
                                FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}"/>
                     <ComboBox Height="50" 
                               Width="250"
-                              ItemsSource="{Binding Payment.PaymentType,Mode=OneWay}"
+                              ItemsSource="{Binding PaymentTypes.PaymentType,Mode=OneWay}"
+                              SelectedItem="{Binding SelectedPaymentType,Mode=TwoWay}"
                               FontFamily="{StaticResource MediumFont}"
                               FontSize="{StaticResource NormalSize}"
                               Foreground="{StaticResource GrayColorBrush}"
@@ -193,7 +197,7 @@
                 <StackPanel Grid.Column="2" Margin="0 0 0 0">
                     <TextBlock Text="Payment Picture" Margin="0 0 0 5" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource GrayColorBrush}" HorizontalAlignment="Center"/>
                     <Button Height="150" Width="150" Margin="0 0 0 0" Style="{StaticResource ContentButton}" Click="Button_Click" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7">
-                        <Image Source="{Binding PaymentImage,Mode=OneWay,Converter={StaticResource BytesToBitmapImageConverter}}" Stretch="UniformToFill"></Image>
+                        <Image Source="{Binding PaymentImage,Mode=TwoWay,Converter={StaticResource BytesToBitmapImageConverter}}" Stretch="UniformToFill"></Image>
                     </Button>
                 </StackPanel>
             </Grid>
@@ -211,6 +215,7 @@
                                HorizontalAlignment="Center"/>
                     <TextBox Height="100" 
                              Width="250"
+                             Text="{Binding Description,Mode=TwoWay}"
                              TextWrapping="Wrap" 
                              AcceptsReturn="True"
                              Opacity="0.7"
