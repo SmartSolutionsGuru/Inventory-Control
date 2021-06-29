@@ -28,7 +28,7 @@ namespace SmartSolutions.InventoryControl.UI.Views
     {
        
         #region Private Members
-        ShellViewModel ViewModel { get; set; }
+       private ShellViewModel ViewModel { get; set; }
         #endregion
 
         #region Constructor
@@ -61,8 +61,6 @@ namespace SmartSolutions.InventoryControl.UI.Views
             // Hide overlay if we are focused
             ViewModel.DimmableOverlayVisible = true;
         }
-
-      
 
         #region Window States like Maximized etc
         private void ClickMinimize(object sender, RoutedEventArgs e)

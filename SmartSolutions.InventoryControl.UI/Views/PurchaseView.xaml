@@ -242,8 +242,8 @@
 
 
                             <ScrollViewer Grid.Row="1" Grid.ColumnSpan="9" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                <ItemsControl Grid.Row="1" Grid.ColumnSpan="9" ItemsSource="{Binding ProductGrid,Mode=OneWay}" Margin="0 0" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
-                                    <ItemsControl.ItemTemplate>
+                                <ListView Grid.Row="1" Grid.ColumnSpan="9" ItemsSource="{Binding ProductGrid,Mode=OneWay}" SelectedItem="{Binding SelectedInventory,Mode=TwoWay}" Margin="0 0" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                    <ListView.ItemTemplate>
                                         <DataTemplate DataType="{x:Type purchaseModels:InventoryModel}">
                                             <Grid Margin="0 5">
                                                 <Grid.ColumnDefinitions>
@@ -335,9 +335,9 @@
                                                 </StackPanel>
                                             </Grid>
                                         </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
+                                    </ListView.ItemTemplate>
 
-                                </ItemsControl>
+                                </ListView>
                             </ScrollViewer>
                         </Grid>
                     </Border>

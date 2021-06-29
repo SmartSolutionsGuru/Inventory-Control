@@ -20,16 +20,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         #endregion
 
         #region Constructor
-        public DialogBaseViewModel() { }
+        public DialogBaseViewModel()
+        {
+            createMessageBox = IoC.Get<Func<IMessageBox>>();
+        }
         // , Func<IMessageBox> messageBoxFactory
         [ImportingConstructor]
-
         public DialogBaseViewModel(IWindowManager windowManager
                                    /*,Func<IMessageBox> messageBoxFactory*/)
         {
             _windowManager = windowManager;
             //createMessageBox = messageBoxFactory;
-            createMessageBox = IoC.Get <Func<IMessageBox>>();
+            createMessageBox = IoC.Get<Func<IMessageBox>>();
         }
         #endregion
 

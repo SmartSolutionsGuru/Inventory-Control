@@ -239,7 +239,7 @@
                                 <!--Fotter for Comany Name-->
                                 <Border x:Name="FooterBorder"  Grid.Row="2" Background="{StaticResource PureWhiteColorBrush}" Margin="100,0" ClipToBounds="True" Width="1000" >
                                     <Canvas x:Name="canMain" Canvas.Right="-50" Loaded="canMain_Loaded" Margin="0,0,0 0" Height="30" Width="500" >
-                                        <TextBlock x:Name="FooterText" Loaded="FooterText_Loaded" FontSize="{StaticResource MediumSize}" Margin="0 0 0 0" HorizontalAlignment="Center" Text="Created By : " Foreground="{StaticResource DarkBlueColorBrush}"><Run Text="Smart " Foreground="{StaticResource OrangeColorBrush}" FontFamily="{StaticResource Italic}" FontSize="{StaticResource ExtraNormalSize}"/><Run Text="Solutions" FontFamily="{StaticResource Italic}" FontSize="{StaticResource ExtraNormalSize}" Foreground="{StaticResource RedColorBrush}" FontWeight="Normal"/><Run Text=" Ph# 092 323 0437552"></Run> <Run Text="Gmail :" Foreground="{StaticResource OrangeColorBrush}"/><Run Text="SmartSolutionsGuruOnline@gmail.com" Foreground="{StaticResource DarkBlueColorBrush}"/> <Run Text="Git Repo" Foreground="{StaticResource OrangeColorBrush}"/> <Run Foreground="{StaticResource RedColorBrush}" Text="SmartSolutionsGuru"/></TextBlock>
+                                        <TextBlock x:Name="FooterText" Loaded="FooterText_Loaded" FontSize="{StaticResource MediumSize}" Margin="0 0 0 0" HorizontalAlignment="Center" Text="Created By : " Foreground="{StaticResource DarkBlueColorBrush}"><Run Text="Smart " Foreground="{StaticResource OrangeColorBrush}" FontFamily="{StaticResource Italic}" FontSize="{StaticResource ExtraNormalSize}"/><Run Text="Solutions" FontFamily="{StaticResource Italic}" FontSize="{StaticResource ExtraNormalSize}" Foreground="{StaticResource RedColorBrush}" FontWeight="Normal"/><Run Text=" Ph# 092 323 0437552" Foreground="{StaticResource GrayColorBrush}" FontWeight="DemiBold"/> <Run Text="Gmail :" Foreground="{StaticResource OrangeColorBrush}"/><Run Text="SmartSolutionsGuruOnline@gmail.com" Foreground="{StaticResource DarkBlueColorBrush}"/> </TextBlock>
                                         <!--</Canvas>-->
                                     </Canvas>
                                 </Border>
@@ -300,7 +300,7 @@
                             HorizontalContentAlignment="Stretch" 
                             IsHitTestVisible="True"
                             Ap:AnimateSlideInFromBottomMarginProperty.Value="True"/>
-            <!--<Border Background="{StaticResource GrayColorBrush}" CornerRadius="5" Opacity="0.5"  >
+            <Border Background="{StaticResource GrayColorBrush}" CornerRadius="5" Opacity="0.5" >
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                     <maha:ProgressRing Height="100" Width="100" IsActive="True" Foreground="{StaticResource BlueColorBrush}"/>
                     <TextBlock Text="{Binding LoadingMessage,Mode=OneWay}" Foreground="{StaticResource PureWhiteColorBrush}" FontSize="40" FontFamily="{StaticResource MediumFont}"/>
@@ -315,7 +315,7 @@
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
-            </Border>-->
+            </Border>
             <!--Dimwd Overlay-->
             <Border Grid.ColumnSpan="2"
                         Grid.RowSpan="2"

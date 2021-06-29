@@ -20,6 +20,10 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Transaction
         public BussinessPartnerModel BussinessPartner { get; set; }
         public BussinessPartnerLedgerModel PartnerAccount { get; set; }
         public InvoiceModel  PartnerLastInvoice { get; set; }
+        /// <summary>
+        /// Is It Recivable or Payable
+        /// </summary>
+        public string PaymentMode { get; set; }
         public string PaymentType { get; set; }
         public byte[] PaymentImage { get; set; }
 

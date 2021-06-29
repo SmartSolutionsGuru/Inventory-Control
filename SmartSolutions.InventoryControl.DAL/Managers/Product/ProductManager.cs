@@ -101,7 +101,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
             }
             return Products;
         }
-
         public async Task<ProductModel> GetLastAddedProduct()
         {
             var product = new ProductModel();
@@ -135,7 +134,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
             }
             return product;
         }
-
         public async Task<ProductModel> GetProductByIdAsync(int? Id)
         {
             var product = new ProductModel();

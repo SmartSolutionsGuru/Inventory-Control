@@ -135,10 +135,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Login
 
 
 
+        private bool _IsLoginAsAdmin;
         /// <summary>
         /// check login as admin is checked or not
         /// </summary>
-        public bool IsLoginAsAdmin { get; set; }
+        public bool IsLoginAsAdmin
+        {
+            get { return _IsLoginAsAdmin; }
+            set { _IsLoginAsAdmin = value; NotifyOfPropertyChange(nameof(IsLoginAsAdmin)); }
+        }
+
         /// <summary>
         /// Get the value that forget login is pressed or not
         /// </summary>
@@ -215,6 +221,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Login
         /// <returns></returns>
         public async Task LoginAsync(object parameter)
         {
+            IsLoading = true;
+            LoadingMessage = "Verifing...";
             await RunCommandAsync(() => LoginIsRunning, async () =>
             {
                 PasswordBox passwordBox = parameter as PasswordBox;
@@ -225,20 +233,21 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Login
                     if (!string.IsNullOrEmpty(Password))
                     {
 
-                        IdentityUserModel user = await _authenticationManager.AuthenticateUserAsync(UserName, clearPassword);
+                        IdentityUserModel user = await _authenticationManager.AuthenticateUserAsync(UserName, clearPassword,isAdmin: IsLoginAsAdmin);
 
                         //Get the Current Principle Object
-                        CustomPrinciple customPrincipal = Thread.CurrentPrincipal as CustomPrinciple;
-                        if (customPrincipal == null)
-                        {
-                            IsUserErrorMessage = true;
-                            IsPasswordErrorMessage = true;
-                            throw new ArgumentException("The application Default Thread principle bust be set on startup");
-                        }
+
+                        //CustomPrinciple customPrincipal = Thread.CurrentPrincipal as CustomPrinciple;
+                        //if (customPrincipal == null)
+                        //{
+                        //    IsUserErrorMessage = true;
+                        //    IsPasswordErrorMessage = true;
+                        //    throw new ArgumentException("The application Default Thread principle bust be set on startup");
+                        //}
 
                         if (user != null)
                         {
-                            customPrincipal.Identity = new CustomIdentity(user.DisplayName, user.Email, user.Roles);
+                           // customPrincipal.Identity = new CustomIdentity(user.DisplayName, user.Email, user.Roles);
                             //Update UI
                             NotifyOfPropertyChange(nameof(AuthenticatedUser));
                             NotifyOfPropertyChange(nameof(IsSuccess));
@@ -290,6 +299,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Login
                     LogMessage.Write(ex.ToString());
                 }
             });
+            IsLoading = false;
         }
         public void ForgetPassword()
         {

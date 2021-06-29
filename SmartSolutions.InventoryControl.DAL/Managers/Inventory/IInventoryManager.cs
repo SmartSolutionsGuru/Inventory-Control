@@ -14,6 +14,14 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Inventory
         Task<int> GetLastTransationIdAsync();
         Task<double> GetLastBalanceAsync(int? Id);
         /// <summary>
+        /// Get the last Purchase Price of Selected Product 
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="productColorId"></param>
+        /// <param name="productSizeId"></param>
+        /// <returns></returns>
+        Task<double> GetProductPurchasePrice(int? productId,int? productColorId,int? productSizeId);
+        /// <summary>
         /// adding Purchase to Inventory
         /// </summary>
         /// <param name="model"></param>

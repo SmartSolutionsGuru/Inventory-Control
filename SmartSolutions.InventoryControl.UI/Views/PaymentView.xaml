@@ -183,7 +183,7 @@
                                FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}"/>
                     <ComboBox Height="50" 
                               Width="250"
-                              ItemsSource="{Binding PaymentTypes.PaymentType,Mode=OneWay}"
+                              ItemsSource="{Binding PaymentTypes,Mode=OneWay}"
                               SelectedItem="{Binding SelectedPaymentType,Mode=TwoWay}"
                               FontFamily="{StaticResource MediumFont}"
                               FontSize="{StaticResource NormalSize}"
@@ -197,7 +197,7 @@
                 <StackPanel Grid.Column="2" Margin="0 0 0 0">
                     <TextBlock Text="Payment Picture" Margin="0 0 0 5" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource GrayColorBrush}" HorizontalAlignment="Center"/>
                     <Button Height="150" Width="150" Margin="0 0 0 0" Style="{StaticResource ContentButton}" Click="Button_Click" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7">
-                        <Image Source="{Binding PaymentImage,Mode=TwoWay,Converter={StaticResource BytesToBitmapImageConverter}}" Stretch="UniformToFill"></Image>
+                        <Image Source="{Binding PaymentImage,Mode=TwoWay,Converter={StaticResource BytesToBitmapImageConverter}}" Stretch="UniformToFill"/>
                     </Button>
                 </StackPanel>
             </Grid>

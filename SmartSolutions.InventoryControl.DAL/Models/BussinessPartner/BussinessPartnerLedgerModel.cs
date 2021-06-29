@@ -17,6 +17,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.BussinessPartner
         public BussinessPartnerModel Partner { get; set; }
         public string InvoiceId { get; set; }
         public Guid InvoiceGuid { get; set; }
+        public Guid TransactionGuid { get; set; }
         public bool IsBalancePayable { get; set; }
         public bool IsAmountReceived { get; set; }
         public bool IsAmountPaid { get; set; }

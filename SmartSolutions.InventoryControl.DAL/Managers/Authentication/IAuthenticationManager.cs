@@ -40,7 +40,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Authentication
         #endregion
 
         #region Authenticate User
-        Task<IdentityUserModel> AuthenticateUserAsync(string username, string password, int? roleId = null);
+        //Task<IdentityUserModel> AuthenticateUserAsync(string username, string password, int? roleId = null);
+        Task<IdentityUserModel> AuthenticateUserAsync(string username, string password, bool isAdmin = false);
         #endregion
 
         #region Replace

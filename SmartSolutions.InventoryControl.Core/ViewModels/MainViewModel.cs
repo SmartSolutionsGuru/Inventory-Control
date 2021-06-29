@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels
 {
-    [Export(typeof(MainViewModel)),PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export(typeof(MainViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class MainViewModel : BaseViewModel /*Conductor<Screen>*/, IHandle<Screen>
     {
         #region Private Members
@@ -30,7 +30,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         protected override void OnActivate()
         {
-            if(Execute.InDesignMode)
+            if (Execute.InDesignMode)
             {
                 //IsLoading = false;
             }
@@ -77,7 +77,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             IsSalesProceeded = true;
             Handle(IoC.Get<SalesViewModel>());
         }
-        public void Reports ()
+        public void Reports()
         {
             IsPurchaseProceeded = false;
             IsPartnerProceeded = false;
@@ -99,18 +99,27 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public void Handle(Screen screen)
         {
 
-            if (screen is Product.ProductViewModel || screen is BussinessPartner.BussinessPartnerViewModel || screen is PurchaseViewModel || screen is PaymentViewModel || screen is SalesViewModel)
-                {
-                    ActivateItem(screen);
-                }
+            if (screen is Product.ProductViewModel
+                || screen is BussinessPartner.BussinessPartnerViewModel
+                || screen is PurchaseViewModel
+                || screen is PaymentViewModel
+                || screen is SalesViewModel)
+            {
+                ActiveItem = screen;
+                ActivateItem(screen);
             }
+        }
+        public async void SMS()
+        {
+            await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Sorry This Feather is Not Available Yet",options: Dialogs.MessageBoxOptions.Ok);
+        }
         #endregion
 
         #region Properties
         private bool _IsProductProceeded;
-         /// <summary>
-         /// For Product Button Pressed
-         /// </summary>
+        /// <summary>
+        /// For Product Button Pressed
+        /// </summary>
         public bool IsProductProceeded
         {
             get { return _IsProductProceeded; }
@@ -126,27 +135,27 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             set { _IsPartnerProceeded = value; NotifyOfPropertyChange(nameof(IsPartnerProceeded)); }
         }
         private bool _IsPurchaseProceeded;
-         /// <summary>
-         /// For Purchase Button Pressed
-         /// </summary>
+        /// <summary>
+        /// For Purchase Button Pressed
+        /// </summary>
         public bool IsPurchaseProceeded
         {
             get { return _IsPurchaseProceeded; }
             set { _IsPurchaseProceeded = value; NotifyOfPropertyChange(nameof(IsPurchaseProceeded)); }
         }
         private bool _IsSalesProceeded;
-         /// <summary>
-         /// For Sale Button Is Pressed
-         /// </summary>
+        /// <summary>
+        /// For Sale Button Is Pressed
+        /// </summary>
         public bool IsSalesProceeded
         {
             get { return _IsSalesProceeded; }
             set { _IsSalesProceeded = value; NotifyOfPropertyChange(nameof(IsSalesProceeded)); }
         }
         private bool _IsReportProceeded;
-         /// <summary>
-         /// Report button Selected
-         /// </summary>
+        /// <summary>
+        /// Report button Selected
+        /// </summary>
         public bool IsReportProceeded
         {
             get { return _IsReportProceeded; }
@@ -169,9 +178,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             set { _IsSettingActive = value; NotifyOfPropertyChange(nameof(IsSettingActive)); }
         }
         private bool _IsDataSaved;
-         /// <summary>
-         /// Data backup Updated Or Not
-         /// </summary>
+        /// <summary>
+        /// Data backup Updated Or Not
+        /// </summary>
         public bool IsDataSaved
         {
             get { return _IsDataSaved; }
@@ -185,22 +194,29 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             set { _NowTime = value; NotifyOfPropertyChange(nameof(NowTime)); }
         }
         private string _PrinterName;
-         /// <summary>
-         /// Printer Name if Available
-         /// </summary>
+        /// <summary>
+        /// Printer Name if Available
+        /// </summary>
         public string PrinterName
         {
             get { return _PrinterName; }
             set { _PrinterName = value; NotifyOfPropertyChange(nameof(PrinterName)); }
         }
         private bool _IsPaymentProceeded;
-         /// <summary>
-         /// For Payment Options
-         /// </summary>
+        /// <summary>
+        /// For Payment Options
+        /// </summary>
         public bool IsPaymentProceeded
         {
             get { return _IsPaymentProceeded; }
             set { _IsPaymentProceeded = value; NotifyOfPropertyChange(nameof(IsPaymentProceeded)); }
+        }
+        private DAL.Models.Authentication.IdentityUserModel _CurrentUser;
+
+        public DAL.Models.Authentication.IdentityUserModel CurrentUser
+        {
+            get { return _CurrentUser; }
+            set { _CurrentUser = value; NotifyOfPropertyChange(nameof(CurrentUser)); }
         }
 
         #endregion

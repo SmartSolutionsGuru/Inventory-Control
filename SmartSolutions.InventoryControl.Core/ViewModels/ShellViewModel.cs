@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels
@@ -42,6 +43,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #region Public Properties
         public IDialogManager Dialog => _dialog;
 
+        
 
         #endregion
 
@@ -54,14 +56,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public void Handle(Screen screen)
         {
             if (screen is MainViewModel || screen is Login.LoginViewModel)
+            {
+                ActiveItem = screen;
                 ActivateItem(screen);
+            }
+           
         }
         protected override void OnInitialize()
         {
             base.OnInitialize();
             dbFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName, "InventoryControl.db");
-            Handle(IoC.Get<MainViewModel>());
-           // Handle(IoC.Get<Login.LoginViewModel>());
+            //Handle(IoC.Get<MainViewModel>());
+            Handle(IoC.Get<Login.LoginViewModel>());
         }
         protected override void OnActivate()
         {
@@ -125,6 +131,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
             return retVal;
         }
+      
+
+
         #endregion
 
         #region Helper Method

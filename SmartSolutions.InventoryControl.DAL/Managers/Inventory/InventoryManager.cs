@@ -175,6 +175,31 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Inventory
             return Id.Value;
         }
 
+        public async Task<double> GetProductPurchasePrice(int? productId, int? productColorId, int? productSizeId)
+        {
+            double lastPrice = 0;
+            try
+            {
+                string query = string.Empty;
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_ProductId"] = productId;
+                parameters["@v_ProductColorId"] = productColorId;
+                parameters["@v_ProductSizeId"] = productSizeId;
+                query = @"SELECT Price FROM Inventory WHERE ProductId = @v_ProductId AND ProductColorId = @vProductColorId AND ProductSizeId = @v_ProductSizeId AND IsStockIn = true AND IsActive = true ORDER BY 1 DESC";
+                var values = await Repository.QueryAsync(query, parameters: parameters);
+                if (values != null)
+                {
+                    var value = values.FirstOrDefault();
+                    lastPrice = Convert.ToDouble(value.GetValueFromDictonary("Price")?.ToString()?.ToInt());
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return lastPrice;
+        }
+
         public async Task<bool> RemoveBulkInventoryAsync(List<InventoryModel> models)
         {
             bool retVal = false;

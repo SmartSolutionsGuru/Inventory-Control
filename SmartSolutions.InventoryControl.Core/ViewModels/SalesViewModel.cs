@@ -271,6 +271,21 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
+        //private async void GetStockInHand(InventoryModel selectedInvetory)
+        //{
+        //    try
+        //    {
+        //        if (selectedInvetory.Product.Id == null || selectedInvetory.ProductColor.Id == null || selectedInvetory.ProductSize.Id == null) return;
+        //        var resultStock = await _inventoryManager.GetLastStockInHandAsync(selectedInvetory.Product, selectedInvetory.ProductColor, selectedInvetory.ProductSize);
+        //        selectedInvetory.StockInHand = resultStock.StockInHand;
+        //        selectedInvetory.ProductLastPrice = resultStock.Price;
+        //        IsProductSizeSelected = true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+        //    }
+        //}
         #endregion
 
         #region Properties
@@ -454,7 +469,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public ProductSizeModel SelectedProductSize
         {
             get { return _SelectedProductSize; }
-            set { _SelectedProductSize = value; NotifyOfPropertyChange(nameof(SelectedProductSize)); GetProductAvailableStock(SelectedInventoryProduct); }
+            set { _SelectedProductSize = value; NotifyOfPropertyChange(nameof(SelectedProductSize)); GetProductAvailableStock(SelectedInventoryProduct);  }
         }
         private int _Quantity;
         /// <summary>

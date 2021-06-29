@@ -68,7 +68,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
             {
                 string query = "SELECT last_insert_rowid()";
                 var result = Repository.Query(query);
-                 lastRowId = result?.FirstOrDefault().GetValueFromDictonary("last_insert_rowid()")?.ToString()?.ToNullableInt();
+                lastRowId = result?.FirstOrDefault().GetValueFromDictonary("last_insert_rowid()")?.ToString()?.ToNullableInt();
             }
             catch (Exception ex)
             {
@@ -77,16 +77,46 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
             return lastRowId;
         }
 
+        public async Task<InvoiceModel> GetPartnerLastInvoice(int? Id)
+        {
+            var lastInvoice = new InvoiceModel();
+            try
+            {
+
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_Id"] = Id;
+                string query = @"SELECT * FROM Invoice WHERE SelectedPartnerId= Id = @v_Id AND IsActive =1 AND IsDeleted = 0 ORDER BY 1 DESC LIMIT 1;";
+                var values = await Repository.QueryAsync(query, parameters: parameters);
+                if (values != null)
+                {
+                    var value = values?.FirstOrDefault();
+                    lastInvoice.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                    lastInvoice.InvoiceId = value?.GetValueFromDictonary("InvoiceId")?.ToString();
+                    lastInvoice.InvoiceGuid = Guid.Parse(value?.GetValueFromDictonary("InvoiceGuid")?.ToString());
+                    lastInvoice.Payment = value?.GetValueFromDictonary("Payment")?.ToString()?.ToNullableInt() ?? 0;
+
+                   
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return lastInvoice;
+        }
+
         public async Task<bool> RemoveLastInvoiceAsync(Guid InvoiceGuid)
         {
             bool retVal = false;
             try
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters["@v_InvoiceGuid"] =  InvoiceGuid;
+                parameters["@v_InvoiceGuid"] = InvoiceGuid;
                 string query = @"UPDATE Invoice SET IsActive = 0 AND IsDeleted = 1 WHERE InvoiceGuid = @v_InvoiceGuid";
-               var result = await Repository.NonQueryAsync(query: query);
-               retVal =  result > 0 ? true : false;
+                var result = await Repository.NonQueryAsync(query: query);
+                retVal = result > 0 ? true : false;
             }
             catch (Exception ex)
             {
@@ -96,7 +126,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
         }
 
         public async Task<bool> SaveInoiceAsync(InvoiceModel invoice)
-        {          
+        {
             bool retVal = false;
             try
             {

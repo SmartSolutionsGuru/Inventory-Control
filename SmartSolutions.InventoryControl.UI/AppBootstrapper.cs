@@ -52,7 +52,7 @@ namespace SmartSolutions.InventoryControl.UI
             IoCContanier.IoC.AddExportedValue<IEventAggregator>(new EventAggregator());
             //IoCContanier.IoC.AddExportedValue(new ApplicationCloseStrategy());
             IoCContanier.IoC.AddExportedValue<Func<IMessageBox>>(() => IoCContanier.IoC.GetExportedValue<IMessageBox>());
-            IoCContanier.IoC.AddExportedValue<IDialogManager>(new DialogBaseViewModel());
+            //IoCContanier.IoC.AddExportedValue<IDialogManager>(new DialogBaseViewModel());
             IoCContanier.IoC.Compose();
             //IoC.Get<IDialogManager>().ShowMessageBox("Testing");
 

@@ -22,21 +22,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         }
         #endregion
         #region Private Methods
-        private async void GetStockInHand()
-        {
-            try
-            {
-                if (Product.Id == null || ProductColor.Id == null || ProductSize.Id == null) return;
-                var resultStock  = await _inventoryManager.GetLastStockInHandAsync(Product, ProductColor, ProductSize);
-                 StockInHand = resultStock.StockInHand;
-                ProductLastPrice = resultStock.Price;
-                IsProductSizeSelected = true;
-            }
-            catch (Exception ex)
-            {
-                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
-            }
-        }
+      
         #endregion
 
         #region Properties
@@ -49,7 +35,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         public ProductSizeModel ProductSize
         {
             get { return _ProductSize; }
-            set { _ProductSize = value; NotifyOfPropertyChange(nameof(ProductSize)); GetStockInHand(); }
+            set { _ProductSize = value; NotifyOfPropertyChange(nameof(ProductSize));}
         }
 
         private decimal _Price;

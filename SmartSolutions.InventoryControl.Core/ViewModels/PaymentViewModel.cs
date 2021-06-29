@@ -7,6 +7,9 @@ using System.Text;
 using System.Linq;
 using SmartSolutions.Util.LogUtils;
 using Caliburn.Micro;
+using SmartSolutions.InventoryControl.DAL.Models.Transaction;
+using SmartSolutions.InventoryControl.DAL.Managers.Invoice;
+using SmartSolutions.InventoryControl.DAL.Managers.Transaction;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels
 {
@@ -15,13 +18,19 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
     {
         #region Private Members
         private readonly IBussinessPartnerManager _bussinessPartnerManager;
+        private readonly IInvoiceManager _invoiceManager;
+        private readonly ITransactionManager _transactionManager;
         #endregion
 
         #region Constructor
         [ImportingConstructor]
-        public PaymentViewModel(IBussinessPartnerManager bussinessPartnerManager)
+        public PaymentViewModel(IBussinessPartnerManager bussinessPartnerManager
+                                , IInvoiceManager invoiceManager
+                                , ITransactionManager transactionManager)
         {
             _bussinessPartnerManager = bussinessPartnerManager;
+            _invoiceManager = invoiceManager;
+            _transactionManager = transactionManager;
         }
         #endregion
 
@@ -35,11 +44,23 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             PartnerSuggetion = new Helpers.SuggestionProvider.PartnerSuggestionProvider(BussinessPartners);
             IsReceiveAmount = true;
         }
-        public void Save()
+        public async void Save()
         {
             try
             {
-                //IoC.Get<IDialogManager>().ShowMessageBoxAsync("My Box",options: Dialogs.MessageBoxOptions.Ok);
+                TransactionModel transaction = new TransactionModel();
+                transaction.PaymentMode = IsPayAmount == true ? "Payable" : "Reciveable";
+                transaction.BussinessPartner = SelectedPartner;
+                transaction.PartnerLastInvoice = await _invoiceManager.GetPartnerLastInvoice(SelectedPartner?.Id);
+                transaction.PaymentImage = PaymentImage;
+                transaction.PaymentType = SelectedPaymentType;
+                var resultTransaction = await _transactionManager.SaveTransactionAsync(transaction);
+                if (resultTransaction)
+                {
+                    var partnerLedger = new BussinessPartnerLedgerModel();
+                    //partnerLedger.
+                }
+
             }
             catch (Exception ex)
             {
@@ -164,23 +185,33 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             set { _Amount = value; NotifyOfPropertyChange(nameof(AmountType)); }
         }
         private List<string> _PaymentTypes;
-         /// <summary>
-         /// List Of Payment Types Like Cash, JazzCash etc...
-         /// </summary>
+        /// <summary>
+        /// List Of Payment Types Like Cash, JazzCash etc...
+        /// </summary>
         public List<string> PaymentTypes
         {
             get { return _PaymentTypes; }
             set { _PaymentTypes = value; NotifyOfPropertyChange(nameof(PaymentTypes)); }
         }
         private string _SelectedPaymentType;
-         /// <summary>
-         /// Selected Type Of Payment Like JazzCash etc...
-         /// </summary>
+        /// <summary>
+        /// Selected Type Of Payment Like JazzCash etc...
+        /// </summary>
         public string SelectedPaymentType
         {
             get { return _SelectedPaymentType; }
-            set { _SelectedPaymentType = value;  NotifyOfPropertyChange(nameof(SelectedPaymentType)); }
+            set { _SelectedPaymentType = value; NotifyOfPropertyChange(nameof(SelectedPaymentType)); }
         }
+        private string _Description;
+        /// <summary>
+        /// DEscription Of Payment Type
+        /// </summary>
+        public string Description
+        {
+            get { return _Description; }
+            set { _Description = value; NotifyOfPropertyChange(nameof(Description)); }
+        }
+
 
         #endregion
     }

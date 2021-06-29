@@ -9,6 +9,12 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
     public interface IInvoiceManager
     {
         /// <summary>
+        /// Get the Last Invoice Of Selected Partner
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        Task<InvoiceModel> GetPartnerLastInvoice(int? Id);
+        /// <summary>
         /// Genrate Or Create Unique Invoice Number
         /// </summary>
         /// <param name="Initials"></param>

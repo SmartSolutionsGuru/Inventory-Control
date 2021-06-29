@@ -500,6 +500,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _ProductGrid; }
             set { _ProductGrid = value; NotifyOfPropertyChange(nameof(ProductGrid)); }
         }
+        private InventoryModel _SelectedInventory;
+        /// <summary>
+        /// Selected Row of Inventory
+        /// </summary>
+        public InventoryModel SelectedInventory
+        {
+            get { return _SelectedInventory; }
+            set { _SelectedInventory = value; NotifyOfPropertyChange(nameof(SelectedInventory)); }
+        }
 
         #endregion
     }

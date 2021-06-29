@@ -63,7 +63,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Authentication
         #endregion
 
         #region Authentication
-        public async Task<IdentityUserModel> AuthenticateUserAsync(string username, string clearTextPassword, int? roleId = null)
+        public async Task<IdentityUserModel> AuthenticateUserAsync(string username, string clearTextPassword, bool isAdmin = false)
         {
             #region New Implementation
             IdentityUserModel identityModel = new IdentityUserModel();
@@ -72,20 +72,25 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Authentication
             if (allUsers.Count() > 0)
             {
                  hashedPassword = Encryption.Encrypt(Encryption.EncryptionType.MD5, clearTextPassword);
-                var selectedUser = allUsers.Where(x => x.FirstName.Equals(username) && x.PasswordHash.Equals(hashedPassword)).FirstOrDefault();
+                var selectedUser = allUsers?.Where(x => x.PasswordHash.Equals(hashedPassword) && (x.DisplayName?.Contains(username) == true)).FirstOrDefault();
                 if (selectedUser != null)
                 {
                     var roles = await GetUserAllRoleAsync(selectedUser.Id.Value);
                     selectedUser.UserRoles = roles.ToList();
-                    if (roleId != null && selectedUser?.UserRoles?.Count > 0)
+                    //if user selected As Admin
+                    if (isAdmin = true && selectedUser?.UserRoles?.Count > 0)
                     {
-                        var resultRole = selectedUser?.UserRoles?.Where(x => x.RoleId == roleId && x.IsActive == true).FirstOrDefault();
+                        var resultRole = selectedUser?.UserRoles?.Where(x=> x.IsActive == true).FirstOrDefault();
                         if (resultRole.IsActive == true)
                             return new IdentityUserModel(selectedUser, string.Empty, role: null, roles.ToList());
                         else
                             return null;
                     }
-                    return new IdentityUserModel(selectedUser, string.Empty, role: null, roles.ToList());
+                    else 
+                    {
+                        return new IdentityUserModel(selectedUser, string.Empty, role: null, roles.ToList());
+                    }
+                    //return new IdentityUserModel(selectedUser, string.Empty, role: null, roles.ToList());
 
                 }
                 else
@@ -144,7 +149,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Authentication
                     {
                         IdentityUserModel user = new IdentityUserModel();
                         user.Id = Convert.ToInt32(value.GetValueFromDictonary("Id").ToString());
-                        user.DisplayName = value.GetValueFromDictonary("DisplayName")?.ToString();
+                        user.DisplayName = value.GetValueFromDictonary("Username")?.ToString();
                         user.FirstName = value.GetValueFromDictonary("FirstName")?.ToString();
                         user.LastName = value.GetValueFromDictonary("LastName")?.ToString();
                         user.PasswordHash = value.GetValueFromDictonary("PasswordHash")?.ToString();
@@ -235,8 +240,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Authentication
                 string query = string.Empty;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 //parameter["@v_role_Id"] = 0;
-                parameters["@v_User_Identity_Id"] = Id;
-                query = @"SELECT * FROM UserLogin WHERE User_Identity_Id = @v_User_Identity_Id";
+                parameters["@v_UserId"] = Id;
+                query = @"SELECT * FROM UserRole WHERE UserId = @v_UserId";
                 var values = await Repository.QueryAsync(query: query, parameters: parameters);
                 if (values != null)
                 {
@@ -244,7 +249,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Authentication
                     {
                         UserRoleModel roleModel = new UserRoleModel();
                         roleModel.UserId = Id;
-                        roleModel.RoleId = Convert.ToInt32(value.GetValueFromDictonary("Role_Id")?.ToString());
+                        roleModel.RoleId = Convert.ToInt32(value.GetValueFromDictonary("RoleId")?.ToString());
                         roleModel.IsActive = Convert.ToBoolean(value.GetValueFromDictonary("IsActive")?.ToString().ToNullableBoolean());
                         roleModel.IsDeleted = Convert.ToBoolean(value.GetValueFromDictonary("IsDeleted")?.ToString().ToNullableBoolean());
                         roles.Add(roleModel);
