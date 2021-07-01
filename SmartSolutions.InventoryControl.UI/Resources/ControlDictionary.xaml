@@ -187,9 +187,8 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="FontSize" Value="{StaticResource NormalSize}" />
         <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}" />
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Padding" Value="10,8" />
-        <!--<Setter Property="ControlHelpers:WaterMarkTextHelper.ValidationErrorVisible" Value="False" />-->
+        <Setter Property="Background" Value="{StaticResource PureWhiteColorBrush}"/>
+        <Setter Property="Padding" Value="10,0" />
         <Setter Property="ControlExtensions:WaterMarkTextExtension.ValidationErrorColor" Value="{StaticResource RedColorBrush}" />
         <Setter Property="ControlExtensions:MiscControlExtensions.CornerRadius" Value="5" />
         <Setter Property="ControlExtensions:WaterMarkTextExtension.IsLoading" Value="False" />
@@ -231,7 +230,8 @@
                                        Visibility="Visible" 
                                        Text="{TemplateBinding ControlExtensions:WaterMarkTextExtension.ValidationErrorMessage}" 
                                        VerticalAlignment="Bottom" 
-                                       Padding="{TemplateBinding Padding}" 
+                                       Padding="{TemplateBinding Padding}"
+                                       
                                        Foreground="{TemplateBinding ControlExtensions:WaterMarkTextExtension.ValidationErrorColor}" 
                                        FontSize="12" 
                                        FontFamily="{TemplateBinding FontFamily}" 

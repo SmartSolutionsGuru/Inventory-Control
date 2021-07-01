@@ -28,6 +28,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private readonly DAL.Managers.Bussiness_Partner.IBussinessPartnerManager _bussinessPartnerManager;
         private readonly DAL.Managers.Inventory.IInventoryManager _inventoryManager;
         private readonly DAL.Managers.Bussiness_Partner.IPartnerLedgerManager _partnerLedgerManager;
+        private readonly DAL.Managers.Transaction.ITransactionManager _transactionManager;
         #endregion
 
         #region Constructor
@@ -38,7 +39,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                               , DAL.Managers.Invoice.IInvoiceManager invoiceManager
                               , DAL.Managers.Bussiness_Partner.IBussinessPartnerManager bussinessPartnerManager
                               , DAL.Managers.Inventory.IInventoryManager inventoryManager
-                              , DAL.Managers.Bussiness_Partner.IPartnerLedgerManager partnerLedgerManager)
+                              , DAL.Managers.Bussiness_Partner.IPartnerLedgerManager partnerLedgerManager
+                              , DAL.Managers.Transaction.ITransactionManager transactionManager)
         {
             _productColorManager = productColorManager;
             _productSizeManager = productSizeManager;
@@ -47,6 +49,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             _bussinessPartnerManager = bussinessPartnerManager;
             _inventoryManager = inventoryManager;
             _partnerLedgerManager = partnerLedgerManager;
+            _transactionManager = transactionManager;
         }
         #endregion
 
@@ -197,8 +200,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     SaleInvoice.IsAmountRecived = true;
                     SaleInvoice.IsPurchaseInvoice = false;
                     SaleInvoice.TransactionType = SelectedSaleType;
-                    bool transactionResult = await _invoiceManager.SaveInoiceAsync(SaleInvoice);
-                    if (transactionResult)
+                    bool invoiceResult = await _invoiceManager.SaveInoiceAsync(SaleInvoice);
+                    if (invoiceResult)
                     {
                         var lastRowId = _invoiceManager.GetLastRowId();
                         if (lastRowId != null)
@@ -208,7 +211,57 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                 var resultInventory = await _inventoryManager.RemoveBulkInventoryAsync(productList);
                                 if (resultInventory)
                                 {
+                                    // Now we Create Transaction Object  for saving Transaction
+                                    var transaction = new DAL.Models.Transaction.TransactionModel();
+                                    transaction.BussinessPartner = SelectedPartner;
+                                    transaction.PartnerLastInvoice = SaleInvoice;
+                                    transaction.PaymentImage = SaleInvoice.PaymentImage;
+                                    transaction.PaymentMode = "Receivable";
+                                    transaction.PaymentType = SaleInvoice.SelectedPaymentType;
+                                   var resultTransaction =  await _transactionManager.SaveTransactionAsync(transaction);
+                                    //If transaction is Successfully Completed
+                                    if (resultTransaction)
+                                    {
+                                        var partnerLedger = new BussinessPartnerLedgerModel();
+                                        if (Payment > 0)
+                                        {
+                                            var result = await _partnerLedgerManager.GetPartnerLedgerLastBalance(SelectedPartner?.Id ?? 0);
+                                            if (result != null)
+                                            {
+                                                //We decicde on this flag either payment is Debit Or credit
+                                                if (result.IsBalancePayable)
+                                                {
+                                                    partnerLedger.BalanceAmount = result.BalanceAmount - Payment;
+                                                    if (partnerLedger.BalanceAmount < 0)
+                                                        partnerLedger.IsBalancePayable = true;
+                                                    else
+                                                        partnerLedger.IsBalancePayable = false;
 
+                                                }
+                                                else
+                                                {
+                                                    partnerLedger.BalanceAmount = result.BalanceAmount + Payment;
+                                                    if (partnerLedger.BalanceAmount < 0)
+                                                        partnerLedger.IsBalancePayable = true;
+                                                    else
+                                                        partnerLedger.IsBalancePayable = false;
+                                                }
+                                            }
+                                            partnerLedger.IsAmountReceived = true;
+                                            partnerLedger.InvoiceGuid = SaleInvoice.InvoiceGuid;
+                                            partnerLedger.InvoiceId = SaleInvoice.InvoiceId;
+                                            partnerLedger.TransactionGuid = transaction.TransactionGuid;
+                                            await _partnerLedgerManager.AddPartnerBalance(partnerLedger);
+                                        } 
+                                    }
+                                    else
+                                    {
+                                        //TODO: Display Message Transaction Is Not Saved
+                                    }
+                                }
+                                else
+                                {
+                                    //TODO: Display User Friendly Message that Invoice is Not Saved
                                 }
                             }
                         }
@@ -469,7 +522,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public ProductSizeModel SelectedProductSize
         {
             get { return _SelectedProductSize; }
-            set { _SelectedProductSize = value; NotifyOfPropertyChange(nameof(SelectedProductSize)); GetProductAvailableStock(SelectedInventoryProduct);  }
+            set { _SelectedProductSize = value; NotifyOfPropertyChange(nameof(SelectedProductSize)); GetProductAvailableStock(SelectedInventoryProduct); }
         }
         private int _Quantity;
         /// <summary>

@@ -16,6 +16,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         public MessageBoxOptions Options { get; set; }
         public MessageBoxOptions Selection { get; private set; }
         #endregion
+        [ImportingConstructor]
         public MessageBoxViewModel()
         {
 

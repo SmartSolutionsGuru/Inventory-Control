@@ -75,6 +75,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             BussinessPartnerLedgerModel retVal = null;
             try
             {
+                //Verify Partner Id
                 if (partnerId == 0) return null;
                 string query = string.Empty;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();

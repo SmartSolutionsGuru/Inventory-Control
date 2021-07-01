@@ -227,12 +227,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 IsAddPartner = false;
                 IsUpdatePartner = true;
             }
+            IsLoading = true;
             base.OnActivate();
             AddPartner();
             AmountType = new List<string> { "Payable", "Receviable" };
             NewBussinessPartner = new BussinessPartnerModel();
             NewBussinessPartner.MobileNumbers = new List<string>();
             MobileMessage = "Enter Mobile Number";
+            IsLoading = false;
         }
         protected override void OnInitialize()
         {

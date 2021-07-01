@@ -1,8 +1,6 @@
 ﻿using Caliburn.Micro;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Text;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels
 {

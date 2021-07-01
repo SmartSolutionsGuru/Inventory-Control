@@ -7,7 +7,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:customControls="clr-namespace:SmartSolutions.InventoryControl.UI.CustomControls"
              xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
+             x:Name="_this"
              d:DesignHeight="768" d:DesignWidth="1366">
     <Border Background="{StaticResource PureWhiteColorBrush}">
         <Grid>
@@ -562,7 +563,8 @@
             <Border Background="{StaticResource GrayColorBrush}" CornerRadius="5" Opacity="0.5" >
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                     <maha:ProgressRing Height="100" Width="100" IsActive="True" Foreground="{StaticResource BlueColorBrush}"/>
-                    <TextBlock Text="{Binding LoadingMessage,Mode=OneWay}" Foreground="{StaticResource PureWhiteColorBrush}" FontSize="40" FontFamily="{StaticResource MediumFont}"/>
+                    <TextBlock x:Name="Message" Text="{Binding ActiveItem.LoadingMessage,Mode=OneWay}" Foreground="{StaticResource PureWhiteColorBrush}" FontSize="40" FontFamily="{StaticResource MediumFont}">
+                    </TextBlock>
                 </StackPanel>
                 <Border.Style>
                     <Style TargetType="Border">

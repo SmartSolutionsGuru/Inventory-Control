@@ -93,9 +93,7 @@
                     </RadioButton.Style>
                 </RadioButton>
             </Grid>
-
             <!--Grid For Adding Partner-->
-
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>

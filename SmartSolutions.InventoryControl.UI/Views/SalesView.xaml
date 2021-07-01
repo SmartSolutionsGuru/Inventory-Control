@@ -489,7 +489,7 @@
                     </Grid>
                 </Grid>
             </Grid>
-            <Border  Background="{StaticResource GrayColorBrush}" CornerRadius="5" Opacity="0.5"  >
+            <!--<Border  Background="{StaticResource GrayColorBrush}" CornerRadius="5" Opacity="0.5"  >
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                     <maha:ProgressRing Height="100" Width="100" IsActive="True" Foreground="{StaticResource BlueColorBrush}"/>
                     <TextBlock Text="{Binding LoadingMessage,Mode=OneWay}" Foreground="{StaticResource PureWhiteColorBrush}" FontSize="40" FontFamily="{StaticResource MediumFont}"/>
@@ -504,7 +504,7 @@
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
-            </Border>
+            </Border>-->
         </Grid>
     </Border>
 </UserControl>

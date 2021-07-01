@@ -342,22 +342,6 @@
                        FontSize="{StaticResource MediumSize}"
                        Foreground="{StaticResource GrayColorBrush}"/>
             </Grid>
-            <!--<Border Grid.ColumnSpan="2" Grid.RowSpan="2" Background="{StaticResource GrayColorBrush}" CornerRadius="5" Opacity="0.5"  >
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <maha:ProgressRing Height="100" Width="100" IsActive="True" Foreground="{StaticResource BlueColorBrush}"/>
-                    <TextBlock Text="{Binding LoadingMessage,Mode=OneWay}" Foreground="{StaticResource PureWhiteColorBrush}" FontSize="40" FontFamily="{StaticResource MediumFont}"/>
-                </StackPanel>
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsLoading,Mode=OneWay}" Value="True" >
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-            </Border>-->
         </Grid>
     </Border>
 </UserControl>
