@@ -19,7 +19,7 @@
         <Setter Property="FontSize" Value="{StaticResource NormalSize}" />
     </Style>
     <ControlTemplate x:Key="CustomContentButton" TargetType="Button">
-        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding helpers:ControlHelper.CornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding ControlExtension:MiscControlExtensions.CornerRadius}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                 <ContentPresenter.Resources>
                     <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockBaseStyle}" />
@@ -63,7 +63,8 @@
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
-        <Setter Property="helpers:ControlHelper.CornerRadius" Value="5" />
+        <Setter Property="ControlExtension:MiscControlExtensions.CornerRadius" Value="5"/>
+        <!--<Setter Property="helpers:ControlHelper.CornerRadius" Value="5" />-->
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Template" Value="{StaticResource CustomContentButton}"/>
         <!--<Setter.Value>

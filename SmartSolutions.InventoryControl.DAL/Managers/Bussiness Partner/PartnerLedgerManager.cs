@@ -33,6 +33,11 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
         #endregion
 
         #region Public Methods
+        /// <summary>
+        /// Add Balance Amount in The Bussiness Partner Account
+        /// </summary>
+        /// <param name="partnerLedger"></param>
+        /// <returns></returns>
         public async Task<bool> AddPartnerBalance(BussinessPartnerLedgerModel partnerLedger)
         {
             bool retVal = false;
@@ -70,6 +75,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             return retVal;
         }
 
+         
         public async Task<BussinessPartnerLedgerModel> GetPartnerLedgerLastBalance(int partnerId)
         {
             BussinessPartnerLedgerModel retVal = null;

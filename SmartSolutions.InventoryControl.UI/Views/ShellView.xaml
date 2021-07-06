@@ -291,7 +291,7 @@
         <!--#region Main Grid-->
         <Grid>
             <Grid.Background>
-                <ImageBrush ImageSource="/Assets/Background.jpg" />
+                <ImageBrush ImageSource="/Assets/login page4.png" />
             </Grid.Background>
             <ContentControl x:Name="ActiveItem"/>
             <!--Dialog For Displaying Content On Main Window-->

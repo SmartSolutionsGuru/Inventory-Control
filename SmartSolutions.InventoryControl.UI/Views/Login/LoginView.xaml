@@ -11,73 +11,60 @@
     <Border CornerRadius="10" 
             MaxHeight="630" 
             MaxWidth="555"
+            BorderThickness="0"
+            BorderBrush="{StaticResource GrayColorBrush}"
             Margin="0 0 0 40"
-            Background="{StaticResource BackgroundLightBrush}">
+            Background="Transparent" Opacity="0.7"  >
         <Grid>
             <Grid>
-                <!--<Grid.Background>
-                <ImageBrush ImageSource="/Assets/LoginCorner.jpg"/>
-            </Grid.Background>-->
                 <Grid.RowDefinitions>
                     <RowDefinition Height="120"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="BLACK SOFT" 
-                       FontFamily="{StaticResource MediumFont}" 
-                       HorizontalAlignment="Center" 
-                       VerticalAlignment="Center"
-                       FontSize="{StaticResource HeadingSize}"/>
+               
                 <!---->
-                <Grid Grid.Row="1" Visibility="{Binding IsLoginForget,Converter={StaticResource BooleanToVisibilityConverter},ConverterParameter='inverse'}">
+                <Grid Grid.Row="1" Margin="0 30 0 30" Visibility="{Binding IsLoginForget,Converter={StaticResource BooleanToVisibilityConverter},ConverterParameter='inverse'}">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="0.2*"/>
-                        <RowDefinition Height="0.4*"/>
-                        <RowDefinition Height="0.15*"/>
-                        <RowDefinition Height="0.5*"/>
-                        <RowDefinition Height="0.2*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="0.3*"/>
+                        <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-
                     <TextBlock Grid.Row="0" 
-                       FontSize="{StaticResource SubHeadingSize}" 
-                       FontFamily="{StaticResource LightFont}"
-                       Foreground="{StaticResource GrayColorBrush}"
-                       VerticalAlignment="Bottom"
-                       HorizontalAlignment="Left"
-                       Margin="90 0 0 0">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Text" Value="UserName"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CanReTypePassword}" Value="true">
-                                        <Setter Property="Text" Value="Password"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-
+                           Text="Butt Buckle Store" 
+                           FontFamily="{StaticResource MediumFont}" 
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource PureWhiteColorBrush}"
+                           Margin="0 20 0 0"
+                           FontSize="{StaticResource MainHeadingSize}"/>
                     <TextBox x:Name="TextUserName"
-                         Grid.Row="1" 
-                         Height="52" 
-                         Width="380"
-                         Background="{StaticResource PureWhiteColorBrush}"
-                         Visibility="{Binding CanReTypePassword,Converter={StaticResource BooleanToVisibilityConverter},ConverterParameter='inverse'}"
-                         Margin="0 0 0 8"            
-                         HorizontalAlignment="Center"
-                         VerticalAlignment="Center"
-                         TextAlignment="Left"
-                         Text="{Binding UserName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"                     
-                         FontSize="{StaticResource SubHeadingSize}"
-                         ControlExtensions:WaterMarkTextExtension.IsMonitoring="True"
-                         ControlExtensions:WaterMarkTextExtension.WatermarkText="UserName"
-                         ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Collapsed"
-                        ControlExtensions:WaterMarkTextExtension.RightWatermarkIconVisibility="Collapsed">
+                             Grid.Row="1" 
+                             Height="48" 
+                             Width="320"
+                             Background="{StaticResource PureWhiteColorBrush}"
+                             Visibility="{Binding CanReTypePassword,Converter={StaticResource BooleanToVisibilityConverter},ConverterParameter='inverse'}"
+                             Margin="0 0 0 0"
+                             Padding="5 0 0 0"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             TextAlignment="Left"
+                             Text="{Binding UserName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"                     
+                             FontSize="{StaticResource ExtraNormalSize}"
+                             ControlExtensions:MiscControlExtensions.CornerRadius="25"
+                             ControlExtensions:WaterMarkTextExtension.IsMonitoring="True"
+                             ControlExtensions:WaterMarkTextExtension.WatermarkText="User Name"
+                             ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                             ControlExtensions:WaterMarkTextExtension.WatermarkIconColor="{StaticResource LightGrayColorBrush}"
+                             ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Partner}"
+                             ControlExtensions:WaterMarkTextExtension.RightWatermarkIconVisibility="Collapsed">
                         <TextBox.Style>
                             <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxVisibilityPathIconStyle}">
                                 <Setter Property="BorderBrush"  Value="{StaticResource BlueColorBrush}" />
-                                <Setter Property="BorderThickness"  Value="1.7" />
+                                <Setter Property="BorderThickness"  Value="0" />
                                 <Setter Property="Foreground" Value="#3B3B3B"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsUserErrorMessage}" Value="True">
@@ -89,29 +76,29 @@
                             </Style>
                         </TextBox.Style>
                     </TextBox>
-
                     <PasswordBox x:Name="Retype_passwordBox"
-                             Grid.Row="1" 
-                             Height="52" 
-                             Width="380"
-                             Margin="0 8 0 0"
-                             Background="{StaticResource PureWhiteColorBrush}"        
-                             Visibility="{Binding CanReTypePassword,Converter={StaticResource BooleanToVisibilityConverter}}"
-                             HorizontalAlignment="Center"
-                             VerticalAlignment="Top" 
-                             ControlExtensions:PasswordHelper.Password="{Binding ReTypePassword,UpdateSourceTrigger=PropertyChanged,
+                                 Grid.Row="2" 
+                                 Height="48" 
+                                 Width="380"
+                                 Margin="0 8 0 0"
+                                 Background="{StaticResource PureWhiteColorBrush}"        
+                                 Visibility="{Binding CanReTypePassword,Converter={StaticResource BooleanToVisibilityConverter}}"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Top" 
+                                 ControlExtensions:PasswordHelper.Password="{Binding ReTypePassword,UpdateSourceTrigger=PropertyChanged,
                                                                      Mode=TwoWay,NotifyOnValidationError=True,
                                                                      ValidatesOnDataErrors=True,ValidatesOnExceptions=True}"
-                             FontSize="{StaticResource HeadingSize}"
-                             ControlExtensions:PasswordHelper.Attach="True"
-                             ControlExtensions:WaterMarkTextExtension.IsMonitoring="True"
-                             ControlExtensions:WaterMarkTextExtension.WatermarkText=" Please Type Password"
-                             ControlExtensions:WaterMarkTextExtension.WatermarkIconHeight="30"
-                             ControlExtensions:WaterMarkTextExtension.WatermarkIconWidth="18"
-                             ControlExtensions:WaterMarkTextExtension.RightWatermarkIconVisibility="Visible"
-                             ControlExtensions:PasswordHelper.PasswordIconVisibility="Visible"
-                             ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Collapsed"
-                             ControlExtensions:PasswordHelper.PasswordIconPath="{StaticResource Shape_ShowPassword}">
+                                 FontSize="{StaticResource HeadingSize}"
+                                 ControlExtensions:PasswordHelper.Attach="True"
+                                 ControlExtensions:WaterMarkTextExtension.IsMonitoring="True"
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkText=" Please Type Password"
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkIconHeight="30"
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkIconWidth="18"
+                                 ControlExtensions:WaterMarkTextExtension.RightWatermarkIconVisibility="Visible"
+                                 ControlExtensions:PasswordHelper.PasswordIconVisibility="Visible"
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_ShowPassword}"
+                                 ControlExtensions:PasswordHelper.PasswordIconPath="{StaticResource Shape_ShowPassword}">
                         <PasswordBox.Style>
                             <Style TargetType="PasswordBox" BasedOn="{StaticResource PasswordBoxVisibilityPathIconStyle}">
                                 <Setter Property="BorderThickness"  Value="0"/>
@@ -119,13 +106,13 @@
                                 <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
                                 <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkText" Value="Password / Pin"/>
                                 <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility" Value="Collapsed"/>
-                                <!--<Setter Property="controlHelper:PasswordHelper.PasswordIconVisibility" Value="Visible"/>-->
+                                <Setter Property="ControlExtensions:PasswordHelper.PasswordIconVisibility" Value="Visible"/>
                                 <Setter Property="ControlExtensions:PasswordHelper.PasswordIconPath" Value="{StaticResource Shape_ShowPassword}"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsPasswordErrorMessage,Mode=TwoWay}" Value="True">
                                         <Setter Property="BorderBrush" Value="{StaticResource RedColorBrush}"/>
                                         <Setter Property="BorderThickness" Value="1"/>
-                                        <!--<Setter Property="controlHelper:PasswordHelper.PasswordIconVisibility" Value="Visible"/>-->
+                                        <Setter Property="ControlExtensions:PasswordHelper.PasswordIconVisibility" Value="Visible"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding CanReTypePassword}" Value="True">
                                         <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkText" Value="Enter Password"/>
@@ -135,50 +122,27 @@
                         </PasswordBox.Style>
 
                     </PasswordBox>
-
-                    <TextBlock Grid.Row="2" 
-                       FontSize="{StaticResource SubHeadingSize}" 
-                       FontFamily="{StaticResource LightFont}"
-                       Foreground="{StaticResource GrayColorBrush}"
-                       VerticalAlignment="Bottom"
-                       HorizontalAlignment="Left"
-                       Margin="90 0 0 0">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Text" Value="Password"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CanReTypePassword}" Value="True">
-                                        <Setter Property="Text" Value="ReTypePassword"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <!--controlHelper:PasswordHelper.PasswordIconVisibility="Visible"-->
                     <PasswordBox x:Name="passwordBox"
-                             Grid.Row="3" 
-                             Height="52" 
-                             Width="380"
-                             Margin="0 8 0 0"
-                             Background="Transparent"
-                             BorderBrush="{StaticResource BlueColorBrush}"
-                             HorizontalAlignment="Center"
-                             VerticalAlignment="Top"                         
-                             FontSize="{StaticResource HeadingSize}"
-                             ControlExtensions:PasswordHelper.Password="{Binding Password,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay,NotifyOnValidationError=True,ValidatesOnDataErrors=True,ValidatesOnExceptions=True}"
-                             ControlExtensions:WaterMarkTextExtension.RightWatermarkIconVisibility="Visible"
-                             ControlExtensions:PasswordHelper.Attach="True"
-                             ControlExtensions:WaterMarkTextExtension.IsMonitoring="True"
-                             ControlExtensions:WaterMarkTextExtension.WatermarkIconHeight="30"
-                             ControlExtensions:WaterMarkTextExtension.WatermarkIconWidth="18">
+                                 Grid.Row="2" 
+                                 Height="48" 
+                                 Width="320"
+                                 Margin="0 8 0 0"
+                                 Padding="5 0 0 0"
+                                 ControlExtensions:PasswordHelper.Password="{Binding Password,Mode=TwoWay}"
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkIconColor="{StaticResource LightGrayColorBrush}"
+                                 ControlExtensions:MiscControlExtensions.CornerRadius="25"
+                                 ControlExtensions:WaterMarkTextExtension.IsMonitoring="True"
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkIconHeight="30"
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkIconWidth="18">
                         <PasswordBox.Style>
                             <Style TargetType="PasswordBox" BasedOn="{StaticResource PasswordBoxVisibilityPathIconStyle}">
-                                <Setter Property="BorderThickness"  Value="1.7"/>
+                                <Setter Property="BorderThickness"  Value="0"/>
                                 <Setter Property="BorderBrush"  Value="{StaticResource LightGrayColorBrush}"/>
                                 <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
                                 <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkText" Value="Password"/>
-                                <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility" Value="Collapsed"/>
-                                <!--<Setter Property="controlHelper:PasswordHelper.PasswordIconVisibility" Value="Visible"/>-->
+                                <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility" Value="Visible"/>
+                                
+                                <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconPath" Value="{StaticResource Shape_ShowPassword}"/>
                                 <Setter Property="ControlExtensions:PasswordHelper.PasswordIconPath" Value="{StaticResource Shape_ShowPassword}"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsPasswordErrorMessage,Mode=TwoWay}" Value="True">
@@ -195,7 +159,7 @@
                         </PasswordBox.Style>
                     </PasswordBox>
 
-                    <Grid Grid.Row="4"                        
+                    <Grid Grid.Row="3"                        
                       VerticalAlignment="Center"
                       Visibility="{Binding CanReTypePassword,Converter={StaticResource BooleanToVisibilityConverter},ConverterParameter='inverse'}"
                       Margin="5 0 0 0">
@@ -204,47 +168,50 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <CheckBox Grid.Column="0" 
-                        Height="25"                          
-                          Content="Login as Admin"
-                          HorizontalAlignment="Center"
-                          VerticalAlignment="Center"
-                          IsChecked="{Binding IsLoginAsAdmin,Mode=TwoWay}"
-                          Margin="7 0 0 0"
-                          BorderBrush="{StaticResource LightBlueColorBrush}"/>
+                                  Height="25"                          
+                                  Content="Login as Admin"
+                                  FontWeight="DemiBold"
+                                  Foreground="{StaticResource PureWhiteColorBrush}"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding IsLoginAsAdmin,Mode=TwoWay}"
+                                  Margin="40 5 0 0"
+                                  BorderBrush="{StaticResource LightBlueColorBrush}"/>
                         <Button Grid.Column="1"
                             x:Name="ForgetPassword"
                             Height="30" 
                             Width="120"
-                            Margin="0 0 15 0"
+                            Margin="0 0 80 0"
                             Background="Transparent"
                             Content="Forgot Password ?"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             BorderThickness="0"
-                            Foreground="{StaticResource GrayColorBrush}"
+                            Foreground="{StaticResource PureWhiteColorBrush}"
                             FontSize="{StaticResource MediumSize}"
                             FontFamily="{StaticResource LightFont}"
                             Command="{Binding ForgetPasswordCommand}"/>
                     </Grid>
 
                     <!--Background="{StaticResource WordOrangeBrush}"-->
-                    <Button Grid.Row="5" 
-                        Width="380" 
-                        Height="50"
-                        Content="LOGIN"
-                        IsDefault="True"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Top"
-                        ControlExtensions:MiscControlExtensions.IsBusyProperty="{Binding LoginIsRunning,Mode=TwoWay}"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Style="{StaticResource ContentButton}"
-                        Background="{StaticResource OrangeColorBrush}"
-                        Foreground="{StaticResource PureWhiteColorBrush}"
-                        FontFamily="{StaticResource MediumFont}"
-                        FontSize="{StaticResource HeadingSize}"
-                        Command="{Binding LoginCommand}"
-                        CommandParameter="{Binding ElementName=passwordBox}"/>
+                    <Button Grid.Row="4" 
+                            Width="320" 
+                            Height="48"
+                            Content="LOGIN"
+                            IsDefault="True"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Top"
+                            ControlExtensions:MiscControlExtensions.CornerRadius="25"
+                            ControlExtensions:MiscControlExtensions.IsBusyProperty="{Binding LoginIsRunning,Mode=TwoWay}"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Style="{StaticResource ContentButton}"
+                            Background="{StaticResource BlueColorBrush}"
+                            Foreground="{StaticResource PureWhiteColorBrush}"
+                            FontFamily="{StaticResource MediumFont}"
+                            FontSize="{StaticResource ExtraNormalSize}"
+                            Command="{Binding LoginCommand}"
+                            CommandParameter="{Binding ElementName=passwordBox}"/>
 
                 </Grid>
                 <!---->
@@ -335,12 +302,12 @@
 
                 </Grid>
 
-                <TextBlock Grid.Row="7" Text="SmartBooks version 1.0.0 Powerd By Blacksoft" 
+                <TextBlock Grid.Row="7" Text="SmartBooks version 1.0.0 Powerd By Smart Solutions" 
                        HorizontalAlignment="Center" 
                        Margin="0 0 0 20"
                        FontFamily="{StaticResource LightFont}"
                        FontSize="{StaticResource MediumSize}"
-                       Foreground="{StaticResource GrayColorBrush}"/>
+                       Foreground="{StaticResource PureWhiteColorBrush}"/>
             </Grid>
         </Grid>
     </Border>
