@@ -1,0 +1,181 @@
+﻿<UserControl x:Class="SmartSolutions.InventoryControl.UI.Views.Warehouse.WarehouseView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ControlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
+             xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views.Warehouse"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="900">
+    <Border Background="{StaticResource PureWhiteColorBrush}" CornerRadius="10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="80"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <RadioButton Grid.Column="0" 
+                             BorderBrush="{StaticResource GreenColorBrush}" 
+                             BorderThickness="1" 
+                             ControlExtensions:MiscControlExtensions.CornerRadius="5" 
+                             Content="Add Warehouse" 
+                             HorizontalContentAlignment="Center" 
+                             VerticalContentAlignment="Center" 
+                             Margin="30,10"
+                             GroupName="WarehouseGroup"
+                             IsChecked="{Binding IsAddProductPressed,Mode=TwoWay}"
+                             Background="{StaticResource GreenColorBrush}" >
+                    <RadioButton.Style>
+                        <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="False">
+                                    <Setter Property="Foreground" Value="{StaticResource GreenColorBrush}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </RadioButton.Style>
+                </RadioButton>
+                <RadioButton Grid.Column="1" 
+                             BorderBrush="{StaticResource OrangeColorBrush}" 
+                             BorderThickness="1" 
+                             ControlExtensions:MiscControlExtensions.CornerRadius="5" 
+                             Content="Update Warehouse" 
+                             HorizontalContentAlignment="Center" 
+                             VerticalContentAlignment="Center" 
+                             Margin="30,10"
+                             GroupName="WarehouseGroup"
+                             IsChecked="{Binding IsUpdateProduct,Mode=TwoWay}"
+                             ControlExtensions:MiscControlExtensions.UncheckedForeground="{StaticResource RedColorBrush}"
+                            
+                             Background="{StaticResource OrangeColorBrush}" >
+                    <RadioButton.Style>
+                        <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="False">
+                                    <Setter Property="Foreground" Value="{StaticResource OrangeColorBrush}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </RadioButton.Style>
+                </RadioButton>
+                <RadioButton Grid.Column="2" 
+                             Margin="30,10"
+                             Content="Remove Warehouse"
+                             HorizontalContentAlignment="Center"
+                             VerticalContentAlignment="Center"
+                             FontFamily="{StaticResource MediumFont}"
+                             FontSize="{StaticResource NormalSize}"
+                             BorderThickness="1"
+                             GroupName="WarehouseGroup"
+                             IsChecked="{Binding IsRemoveProduct,Mode=TwoWay}"
+                             BorderBrush="{StaticResource RedColorBrush}"
+                             Background="{StaticResource RedColorBrush}">
+                    <RadioButton.Style>
+                        <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="False">
+                                    <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </RadioButton.Style>
+                </RadioButton>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" 
+                         Height="45" 
+                         Width="250"
+                         Foreground="{StaticResource GrayColorBrush}"
+                         FontFamily="{StaticResource MediumFont}"
+                         FontSize="{StaticResource MediumSize}"
+                         Text="{Binding WarehouseName,Mode=TwoWay}"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Warehouse Name"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Home}"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"></TextBox>
+                <ComboBox Grid.Column="1"
+                          Height="45"
+                          Width="250"
+                          Style="{StaticResource BaseComboBox}"
+                          ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Country"
+                          ItemsSource="{Binding Countries,Mode=OneWay}"
+                          SelectedItem="{Binding SelectedCountry,Mode=TwoWay}"
+                          Foreground="{StaticResource GrayColorBrush}"
+                          FontFamily="{StaticResource MediumFont}"
+                          FontSize="{StaticResource MediumSize}"></ComboBox>
+                <ComboBox Grid.Column="2"
+                          Height="45"
+                          Width="250"
+                          Style="{StaticResource BaseComboBox}"
+                          ControlExtensions:WaterMarkTextExtension.WatermarkText="Select City"
+                          ItemsSource="{Binding Cities,Mode=OneWay}"
+                          SelectedItem="{Binding SelectedCity,Mode=TwoWay}"
+                          Foreground="{StaticResource GrayColorBrush}"
+                          FontFamily="{StaticResource MediumFont}"
+                          FontSize="{StaticResource MediumSize}"></ComboBox>
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" 
+                         Height="45" 
+                         Width="250"
+                         Foreground="{StaticResource GrayColorBrush}"
+                         FontFamily="{StaticResource MediumFont}"
+                         FontSize="{StaticResource MediumSize}"
+                         Text="{Binding PhoneNumber,Mode=TwoWay}"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Warehouse Name"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Phone}"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"/>
+                <TextBox Grid.Column="1" 
+                         Height="45" 
+                         Width="250"
+                         Foreground="{StaticResource GrayColorBrush}"
+                         FontFamily="{StaticResource MediumFont}"
+                         FontSize="{StaticResource MediumSize}"
+                         Text="{Binding MobileNumber,Mode=TwoWay}"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Warehouse Name"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Mobile}"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"/>
+                <TextBox Grid.Column="2" 
+                         Height="80" 
+                         Width="250"
+                         Foreground="{StaticResource GrayColorBrush}"
+                         FontFamily="{StaticResource MediumFont}"
+                         FontSize="{StaticResource MediumSize}"
+                         Text="{Binding Address,Mode=TwoWay}"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Warehouse Name"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Location}"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"/>
+            </Grid>
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button x:Name="Clear"  Background="Red" Margin="5 0 5 0" Content="Clear" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45" Width="150" Style="{StaticResource ContentButton}"></Button>
+                    <Button x:Name="SaveWarehouse"  Background="Green" Margin="5 0 5 0" Content="Save" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45" Width="150" Style="{StaticResource ContentButton}"></Button>
+                </StackPanel>
+            </Grid>
+        </Grid> 
+    </Border>
+</UserControl>

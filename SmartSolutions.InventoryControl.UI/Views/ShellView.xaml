@@ -13,7 +13,7 @@
         MinHeight="{Binding WindowMinimumHeight,Mode=OneWay}"
         Activated="OnActivated"
         Deactivated="OnDeactivated"
-        WindowState="Maximized"
+        WindowState="Normal"
         AllowsTransparency="True" 
         WindowStyle="None">
     <Window.Resources>
@@ -295,11 +295,6 @@
             </Grid.Background>
             <ContentControl x:Name="ActiveItem"/>
             <!--Dialog For Displaying Content On Main Window-->
-            <ContentControl x:Name="Dialog"
-                            VerticalContentAlignment="Stretch"
-                            HorizontalContentAlignment="Stretch" 
-                            IsHitTestVisible="True"
-                            Ap:AnimateSlideInFromBottomMarginProperty.Value="True"/>
             <Border Background="{StaticResource GrayColorBrush}" CornerRadius="5" Opacity="0.5" >
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                     <maha:ProgressRing Height="100" Width="100" IsActive="True" Foreground="{StaticResource BlueColorBrush}"/>
@@ -316,13 +311,20 @@
                     </Style>
                 </Border.Style>
             </Border>
-            <!--Dimwd Overlay-->
+            <!--Dimmed Overlay-->
             <Border Grid.ColumnSpan="2"
                         Grid.RowSpan="2"
                         Opacity="0.1">
                 <Border Background="{StaticResource PureBlackColorBrush}"
                         Ap:AnimateFadeInProperty.Value="{Binding DimmableOverlayVisible}"/>
             </Border>
+            <!--Ap:AnimateSlideInFromBottomMarginProperty.Value="True"-->
+            <ContentControl x:Name="Dialog"
+                            VerticalContentAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch" 
+                            IsHitTestVisible="True"
+                            />
+            
             <!--#endregion-->
             
         </Grid>

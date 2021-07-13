@@ -5,6 +5,7 @@ using SmartSolutions.Util.LogUtils;
 using System;
 using System.ComponentModel.Composition;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -42,14 +43,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
 
         #region Public Properties
         public IDialogManager Dialog => _dialog;
-
-        
-
         #endregion
 
         #region Commands
         public RelayCommand MenuCommand { get; set; }
-
         #endregion
 
         #region Methods
@@ -60,7 +57,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 ActiveItem = screen;
                 ActivateItem(screen);
             }
-           
+
         }
         protected override void OnInitialize()
         {
@@ -90,39 +87,113 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             bool retVal = false;
             try
             {
-                //Get the Db File
-                if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName)))
+                if (IoC.Get<IRepository>().Type == DBTypes.SQLITE)
                 {
-                    Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName));
-                }
-                if (!File.Exists(dbFile))
-                {
-                    //Get the Curent Directory
-                    var currentDirectory = Environment.CurrentDirectory;
-                    var splitString = currentDirectory.Split(new string[] { "bin" }, StringSplitOptions.None);
-                    var sourcePath = string.Concat(splitString[0], "\\Assets\\InventoryControl.db");
-                    string destinationName = string.Empty;
-                    DirectoryInfo directory = null;
-                    //Create Config Directory
-                    if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName)))
-                        directory = Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName));
-                    //Get the destinationPath and Copy Db   
-                    destinationName = dbFile;//$"{Environment.SpecialFolder.LocalApplicationData}\\{DirectoryName}\\InventoryControl.db";
-                    File.Copy(sourcePath, destinationName);
-                    ConnectionInfo.Instance.ConnectionString = destinationName;
-                    ConnectionInfo.Instance.Password = "7JByVhs7*ETu5-by";
-                    ConnectionInfo.Instance.Type = DBTypes.SQLITE;
-                }
-                else
-                {
-                    ConnectionInfo.Instance.Path = dbFile;
-                    ConnectionInfo.Instance.Password = "7JByVhs7*ETu5-by";
-                    ConnectionInfo.Instance.Type = DBTypes.SQLITE;
-                }
 
+                    if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName)))
+                    {
+                        Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName));
+                    }
+                    if (!File.Exists(dbFile))
+                    {
+                        //Get the Curent Directory
+                        var currentDirectory = Environment.CurrentDirectory;
+                        var splitString = currentDirectory.Split(new string[] { "bin" }, StringSplitOptions.None);
+                        var sourcePath = string.Concat(splitString[0], "\\Assets\\InventoryControl.db");
+                        string destinationName = string.Empty;
+                        DirectoryInfo directory = null;
+                        //Create Config Directory
+                        if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName)))
+                            directory = Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName));
+                        //Get the destinationPath and Copy Db   
+                        destinationName = dbFile;//$"{Environment.SpecialFolder.LocalApplicationData}\\{DirectoryName}\\InventoryControl.db";
+                        File.Copy(sourcePath, destinationName);
+                        ConnectionInfo.Instance.ConnectionString = destinationName;
+                        ConnectionInfo.Instance.Password = "7JByVhs7*ETu5-by";
+                        ConnectionInfo.Instance.Type = DBTypes.SQLITE;
+                    }
+                    else
+                    {
+                        ConnectionInfo.Instance.Path = dbFile;
+                        ConnectionInfo.Instance.Password = "7JByVhs7*ETu5-by";
+                        ConnectionInfo.Instance.Type = DBTypes.SQLITE;
+                    }
+                }
+                else if (IoC.Get<IRepository>().Type == DBTypes.SQLServer)
+                {
+                    //string host = "DESKTOP-MLLBV2C\\Shabab Butt";
+                    //string host = "Nofal-PC";
+                    string host = Environment.MachineName;
+                    string port = "1433";
+                    string database = "SmartSolutions.InventoryControl";
+                    //string username = "SOLOINSIGHT\\sbutt";
+                    string username = "sa";
+                    string password = "Pakistan@123";
+
+
+
+                    var args = Environment.GetCommandLineArgs();
+                    LogMessage.Write("Arguments: " + Newtonsoft.Json.JsonConvert.SerializeObject(args));
+                    if (args != null)
+                    {
+                        foreach (var arg in args)
+                        {
+                            var parts = arg?.Split(':');
+                            if ((parts?.Length ?? 0) > 1)
+                            {
+                                string key = parts?.ElementAtOrDefault(0);
+                                string value = parts?.ElementAtOrDefault(1);
+                                switch (key)
+                                {
+                                    case "host":
+                                        host = value;
+                                        break;
+                                    case "port":
+                                        port = value;
+                                        break;
+                                    case "database":
+                                        database = value;
+                                        break;
+                                    case "username":
+                                        username = value;
+                                        break;
+                                    case "password":
+                                        password = value;
+                                        break;
+                                    case "dbPath":
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    ConnectionInfo.Instance.IPAddress = host;
+                    ConnectionInfo.Instance.Port = port;
+                    ConnectionInfo.Instance.Database = database;
+                    ConnectionInfo.Instance.UserName = username;
+                    ConnectionInfo.Instance.Password = password;
+                    ConnectionInfo.Instance.ConnectionString = string.Format($"data source=localhost; Initial Catalog=" + database + ";User id=" + username + ";Password=" + password);
+                    //ConnectionInfo.Instance.ConnectionString = string.Format($"data source=localhost; Initial Catalog=" + database + ";Integrated Security = SSPI;");
+
+#if DEBUG
+                    LogMessage.Write($"::: DB Config ::: Host={host}, Port={port}, Username={username}, Password={password}, Database={database}");
+#endif
+
+                    if (ConnectionInfo.Instance == null)
+                    {
+                        ConnectionInfo.Instance.IPAddress = host;
+                        ConnectionInfo.Instance.Database = database;
+                        ConnectionInfo.Instance.Port = port;
+                        ConnectionInfo.Instance.UserName = username;
+                        ConnectionInfo.Instance.Password = password;
+                        ConnectionInfo.Instance.ConnectionString = string.Format("Server=" + host + ";Port=" + port + ";Database=" + database + ";Uid=" + username + ";Pwd=" + password + ";convert zero datetime=True;");
+
+                    }
+                }
+                // Verify the Connection is Valid Or Not
                 Exception ex = null;
                 retVal = true == IoC.Get<IRepository>()?.IsValidConnection(out ex);
-
             }
             catch (Exception ex)
             {
@@ -130,7 +201,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
             return retVal;
         }
-      
+
 
 
         #endregion

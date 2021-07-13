@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SmartSolutions.InventoryControl.Plugins\SmartSolutions.InventoryControl.Plugins.csproj" />
+    <ProjectReference Include="..\SmartSolutions.Util\SmartSolutions.Util.csproj" />
+  </ItemGroup>
+
+</Project>

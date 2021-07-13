@@ -237,7 +237,6 @@
     </Style>
 
     <!-- Icon button -->
-    <!-- Icon button -->
     <Style x:Key="IconButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BaseStyle}">
         <Setter Property="Background" Value="{StaticResource BlueColorBrush}" />
         <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}" />
@@ -358,5 +357,46 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style x:Key="SwitchToggleButton" TargetType="ToggleButton">
+        <Setter Property="IsChecked" Value="False" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Name="tBlock" Text="{TemplateBinding Content}" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                                               FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}"/>
+
+                        <Border x:Name="ButtonBorder" 
+                                Width="70"
+                                CornerRadius="15" 
+                                BorderThickness="0"
+                                VerticalAlignment="Center" 
+                                Margin="25 0 0 0">
+
+                            <Ellipse Name="ellipse" 
+                                     Height="29" 
+                                     Width="29" 
+                                     Fill="{StaticResource PureWhiteColorBrush}" 
+                                     HorizontalAlignment="Right" 
+                                     Margin="1"/>
+                        </Border>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="HorizontalAlignment" Value="Left" TargetName="ellipse"/>
+                            <Setter Property="Background" Value="{StaticResource GreenColorBrush}" TargetName="ButtonBorder"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter Property="Background" Value="{StaticResource LightGrayColorBrush}" TargetName="ButtonBorder"/>
+                            <Setter Property="HorizontalAlignment" Value="Left" TargetName="tBlock"/>
+                            <Setter Property="VerticalAlignment" Value="Center" TargetName="tBlock"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
 </ResourceDictionary>

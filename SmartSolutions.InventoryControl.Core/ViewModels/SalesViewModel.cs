@@ -32,6 +32,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Constructor
+        public SalesViewModel() { }
+        
         [ImportingConstructor]
         public SalesViewModel(IProductColorManager productColorManager
                               , IProductSizeManager productSizeManager

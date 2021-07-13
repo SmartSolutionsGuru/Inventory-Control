@@ -23,6 +23,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Constructor
+        public PaymentViewModel() { }
+       
         [ImportingConstructor]
         public PaymentViewModel(IBussinessPartnerManager bussinessPartnerManager
                                 , IInvoiceManager invoiceManager

@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:autoComplete="http://wpfcontrols.com/"
-              xmlns:salesModels="clr-namespace:SmartSolutions.InventoryControl.DAL.Models.Inventory;assembly=SmartSolutions.InventoryControl.DAL"
+             xmlns:viewModel="clr-namespace:SmartSolutions.InventoryControl.Core.ViewModels;assembly=SmartSolutions.InventoryControl.Core"
+             xmlns:salesModels="clr-namespace:SmartSolutions.InventoryControl.DAL.Models.Inventory;assembly=SmartSolutions.InventoryControl.DAL"
              xmlns:maha="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:ControlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
              xmlns:models="clr-namespace:SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;assembly=SmartSolutions.InventoryControl.DAL"
@@ -11,6 +12,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views"
+             d:DataContext="{d:DesignInstance Type=viewModel:SalesViewModel,IsDesignTimeCreatable=True}"
+             cal:Bind.AtDesignTime="True"
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1366">
     <UserControl.Resources>
@@ -242,7 +245,7 @@
                                                     <ColumnDefinition Width="8"/>
                                                     <ColumnDefinition Width="0.6*"/>
                                                 </Grid.ColumnDefinitions>
-                                             
+
                                                 <Border Grid.Column="0" Grid.Row="1" Height="25" Margin="0 7 0 0" Width="25" VerticalAlignment="Top" CornerRadius="20" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="2" Background="{StaticResource BlueColorBrush}" >
                                                     <TextBlock Margin="0 0 0 0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.AutoId,Mode=OneWay}" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource PureWhiteColorBrush}"/>
                                                 </Border>
@@ -489,22 +492,6 @@
                     </Grid>
                 </Grid>
             </Grid>
-            <!--<Border  Background="{StaticResource GrayColorBrush}" CornerRadius="5" Opacity="0.5"  >
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <maha:ProgressRing Height="100" Width="100" IsActive="True" Foreground="{StaticResource BlueColorBrush}"/>
-                    <TextBlock Text="{Binding LoadingMessage,Mode=OneWay}" Foreground="{StaticResource PureWhiteColorBrush}" FontSize="40" FontFamily="{StaticResource MediumFont}"/>
-                </StackPanel>
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsLoading,Mode=OneWay}" Value="True" >
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-            </Border>-->
         </Grid>
     </Border>
 </UserControl>

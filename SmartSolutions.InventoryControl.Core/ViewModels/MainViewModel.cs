@@ -109,7 +109,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         public async void SMS()
         {
-            await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Sorry This Feather is Not Available Yet",options: Dialogs.MessageBoxOptions.Ok);
+            await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Sorry This Feature is Not Available Yet", options: Dialogs.MessageBoxOptions.Ok);
         }
         #endregion
 

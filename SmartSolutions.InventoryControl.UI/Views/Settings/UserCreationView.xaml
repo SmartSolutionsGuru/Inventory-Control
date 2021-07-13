@@ -1,0 +1,292 @@
+﻿<UserControl x:Class="SmartSolutions.InventoryControl.UI.Views.Settings.UserCreationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ControlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views.Settings"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="600">
+    <Border CornerRadius="10" Background="{StaticResource PureWhiteColorBrush}" Padding="15">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto" MinHeight="70"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Margin="0,10" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Path Height="35" Width="35" Stretch="Uniform" Fill="{StaticResource OrangeColorBrush}" Data="{StaticResource Shape_Setting}"/>
+                <TextBlock Text="Settings" 
+                           HorizontalAlignment="Center" 
+                           VerticalAlignment="Center" 
+                           FontSize="{StaticResource SubHeadingSize}"
+                           Foreground="{StaticResource GrayColorBrush}"
+                           Margin="5 0 0 0"/>
+            </StackPanel>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.4*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0" Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <ToggleButton Style="{StaticResource SwitchToggleButton}" 
+                                  Background="{StaticResource PureWhiteColorBrush}"
+                                  IsEnabled="True"
+                                  IsChecked="{Binding IsAdmin,Mode=TwoWay}"
+                                  Content="Admin    "
+                                  FontFamily="{StaticResource MediumFont}"
+                                  FontSize="{StaticResource NormalSize}"
+                                  Foreground="{StaticResource GrayColorBrush}"/>
+                    <ToggleButton Grid.Row="1" Style="{StaticResource SwitchToggleButton}" 
+                                  Background="{StaticResource PureWhiteColorBrush}"
+                                  IsEnabled="True"
+                                  IsChecked="{Binding IsPurchase,Mode=TwoWay}"
+                                  Content="Purchase"
+                                  FontFamily="{StaticResource MediumFont}"
+                                  FontSize="{StaticResource NormalSize}"
+                                  Foreground="{StaticResource GrayColorBrush}"/>
+                    <ToggleButton Grid.Row="2" Style="{StaticResource SwitchToggleButton}" 
+                                  Background="{StaticResource PureWhiteColorBrush}"
+                                  IsEnabled="True"
+                                  IsChecked="{Binding IsReport,Mode=TwoWay}"
+                                  Content="Reports  "
+                                  FontFamily="{StaticResource MediumFont}"
+                                  FontSize="{StaticResource NormalSize}"
+                                  Foreground="{StaticResource GrayColorBrush}"/>
+                    <ToggleButton Grid.Row="3" Style="{StaticResource SwitchToggleButton}" 
+                                  Background="{StaticResource PureWhiteColorBrush}"
+                                  IsEnabled="True"
+                                  IsChecked="{Binding CanEdit,Mode=TwoWay}"
+                                  Content="Can Edit "
+                                  FontFamily="{StaticResource MediumFont}"
+                                  FontSize="{StaticResource NormalSize}"
+                                  Foreground="{StaticResource GrayColorBrush}"/>
+                    <ToggleButton Grid.Row="4" Style="{StaticResource SwitchToggleButton}" 
+                                  Background="{StaticResource PureWhiteColorBrush}"
+                                  IsEnabled="True"
+                                  IsChecked="{Binding CanDelete,Mode=TwoWay}"
+                                  Content="Can Del  "
+                                  FontFamily="{StaticResource MediumFont}"
+                                  FontSize="{StaticResource NormalSize}"
+                                  Foreground="{StaticResource GrayColorBrush}"/>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.4*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" 
+                               Grid.Row="0" 
+                               Text="Full Name"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Right"
+                               Margin="0 0 0 5"
+                               FontFamily="{StaticResource MediumFont}"
+                               FontSize="{StaticResource NormalSize}"
+                               Foreground="{StaticResource GrayColorBrush}"/>
+                    <TextBox Grid.Column="1" 
+                             Grid.Row="0"
+                             Height="40"
+                             Width="280"
+                             Margin="10 0 0 0"
+                             Padding="8 0 0 0"
+                             Text="{Binding User.FirstName,Mode=TwoWay}"
+                             TextAlignment="Left"
+                             FontFamily="{StaticResource MediumFont}"
+                             FontSize="{StaticResource NormalSize}"
+                             Foreground="{StaticResource GrayColorBrush}"
+                             VerticalContentAlignment="Bottom"
+                             Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
+
+                    <TextBlock Grid.Column="0" 
+                               Grid.Row="1" 
+                               Text="User Name"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Right"
+                               Margin="0 0 0 5"
+                               FontFamily="{StaticResource MediumFont}"
+                               FontSize="{StaticResource NormalSize}"
+                               Foreground="{StaticResource GrayColorBrush}"/>
+                    <TextBox Grid.Column="1" 
+                             Grid.Row="1"
+                             Height="40"
+                             Width="280"
+                             Padding="8 0 0 0"
+                             Margin="10 0 0 0"
+                             Text="{Binding User.UserName,Mode=TwoWay}"
+                             TextAlignment="Left"
+                             FontFamily="{StaticResource MediumFont}"
+                             FontSize="{StaticResource NormalSize}"
+                             Foreground="{StaticResource GrayColorBrush}"
+                             VerticalContentAlignment="Bottom"
+                             Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
+
+
+                    <TextBlock Grid.Column="0" 
+                               Grid.Row="2" 
+                               Text="Password"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Right"
+                               Margin="0 0 0 5"
+                               FontFamily="{StaticResource MediumFont}"
+                               FontSize="{StaticResource NormalSize}"
+                               Foreground="{StaticResource GrayColorBrush}"/>
+                    <PasswordBox x:Name="passwordBox"
+                             Grid.Row="2"
+                             Grid.Column="1"
+                             Height="40" 
+                             Width="280"
+                             Margin="10 5 0 0"
+                             Padding="8 15 0 0"
+                             Background="{StaticResource PureWhiteColorBrush}"
+                             BorderThickness="0 0 0 1"
+                             BorderBrush="{StaticResource BlueColorBrush}"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Top"
+                             VerticalContentAlignment="Bottom"
+                             FontSize="{StaticResource MediumSize}"
+                             ControlExtensions:PasswordHelper.Password="{Binding Password,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay,NotifyOnValidationError=True,ValidatesOnDataErrors=True,ValidatesOnExceptions=True}"
+                             ControlExtensions:PasswordHelper.Attach="True"
+                             ControlExtensions:WaterMarkTextExtension.IsMonitoring="True">
+                        <PasswordBox.Style>
+                            <Style TargetType="PasswordBox" BasedOn="{StaticResource PasswordBoxVisibilityPathIconStyle}">
+                                <Setter Property="BorderThickness"  Value="0 0 0 1"/>
+                                <Setter Property="BorderBrush"  Value="{StaticResource BlueColorBrush}"/>
+                                <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                                <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility" Value="Collapsed"/>
+                                <Setter Property="ControlExtensions:PasswordHelper.PasswordIconVisibility" Value="Collapsed"/>
+                                <Setter Property="ControlExtensions:PasswordHelper.PasswordIconPath" Value="{StaticResource Shape_ShowPassword}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsPasswordErrorMessage}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource RedColorBrush}"/>
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                        <Setter Property="ControlExtensions:PasswordHelper.PasswordIconVisibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding CanReTypePassword}" Value="True">
+                                        <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkText" Value="Enter Password"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </PasswordBox.Style>
+                    </PasswordBox>
+                    <TextBlock Grid.Column="0" 
+                               Grid.Row="3" 
+                               Text="Retype Password"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Right"
+                               Margin="0 0 0 5"
+                               FontFamily="{StaticResource MediumFont}"
+                               FontSize="{StaticResource NormalSize}"
+                               Foreground="{StaticResource GrayColorBrush}"/>
+                    <PasswordBox x:Name="RepasswordBox"
+                             Grid.Row="3"
+                             Grid.Column="1"
+                             Height="40" 
+                             Width="280"
+                             Margin="10 5 0 0"
+                             Padding="8 15 0 0"
+                             Background="{StaticResource PureWhiteColorBrush}"
+                             BorderThickness="0 0 0 1"
+                             BorderBrush="{StaticResource BlueColorBrush}"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Top"
+                             VerticalContentAlignment="Bottom"
+                             FontSize="{StaticResource MediumSize}"
+                             ControlExtensions:PasswordHelper.Password="{Binding Password,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay,NotifyOnValidationError=True,ValidatesOnDataErrors=True,ValidatesOnExceptions=True}"
+                             ControlExtensions:PasswordHelper.Attach="True"
+                             ControlExtensions:WaterMarkTextExtension.IsMonitoring="True">
+                        <PasswordBox.Style>
+                            <Style TargetType="PasswordBox" BasedOn="{StaticResource PasswordBoxVisibilityPathIconStyle}">
+                                <Setter Property="BorderThickness"  Value="0 0 0 1"/>
+                                <Setter Property="BorderBrush"  Value="{StaticResource BlueColorBrush}"/>
+                                <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                                <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility" Value="Collapsed"/>
+                                <Setter Property="ControlExtensions:PasswordHelper.PasswordIconVisibility" Value="Collapsed"/>
+                                <Setter Property="ControlExtensions:PasswordHelper.PasswordIconPath" Value="{StaticResource Shape_ShowPassword}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsPasswordErrorMessage}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{StaticResource RedColorBrush}"/>
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                        <Setter Property="ControlExtensions:PasswordHelper.PasswordIconVisibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding CanReTypePassword}" Value="True">
+                                        <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkText" Value="Enter Password"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </PasswordBox.Style>
+                    </PasswordBox>
+
+                    <TextBlock Grid.Column="0" 
+                               Grid.Row="4" 
+                               Text="Secret Key"
+                               Margin="0 0 0 5"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Right"
+                               FontFamily="{StaticResource MediumFont}"
+                               FontSize="{StaticResource NormalSize}"
+                               Foreground="{StaticResource GrayColorBrush}"/>
+                    <TextBox Grid.Column="1" 
+                             Grid.Row="4"
+                             Height="40"
+                             Width="280"
+                             Padding="8 0 0 0"
+                             Margin="10 0 0 5"
+                             Text="{Binding User.SecretKey,Mode=TwoWay}"
+                             TextAlignment="Left"
+                             FontFamily="{StaticResource MediumFont}"
+                             FontSize="{StaticResource NormalSize}"
+                             Foreground="{StaticResource GrayColorBrush}"
+                             VerticalContentAlignment="Bottom"
+                             Style="{StaticResource  TextBoxVisibilityPathIconStyle}"/>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="Close"
+                        Grid.Column="0" 
+                        Margin="40,10"
+                        Style="{StaticResource ContentButton}"
+                        Background="{StaticResource LightGrayColorBrush}" 
+                        FontFamily="{StaticResource MediumFont}"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        FontSize="{StaticResource NormalSize}"
+                        Content="Cancel" 
+                        Foreground="{StaticResource PureWhiteColorBrush}"/>
+
+                <Button x:Name="Save"
+                        Grid.Column="1" 
+                        Margin="40,10"
+                        Style="{StaticResource ContentButton}"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        ControlExtensions:MiscControlExtensions.IsBusyProperty="{Binding IsLoading,Mode=TwoWay}"
+                        Background="{StaticResource GreenColorBrush}" 
+                        FontFamily="{StaticResource MediumFont}"
+                        FontSize="{StaticResource NormalSize}"
+                        Content="Save" 
+                        Foreground="{StaticResource PureWhiteColorBrush}"/>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

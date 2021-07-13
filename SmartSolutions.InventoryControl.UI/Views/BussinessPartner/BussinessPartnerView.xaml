@@ -98,10 +98,51 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="120"/>
                 </Grid.RowDefinitions>
-
                 <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Bussiness Partner Type" 
+                                   Foreground="{StaticResource GrayColorBrush}" 
+                                   FontSize="{StaticResource MediumSize}"
+                                   FontFamily="{StaticResource MediumFont}"
+                                   Margin="70 5 0 0"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"/>
+                        <ComboBox Height="45" 
+                                  Width="250"
+                                  Margin="70 10 0 0"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Center"
+                                  ItemsSource="{Binding PartnerTypes,Mode=OneWay}"
+                                  SelectedItem="{Binding SelectedPartnerType,Mode=TwoWay}"
+                                  Style="{StaticResource BaseComboBox}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Bussiness Partner Category" 
+                                   Foreground="{StaticResource GrayColorBrush}" 
+                                   FontSize="{StaticResource MediumSize}"
+                                   FontFamily="{StaticResource MediumFont}"
+                                   Margin="70 5 0 0"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"/>
+                        <ComboBox Height="45" 
+                                  Width="250"
+                                  Margin="70 10 0 0"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Center"
+                                  ItemsSource="{Binding PartnerCategories,Mode=OneWay}"
+                                  SelectedItem="{Binding SelectedPartnerCategory,Mode=TwoWay}"
+                                  Style="{StaticResource BaseComboBox}"/>
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -164,7 +205,7 @@
 
                     </StackPanel>
                 </Grid>
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -287,7 +328,7 @@
                              Padding="8 8 0 0"></TextBox>
                     </StackPanel>
                 </Grid>
-                <Grid Grid.Row="2">
+                <Grid Grid.Row="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>

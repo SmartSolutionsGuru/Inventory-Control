@@ -243,6 +243,45 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         #endregion
 
         #region Properties
+        private List<BussinessPartnerTypeModel> _PartnerTypes;
+        /// <summary>
+        /// List Of Partner Types Like Vender Customer etc...
+        /// </summary>
+        public List<BussinessPartnerTypeModel> PartnerTypes
+        {
+            get { return _PartnerTypes; }
+            set { _PartnerTypes = value; NotifyOfPropertyChange(nameof(PartnerTypes)); }
+        }
+        private BussinessPartnerTypeModel _SelectedPartnerType;
+         /// <summary>
+         /// Selected Partner Type Like Vender Customer etc...
+         /// </summary>
+        public BussinessPartnerTypeModel SelectedPartnerType
+        {
+            get { return _SelectedPartnerType; }
+            set { _SelectedPartnerType = value; NotifyOfPropertyChange(nameof(SelectedPartnerType)); }
+        }
+
+        private List<BussinessPartnerCategoryModel> _PartnerCategories;
+         /// <summary>
+         /// PartnerCategory Like SoleProperiter,Company,Factory etc...
+         /// </summary>
+        public List<BussinessPartnerCategoryModel> PartnerCategories
+        {
+            get { return _PartnerCategories; }
+            set { _PartnerCategories = value; NotifyOfPropertyChange(nameof(PartnerCategories)); }
+        }
+
+        private BussinessPartnerCategoryModel _SelectedPartnerCategory;
+        /// <summary>
+        /// Selected Partner Category Like SoleProperiter,Company,Factory etc..
+        /// </summary>
+        public BussinessPartnerCategoryModel SelectedPartnerCategory
+        {
+            get { return _SelectedPartnerCategory; }
+            set { _SelectedPartnerCategory = value; NotifyOfPropertyChange(nameof(SelectedPartnerCategory)); }
+        }
+
         public BussinessPartnerLedgerModel PartnerLedger { get; set; }
         public InvoiceModel InitialBalanceInvoice { get; set; }
         private List<string> _AmountType;

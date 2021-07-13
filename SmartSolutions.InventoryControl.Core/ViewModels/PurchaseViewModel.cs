@@ -1,15 +1,14 @@
-﻿using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;
-using SmartSolutions.InventoryControl.DAL.Models.Inventory;
+﻿using Caliburn.Micro;
+using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
+using SmartSolutions.InventoryControl.DAL.Models.Inventory;
 using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
-using System.Collections.ObjectModel;
-using Caliburn.Micro;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels
 {
@@ -27,6 +26,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Constructor
+        public PurchaseViewModel() { }
+        
         [ImportingConstructor]
         public PurchaseViewModel(DAL.Managers.Inventory.IInventoryManager inventoryManager
                                 , DAL.Managers.Product.IProductManager productManager
@@ -49,6 +50,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #region Public Methods
         protected async override void OnActivate()
         {
+            if(Execute.InDesignMode)
+            {
+
+            }
             try
             {
                 IsLoading = true;

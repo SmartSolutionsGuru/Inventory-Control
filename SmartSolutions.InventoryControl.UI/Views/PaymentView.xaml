@@ -2,11 +2,15 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:autoComplete="http://wpfcontrols.com/"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:viewModel="clr-namespace:SmartSolutions.InventoryControl.Core.ViewModels;assembly=SmartSolutions.InventoryControl.Core"
              xmlns:ControlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
              xmlns:models="clr-namespace:SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;assembly=SmartSolutions.InventoryControl.DAL"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views"
+             d:DataContext="{d:DesignInstance Type=viewModel:PaymentViewModel,IsDesignTimeCreatable=True}"
+             cal:Bind.AtDesignTime="True"
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1366">
     <UserControl.Resources>
@@ -172,7 +176,7 @@
                              FontSize="{StaticResource MediumSize}"
                              ControlExtensions:WaterMarkTextExtension.WatermarkText="Amount"
                              Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
-                   
+
                 </StackPanel>
                 <StackPanel Grid.Column="1" >
                     <TextBlock Text="Payment Type" 

@@ -8,6 +8,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Visibility="{Binding ActiveItem, Mode=OneWay,Converter={StaticResource NullToVisibilityConverter}}" Background="#7F000000" IsHitTestVisible="True">
-        <!--<ContentControl x:Name="ActiveItem"/>-->
+        <ContentControl x:Name="ActiveItem"/>
     </Grid>
 </UserControl>

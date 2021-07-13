@@ -8,7 +8,10 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
     [Export(typeof(InventoryModel)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class InventoryModel : BaseModel
     {
+        #region PrivateMembers
         private readonly Managers.Inventory.IInventoryManager _inventoryManager;
+        #endregion
+
         #region Constructor
         [ImportingConstructor]
         public InventoryModel()
@@ -21,6 +24,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
 
         }
         #endregion
+
         #region Private Methods
       
         #endregion
@@ -30,6 +34,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         public Guid InvoiceGuid { get; set; }
         public ProductModel Product { get; set; }
         public ProductColorModel ProductColor { get; set; }
+
         private ProductSizeModel _ProductSize;
 
         public ProductSizeModel ProductSize

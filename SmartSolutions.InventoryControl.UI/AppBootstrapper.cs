@@ -45,7 +45,8 @@ namespace SmartSolutions.InventoryControl.UI
             }
             plugins.Add("SmartSolutions.InventoryControl.Core.dll");
             plugins.Add("SmartSolutions.InventoryControl.DAL.dll");
-            plugins.Add("SmartSolutions.SQLiteCipher.dll");
+            plugins.Add("SmartSolutions.SQLServer.dll");
+            //plugins.Add("SmartSolutions.SQLiteCipher.dll");
 
             IoCContanier.IoC.Configure(plugins, Execute.InDesignMode);
             IoCContanier.IoC.AddExportedValue<IWindowManager>(new WindowManager());

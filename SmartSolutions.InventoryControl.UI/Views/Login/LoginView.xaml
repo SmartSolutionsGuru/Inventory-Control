@@ -6,8 +6,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views.Login"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:viewModel="clr-namespace:SmartSolutions.InventoryControl.Core.ViewModels.Login;assembly=SmartSolutions.InventoryControl.Core"
+             d:DataContext="{d:DesignInstance Type=viewModel:LoginViewModel,IsDesignTimeCreatable=True}"
+             cal:Bind.AtDesignTime="True"
+             mc:Ignorable="d">
     <Border CornerRadius="10" 
             MaxHeight="630" 
             MaxWidth="555"
@@ -23,7 +26,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                
-                <!---->
+                <!--Login Forget Grid-->
                 <Grid Grid.Row="1" Margin="0 30 0 30" Visibility="{Binding IsLoginForget,Converter={StaticResource BooleanToVisibilityConverter},ConverterParameter='inverse'}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
@@ -90,6 +93,7 @@
                                                                      ValidatesOnDataErrors=True,ValidatesOnExceptions=True}"
                                  FontSize="{StaticResource HeadingSize}"
                                  ControlExtensions:PasswordHelper.Attach="True"
+                                 ControlExtensions:MiscControlExtensions.CornerRadius="25"
                                  ControlExtensions:WaterMarkTextExtension.IsMonitoring="True"
                                  ControlExtensions:WaterMarkTextExtension.WatermarkText=" Please Type Password"
                                  ControlExtensions:WaterMarkTextExtension.WatermarkIconHeight="30"
@@ -218,87 +222,97 @@
                 <Grid Grid.Row="1" Visibility="{Binding IsLoginForget,Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="0.2*"/>
-                        <RowDefinition Height="0.6*"/>
+                        <RowDefinition Height="0.3*"/>
                         <RowDefinition Height="0.2*"/>
-                        <RowDefinition Height="0.6*"/>
+                        <RowDefinition Height="0.3*"/>
                         <RowDefinition Height="0.5*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" 
                            Text="Enter Your UserName" 
                            FontFamily="{StaticResource LightFont}"
-                           FontSize="{StaticResource ExtraNormalSize}"
-                           Foreground="{StaticResource GrayColorBrush}"
+                           FontSize="{StaticResource NormalSize}"
+                           Foreground="{StaticResource PureWhiteColorBrush}"
                            HorizontalAlignment="Center"
                            Margin="0 0 0 0"
                            VerticalAlignment="Bottom"/>
 
                     <TextBox Grid.Row="1" 
-                         Height="60" 
-                         Width="380"
-                         Margin="0 5 0 0"
-                         BorderThickness="1.7"
-                         HorizontalAlignment="Center"
-                         VerticalAlignment="Top"
-                         TextAlignment="Left"
-                         Text="{Binding UserName,Mode=TwoWay}"                     
-                         FontSize="{StaticResource SubHeadingSize}"
-                         ControlExtensions:WaterMarkTextExtension.IsMonitoring="True"                    
-                         ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Collapsed"
-                         ControlExtensions:WaterMarkTextExtension.RightWatermarkIconVisibility="Collapsed"
-                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
+                             Height="48" 
+                             Width="320"
+                             Margin="0 5 0 0"
+                             BorderThickness="1.7"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Top"
+                             Background="{StaticResource PureWhiteColorBrush}"
+                             TextAlignment="Left"
+                             Text="{Binding UserName,Mode=TwoWay}"                     
+                             FontSize="{StaticResource SubHeadingSize}"
+                             ControlExtensions:MiscControlExtensions.CornerRadius="25"
+                             ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                             ControlExtensions:WaterMarkTextExtension.WatermarkIconColor="{StaticResource LightGrayColorBrush}"
+                             ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Partner}"
+                             ControlExtensions:WaterMarkTextExtension.IsMonitoring="True"                    
+                             ControlExtensions:WaterMarkTextExtension.RightWatermarkIconVisibility="Collapsed"
+                             Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
                     <TextBlock Grid.Row="2" 
                            Text="Stay Relax Enter Your Secret Key" 
                            FontFamily="{StaticResource LightFont}"
-                           FontSize="{StaticResource ExtraNormalSize}"
-                           Foreground="{StaticResource GrayColorBrush}"
+                           FontSize="{StaticResource NormalSize}"
+                           Foreground="{StaticResource PureWhiteColorBrush}"
                            HorizontalAlignment="Center"
                            Margin="0 0 0 0"
                            VerticalAlignment="Bottom"/>
 
                     <TextBox Grid.Row="3" 
-                         Height="60" 
-                         Width="380"
-                         Margin="0 5 0 0"
-                         BorderThickness="1.7"
-                         HorizontalAlignment="Center"
-                         VerticalAlignment="Top"
-                         TextAlignment="Left"
-                         Text="{Binding SecretKey}"                     
-                         FontSize="{StaticResource HeadingSize}"
-                         ControlExtensions:WaterMarkTextExtension.IsMonitoring="True"                    
-                         ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Collapsed"
-                         ControlExtensions:WaterMarkTextExtension.RightWatermarkIconVisibility="Collapsed"
-                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
+                             Height="48" 
+                             Width="320"
+                             Margin="0 5 0 0"
+                             BorderThickness="1.7"
+                             Background="{StaticResource PureWhiteColorBrush}"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Top"
+                             TextAlignment="Left"
+                             Text="{Binding SecretKey}"                     
+                             FontSize="{StaticResource HeadingSize}"
+                             ControlExtensions:MiscControlExtensions.CornerRadius="25"
+                             ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                             ControlExtensions:WaterMarkTextExtension.WatermarkIconColor="{StaticResource LightGrayColorBrush}"
+                             ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Partner}"
+                             ControlExtensions:WaterMarkTextExtension.IsMonitoring="True"                    
+                             ControlExtensions:WaterMarkTextExtension.RightWatermarkIconVisibility="Collapsed"
+                             Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
                     <Button x:Name="ChangePasswordAsync"
-                         Grid.Row="4" 
-                         Width="380" 
-                         Height="50"
-                         Background="{StaticResource GreenColorBrush}"
-                         Style="{StaticResource ContentButton}"
-                         Content="Next"
-                         ControlExtensions:MiscControlExtensions.IsBusyProperty="{Binding LoginIsRunning,Mode=TwoWay}"
-                         HorizontalAlignment="Center"
-                         VerticalAlignment="Center"
-                         HorizontalContentAlignment="Center"
-                         VerticalContentAlignment="Center"
-                         Margin="0 10 0 0"
-                         Foreground="{StaticResource PureWhiteColorBrush}"
-                         FontFamily="{StaticResource LightFont}"
-                         FontSize="{StaticResource HeadingSize}"/>
+                            Grid.Row="4" 
+                            Width="320" 
+                            Height="48"
+                            Background="{StaticResource GreenColorBrush}"
+                            Style="{StaticResource ContentButton}"
+                            Content="Next"
+                            ControlExtensions:MiscControlExtensions.CornerRadius="25"
+                            ControlExtensions:MiscControlExtensions.IsBusyProperty="{Binding LoginIsRunning,Mode=TwoWay}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Margin="0 10 0 0"
+                            Foreground="{StaticResource PureWhiteColorBrush}"
+                            FontFamily="{StaticResource LightFont}"
+                            FontSize="{StaticResource NormalSize}"/>
                     <Button Grid.Row="5" 
-                         Width="380" 
-                         Height="50"
-                         Background="{StaticResource LightGrayColorBrush}"
-                         Style="{StaticResource ContentButton}"
-                         Content="Cancel"
-                         HorizontalAlignment="Center"
-                         VerticalAlignment="Top"
-                         HorizontalContentAlignment="Center"
-                         VerticalContentAlignment="Center"
-                         Foreground="{StaticResource GrayColorBrush}"
-                         FontFamily="{StaticResource LightFont}"
-                         FontSize="{StaticResource HeadingSize}"/>
+                            Width="320" 
+                            Height="48"
+                            Background="{StaticResource LightGrayColorBrush}"
+                            Style="{StaticResource ContentButton}"
+                            Content="Cancel"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            ControlExtensions:MiscControlExtensions.CornerRadius="25"
+                            Foreground="{StaticResource GrayColorBrush}"
+                            FontFamily="{StaticResource LightFont}"
+                            FontSize="{StaticResource NormalSize}"/>
 
                 </Grid>
 
