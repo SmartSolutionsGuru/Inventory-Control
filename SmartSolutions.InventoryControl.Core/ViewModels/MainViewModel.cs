@@ -1,27 +1,35 @@
 ﻿using Caliburn.Micro;
+using SmartSolutions.InventoryControl.Core.ViewModels.Dialogs;
+using SmartSolutions.InventoryControl.Core.ViewModels.Settings;
+using SmartSolutions.InventoryControl.Plugins.Repositories;
+using SmartSolutions.Util.LogUtils;
 using System;
 using System.ComponentModel.Composition;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels
 {
     [Export(typeof(MainViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
-    public class MainViewModel : BaseViewModel /*Conductor<Screen>*/, IHandle<Screen>
+    public class MainViewModel : BaseViewModel, IHandle<Screen>
     {
         #region Private Members
         private readonly IEventAggregator _eventAggregator;
-
+        private readonly DAL.Managers.BackUp.IDatabaseBackupManager _databaseBackupManager;
+        private readonly DAL.Managers.Settings.ISystemSettingManager _systemSettingManager;
         #endregion
 
         #region Constructor
         [ImportingConstructor]
-        public MainViewModel(IEventAggregator eventAggregator)
+        public MainViewModel(IEventAggregator eventAggregator
+                            , DAL.Managers.Settings.ISystemSettingManager systemSettingManager
+                            , DAL.Managers.BackUp.IDatabaseBackupManager databaseBackupManager)
         {
             _eventAggregator = eventAggregator;
+            _systemSettingManager = systemSettingManager;
+            _databaseBackupManager = databaseBackupManager;
         }
         #endregion
 
         #region Methods
-
         protected override void OnViewLoaded(object view)
         {
             base.OnViewLoaded(view);
@@ -110,6 +118,53 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public async void SMS()
         {
             await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Sorry This Feature is Not Available Yet", options: Dialogs.MessageBoxOptions.Ok);
+        }
+
+        public void CreateUser()
+        {
+            try
+            {
+                Handle(IoC.Get<UserCreationViewModel>());
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+
+        public async void UpdateDbBackup()
+        {
+            try
+            {
+                //TODO: Add this Key in Db
+                var resultSetting = await _systemSettingManager.GetsystemSettingByKeyAsync("Is_DbPath_Inserted");
+                if (resultSetting != null)
+                {
+                    if (resultSetting.SettingValue == 0)
+                        Handle(IoC.Get<PathInsertionViewModel>());
+                    else
+                    {
+                        await _databaseBackupManager.CreateBackupAsync(ConnectionInfo.Instance.Database,resultSetting.Description);
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+
+        public void PrintDocument()
+        {
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
         }
         #endregion
 

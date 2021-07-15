@@ -1,5 +1,5 @@
-﻿using SmartSolutions.InventoryControl.DAL.Models;
-using SmartSolutions.InventoryControl.DAL.Models.Region;
+﻿using SmartSolutions.InventoryControl.DAL.Models.Region;
+using SmartSolutions.InventoryControl.DAL.Models.Warehouse;
 using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;

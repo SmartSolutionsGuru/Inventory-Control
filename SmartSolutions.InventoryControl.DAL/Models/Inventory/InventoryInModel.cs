@@ -1,5 +1,6 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
+using SmartSolutions.InventoryControl.DAL.Models.Warehouse;
 
 namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
 {
@@ -8,6 +9,17 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
     /// </summary>
     public class InventoryInModel : BaseModel
     {
+        #region Constructor
+        public InventoryInModel()
+        {
+            Partner = new BussinessPartnerModel();
+            PurchaseOrder = new PurchaseOrderModel();
+            PurchaseOrderDetail = new PurchaseOrderDetailModel();
+            Warehouse = new WarehouseModel();
+        }
+        #endregion
+
+        #region Properties
         public BussinessPartnerModel Partner { get; set; }
         public PurchaseOrderModel PurchaseOrder { get; set; }
         public PurchaseOrderDetailModel PurchaseOrderDetail { get; set; }
@@ -15,5 +27,6 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         public decimal Price { get; set; }
         public string Description { get; set; }
         public WarehouseModel Warehouse { get; set; }
+        #endregion
     }
 }

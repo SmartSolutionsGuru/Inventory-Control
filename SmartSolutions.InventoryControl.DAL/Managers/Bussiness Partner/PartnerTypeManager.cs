@@ -26,7 +26,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
         #endregion
 
         #region GET Methods
-        public async Task<IEnumerable<BussinessPartnerTypeModel>> GetPartnerType()
+        public async Task<IEnumerable<BussinessPartnerTypeModel>> GetPartnerTypesAsync()
         {
             var partnerTypes = new List<BussinessPartnerTypeModel>();
             try

@@ -1,11 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SmartSolutions.InventoryControl.DAL.Models.Product;
 
 namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
 {
     public class PurchaseOrderDetailModel : BaseModel
     {
+        #region Constructor
+        public PurchaseOrderDetailModel()
+        {
+            PurchaseOrder = new PurchaseOrderModel();
+            Product = new ProductModel();
+        }
+        #endregion
 
+        #region Properties
+        public PurchaseOrderModel PurchaseOrder { get; set; }
+        public ProductModel Product { get; set; }
+        public string Description { get; set; }
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+        public decimal Discount { get; set; }
+        public decimal Total { get; set; }
+        #endregion
     }
 }

@@ -19,6 +19,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         private readonly IBussinessPartnerManager _bussinessPartnerManager;
         private readonly DAL.Managers.Invoice.IInvoiceManager _invoiceManager;
         private readonly IPartnerLedgerManager _partnerLedgerManager;
+        private readonly IPartnerTypeManager _partnerTypeManager;
+        private readonly IPartnerCategoryManager _partnerCategoryManager;
 
         #endregion
 
@@ -26,11 +28,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         [ImportingConstructor]
         public BussinessPartnerViewModel(IBussinessPartnerManager bussinessPartnerManager
                                         , DAL.Managers.Invoice.IInvoiceManager invoiceManager
-                                        , IPartnerLedgerManager partnerLedgerManager)
+                                        , IPartnerLedgerManager partnerLedgerManager
+                                        , IPartnerTypeManager partnerTypeManager
+                                        , IPartnerCategoryManager partnerCategoryManager)
         {
             _bussinessPartnerManager = bussinessPartnerManager;
             _invoiceManager = invoiceManager;
             _partnerLedgerManager = partnerLedgerManager;
+            _partnerTypeManager = partnerTypeManager;
+            _partnerCategoryManager = partnerCategoryManager;
 
         }
         #endregion
@@ -219,7 +225,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         {
             base.OnViewLoaded(view);
         }
-        protected override void OnActivate()
+        protected async override void OnActivate()
         {
             if (Execute.InDesignMode)
             {
@@ -234,6 +240,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             NewBussinessPartner = new BussinessPartnerModel();
             NewBussinessPartner.MobileNumbers = new List<string>();
             MobileMessage = "Enter Mobile Number";
+            PartnerTypes = (await _partnerTypeManager.GetPartnerTypesAsync()).ToList();
+            PartnerCategories = (await _partnerCategoryManager.GetPartnerCategoriesAsync()).ToList();
             IsLoading = false;
         }
         protected override void OnInitialize()

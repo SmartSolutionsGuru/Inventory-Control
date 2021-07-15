@@ -138,7 +138,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                 {
                     ProductSubTypeModel model = new ProductSubTypeModel();
                     model.Name = ProductSubType;
-                    if(SelectedProductType != null)
+                    if (SelectedProductType != null)
                         await _productSubTypeManager.AddProductSubTypeAsync(SelectedProductType?.Id, model);
                     else
                     {
@@ -234,6 +234,19 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         }
         #endregion
 
+        public async void AddWarehouse()
+        {
+            try
+            {
+                var warehouse = IoC.Get<Warehouse.WarehouseViewModel>();
+                await IoC.Get<IDialogManager>().ShowDialogAsync(warehouse);
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+
         #region Product
         public async void SaveProduct(ProductModel model)
         {
@@ -275,7 +288,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                                 InitialQuantityInventory.StockInHand = InitialQuantity;
                                 InitialQuantityInventory.IsStockIn = true;
                                 var inventoryResult = await _inventoryManager.AddInventoryAsync(InitialQuantityInventory);
-                                if(inventoryResult)
+                                if (inventoryResult)
                                 {
                                     ClearProductDetails();
                                 }
@@ -286,7 +299,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                                     //TODO: Here we Display the USer Frindly Message for not Adding Quantity
                                 }
                             }
-                           
+
                         }
                         IsLoading = false;
                     }
@@ -306,7 +319,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        private void  ClearProductDetails()
+        private void ClearProductDetails()
         {
             SelectedProductType = null;
             SelectedProductSubType = null;

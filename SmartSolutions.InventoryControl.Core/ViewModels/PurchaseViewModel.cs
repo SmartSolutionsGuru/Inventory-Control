@@ -23,11 +23,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private readonly DAL.Managers.Product.ProductColor.IProductColorManager _productColorManager;
         private readonly DAL.Managers.Invoice.IInvoiceManager _InvoiceManager;
         private readonly DAL.Managers.Bussiness_Partner.IPartnerLedgerManager _partnerLedgerManager;
+        private readonly DAL.Managers.Warehouse.IWarehouseManager _warehouseManager;
         #endregion
 
         #region Constructor
         public PurchaseViewModel() { }
-        
+
         [ImportingConstructor]
         public PurchaseViewModel(DAL.Managers.Inventory.IInventoryManager inventoryManager
                                 , DAL.Managers.Product.IProductManager productManager
@@ -35,7 +36,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                 , DAL.Managers.Product.ProductColor.IProductColorManager productColorManager
                                 , DAL.Managers.Product.ProductSize.IProductSizeManager productSizeManager
                                 , DAL.Managers.Invoice.IInvoiceManager invoiceManager
-                                , DAL.Managers.Bussiness_Partner.IPartnerLedgerManager partnerLedgerManager)
+                                , DAL.Managers.Bussiness_Partner.IPartnerLedgerManager partnerLedgerManager
+                                , DAL.Managers.Warehouse.IWarehouseManager warehouseManager)
         {
             _inventoryManager = inventoryManager;
             _productManager = productManager;
@@ -44,15 +46,19 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             _productSizeManager = productSizeManager;
             _InvoiceManager = invoiceManager;
             _partnerLedgerManager = partnerLedgerManager;
+            _warehouseManager = warehouseManager;
         }
         #endregion
 
         #region Public Methods
         protected async override void OnActivate()
         {
-            if(Execute.InDesignMode)
+            if (Execute.InDesignMode)
             {
-
+                ProductGrid = new ObservableCollection<InventoryModel>();
+                var model = new InventoryModel();
+                AutoId = 0;
+                AddProduct(model);
             }
             try
             {
@@ -65,6 +71,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 Venders = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
                 ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
                 ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
+                Warehouses = (await _warehouseManager.GetAllWarehousesAsync()).ToList();
                 PurchaseInvoice = new InvoiceModel();
                 PurchaseInvoice.InvoiceId = _InvoiceManager.GenrateInvoiceNumber("P");
                 ProductGrid = new ObservableCollection<InventoryModel>();
@@ -210,7 +217,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 DiscountPrice = 0;
                 Payment = 0;
                 PaymentImage = null;
-               
+
 
             }
             catch (Exception ex)
@@ -304,6 +311,23 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Properties
+        private List<DAL.Models.Warehouse.WarehouseModel> _Warehouses;
+
+        public List<DAL.Models.Warehouse.WarehouseModel> Warehouses
+        {
+            get { return _Warehouses; }
+            set { _Warehouses = value; NotifyOfPropertyChange(nameof(SelectedWarehouse)); }
+        }
+        private DAL.Models.Warehouse.WarehouseModel _SelectedWarehouse;
+        /// <summary>
+        /// Seelcted Warehouse
+        /// </summary>
+        public DAL.Models.Warehouse.WarehouseModel SelectedWarehouse
+        {
+            get { return _SelectedWarehouse; }
+            set { _SelectedWarehouse = value; NotifyOfPropertyChange(nameof(SelectedWarehouse)); }
+        }
+
         private string _BalanceType;
         /// <summary>
         /// IS it Reciveable or Payable

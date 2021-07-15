@@ -617,13 +617,18 @@
                                        Foreground="{StaticResource GrayColorBrush}" 
                                        FontFamily="{StaticResource MediumFont}" 
                                        FontSize="{StaticResource MediumSize}"/>
-                            <ComboBox Height="45"
+                            <StackPanel Orientation="Horizontal">
+                                <ComboBox Height="45"
                                       Width="250"
                                       Margin="30 10 0 0"
                                       HorizontalAlignment="Left"
                                       Style="{StaticResource BaseComboBox}"
                                       ItemsSource="{Binding Warehouses,Mode=OneWay}"
                                       SelectedItem="{Binding SelectedWharehouse,Mode=TwoWay}"/>
+                                <Button x:Name="AddWarehouse" Height="40" Width="40" ToolTip="Add Warehouse" Style="{StaticResource ContentButton}" Margin="10 4 0 0" Background="{StaticResource GreenColorBrush}">
+                                    <Path Height="18" Width="18" Fill="{StaticResource PureWhiteColorBrush}" Data="{StaticResource Shape_Plus1}" Stretch="Uniform"/>
+                                </Button>
+                            </StackPanel>
                         </StackPanel>
                         <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Button x:Name="Clear"  Background="Red" Margin="5 0 5 0" Content="Clear" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45" Width="150" Style="{StaticResource ContentButton}"></Button>

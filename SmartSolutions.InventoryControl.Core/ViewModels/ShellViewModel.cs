@@ -6,6 +6,8 @@ using System;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
+using System.Security.Principal;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -173,8 +175,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     ConnectionInfo.Instance.Database = database;
                     ConnectionInfo.Instance.UserName = username;
                     ConnectionInfo.Instance.Password = password;
-                    ConnectionInfo.Instance.ConnectionString = string.Format($"data source=localhost; Initial Catalog=" + database + ";User id=" + username + ";Password=" + password);
-                    //ConnectionInfo.Instance.ConnectionString = string.Format($"data source=localhost; Initial Catalog=" + database + ";Integrated Security = SSPI;");
+                    if (DAL.AppSettings.IsLoggedInUserAdmin)
+                        ConnectionInfo.Instance.ConnectionString = string.Format($"data source=localhost; Initial Catalog=" + database + ";Integrated Security = SSPI;");
+                    else
+                        ConnectionInfo.Instance.ConnectionString = string.Format($"data source=localhost; Initial Catalog=" + database + ";User id=" + username + ";Password=" + password);
 
 #if DEBUG
                     LogMessage.Write($"::: DB Config ::: Host={host}, Port={port}, Username={username}, Password={password}, Database={database}");
@@ -201,9 +205,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
             return retVal;
         }
-
-
-
         #endregion
 
         #region Helper Method
@@ -254,6 +255,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             else
                 return;
         }
+
         #endregion
     }
 }

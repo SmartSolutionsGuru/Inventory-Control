@@ -8,5 +8,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.BackUp
     public interface IDatabaseBackupManager
     {
         Task<bool> CreateBackupAsync(string dbName,string folderPath);
+        Task<bool> BackUpDataBase(string databaseName);
     }
 }

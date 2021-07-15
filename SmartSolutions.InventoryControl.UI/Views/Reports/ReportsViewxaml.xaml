@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="SmartSolutions.InventoryControl.UI.Views.Reports.ReportsViewxaml"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views.Reports"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Border Background="{StaticResource PureWhiteColorBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="80"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+            <TextBlock HorizontalAlignment="Center" 
+                       VerticalAlignment="Center" 
+                       Text="Reports"
+                       FontFamily="{StaticResource MediumFont}"
+                       FontSize="{StaticResource HeadingSize}" 
+                       Foreground="{StaticResource GrayColorBrush}"/>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox Grid.Column="0" 
+                          Style="{StaticResource BaseComboBox}"
+                          Foreground="{StaticResource GrayColorBrush}"
+                          Height="45"
+                          Width="230"
+                          FontFamily="{StaticResource MediumFont}"
+                          FontSize="{StaticResource MediumSize}"
+                          BorderThickness="1.7"
+                          BorderBrush="{StaticResource BlueColorBrush}"
+                          ItemsSource="{Binding Reports,Mode=OneWay}"
+                          SelectedItem="{Binding SelectedReport,Mode=TwoWay}"
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

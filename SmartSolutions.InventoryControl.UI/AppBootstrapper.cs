@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
+using System.Security.Principal;
+using System.Threading.Tasks;
 using System.Reflection;
 
 namespace SmartSolutions.InventoryControl.UI
@@ -55,7 +57,8 @@ namespace SmartSolutions.InventoryControl.UI
             IoCContanier.IoC.AddExportedValue<Func<IMessageBox>>(() => IoCContanier.IoC.GetExportedValue<IMessageBox>());
             //IoCContanier.IoC.AddExportedValue<IDialogManager>(new DialogBaseViewModel());
             IoCContanier.IoC.Compose();
-            //IoC.Get<IDialogManager>().ShowMessageBox("Testing");
+            DAL.AppSettings.IsLoggedInUserAdmin = IsLoggedInUserAdmin();
+
 
         }
         protected override object GetInstance(Type service, string key) => IoCContanier.IoC.GetInstance(service, key);
@@ -102,6 +105,17 @@ namespace SmartSolutions.InventoryControl.UI
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
+        }
+
+        private  bool IsLoggedInUserAdmin()
+        {
+            bool retVal = false;
+            using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+            {
+                WindowsPrincipal principal = new WindowsPrincipal(identity);
+                retVal =  principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+            return retVal;
         }
         #endregion
     }

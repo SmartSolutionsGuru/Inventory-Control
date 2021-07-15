@@ -140,7 +140,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Authentication
             List<IdentityUserModel> _users = new List<IdentityUserModel>();
             try
             {
-                query = @"SELECT * From IdentityUserModel WHERE IsActive =1 AND IsDeleted = 0";
+                query = @"SELECT * From IdentityUser WHERE IsActive = 1";
                 var values = await Repository.QueryAsync(query: query);
 
                 if (values != null)
@@ -148,22 +148,18 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Authentication
                     foreach (var value in values)
                     {
                         IdentityUserModel user = new IdentityUserModel();
-                        user.Id = Convert.ToInt32(value.GetValueFromDictonary("Id").ToString());
-                        user.DisplayName = value.GetValueFromDictonary("Username")?.ToString();
+                        user.Id = value.GetValueFromDictonary("Id").ToString()?.ToInt() ?? 0;
+                        user.DisplayName = value.GetValueFromDictonary("UserName")?.ToString();
+                        user.FullName = value?.GetValueFromDictonary("FullName")?.ToString();
                         user.FirstName = value.GetValueFromDictonary("FirstName")?.ToString();
                         user.LastName = value.GetValueFromDictonary("LastName")?.ToString();
-                        user.PasswordHash = value.GetValueFromDictonary("PasswordHash")?.ToString();
+                        user.PasswordHash = value.GetValueFromDictonary("Password")?.ToString();
                         user.SecretKey = value.GetValueFromDictonary("SecretKey")?.ToString();
                         user.IsActive = Convert.ToBoolean(value.GetValueFromDictonary("IsActive")?.ToString().ToNullableBoolean());
                         _users.Add(user);
                     }
                 }
-
                 return _users;
-                //await Task.Run(() =>
-                //{
-                //    _users = GetAllUser().ToList();
-                //});
             }
             catch (Exception ex)
             {

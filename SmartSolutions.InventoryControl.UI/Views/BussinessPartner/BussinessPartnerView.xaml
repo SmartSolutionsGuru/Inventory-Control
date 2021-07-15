@@ -96,7 +96,7 @@
             <!--Grid For Adding Partner-->
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="0.5*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="120"/>
@@ -118,8 +118,16 @@
                         <ComboBox Height="45" 
                                   Width="250"
                                   Margin="70 10 0 0"
+                                  BorderBrush="{StaticResource BlueColorBrush}"
+                                  BorderThickness="1.7"
+                                  Padding="8 0 0 0"
+                                  FontFamily="{StaticResource MediumFont}"
+                                  FontSize="{StaticResource MediumSize}"
+                                  Foreground="{StaticResource GrayColorBrush}"
+                                  DisplayMemberPath="Name"
                                   HorizontalAlignment="Left"
                                   VerticalAlignment="Center"
+                                  ControlExtensions:WaterMarkTextExtension.WatermarkText="Select PartnerType"
                                   ItemsSource="{Binding PartnerTypes,Mode=OneWay}"
                                   SelectedItem="{Binding SelectedPartnerType,Mode=TwoWay}"
                                   Style="{StaticResource BaseComboBox}"/>
@@ -135,8 +143,16 @@
                         <ComboBox Height="45" 
                                   Width="250"
                                   Margin="70 10 0 0"
+                                  Padding="8 0 0 0"
+                                  FontFamily="{StaticResource MediumFont}"
+                                  FontSize="{StaticResource MediumSize}"
+                                  BorderBrush="{StaticResource BlueColorBrush}"
+                                  BorderThickness="1.7"
+                                  DisplayMemberPath="Name"
+                                  Foreground="{StaticResource GrayColorBrush}"
                                   HorizontalAlignment="Left"
                                   VerticalAlignment="Center"
+                                  ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Partner Category"
                                   ItemsSource="{Binding PartnerCategories,Mode=OneWay}"
                                   SelectedItem="{Binding SelectedPartnerCategory,Mode=TwoWay}"
                                   Style="{StaticResource BaseComboBox}"/>
@@ -276,7 +292,7 @@
                                          Text="{Binding InitialAmount,Mode=TwoWay}"
                                          Margin="0 10 0 0"
                                          Style="{StaticResource TextBoxVisibilityPathIconStyle}"
-                                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter City Name"/>
+                                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Initial Amount"/>
                             </StackPanel>
                         </Grid>
                     </Grid>

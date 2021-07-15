@@ -24,7 +24,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         {
             createMessageBox = IoC.Get<Func<IMessageBox>>();
         }
-        // , Func<IMessageBox> messageBoxFactory
         [ImportingConstructor]
         public DialogBaseViewModel(IWindowManager windowManager
                                    /*,Func<IMessageBox> messageBoxFactory*/)
@@ -39,7 +38,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         private System.Threading.ManualResetEvent showDialog_ResetEvent = null;
         #endregion
 
-        #region Public Methods
+        #region Public Methods                                         
         public async Task ShowDialogAsync(IScreen dialogModel)
         {
             try

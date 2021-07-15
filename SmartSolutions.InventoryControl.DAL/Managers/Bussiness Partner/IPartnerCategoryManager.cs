@@ -8,6 +8,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
 {
     public interface IPartnerCategoryManager
     {
-        Task<IEnumerable<BussinessPartnerCategoryModel>> GetPartnerCategories();
+        Task<IEnumerable<BussinessPartnerCategoryModel>> GetPartnerCategoriesAsync();
     }
 }

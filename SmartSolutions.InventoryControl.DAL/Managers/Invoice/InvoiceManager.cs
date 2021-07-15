@@ -150,7 +150,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
                 parameters["@v_AmountImage"] = invoice.PaymentImage == null ? DBNull.Value : (object)invoice.PaymentImage;
                 parameters["@v_Payment"] = invoice.Payment;
                 parameters["@v_InvoiceTotal"] = invoice.InvoiceTotal;
-                parameters["@v_IsActive"] = invoice.IsActive = true;
+                parameters["@v_IsActive"] = invoice.IsActive = true;                                
                 parameters["@v_IsDeleted"] = invoice.IsDeleted = false;
                 parameters["@v_CreatedAt"] = invoice.CreatedAt == null ? DateTime.Now : invoice.CreatedAt;
                 parameters["@v_CreatedBy"] = invoice.CreatedBy == null ? DBNull.Value : (object)invoice.CreatedBy;

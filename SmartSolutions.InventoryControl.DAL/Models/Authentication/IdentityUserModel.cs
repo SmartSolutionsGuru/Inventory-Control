@@ -41,6 +41,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Authentication
         #region Public Properties
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string FullName { get; set; }
         public string Email { get; private set; }
         public string SecretKey { get; set; }
         public IdentityUserModel User { get; set; }

@@ -65,11 +65,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
                 if (!string.IsNullOrEmpty(BackupPath))
                 {
                     DAL.Models.SystemSettingModel setting = new DAL.Models.SystemSettingModel();
-                    setting.Name = "DbPathSetting";
-                    setting.SettingKey = "DB_Path_Setting";
+                    setting.Name = "IsDbPathInserted";
+                    setting.SettingKey = "Is_DbPath_Inserted";
                     setting.SettingValue = 1;
                     setting.DefaultValue = false;
-                    setting.Description = "Path For Db Backup is Set Or Not";
+                    setting.Description = FileNameWithPath;
                     var result = await _systemSettingManager.SaveSettingAsync(setting);
                     if (result)
                         await BackUpDataBase(_databaseName);
@@ -87,8 +87,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
 
         public async Task BackUpDataBase(string databaseName)
         {
-            string filePath = BuildBackUpWithFileName(_databaseName);
-            await _databaseBackupManager.CreateBackupAsync(_databaseName, filePath);
+             FileNameWithPath = BuildBackUpWithFileName(_databaseName);
+            await _databaseBackupManager.CreateBackupAsync(_databaseName, FileNameWithPath);
         }
         private string BuildBackUpWithFileName(string databaseName)
         {
@@ -116,6 +116,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
             set { _IsPathEmpty = value; NotifyOfPropertyChange(nameof(IsPathEmpty)); }
         }
 
+        public string FileNameWithPath { get; set; }
 
         #endregion
     }

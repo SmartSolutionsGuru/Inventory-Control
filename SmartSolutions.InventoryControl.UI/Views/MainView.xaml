@@ -452,7 +452,7 @@
 
                             <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" />
 
-                            <Button x:Name="GetDbBackup" ToolTip="Backup" Background="Transparent" Margin="{StaticResource HeaderLogoMargin}" Style="{StaticResource ContentButton}">
+                            <Button x:Name="UpdateDbBackup" ToolTip="Backup" Background="Transparent" Margin="{StaticResource HeaderLogoMargin}" Style="{StaticResource ContentButton}">
                                 <Path Stretch="Uniform" Data="{StaticResource Shape_Database}" Margin="{StaticResource HeaderLogoMargin}" ToolTip="{Binding PrinterName}">
                                     <Path.Style>
                                         <Style TargetType="Path">
@@ -467,11 +467,11 @@
                                 </Path>
                             </Button>
                             <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" />
-                            <Button x:Name="GetUserSettings" ToolTip="Settings" Background="Transparent" Margin="{StaticResource HeaderLogoMargin}" Style="{StaticResource ContentButton}">
+                            <Button x:Name="CreateUser" ToolTip="Settings" Background="Transparent" Margin="{StaticResource HeaderLogoMargin}" Style="{StaticResource ContentButton}">
                                 <Path Stretch="Uniform" Data="{StaticResource Shape_Setting}" Fill="{StaticResource GrayColorBrush}"  Width="20" />
                             </Button>
                             <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" />
-                            <Button Background="Transparent" ToolTip="Print" Margin="{StaticResource HeaderLogoMargin}" Style="{StaticResource ContentButton}">
+                            <Button x:Name="PrintDocument" Background="Transparent" ToolTip="Print" Margin="{StaticResource HeaderLogoMargin}" Style="{StaticResource ContentButton}">
                                 <Path Stretch="Uniform" Data="{StaticResource Shape_Print}"  ToolTip="{Binding PrinterName}">
                                     <Path.Style>
                                         <Style TargetType="Path">
