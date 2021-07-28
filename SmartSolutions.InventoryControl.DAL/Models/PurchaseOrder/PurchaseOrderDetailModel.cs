@@ -9,12 +9,16 @@ namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
         {
             PurchaseOrder = new PurchaseOrderModel();
             Product = new ProductModel();
+            ProductColor = new ProductColorModel();
+            ProductSize = new ProductSizeModel();
         }
         #endregion
 
         #region Properties
         public PurchaseOrderModel PurchaseOrder { get; set; }
         public ProductModel Product { get; set; }
+        public ProductColorModel ProductColor { get; set; }
+        public ProductSizeModel ProductSize { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }

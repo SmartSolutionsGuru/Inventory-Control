@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Notifications.Wpf;
 using SmartSolutions.InventoryControl.Core.ViewModels.Commands;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.LogUtils;
@@ -23,6 +24,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private string DirectoryName = "Smart Solutions";
         private readonly IDialogManager _dialog;
         private static string dbFile = null;
+        private readonly INotificationManager _notificationManager;
         #endregion
 
         #region Constructor
@@ -35,11 +37,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         [ImportingConstructor]
         public ShellViewModel(IEventAggregator eventAggregator
                               , IWindowManager windowManager
-                              , IDialogManager dialogManager)
+                              , IDialogManager dialogManager
+                             /* , INotificationManager notificationManager*/)
         {
             _eventAggregator = eventAggregator;
             _windowManager = windowManager;
             _dialog = dialogManager;
+            //_notificationManager = notificationManager;
         }
         #endregion
 
@@ -71,7 +75,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             base.OnActivate();
             _eventAggregator.Subscribe(this);
-            InitializeDatabaseConnection();
+            var result = InitializeDatabaseConnection();
         }
         protected override void OnViewLoaded(object view)
         {

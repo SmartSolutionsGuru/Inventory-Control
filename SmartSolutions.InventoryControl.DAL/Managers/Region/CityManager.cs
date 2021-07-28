@@ -37,7 +37,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Region
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_Id"] = Id;
-                string query = @"SELECT * FROM City WHERE Id = @v_Id";
+                string query = @"SELECT * FROM City WHERE CountryId = @v_Id";
                 var values = await Repository.QueryAsync(query: query, parameters: parameters);
                 if (values != null || values?.Count > 0)
                 {

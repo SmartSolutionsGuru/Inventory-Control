@@ -1,19 +1,18 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
+using SmartSolutions.InventoryControl.DAL.Models.Stock;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
+namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
 {
-    public class InvoiceModel : BaseModel
+    public class PurchaseInvoiceModel : BaseModel
     {
-
         #region Constructor
-        public InvoiceModel()
+        public PurchaseInvoiceModel()
         {
             InvoiceGuid = Guid.NewGuid();
-            PaymentType = new List<string> {"Unknown" ,"Cash", "Bank", "JazzCash", "Easy Paisa", "U Paisa", "Partial", "Other" };
-            Products = new List<InventoryModel>();
+            PaymentTypes = new List<Payments.PaymentTypeModel>();
+            Products = new List<StockModel>();
         }
         #endregion
 
@@ -27,38 +26,10 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
             get { return _InvoiceId; }
             set { _InvoiceId = value; NotifyOfPropertyChange(nameof(InvoiceId)); }
         }
-         /// <summary>
-         /// Create new Guid For Each Transaction For Unique Record Keeping
-         /// </summary>
+        /// <summary>
+        /// Create new Guid For Each Transaction For Unique Record Keeping
+        /// </summary>
         public Guid InvoiceGuid { get; set; }
-        /// <summary>
-        /// Verify the Transaction Type isPurchase Transaction
-        /// </summary>
-        public bool IsPurchaseInvoice { get; set; }
-        /// <summary>
-        /// Verify that ths is Sale Transaction
-        /// </summary>
-        public bool IsSaleInvoice { get; set; }
-        /// <summary>
-        /// Verify this is Purchase Return Transaction
-        /// </summary>
-        public bool IsPurchaseReturnInvoice { get; set; }
-        /// <summary>
-        /// Verify This is Sales Return Transaction
-        /// </summary>
-        public bool IsSaleReturnInvoice { get; set; }
-        /// <summary>
-        /// Verify in This Transaction Amount is Recived
-        /// </summary>
-        public bool IsAmountRecived { get; set; }
-        /// <summary>
-        /// Verify in This Transaction Amount is Paid
-        /// </summary>
-        public bool IsAmountPaid { get; set; }
-        /// <summary>
-        /// Transaction Type in String Like Purchase Or Sale Or Purchase Return etc..
-        /// </summary>
-        public string TransactionType { get; set; }
         /// <summary>
         /// Selected Bussiness Partner With Which Opreation is Performed
         /// </summary>
@@ -66,11 +37,11 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         /// <summary>
         /// Payment Types Like Jazz Cash Bank Cash etc...
         /// </summary>
-        public List<string> PaymentType { get; set; }
+        public List<Payments.PaymentTypeModel> PaymentTypes { get; set; }
         /// <summary>
         /// Selected Payment Type
         /// </summary>
-        public string SelectedPaymentType { get; set; }
+        public Payments.PaymentTypeModel SelectedPaymentType { get; set; }
         /// <summary>
         /// Discount In Percent if Any
         /// </summary>
@@ -82,7 +53,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         /// <summary>
         /// List Of Products on Which Opreation is Performed
         /// </summary>
-        public List<InventoryModel> Products { get; set; }
+        public List<StockModel> Products { get; set; }
         /// <summary>
         /// Description If any
         /// </summary>
@@ -99,7 +70,6 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         /// Grand Total Of transaction
         /// </summary>
         public double InvoiceTotal { get; set; }
-
         #endregion
     }
 }

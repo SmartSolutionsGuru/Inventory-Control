@@ -44,14 +44,13 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                     parameters["@v_ProductSizeId"] = model?.ProductSize?.Id;
                     parameters["@v_Image"] = model.Image == null ? DBNull.Value : (object)model.Image;
                     parameters["@v_IsActive"] = model.IsActive = true;
-                    parameters["@v_IsDeleted"] = model.IsDeleted = false;
                     parameters["@v_CreatedAt"] = model.CreatedAt == null ? DateTime.Now : model.CreatedAt;
                     parameters["@v_CreatedBy"] = model.CreatedBy == null ? DBNull.Value : (object)model.CreatedBy;
                     parameters["@v_UpdatedAt"] = model.UpdatedAt == null ? DBNull.Value : (object)model.UpdatedAt;
                     parameters["@v_UpdatedBy"] = model.UpdatedBy == null ? DBNull.Value : (object)model.UpdatedBy;
                 }
-                query = @"INSERT INTO Product (Name,ProductTypeId,ProductSubTypeId,ProductColorId,ProductSizeId,Image,IsActive,IsDeleted,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
-                                  VALUES(@v_Name,@v_ProductTypeId,@v_ProductSubTypeId,@v_ProductColorId,@v_ProductSizeId,@v_Image,@v_IsActive,@v_IsDeleted,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
+                query = @"INSERT INTO Product (Name,ProductTypeId,ProductSubTypeId,ProductColorId,ProductSizeId,Image,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                  VALUES(@v_Name,@v_ProductTypeId,@v_ProductSubTypeId,@v_ProductColorId,@v_ProductSizeId,@v_Image,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
                 var result = await Repository.NonQueryAsync(query: query, parameters: parameters);
                 retVal = result > 0 ? true : false;
             }

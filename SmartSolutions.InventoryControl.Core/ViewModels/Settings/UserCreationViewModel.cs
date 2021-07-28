@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels.Settings
 {
-    [Export(typeof(UserCreationViewModel)),PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export(typeof(UserCreationViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class UserCreationViewModel : BaseViewModel
     {
         #region Private Members
@@ -41,31 +41,37 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Settings
         }
         public async Task Save()
         {
-            await RunCommandAsync(() => IsLoading, async () =>
+            
+            IsLoading = true;
+            LoadingMessage = "Saving User";
+            if (User != null)
             {
-                if (User != null)
+                if(!string.Equals(Password,ReTypePassword))
                 {
-                    User.DisplayName = UserName;
-                    User.PasswordHash = Password;
-                    User.CreatedBy = AppSettings.LoggedInUser.User.DisplayName;
-                    bool x = await _authenticationManager.CompareDisplayNameAsync(UserName);
-                    if (x)
-                    {
-                        IsDisplayNameAvailable = true;
-                        UserName = string.Empty;
-                        NotifyOfPropertyChange(nameof(User.DisplayName));
-                        return;
-                    }
-
-                    User.Roles = (await _authenticationManager.GetAllRolesAsync()).ToList();
-                    User.CreatedBy = AppSettings.LoggedInUser.CreatedBy;
-                    await _authenticationManager.CreatUserAsync(User);
-                    User = new DAL.Models.Authentication.IdentityUserModel();
-                    await Task.Delay(2000);
-                    ClearInfo();
-                    TryClose();
+                    //TODO: Display User Friendly Error And Return
+                    return;
                 }
-            });
+                User.DisplayName = UserName;
+                User.PasswordHash = Password;
+                User.CreatedBy = AppSettings.LoggedInUser.User.DisplayName;
+                bool x = await _authenticationManager.CompareDisplayNameAsync(UserName);
+                if (x)
+                {
+                    IsDisplayNameAvailable = true;
+                    UserName = string.Empty;
+                    NotifyOfPropertyChange(nameof(User.DisplayName));
+                    return;
+                }
+
+                User.Roles = (await _authenticationManager.GetAllRolesAsync()).ToList();
+                User.CreatedBy = AppSettings.LoggedInUser.CreatedBy;
+                await _authenticationManager.CreatUserAsync(User);
+                User = new DAL.Models.Authentication.IdentityUserModel();
+                await Task.Delay(2000);
+                IsLoading = false;
+                ClearInfo();
+                TryClose();
+            }
         }
 
         public void Close()
@@ -99,7 +105,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Settings
         private bool _IsAdmin;
         public bool IsAdmin
         {
-            get { return _IsAdmin; }
+            get => _IsAdmin;
             set { _IsAdmin = value; NotifyOfPropertyChange(nameof(IsAdmin)); }
         }
 
@@ -152,6 +158,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Settings
         {
             get { return _Password; }
             set { _Password = value; NotifyOfPropertyChange(nameof(Password)); }
+        }
+        private string _ReTypePassword;
+
+        public string ReTypePassword
+        {
+            get { return _ReTypePassword; }
+            set { _ReTypePassword = value; NotifyOfPropertyChange(nameof(ReTypePassword)); }
         }
 
         #endregion

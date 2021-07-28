@@ -56,7 +56,7 @@
                              VerticalAlignment="Center"
                              TextAlignment="Left"
                              Text="{Binding UserName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"                     
-                             FontSize="{StaticResource ExtraNormalSize}"
+                             FontSize="{StaticResource NormalSize}"
                              ControlExtensions:MiscControlExtensions.CornerRadius="25"
                              ControlExtensions:WaterMarkTextExtension.IsMonitoring="True"
                              ControlExtensions:WaterMarkTextExtension.WatermarkText="User Name"

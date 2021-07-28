@@ -3,19 +3,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:cal="http://www.caliburnproject.org"
              xmlns:ControlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
              xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views.Warehouse"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
+             Height="500" Width="900"
              d:DesignHeight="500" d:DesignWidth="900">
     <Border Background="{StaticResource PureWhiteColorBrush}" CornerRadius="10">
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="55"/>
                 <RowDefinition Height="80"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
+            <Border Background="{StaticResource BlueColorBrush}" CornerRadius="10 10 0 0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="1" Text="Add Warehouse" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource PureWhiteColorBrush}"/>
+                    <Button x:Name="Close" Grid.Column="2" Style="{StaticResource ContentButton}">
+                        <Path Height="30" HorizontalAlignment="Right" Margin="0 0 15 0" Width="30" Stretch="Uniform" Fill="{StaticResource PureWhiteColorBrush}" Data="{StaticResource Shape_Close2}"/>
+                    </Button>
+                </Grid>
+            </Border>
+            <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -30,7 +46,7 @@
                              VerticalContentAlignment="Center" 
                              Margin="30,10"
                              GroupName="WarehouseGroup"
-                             IsChecked="{Binding IsAddProductPressed,Mode=TwoWay}"
+                             IsChecked="{Binding IsAddWarehouse,Mode=TwoWay}"
                              Background="{StaticResource GreenColorBrush}" >
                     <RadioButton.Style>
                         <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
@@ -51,7 +67,7 @@
                              VerticalContentAlignment="Center" 
                              Margin="30,10"
                              GroupName="WarehouseGroup"
-                             IsChecked="{Binding IsUpdateProduct,Mode=TwoWay}"
+                             IsChecked="{Binding IsUpdateWarehouse,Mode=TwoWay}"
                              ControlExtensions:MiscControlExtensions.UncheckedForeground="{StaticResource RedColorBrush}"
                             
                              Background="{StaticResource OrangeColorBrush}" >
@@ -74,7 +90,7 @@
                              FontSize="{StaticResource NormalSize}"
                              BorderThickness="1"
                              GroupName="WarehouseGroup"
-                             IsChecked="{Binding IsRemoveProduct,Mode=TwoWay}"
+                             IsChecked="{Binding IsRemoveWarehouse,Mode=TwoWay}"
                              BorderBrush="{StaticResource RedColorBrush}"
                              Background="{StaticResource RedColorBrush}">
                     <RadioButton.Style>
@@ -88,7 +104,7 @@
                     </RadioButton.Style>
                 </RadioButton>
             </Grid>
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -108,6 +124,10 @@
                 <ComboBox Grid.Column="1"
                           Height="45"
                           Width="250"
+                          DisplayMemberPath="Name"
+                          BorderThickness="1.7"
+                          MaxDropDownHeight="200"
+                          BorderBrush="{StaticResource BlueColorBrush}"
                           Style="{StaticResource BaseComboBox}"
                           ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Country"
                           ItemsSource="{Binding Countries,Mode=OneWay}"
@@ -118,6 +138,10 @@
                 <ComboBox Grid.Column="2"
                           Height="45"
                           Width="250"
+                          BorderThickness="1.7"
+                          MaxDropDownHeight="200"
+                          BorderBrush="{StaticResource BlueColorBrush}"
+                          DisplayMemberPath="Name"
                           Style="{StaticResource BaseComboBox}"
                           ControlExtensions:WaterMarkTextExtension.WatermarkText="Select City"
                           ItemsSource="{Binding Cities,Mode=OneWay}"
@@ -126,7 +150,7 @@
                           FontFamily="{StaticResource MediumFont}"
                           FontSize="{StaticResource MediumSize}"></ComboBox>
             </Grid>
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -140,7 +164,7 @@
                          FontSize="{StaticResource MediumSize}"
                          Text="{Binding PhoneNumber,Mode=TwoWay}"
                          Style="{StaticResource TextBoxVisibilityPathIconStyle}"
-                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Warehouse Name"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Phone Number"
                          ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Phone}"
                          ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"/>
                 <TextBox Grid.Column="1" 
@@ -151,7 +175,7 @@
                          FontSize="{StaticResource MediumSize}"
                          Text="{Binding MobileNumber,Mode=TwoWay}"
                          Style="{StaticResource TextBoxVisibilityPathIconStyle}"
-                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Warehouse Name"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Mobile Number"
                          ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Mobile}"
                          ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"/>
                 <TextBox Grid.Column="2" 
@@ -161,17 +185,19 @@
                          FontFamily="{StaticResource MediumFont}"
                          FontSize="{StaticResource MediumSize}"
                          Text="{Binding Address,Mode=TwoWay}"
+                         TextAlignment="Justify"
                          Style="{StaticResource TextBoxVisibilityPathIconStyle}"
-                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Warehouse Name"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Warehouse Address"
                          ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Location}"
                          ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"/>
             </Grid>
-            <Grid Grid.Row="3">
+            <Grid Grid.Row="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.5*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Button x:Name="Clear"  Background="Red" Margin="5 0 5 0" Content="Clear" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45" Width="150" Style="{StaticResource ContentButton}"></Button>
                     <Button x:Name="SaveWarehouse"  Background="Green" Margin="5 0 5 0" Content="Save" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="45" Width="150" Style="{StaticResource ContentButton}"></Button>
                 </StackPanel>

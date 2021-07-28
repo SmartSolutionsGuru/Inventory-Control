@@ -1,6 +1,8 @@
 ﻿using Caliburn.Micro;
 using SmartSolutions.InventoryControl.DAL.Models.Inventory;
 using SmartSolutions.InventoryControl.DAL.Models.Product;
+using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
+using SmartSolutions.InventoryControl.DAL.Models.Stock;
 using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
@@ -19,7 +21,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         private readonly DAL.Managers.Product.ProductColor.IProductColorManager _productColorManager;
         private readonly DAL.Managers.Product.ProductSize.IProductSizeManager _productSizeManager;
         private readonly DAL.Managers.Product.IProductManager _productManager;
-        private readonly DAL.Managers.Invoice.IInvoiceManager _invoiceManager;
+        private readonly DAL.Managers.Invoice.IPurchaseInvoiceManager _purcahaseInvoiceManager;
         private readonly DAL.Managers.Inventory.IInventoryManager _inventoryManager;
         #endregion
 
@@ -30,7 +32,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                                 DAL.Managers.Product.ProductColor.IProductColorManager productColorManager,
                                 DAL.Managers.Product.ProductSize.IProductSizeManager productSizeManager,
                                 DAL.Managers.Product.IProductManager productManager,
-                                DAL.Managers.Invoice.IInvoiceManager invoiceManager,
+                                DAL.Managers.Invoice.IPurchaseInvoiceManager purcahseInvoiceManager,
                                 DAL.Managers.Inventory.IInventoryManager inventoryManager)
         {
             IsAddProductPressed = true;
@@ -39,7 +41,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
             _productSubTypeManager = productSubTypeManager;
             _productSizeManager = productSizeManager;
             _productColorManager = productColorManager;
-            _invoiceManager = invoiceManager;
+            _purcahaseInvoiceManager = purcahseInvoiceManager;
             _inventoryManager = inventoryManager;
         }
         #endregion
@@ -271,11 +273,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                     {
                         if (InitialQuantity > 0)
                         {
-                            ProductInitialQuantityInvoice = new InvoiceModel();
-                            ProductInitialQuantityInvoice.InvoiceId = _invoiceManager.GenrateInvoiceNumber("IQ");
-                            ProductInitialQuantityInvoice.TransactionType = "Product Initial Quantity";
+                            ProductInitialQuantityInvoice = new PurchaseInvoiceModel();
+                            ProductInitialQuantityInvoice.InvoiceId = _purcahaseInvoiceManager.GenrateInvoiceNumber("IQ");
                             ProductInitialQuantityInvoice.Description = "Product Initial Quantity Addition";
-                            var transactionResult = await _invoiceManager.SaveInoiceAsync(ProductInitialQuantityInvoice);
+                            var transactionResult = await _purcahaseInvoiceManager.SavePurchaseInoiceAsync(ProductInitialQuantityInvoice);
                             if (transactionResult)
                             {
                                 InitialQuantityInventory = new InventoryModel();
@@ -294,7 +295,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                                 }
                                 else
                                 {
-                                    await _invoiceManager.RemoveLastInvoiceAsync(ProductInitialQuantityInvoice.InvoiceGuid);
+                                    await _purcahaseInvoiceManager.RemoveLastInvoiceAsync(ProductInitialQuantityInvoice.InvoiceGuid);
                                     ClearProductDetails();
                                     //TODO: Here we Display the USer Frindly Message for not Adding Quantity
                                 }
@@ -391,7 +392,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
 
         #region Properties
         public InventoryModel InitialQuantityInventory { get; set; }
-        public InvoiceModel ProductInitialQuantityInvoice { get; set; }
+        public PurchaseInvoiceModel ProductInitialQuantityInvoice { get; set; }
         private bool _ProductTypeError;
         /// <summary>
         /// When Product Type is Not Selected

@@ -44,6 +44,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Settings
                     setting.Name = value?.GetValueFromDictonary("Name")?.ToString();
                     setting.SettingKey = value?.GetValueFromDictonary("SettingKey")?.ToString();
                     setting.SettingValue = value?.GetValueFromDictonary("SettingValue")?.ToString()?.ToNullableInt() ?? 0;
+                    setting.Value = value?.GetValueFromDictonary("Value")?.ToString();
                     setting.DefaultValue = value?.GetValueFromDictonary("DefaultValue")?.ToString()?.ToNullableBoolean() ?? false;
                     setting.Description = value?.GetValueFromDictonary("Description")?.ToString();
                 }
@@ -71,6 +72,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Settings
                     setting.Name = value?.GetValueFromDictonary("Name")?.ToString();
                     setting.SettingKey = value?.GetValueFromDictonary("SettingKey")?.ToString();
                     setting.SettingValue = value?.GetValueFromDictonary("SettingValue")?.ToString()?.ToNullableInt() ?? 0;
+                    setting.Value = value?.GetValueFromDictonary("Value")?.ToString();
                     setting.DefaultValue = value?.GetValueFromDictonary("DefaultValue")?.ToString()?.ToNullableBoolean() ?? false;
                     setting.Description = value?.GetValueFromDictonary("Description")?.ToString();
                 }
@@ -91,6 +93,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Settings
                 parameters["@v_Name"] = setting.Name;
                 parameters["@v_SettingKey"] = setting.SettingKey;
                 parameters["@v_SettingValue"] = setting.SettingValue;
+                parameters["@v_Value"] = setting.Value;
                 parameters["@v_DefaultValue"] = setting.DefaultValue;
                 parameters["@v_Description"] = setting.Description;
                 parameters["@v_IsActive"] = setting.IsActive = true;

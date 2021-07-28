@@ -15,6 +15,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Warehouse
         #endregion
 
         #region Properties
+        public CountryModel Country { get; set; }
         public CityModel City { get; set; }
         public string PhoneNumber { get; set; }
         public string MobileNumber { get; set; }

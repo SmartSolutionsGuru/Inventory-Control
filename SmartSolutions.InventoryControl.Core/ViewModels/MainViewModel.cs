@@ -18,6 +18,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Constructor
+        public MainViewModel() { }
+
         [ImportingConstructor]
         public MainViewModel(IEventAggregator eventAggregator
                             , DAL.Managers.Settings.ISystemSettingManager systemSettingManager
@@ -120,11 +122,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Sorry This Feature is Not Available Yet", options: Dialogs.MessageBoxOptions.Ok);
         }
 
-        public void CreateUser()
+        public async void CreateUser()
         {
             try
             {
-                Handle(IoC.Get<UserCreationViewModel>());
+                var dlg = IoC.Get<UserCreationViewModel>();
+                await IoC.Get<IDialogManager>().ShowDialogAsync(dlg);
             }
             catch (Exception ex)
             {
@@ -136,17 +139,19 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             try
             {
-                //TODO: Add this Key in Db
                 var resultSetting = await _systemSettingManager.GetsystemSettingByKeyAsync("Is_DbPath_Inserted");
                 if (resultSetting != null)
                 {
                     if (resultSetting.SettingValue == 0)
-                        Handle(IoC.Get<PathInsertionViewModel>());
+                    {
+                        var dlg = IoC.Get<PathInsertionViewModel>();
+                        await IoC.Get<IDialogManager>().ShowDialogAsync(dlg);
+
+                    }
                     else
                     {
-                        await _databaseBackupManager.CreateBackupAsync(ConnectionInfo.Instance.Database,resultSetting.Description);
+                        await _databaseBackupManager.CreateBackupAsync(ConnectionInfo.Instance.Database, resultSetting.Description);
                     }
-
                 }
             }
             catch (Exception ex)

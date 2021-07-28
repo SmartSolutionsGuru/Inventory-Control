@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
+﻿using Caliburn.Micro;
+using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;
+using SmartSolutions.InventoryControl.DAL.Managers.Product;
 using SmartSolutions.InventoryControl.DAL.Managers.Product.ProductColor;
 using SmartSolutions.InventoryControl.DAL.Managers.Product.ProductSize;
-using SmartSolutions.InventoryControl.DAL.Managers.Product;
-using System.Text;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
-using System.Linq;
-using SmartSolutions.InventoryControl.DAL.Models.Product;
-using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;
 using SmartSolutions.InventoryControl.DAL.Models.Inventory;
+using SmartSolutions.InventoryControl.DAL.Models.Product;
+using SmartSolutions.InventoryControl.DAL.Models.Sales;
+using SmartSolutions.InventoryControl.DAL.Models.Stock;
 using SmartSolutions.Util.LogUtils;
 using SmartSolutions.Util.NumericUtils;
-using Caliburn.Micro;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.Composition;
+using System.Linq;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels
 {
@@ -24,34 +25,37 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private readonly IProductColorManager _productColorManager;
         private readonly IProductSizeManager _productSizeManager;
         private readonly IProductManager _productManager;
-        private readonly DAL.Managers.Invoice.IInvoiceManager _invoiceManager;
+        private readonly DAL.Managers.Invoice.ISaleInvoiceManager _saleInvoiceManager;
         private readonly DAL.Managers.Bussiness_Partner.IBussinessPartnerManager _bussinessPartnerManager;
         private readonly DAL.Managers.Inventory.IInventoryManager _inventoryManager;
         private readonly DAL.Managers.Bussiness_Partner.IPartnerLedgerManager _partnerLedgerManager;
         private readonly DAL.Managers.Transaction.ITransactionManager _transactionManager;
+        private readonly DAL.Managers.Payments.IPaymentTypeManager _paymentTypeManager;
         #endregion
 
         #region Constructor
         public SalesViewModel() { }
-        
+
         [ImportingConstructor]
         public SalesViewModel(IProductColorManager productColorManager
                               , IProductSizeManager productSizeManager
                               , IProductManager productManager
-                              , DAL.Managers.Invoice.IInvoiceManager invoiceManager
+                              , DAL.Managers.Invoice.ISaleInvoiceManager saleInvoiceManager
                               , DAL.Managers.Bussiness_Partner.IBussinessPartnerManager bussinessPartnerManager
                               , DAL.Managers.Inventory.IInventoryManager inventoryManager
                               , DAL.Managers.Bussiness_Partner.IPartnerLedgerManager partnerLedgerManager
-                              , DAL.Managers.Transaction.ITransactionManager transactionManager)
+                              , DAL.Managers.Transaction.ITransactionManager transactionManager
+                              , DAL.Managers.Payments.IPaymentTypeManager paymentTypeManager)
         {
             _productColorManager = productColorManager;
             _productSizeManager = productSizeManager;
             _productManager = productManager;
-            _invoiceManager = invoiceManager;
+            _saleInvoiceManager = saleInvoiceManager;
             _bussinessPartnerManager = bussinessPartnerManager;
             _inventoryManager = inventoryManager;
             _partnerLedgerManager = partnerLedgerManager;
             _transactionManager = transactionManager;
+            _paymentTypeManager = paymentTypeManager;
         }
         #endregion
 
@@ -73,8 +77,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             Products = (await _productManager.GetAllProductsAsync()).ToList();
             ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
             ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
-            SaleInvoice = new InvoiceModel();
-            SaleInvoice.InvoiceId = _invoiceManager.GenrateInvoiceNumber("S");
+            SaleInvoice = new SaleInvoiceModel();
+            SaleInvoice.PaymentTypes = (await _paymentTypeManager.GetAllPaymentTypesAsync()).ToList();
+            SaleInvoice.InvoiceId = _saleInvoiceManager.GenrateInvoiceNumber("S");
             if (Partners != null || Partners?.Count > 0)
                 PartnerSuggetion = new PartnerSuggestionProvider(Partners);
             if (Products != null || Products?.Count > 0)
@@ -162,7 +167,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
 
                 #region Error Checking
                 if (!string.IsNullOrEmpty(SelectedSaleType))
-                    SaleInvoice.TransactionType = SelectedSaleType;
+                {
+                    //SaleInvoice.TransactionType = SelectedSaleType;
+                }
                 else
                 {
                     SaleTypeError = true;
@@ -191,21 +198,17 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                             productList.Add(product);
                         }
                     }
-                    SaleInvoice.IsPurchaseInvoice = true;
+
                     SaleInvoice.SelectedPartner = SelectedPartner;
                     SaleInvoice.PaymentImage = PaymentImage;
                     SaleInvoice.PercentDiscount = PercentDiscount;
                     SaleInvoice.Discount = DiscountPrice;
                     SaleInvoice.InvoiceTotal = InvoiceTotal;
                     SaleInvoice.Payment = Payment;
-                    SaleInvoice.IsAmountPaid = false;
-                    SaleInvoice.IsAmountRecived = true;
-                    SaleInvoice.IsPurchaseInvoice = false;
-                    SaleInvoice.TransactionType = SelectedSaleType;
-                    bool invoiceResult = await _invoiceManager.SaveInoiceAsync(SaleInvoice);
+                    bool invoiceResult = await _saleInvoiceManager.SaveSaleInoiceAsync(SaleInvoice);
                     if (invoiceResult)
                     {
-                        var lastRowId = _invoiceManager.GetLastRowId();
+                        var lastRowId = _saleInvoiceManager.GetLastRowId();
                         if (lastRowId != null)
                         {
                             if (lastRowId > 0)
@@ -216,11 +219,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                     // Now we Create Transaction Object  for saving Transaction
                                     var transaction = new DAL.Models.Transaction.TransactionModel();
                                     transaction.BussinessPartner = SelectedPartner;
-                                    transaction.PartnerLastInvoice = SaleInvoice;
+                                    //transaction.PartnerLastInvoice = SaleInvoice;
                                     transaction.PaymentImage = SaleInvoice.PaymentImage;
                                     transaction.PaymentMode = "Receivable";
                                     transaction.PaymentType = SaleInvoice.SelectedPaymentType;
-                                   var resultTransaction =  await _transactionManager.SaveTransactionAsync(transaction);
+                                    var resultTransaction = await _transactionManager.SaveTransactionAsync(transaction);
                                     //If transaction is Successfully Completed
                                     if (resultTransaction)
                                     {
@@ -254,7 +257,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                             partnerLedger.InvoiceId = SaleInvoice.InvoiceId;
                                             partnerLedger.TransactionGuid = transaction.TransactionGuid;
                                             await _partnerLedgerManager.AddPartnerBalance(partnerLedger);
-                                        } 
+                                        }
                                     }
                                     else
                                     {
@@ -434,11 +437,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             set { _SelectedPartner = value; NotifyOfPropertyChange(nameof(SelectedPartner)); OnSelectedPartner(); }
         }
 
-        private InvoiceModel _SaleInvoice;
+        private SaleInvoiceModel _SaleInvoice;
         /// <summary>
         /// Sales Transaction Model
         /// </summary>
-        public InvoiceModel SaleInvoice
+        public SaleInvoiceModel SaleInvoice
         {
             get { return _SaleInvoice; }
             set { _SaleInvoice = value; NotifyOfPropertyChange(nameof(SaleInvoice)); }

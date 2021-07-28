@@ -1,6 +1,4 @@
-﻿using SmartSolutions.InventoryControl.DAL.Models.Inventory;
-using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
-using SmartSolutions.InventoryControl.DAL.Models.Sales;
+﻿using SmartSolutions.InventoryControl.DAL.Models.Sales;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.DictionaryUtils;
 using SmartSolutions.Util.LogUtils;
@@ -14,23 +12,23 @@ using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
 {
-    [Export(typeof(IPurchaseInvoiceManager)), PartCreationPolicy(CreationPolicy.NonShared)]
-    public class InvoiceManager : BaseManager, IPurchaseInvoiceManager
+    [Export(typeof(ISaleInvoiceManager)),PartCreationPolicy(CreationPolicy.Shared)]
+    public class SaleInvoiceManager : BaseManager, ISaleInvoiceManager
     {
         #region Private Members
         private readonly IRepository Repository;
+
         #endregion
 
         #region Constructor
-        [ImportingConstructor]
-        public InvoiceManager()
+        public SaleInvoiceManager()
         {
-            Repository = GetRepository<PurchaseInvoiceModel>();
+            Repository = GetRepository<SaleInvoiceModel>();
         }
-
         #endregion
 
-        #region Methods
+        #region Public Methods
+
         public string GenrateInvoiceNumber(string Initials)
         {
             string InvoiceNumber = string.Empty;
@@ -79,15 +77,15 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
             return lastRowId;
         }
 
-        public async Task<PurchaseInvoiceModel> GetPartnerLastInvoice(int? Id)
+        public async Task<SaleInvoiceModel> GetPartnerLastSaleInvoiceAsync(int? Id)
         {
-            var lastInvoice = new PurchaseInvoiceModel();
+            var lastInvoice = new SaleInvoiceModel();
             try
             {
 
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_Id"] = Id;
-                string query = @"SELECT * FROM PurchaseInvoice WHERE SelectedPartnerId= Id = @v_Id AND IsActive = 1 ORDER BY 1 DESC LIMIT 1;";
+                string query = @"SELECT * FROM SaleInvoice WHERE SelectedPartnerId= Id = @v_Id AND IsActive = 1 ORDER BY 1 DESC LIMIT 1;";
                 var values = await Repository.QueryAsync(query, parameters: parameters);
                 if (values != null)
                 {
@@ -96,9 +94,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
                     lastInvoice.InvoiceId = value?.GetValueFromDictonary("InvoiceId")?.ToString();
                     lastInvoice.InvoiceGuid = Guid.Parse(value?.GetValueFromDictonary("InvoiceGuid")?.ToString());
                     lastInvoice.Payment = value?.GetValueFromDictonary("Payment")?.ToString()?.ToNullableInt() ?? 0;
-
                 }
-
             }
             catch (Exception ex)
             {
@@ -106,35 +102,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
             }
             return lastInvoice;
         }
-
-        public async Task<PurchaseInvoiceModel> GetPartnerLastPurchaseInvoiceAsync(int? Id)
-        {
-            var lastInvoice = new PurchaseInvoiceModel();
-            try
-            {
-
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters["@v_Id"] = Id;
-                string query = @"SELECT * FROM PurchaseInvoice WHERE SelectedPartnerId= Id = @v_Id AND IsActive =1 ORDER BY 1 DESC LIMIT 1;";
-                var values = await Repository.QueryAsync(query, parameters: parameters);
-                if (values != null)
-                {
-                    var value = values?.FirstOrDefault();
-                    lastInvoice.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
-                    lastInvoice.InvoiceId = value?.GetValueFromDictonary("InvoiceId")?.ToString();
-                    lastInvoice.InvoiceGuid = Guid.Parse(value?.GetValueFromDictonary("InvoiceGuid")?.ToString());
-                    lastInvoice.Payment = value?.GetValueFromDictonary("Payment")?.ToString()?.ToNullableInt() ?? 0;
-
-                }
-
-            }
-            catch (Exception ex)
-            {
-                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
-            }
-            return lastInvoice;
-        }
-
 
         public async Task<bool> RemoveLastInvoiceAsync(Guid InvoiceGuid)
         {
@@ -143,7 +110,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_InvoiceGuid"] = InvoiceGuid;
-                string query = @"UPDATE PurchaseInvoice SET IsActive = 0 WHERE InvoiceGuid = @v_InvoiceGuid";
+                string query = @"UPDATE SaleInvoice SET IsActive = 0 WHERE InvoiceGuid = @v_InvoiceGuid";
                 var result = await Repository.NonQueryAsync(query: query);
                 retVal = result > 0 ? true : false;
             }
@@ -153,7 +120,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
             }
             return retVal;
         }
-        public async Task<bool> SavePurchaseInoiceAsync(PurchaseInvoiceModel invoice)
+
+        public async Task<bool> SaveSaleInoiceAsync(SaleInvoiceModel invoice)
         {
             bool retVal = false;
             try
@@ -178,8 +146,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
                 parameters["@v_UpdatedAt"] = invoice.UpdatedAt == null ? DBNull.Value : (object)invoice.UpdatedAt;
                 parameters["@v_UpdatedBy"] = invoice.UpdatedBy == null ? DBNull.Value : (object)invoice.UpdatedBy;
 
-                query = @"INSERT INTO PurchaseInvoice (InvoiceId,InvoiceGuid,SelectedPartnerId,SelectedPaymentType,PercentDiscount,DiscountAmount,Description,AmountImage,Payment,InvoiceTotal,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
-                                            VALUES(@v_InvoiceId,@v_InvoiceGuid,@v_SelectedPartnerId,@v_SelectedPaymentType,@v_PercentDiscount,@v_DiscountAmount,@v_Description,@v_AmountImage,@v_Payment,@v_InviceTotal,@v_IsActive,@v_IsDeleted,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
+                query = @"INSERT INTO SaleInvoice (InvoiceId,InvoiceGuid,SelectedPartnerId,SelectedPaymentType,PercentDiscount,DiscountAmount,Description,AmountImage,Payment,InvoiceTotal,IsActive,IsDeleted,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                            VALUES(@v_InvoiceId,@v_InvoiceGuid,@v_SelectedPartnerId,@v_SelectedPaymentType,@v_PercentDiscount,@v_DiscountAmount,@v_Description,@v_AmountImage,@v_Payment,@v_InviceTotal,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
 
                 var result = await Repository.NonQueryAsync(query, parameters: parameters);
                 retVal = result > 0 ? true : false;
@@ -190,14 +158,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
             }
             return retVal;
         }
-
-        public Task<bool> SaveSaleInoiceAsync(SaleInvoiceModel invoice)
-        {
-            throw new NotImplementedException();
-        }
-
-       
-
         #endregion
     }
 }

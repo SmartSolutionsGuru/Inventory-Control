@@ -22,26 +22,44 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
         #endregion
 
         #region Properties
-        private List<string> _Reports;
+        private List<string> _ReportsCategory;
         /// <summary>
         /// Reports List For Displaying Report
         /// </summary>
-        public List<string> Reports
+        public List<string> ReportsCategory
         {
-            get { return _Reports; }
-            set { _Reports = value; NotifyOfPropertyChange(nameof(Reports)); }
+            get { return _ReportsCategory; }
+            set { _ReportsCategory = value; NotifyOfPropertyChange(nameof(ReportsCategory)); }
         }
 
-        private string _SelectedReport;
+        private string _SelectedReportCategory;
          /// <summary>
          /// Selected Report
          /// </summary>
-        public string SelectedReport
+        public string SelectedReportCategory
         {
-            get { return _SelectedReport; }
-            set { _SelectedReport = value; NotifyOfPropertyChange(nameof(SelectedReport)); }
+            get { return _SelectedReportCategory; }
+            set { _SelectedReportCategory = value; NotifyOfPropertyChange(nameof(SelectedReportCategory)); }
         }
 
+        private List<string> _ReportsSubCategory;
+        /// <summary>
+        /// Selected Reports By Sub Category Like Vender Partners, Sale Partners etc...
+        /// </summary>
+        public List<string> ReportsSubCategory
+        {
+            get { return _ReportsSubCategory; }
+            set { _ReportsSubCategory = value; NotifyOfPropertyChange(nameof(ReportsSubCategory)); }
+        }
+        private string _SelectedReportSubCategory;
+        /// <summary>
+        /// Selected Report By Sub Category Like Vender Partners, Sale Partners etc...
+        /// </summary>
+        public string SelectedReportSubCategory
+        {
+            get { return _SelectedReportSubCategory; }
+            set { _SelectedReportSubCategory = value; NotifyOfPropertyChange(nameof(SelectedReportSubCategory)); }
+        }
 
         #endregion
     }

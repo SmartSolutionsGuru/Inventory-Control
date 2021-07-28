@@ -44,7 +44,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         #endregion
 
         #region Public Methods
-
         public void Close()
         {
             TryClose();
@@ -69,7 +68,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
                     setting.SettingKey = "Is_DbPath_Inserted";
                     setting.SettingValue = 1;
                     setting.DefaultValue = false;
-                    setting.Description = FileNameWithPath;
+                    setting.Value = FileNameWithPath;
+                    setting.Description = "Is Path Created Or Not";
                     var result = await _systemSettingManager.SaveSettingAsync(setting);
                     if (result)
                         await BackUpDataBase(_databaseName);

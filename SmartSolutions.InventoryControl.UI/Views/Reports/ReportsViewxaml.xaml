@@ -35,8 +35,19 @@
                           FontSize="{StaticResource MediumSize}"
                           BorderThickness="1.7"
                           BorderBrush="{StaticResource BlueColorBrush}"
-                          ItemsSource="{Binding Reports,Mode=OneWay}"
-                          SelectedItem="{Binding SelectedReport,Mode=TwoWay}"
+                          ItemsSource="{Binding ReportsCategory,Mode=OneWay}"
+                          SelectedItem="{Binding SelectedReportCategory,Mode=TwoWay}"/>
+                <ComboBox Grid.Column="1" 
+                          Style="{StaticResource BaseComboBox}"
+                          Foreground="{StaticResource GrayColorBrush}"
+                          Height="45"
+                          Width="230"
+                          FontFamily="{StaticResource MediumFont}"
+                          FontSize="{StaticResource MediumSize}"
+                          BorderThickness="1.7"
+                          BorderBrush="{StaticResource BlueColorBrush}"
+                          ItemsSource="{Binding ReportsSubCategory,Mode=OneWay}"
+                          SelectedItem="{Binding SelectedReportSubCategory,Mode=TwoWay}"/>
             </Grid>
         </Grid>
     </Border>

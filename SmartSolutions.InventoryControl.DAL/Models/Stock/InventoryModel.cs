@@ -5,6 +5,9 @@ using System.ComponentModel.Composition;
 
 namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
 {
+    /// <summary>
+    /// Class For Creation Inventory 
+    /// </summary>
     [Export(typeof(InventoryModel)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class InventoryModel : BaseModel
     {

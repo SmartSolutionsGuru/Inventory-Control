@@ -3,6 +3,8 @@ using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.DAL.Models.Inventory;
 using SmartSolutions.InventoryControl.DAL.Models.Product;
+using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
+using SmartSolutions.InventoryControl.DAL.Models.Stock;
 using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
@@ -21,9 +23,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private readonly DAL.Managers.Bussiness_Partner.IBussinessPartnerManager _bussinessPartnerManager;
         private readonly DAL.Managers.Product.ProductSize.IProductSizeManager _productSizeManager;
         private readonly DAL.Managers.Product.ProductColor.IProductColorManager _productColorManager;
-        private readonly DAL.Managers.Invoice.IInvoiceManager _InvoiceManager;
+        private readonly DAL.Managers.Invoice.IPurchaseInvoiceManager _purchaseInvoiceManager;
         private readonly DAL.Managers.Bussiness_Partner.IPartnerLedgerManager _partnerLedgerManager;
         private readonly DAL.Managers.Warehouse.IWarehouseManager _warehouseManager;
+        private readonly DAL.Managers.Payments.IPaymentTypeManager _paymentTypeManager;
         #endregion
 
         #region Constructor
@@ -35,18 +38,20 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                 , DAL.Managers.Bussiness_Partner.IBussinessPartnerManager bussinessPartnerManager
                                 , DAL.Managers.Product.ProductColor.IProductColorManager productColorManager
                                 , DAL.Managers.Product.ProductSize.IProductSizeManager productSizeManager
-                                , DAL.Managers.Invoice.IInvoiceManager invoiceManager
+                                , DAL.Managers.Invoice.IPurchaseInvoiceManager invoiceManager
                                 , DAL.Managers.Bussiness_Partner.IPartnerLedgerManager partnerLedgerManager
-                                , DAL.Managers.Warehouse.IWarehouseManager warehouseManager)
+                                , DAL.Managers.Warehouse.IWarehouseManager warehouseManager
+                                , DAL.Managers.Payments.IPaymentTypeManager paymentTypeManager)
         {
             _inventoryManager = inventoryManager;
             _productManager = productManager;
             _bussinessPartnerManager = bussinessPartnerManager;
             _productColorManager = productColorManager;
             _productSizeManager = productSizeManager;
-            _InvoiceManager = invoiceManager;
+            _purchaseInvoiceManager = invoiceManager;
             _partnerLedgerManager = partnerLedgerManager;
             _warehouseManager = warehouseManager;
+            _paymentTypeManager = paymentTypeManager;
         }
         #endregion
 
@@ -72,8 +77,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
                 ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
                 Warehouses = (await _warehouseManager.GetAllWarehousesAsync()).ToList();
-                PurchaseInvoice = new InvoiceModel();
-                PurchaseInvoice.InvoiceId = _InvoiceManager.GenrateInvoiceNumber("P");
+                PurchaseOrder = new PurchaseOrderModel();
+                PurchaseOrderDetail = new List<PurchaseOrderDetailModel>();
+                PurchaseInvoice = new PurchaseInvoiceModel();
+                PurchaseInvoice.PaymentTypes = (await _paymentTypeManager.GetAllPaymentTypesAsync()).ToList();
+                PurchaseInvoice.InvoiceId = _purchaseInvoiceManager.GenrateInvoiceNumber("P");
                 ProductGrid = new ObservableCollection<InventoryModel>();
                 var model = new InventoryModel();
                 AutoId = 0;
@@ -100,6 +108,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 newProduct.InvoiceId = PurchaseInvoice.InvoiceId;
                 CalculateInvoiceTotal();
                 ProductGrid.Add(newProduct);
+                //TODO: Here we add the PurchaseOrderDetail Values  in PurchaseOrderDetail List 
                 ProductSuggetion = new ProductSuggestionProvider(Products);
             }
             catch (Exception ex)
@@ -124,6 +133,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     --AutoId;
                     ProductGrid.Remove(product);
                 }
+                //TODO: Here we remove the PurchaseOrderDetail Values  in PurchaseOrderDetail List 
                 InvoiceTotal = ReCalculateInvoicePrice();
                 GrandTotal = InvoiceTotal + PreviousBalance;
             }
@@ -141,7 +151,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
 
                 #region Error Checking
                 if (!string.IsNullOrEmpty(SelectedPurchaseType))
-                    PurchaseInvoice.TransactionType = SelectedPurchaseType;
+                {
+                    //PurchaseInvoice.TransactionType = SelectedPurchaseType;
+                }
                 else
                 {
                     PurchaseTypeError = true;
@@ -159,6 +171,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 }
                 #endregion
 
+                #region Gerating PO And Filling Details
+
+                #endregion
+
                 if (ProductGrid != null || ProductGrid?.Count > 0)
                 {
                     var productList = new List<InventoryModel>();
@@ -170,21 +186,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                             productList.Add(product);
                         }
                     }
-                    PurchaseInvoice.IsPurchaseInvoice = true;
                     PurchaseInvoice.SelectedPartner = SelectedPartner;
                     PurchaseInvoice.PaymentImage = PaymentImage;
                     PurchaseInvoice.PercentDiscount = PercentDiscount;
                     PurchaseInvoice.Discount = DiscountPrice;
                     PurchaseInvoice.InvoiceTotal = InvoiceTotal;
                     PurchaseInvoice.Payment = Payment;
-                    PurchaseInvoice.IsAmountPaid = true;
-                    PurchaseInvoice.IsAmountRecived = false;
-                    PurchaseInvoice.IsPurchaseInvoice = true;
-                    PurchaseInvoice.TransactionType = SelectedPurchaseType;
-                    bool transactionResult = await _InvoiceManager.SaveInoiceAsync(PurchaseInvoice);
-                    if (transactionResult)
+                    bool invoiceResult = await _purchaseInvoiceManager.SavePurchaseInoiceAsync(PurchaseInvoice);
+                    if (invoiceResult)
                     {
-                        var lastRowId = _InvoiceManager.GetLastRowId();
+                        var lastRowId = _purchaseInvoiceManager.GetLastRowId();
                         if (lastRowId != null)
                         {
                             if (lastRowId > 0)
@@ -311,8 +322,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Properties
+        public PurchaseOrderModel PurchaseOrder { get; set;}
+        public List<PurchaseOrderDetailModel> PurchaseOrderDetail { get; set; }
+        public StockInModel StockIn { get; set; }
         private List<DAL.Models.Warehouse.WarehouseModel> _Warehouses;
-
+        /// <summary>
+        /// List Of Warehouses whicha are avaiable
+        /// </summary>
         public List<DAL.Models.Warehouse.WarehouseModel> Warehouses
         {
             get { return _Warehouses; }
@@ -320,7 +336,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         private DAL.Models.Warehouse.WarehouseModel _SelectedWarehouse;
         /// <summary>
-        /// Seelcted Warehouse
+        /// Selected Warehouse In Which Stock Is Store
         /// </summary>
         public DAL.Models.Warehouse.WarehouseModel SelectedWarehouse
         {
@@ -350,11 +366,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
 
         public static int AutoId { get; set; }
 
-        private InvoiceModel _PurchaseInvoice;
+        private PurchaseInvoiceModel _PurchaseInvoice;
         /// <summary>
         /// Transaction Object for Purchase Transaction
         /// </summary>
-        public InvoiceModel PurchaseInvoice
+        public PurchaseInvoiceModel PurchaseInvoice
         {
             get { return _PurchaseInvoice; }
             set { _PurchaseInvoice = value; NotifyOfPropertyChange(nameof(PurchaseInvoice)); }

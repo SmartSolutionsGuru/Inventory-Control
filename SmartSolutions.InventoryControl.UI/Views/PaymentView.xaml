@@ -187,6 +187,7 @@
                                FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}"/>
                     <ComboBox Height="50" 
                               Width="250"
+                              DisplayMemberPath="Name"
                               ItemsSource="{Binding PaymentTypes,Mode=OneWay}"
                               SelectedItem="{Binding SelectedPaymentType,Mode=TwoWay}"
                               FontFamily="{StaticResource MediumFont}"

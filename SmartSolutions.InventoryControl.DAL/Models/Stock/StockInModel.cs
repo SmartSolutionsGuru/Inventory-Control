@@ -7,10 +7,10 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
     /// <summary>
     /// Calss that is Responsible for Holding Inventory/Stock In
     /// </summary>
-    public class InventoryInModel : BaseModel
+    public class StockInModel : BaseModel
     {
         #region Constructor
-        public InventoryInModel()
+        public StockInModel()
         {
             Partner = new BussinessPartnerModel();
             PurchaseOrder = new PurchaseOrderModel();

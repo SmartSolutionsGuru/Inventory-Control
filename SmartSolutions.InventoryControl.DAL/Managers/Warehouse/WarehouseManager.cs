@@ -31,7 +31,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Warehouse
             var warehouses = new List<WarehouseModel>();
             try
             {
-                string query = @"SELECT * FROM Warehouse WHERE IsActive = 1";
+                string query = @"SELECT * FROM Warehouses WHERE IsActive = 1";
                 var values = await Repository.QueryAsync(query:query);
                 if(values != null || values?.Count > 0)
                 {
@@ -55,6 +55,37 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Warehouse
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return warehouses;
+        }
+
+        public async Task<bool> SaveWarehouseAsync(WarehouseModel warehouse)
+        {
+            bool retVal = false;
+            try
+            {
+                if (warehouse == null) return false;
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_Name"] = warehouse.Name;
+                parameters["@v_CityId"] = warehouse.City?.Id;
+                parameters["@v_PhoneNumber"] = warehouse.PhoneNumber;
+                parameters["@v_MobileNumber"] = warehouse.MobileNumber;
+                parameters["@v_Address"] = warehouse.Address == null ? DBNull.Value : (object)warehouse.Address;
+                parameters["@v_Description"] = warehouse.Description == null ? DBNull.Value : (object)warehouse.Description;
+                parameters["@v_IsActive"] = true;
+                parameters["@v_CreatedAt"] = warehouse.CreatedAt == null ? DateTime.Now : warehouse.CreatedAt;
+                parameters["@v_CreatedBy"] = warehouse.CreatedBy == null ? AppSettings.LoggedInUser.DisplayName : (object)warehouse.CreatedBy;
+                parameters["@v_UpdatedAt"] = warehouse.UpdatedAt == null ? DBNull.Value : (object)warehouse.UpdatedAt;
+                parameters["@v_UpdatedBy"] = warehouse.UpdatedBy == null ? DBNull.Value : (object)warehouse.UpdatedBy;
+                string query = @"INSERT INTO Warehouses (Name,CityId,PhoneNumber,MobileNumber,Address,Description,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                                VALUES(@v_Name,@v_CityId,@v_PhoneNumber,@v_MobileNumber,@v_Address,@v_Description,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
+                var result = await Repository.NonQueryAsync(query:query,parameters:parameters);
+                retVal = result > 0 ? true : false;
+            }
+            catch (Exception ex)
+            {
+
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
         }
         #endregion
     }

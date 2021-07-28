@@ -2,6 +2,9 @@
 using SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.DAL.Models.Inventory;
+using SmartSolutions.InventoryControl.DAL.Models.Payments;
+using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
+using SmartSolutions.InventoryControl.DAL.Models.Sales;
 using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
@@ -9,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
 {
@@ -17,26 +21,32 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
     {
         #region Private Members
         private readonly IBussinessPartnerManager _bussinessPartnerManager;
-        private readonly DAL.Managers.Invoice.IInvoiceManager _invoiceManager;
+        private readonly DAL.Managers.Invoice.IPurchaseInvoiceManager _purchaseInvoiceManager;
+        private readonly DAL.Managers.Invoice.ISaleInvoiceManager _saleInvoiceManager;
         private readonly IPartnerLedgerManager _partnerLedgerManager;
         private readonly IPartnerTypeManager _partnerTypeManager;
         private readonly IPartnerCategoryManager _partnerCategoryManager;
+        private readonly DAL.Managers.Payments.IPaymentTypeManager _paymentTypeManager;
 
         #endregion
 
         #region Constructor
         [ImportingConstructor]
         public BussinessPartnerViewModel(IBussinessPartnerManager bussinessPartnerManager
-                                        , DAL.Managers.Invoice.IInvoiceManager invoiceManager
+                                        , DAL.Managers.Invoice.IPurchaseInvoiceManager purchaseInvoiceManager
+                                        , DAL.Managers.Invoice.ISaleInvoiceManager saleInvoiceManager
                                         , IPartnerLedgerManager partnerLedgerManager
                                         , IPartnerTypeManager partnerTypeManager
-                                        , IPartnerCategoryManager partnerCategoryManager)
+                                        , IPartnerCategoryManager partnerCategoryManager
+                                        , DAL.Managers.Payments.IPaymentTypeManager paymentTypeManager)
         {
             _bussinessPartnerManager = bussinessPartnerManager;
-            _invoiceManager = invoiceManager;
+            _purchaseInvoiceManager = purchaseInvoiceManager;
+            _saleInvoiceManager = saleInvoiceManager;
             _partnerLedgerManager = partnerLedgerManager;
             _partnerTypeManager = partnerTypeManager;
             _partnerCategoryManager = partnerCategoryManager;
+            _paymentTypeManager = paymentTypeManager;
 
         }
         #endregion
@@ -140,51 +150,37 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     {
                         if (resultPartner)
                         {
-                            InitialBalanceInvoice = new InvoiceModel();
-                            InitialBalanceInvoice.InvoiceId = _invoiceManager.GenrateInvoiceNumber("IB");
-                            InitialBalanceInvoice.IsAmountRecived = true;
-                            InitialBalanceInvoice.TransactionType = "Initial Balance Deposit";
-                            InitialBalanceInvoice.SelectedPartner = await _bussinessPartnerManager.GetLastAddedPartner();
-                            InitialBalanceInvoice.SelectedPaymentType = "Unknown";
-                            InitialBalanceInvoice.Description = "Inital Balance Of Partner";
-                            InitialBalanceInvoice.Payment = (int)InitialAmount;
-                            InitialBalanceInvoice.InvoiceTotal = (int)InitialAmount;
-                            var invoiceResult = await _invoiceManager.SaveInoiceAsync(InitialBalanceInvoice);
-                            if (invoiceResult)
+                            if (AmountType.Equals("Receviable"))
                             {
-                                PartnerLedger = new BussinessPartnerLedgerModel();
-                                PartnerLedger.Partner = await _bussinessPartnerManager.GetLastAddedPartner();
-                                PartnerLedger.InvoiceId = InitialBalanceInvoice.InvoiceId;
-                                PartnerLedger.InvoiceGuid = InitialBalanceInvoice.InvoiceGuid;
-                                if (!string.IsNullOrEmpty(SelectedAmountType))
-                                {
-                                    var balanceAmount = await _partnerLedgerManager.GetPartnerLedgerLastBalance(PartnerLedger.Partner.Id.Value);
-                                    if (SelectedAmountType.Equals("Payable"))
-                                    {
-                                        PartnerLedger.IsBalancePayable = true;
-                                        PartnerLedger.AmountPayable = (int)InitialAmount;
-                                        PartnerLedger.BalanceAmount = (int)InitialAmount;
-                                    }
-                                    else if (SelectedAmountType.Equals("Receviable"))
-                                    {
-                                        PartnerLedger.IsBalancePayable = false;
-                                        PartnerLedger.AmountReciveable = (int)InitialAmount;
-                                        PartnerLedger.BalanceAmount = (int)InitialAmount;
-                                    }
-                                    //Here we  we Remove the Transaction in Case Of Not Adding the Amount To Partner Ledger
-                                    var balnceResult = await _partnerLedgerManager.AddPartnerBalance(PartnerLedger);
-                                    if (balnceResult == false)
-                                    {
-                                        await _invoiceManager.RemoveLastInvoiceAsync(InitialBalanceInvoice.InvoiceGuid);
-                                        ClearPartnerDetails();
-                                        //TODO: here we Display User Friendly Message that Inital Balance is Not Updated
-                                    }
-                                    else
-                                    {
-                                        ClearPartnerDetails();
-                                    }
-                                }
+                                var InitialBalanceInvoice = new SaleInvoiceModel();
+                                InitialBalanceInvoice.InvoiceId = _purchaseInvoiceManager.GenrateInvoiceNumber("IB");
+                                InitialBalanceInvoice.SelectedPartner = await _bussinessPartnerManager.GetLastAddedPartner();
+                                InitialBalanceInvoice.SelectedPaymentType = SelectedPaymentType;
+                                InitialBalanceInvoice.Description = "Inital Balance Of Partner";
+                                InitialBalanceInvoice.Payment = (int)InitialAmount;
+                                InitialBalanceInvoice.InvoiceTotal = (int)InitialAmount;
+                                var invoiceResult = await _saleInvoiceManager.SaveSaleInoiceAsync(InitialBalanceInvoice);
+                                if (invoiceResult)
+                                   await  UpdatePartnerLedgerAsync(InitialBalanceInvoice);
                             }
+                            else if (AmountType.Equals("Payable"))
+                            {
+                                var InitialBalanceInvoice = new PurchaseInvoiceModel();
+                                InitialBalanceInvoice.InvoiceId = _purchaseInvoiceManager.GenrateInvoiceNumber("IB");
+                                InitialBalanceInvoice.SelectedPartner = await _bussinessPartnerManager.GetLastAddedPartner();
+                                InitialBalanceInvoice.SelectedPaymentType = SelectedPaymentType;
+                                InitialBalanceInvoice.Description = "Inital Balance Of Partner";
+                                InitialBalanceInvoice.Payment = (int)InitialAmount;
+                                InitialBalanceInvoice.InvoiceTotal = (int)InitialAmount;
+                                var invoiceResult = await _purchaseInvoiceManager.SavePurchaseInoiceAsync(InitialBalanceInvoice);
+                                if (invoiceResult)
+                                    await UpdatePartnerLedgerAsync(InitialBalanceInvoice);
+                            }
+
+                            //if (invoiceResult)
+                            //{
+                               
+                            //}
                         }
                     }
                 }
@@ -220,6 +216,97 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         }
         #endregion
 
+        #region Private Methods
+        private async Task<bool> UpdatePartnerLedgerAsync(object model)
+        {
+            bool retVal = false;
+            try
+            {
+                if (model == null) return false;
+                if (model is PurchaseInvoiceModel)
+                {
+                    var InitialBalanceInvoice = model as PurchaseInvoiceModel;
+                    PartnerLedger = new BussinessPartnerLedgerModel();
+                    PartnerLedger.Partner = await _bussinessPartnerManager.GetLastAddedPartner();
+                    PartnerLedger.InvoiceId = InitialBalanceInvoice.InvoiceId;
+                    PartnerLedger.InvoiceGuid = InitialBalanceInvoice.InvoiceGuid;
+                    if (!string.IsNullOrEmpty(SelectedAmountType))
+                    {
+                        var balanceAmount = await _partnerLedgerManager.GetPartnerLedgerLastBalance(PartnerLedger.Partner.Id.Value);
+                        if (SelectedAmountType.Equals("Payable"))
+                        {
+                            PartnerLedger.IsBalancePayable = true;
+                            PartnerLedger.AmountPayable = (int)InitialAmount;
+                            PartnerLedger.BalanceAmount = (int)InitialAmount;
+                        }
+                        else if (SelectedAmountType.Equals("Receviable"))
+                        {
+                            PartnerLedger.IsBalancePayable = false;
+                            PartnerLedger.AmountReciveable = (int)InitialAmount;
+                            PartnerLedger.BalanceAmount = (int)InitialAmount;
+                        }
+                        //Here we  we Remove the Transaction in Case Of Not Adding the Amount To Partner Ledger
+                        var balnceResult = await _partnerLedgerManager.AddPartnerBalance(PartnerLedger);
+                        if (balnceResult == false)
+                        {
+                            await _purchaseInvoiceManager.RemoveLastInvoiceAsync(InitialBalanceInvoice.InvoiceGuid);
+                            ClearPartnerDetails();
+                            //TODO: here we Display User Friendly Message that Inital Balance is Not Updated
+                            await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Sorry we are Unable To Update Inital Balance Please Try Again", options: Dialogs.MessageBoxOptions.Ok);
+                        }
+                        else
+                        {
+                            ClearPartnerDetails();
+                        }
+                    }
+                }
+                else if (model is SaleInvoiceModel)
+                {
+                    var InitialBalanceInvoice = model as PurchaseInvoiceModel;
+                    PartnerLedger = new BussinessPartnerLedgerModel();
+                    PartnerLedger.Partner = await _bussinessPartnerManager.GetLastAddedPartner();
+                    PartnerLedger.InvoiceId = InitialBalanceInvoice.InvoiceId;
+                    PartnerLedger.InvoiceGuid = InitialBalanceInvoice.InvoiceGuid;
+                    if (!string.IsNullOrEmpty(SelectedAmountType))
+                    {
+                        var balanceAmount = await _partnerLedgerManager.GetPartnerLedgerLastBalance(PartnerLedger.Partner.Id.Value);
+                        if (SelectedAmountType.Equals("Payable"))
+                        {
+                            PartnerLedger.IsBalancePayable = true;
+                            PartnerLedger.AmountPayable = (int)InitialAmount;
+                            PartnerLedger.BalanceAmount = (int)InitialAmount;
+                        }
+                        else if (SelectedAmountType.Equals("Receviable"))
+                        {
+                            PartnerLedger.IsBalancePayable = false;
+                            PartnerLedger.AmountReciveable = (int)InitialAmount;
+                            PartnerLedger.BalanceAmount = (int)InitialAmount;
+                        }
+                        //Here we  we Remove the Transaction in Case Of Not Adding the Amount To Partner Ledger
+                        var balnceResult = await _partnerLedgerManager.AddPartnerBalance(PartnerLedger);
+                        if (balnceResult == false)
+                        {
+                            await _purchaseInvoiceManager.RemoveLastInvoiceAsync(InitialBalanceInvoice.InvoiceGuid);
+                            ClearPartnerDetails();
+                            //TODO: here we Display User Friendly Message that Inital Balance is Not Updated
+                            await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Sorry we are Unable To Update Inital Balance Please Try Again", options: Dialogs.MessageBoxOptions.Ok);
+                        }
+                        else
+                        {
+                            ClearPartnerDetails();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
+        }
+        #endregion
+
         #region Protected Methods
         protected override void OnViewLoaded(object view)
         {
@@ -237,6 +324,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             base.OnActivate();
             AddPartner();
             AmountType = new List<string> { "Payable", "Receviable" };
+            PaymentTypes = (await _paymentTypeManager.GetAllPaymentTypesAsync()).ToList();
+            SelectedPaymentType = PaymentTypes?.Where(p => p.Name == "Unkown").FirstOrDefault();
             NewBussinessPartner = new BussinessPartnerModel();
             NewBussinessPartner.MobileNumbers = new List<string>();
             MobileMessage = "Enter Mobile Number";
@@ -251,6 +340,22 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         #endregion
 
         #region Properties
+        private List<PaymentTypeModel> _PaymentTypes;
+
+        public List<PaymentTypeModel> PaymentTypes
+        {
+            get { return _PaymentTypes; }
+            set { _PaymentTypes = value; NotifyOfPropertyChange(nameof(PaymentTypes)); }
+        }
+
+        private PaymentTypeModel _SelectedPaymentType;
+
+        public PaymentTypeModel SelectedPaymentType
+        {
+            get { return _SelectedPaymentType; }
+            set { _SelectedPaymentType = value; NotifyOfPropertyChange(nameof(SelectedPaymentType)); }
+        }
+
         private List<BussinessPartnerTypeModel> _PartnerTypes;
         /// <summary>
         /// List Of Partner Types Like Vender Customer etc...
@@ -261,9 +366,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             set { _PartnerTypes = value; NotifyOfPropertyChange(nameof(PartnerTypes)); }
         }
         private BussinessPartnerTypeModel _SelectedPartnerType;
-         /// <summary>
-         /// Selected Partner Type Like Vender Customer etc...
-         /// </summary>
+        /// <summary>
+        /// Selected Partner Type Like Vender Customer etc...
+        /// </summary>
         public BussinessPartnerTypeModel SelectedPartnerType
         {
             get { return _SelectedPartnerType; }
@@ -271,9 +376,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         }
 
         private List<BussinessPartnerCategoryModel> _PartnerCategories;
-         /// <summary>
-         /// PartnerCategory Like SoleProperiter,Company,Factory etc...
-         /// </summary>
+        /// <summary>
+        /// PartnerCategory Like SoleProperiter,Company,Factory etc...
+        /// </summary>
         public List<BussinessPartnerCategoryModel> PartnerCategories
         {
             get { return _PartnerCategories; }
@@ -291,7 +396,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         }
 
         public BussinessPartnerLedgerModel PartnerLedger { get; set; }
-        public InvoiceModel InitialBalanceInvoice { get; set; }
+        //public object InitialBalanceInvoice { get; set; }
         private List<string> _AmountType;
         /// <summary>
         /// Amount Type for Initial Amount Like Payable Or Receviable
