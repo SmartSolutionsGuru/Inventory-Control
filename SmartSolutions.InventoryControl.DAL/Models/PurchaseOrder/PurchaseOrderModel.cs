@@ -20,9 +20,9 @@ namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
         public OrderStatus Status { get; set; }
         public string Description { get; set; }
         public ShippingModel Shipping { get; set; }
-        public decimal SubTotal { get; set; }
-        public decimal Discount { get; set; }
-        public decimal GrandTotal { get; set; }
+        public double SubTotal { get; set; }
+        public double Discount { get; set; }
+        public double GrandTotal { get; set; }
 
         #endregion
 

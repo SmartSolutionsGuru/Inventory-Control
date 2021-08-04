@@ -11,6 +11,7 @@
              xmlns:productModels="clr-namespace:SmartSolutions.InventoryControl.DAL.Models.Product;assembly=SmartSolutions.InventoryControl.DAL"
              xmlns:models="clr-namespace:SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;assembly=SmartSolutions.InventoryControl.DAL"
              xmlns:purchaseModels="clr-namespace:SmartSolutions.InventoryControl.DAL.Models.Inventory;assembly=SmartSolutions.InventoryControl.DAL"
+             xmlns:stock="clr-namespace:SmartSolutions.InventoryControl.DAL.Models.Stock;assembly=SmartSolutions.InventoryControl.DAL"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views"
              d:DataContext="{d:DesignInstance Type=viewModel:PurchaseViewModel,IsDesignTimeCreatable=True}"
@@ -247,7 +248,7 @@
                             <ScrollViewer Grid.Row="1" Grid.ColumnSpan="9" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                                 <ListView Grid.Row="1" Grid.ColumnSpan="9" ItemsSource="{Binding ProductGrid,Mode=OneWay}" SelectedItem="{Binding SelectedInventory,Mode=TwoWay}" Margin="0 0" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                                     <ListView.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type purchaseModels:InventoryModel}">
+                                        <DataTemplate DataType="stock:StockInModel">
                                             <Grid Margin="0 5">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="0.3*"/>
@@ -279,7 +280,6 @@
                                                                                   Opacity="0.7"
                                                                                   VerticalAlignment="Top"
                                                                                   HorizontalAlignment="Left"
-   
                                                                                   Style="{StaticResource AutoCompleteTextBoxStyle}"
                                                                                   ItemTemplate="{StaticResource ProductTemplate}"
                                                                                   Provider="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl},Path=DataContext.ProductSuggetion,Mode=OneWay}"
@@ -305,7 +305,7 @@
                                                           FontSize="{StaticResource NormalSize}"
                                                           Foreground="{StaticResource GrayColorBrush}"
                                                           ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl},Path=DataContext.ProductColors,Mode=TwoWay}"
-                                                          SelectedItem="{Binding ProductColor,Mode=TwoWay}"/>
+                                                          SelectedItem="{Binding Product.ProductColor,Mode=TwoWay}"/>
                                                 <ComboBox Height="40"
                                                       Grid.Row="1"
                                                       Grid.Column="5"
@@ -323,7 +323,7 @@
                                                       FontSize="{StaticResource NormalSize}"
                                                       Foreground="{StaticResource GrayColorBrush}"
                                                       ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl},Path=DataContext.ProductSizes,Mode=TwoWay}"
-                                                      SelectedItem="{Binding ProductSize,Mode=TwoWay}"/>
+                                                      SelectedItem="{Binding Product.ProductSize,Mode=TwoWay}"/>
                                                 <TextBox Grid.Row="1" Grid.Column="7" Opacity="0.7" Height="40" Width="150" Foreground="{StaticResource GrayColorBrush}" VerticalAlignment="Top" Text="{Binding Quantity,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Quantity" />
                                                 <TextBox Grid.Row="1" Grid.Column="9" Opacity="0.7" Height="40" Width="150"  VerticalAlignment="Top" Text="{Binding Price,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Price" />
                                                 <TextBox Grid.Row="1" Grid.Column="11" Opacity="0.7" IsReadOnly="True" Height="40" Width="150" VerticalAlignment="Top" Text="{Binding Total,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Total" />
@@ -332,7 +332,7 @@
                                                         <Path Height="20" Width="20" Fill="{StaticResource PureWhiteColorBrush}"  Stretch="UniformToFill" Data="{StaticResource Shape_Plus1}"></Path>
                                                     </Button>
                                                     <Button  Grid.Row="1" cal:Message.Attach="RemoveProduct($dataContext)" Height="30" Width="30" Style="{StaticResource ContentButton}" Background="{StaticResource RedColorBrush}">
-                                                        <Path Height="4" Width="17" Fill="{StaticResource PureWhiteColorBrush}" Stretch="UniformToFill" Data="{StaticResource Shape_Minus}"></Path>
+                                                        <Path Height="4" Width="17" Fill="{StaticResource PureWhiteColorBrush}" Stretch="UniformToFill" Data="{StaticResource Shape_Minus}"/>
                                                     </Button>
 
                                                 </StackPanel>

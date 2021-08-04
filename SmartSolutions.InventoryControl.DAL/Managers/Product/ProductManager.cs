@@ -65,7 +65,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
             List<ProductModel> Products = new List<ProductModel>();
             try
             {
-                string query = @"SELECT * FROM Product WHERE IsActive = 1 AND IsDeleted = 0"; ;
+                string query = @"SELECT * FROM Product WHERE IsActive = 1"; ;
                 var values = await Repository.QueryAsync(query);
                 if (values != null)
                 {
@@ -84,7 +84,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                         product.ProductSize.Id = value?.GetValueFromDictonary("ProductSizeId")?.ToString()?.ToInt();
                         product.Image = value?.GetValueFromDictonary("Image") as byte[];
                         product.IsActive = value?.GetValueFromDictonary("IsActive")?.ToString()?.ToNullableBoolean();
-                        product.IsDeleted = value?.GetValueFromDictonary("IsDeleted")?.ToString()?.ToNullableBoolean();
                         product.CreatedAt = value?.GetValueFromDictonary("CreatedAt")?.ToString()?.ToNullableDateTime();
                         product.CreatedBy = value?.GetValueFromDictonary("CreatedBy")?.ToString();
                         product.UpdatedAt = value?.GetValueFromDictonary("UpdatedAt")?.ToString()?.ToNullableDateTime();
@@ -120,7 +119,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                 product.ProductSize.Id = value?.GetValueFromDictonary("ProductSizeId")?.ToString()?.ToInt();
                 product.Image = value?.GetValueFromDictonary("Image") as byte[];
                 product.IsActive = value?.GetValueFromDictonary("IsActive")?.ToString()?.ToNullableBoolean();
-                product.IsDeleted = value?.GetValueFromDictonary("IsDeleted")?.ToString()?.ToNullableBoolean();
                 product.CreatedAt = value?.GetValueFromDictonary("CreatedAt")?.ToString()?.ToNullableDateTime();
                 product.CreatedBy = value?.GetValueFromDictonary("CreatedBy")?.ToString();
                 product.UpdatedAt = value?.GetValueFromDictonary("UpdatedAt")?.ToString()?.ToNullableDateTime();
@@ -141,7 +139,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                 string query = string.Empty;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_Id"] = Id;
-                query = @"SELECT * FROM Product WHERE Id = @v_Id AND IsActive = 1 AND IsDeleted = 0";
+                query = @"SELECT * FROM Product WHERE Id = @v_Id AND IsActive = 1";
                 var values = await Repository.QueryAsync(query, parameters: parameters);
                 if (values != null)
                 {
@@ -156,7 +154,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                         product.ProductSize.Id = value?.GetValueFromDictonary("ProductSizeId")?.ToString()?.ToInt();
                         product.Image = value?.GetValueFromDictonary("Image") as byte[];
                         product.IsActive = value?.GetValueFromDictonary("IsActive")?.ToString()?.ToNullableBoolean();
-                        product.IsDeleted = value?.GetValueFromDictonary("IsDeleted")?.ToString()?.ToNullableBoolean();
                         product.CreatedAt = value?.GetValueFromDictonary("CreatedAt")?.ToString()?.ToNullableDateTime();
                         product.CreatedBy = value?.GetValueFromDictonary("CreatedBy")?.ToString();
                         product.UpdatedAt = value?.GetValueFromDictonary("UpdatedAt")?.ToString()?.ToNullableDateTime();
@@ -179,7 +176,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                 string query = string.Empty;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_Id"] = Id;
-                query = @"UPDATE Product SET IsActive = 0 AND IsDeleted = 1 WHERE Id = @v_Id";
+                query = @"UPDATE Product SET IsActive = 0  WHERE Id = @v_Id";
                 var result = await Repository.NonQueryAsync(query, parameters: parameters);
                 retVal = result > 0 ? true : false;
             }
@@ -205,7 +202,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                     parameters["@v_ProductSizeId"] = product?.ProductSize?.Id;
                     parameters["@v_Image"] = product.Image == null ? DBNull.Value : (object)product.Image;
                     parameters["@v_IsActive"] = product.IsActive = true;
-                    parameters["@v_IsDeleted"] = product.IsDeleted = false;
                     parameters["@v_CreatedAt"] = product.CreatedAt;
                     parameters["@v_CreatedBy"] = product.CreatedBy == null ? DBNull.Value : (object)product.CreatedBy;
                     parameters["@v_UpdatedAt"] = product.UpdatedAt == null ? DateTime.Now : product.UpdatedAt;

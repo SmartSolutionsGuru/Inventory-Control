@@ -1,4 +1,5 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
+using SmartSolutions.InventoryControl.DAL.Models.Payments;
 using SmartSolutions.InventoryControl.DAL.Models.Stock;
 using System;
 using System.Collections.Generic;
@@ -34,14 +35,20 @@ namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
         /// Selected Bussiness Partner With Which Opreation is Performed
         /// </summary>
         public BussinessPartnerModel SelectedPartner { get; set; }
+
+        private List<PaymentTypeModel> _PaymentTypes;
         /// <summary>
         /// Payment Types Like Jazz Cash Bank Cash etc...
         /// </summary>
-        public List<Payments.PaymentTypeModel> PaymentTypes { get; set; }
+        public List<PaymentTypeModel> PaymentTypes
+        {
+            get { return _PaymentTypes; }
+            set { _PaymentTypes = value; NotifyOfPropertyChange(nameof(PaymentTypes)); }
+        }
         /// <summary>
         /// Selected Payment Type
         /// </summary>
-        public Payments.PaymentTypeModel SelectedPaymentType { get; set; }
+        public PaymentTypeModel SelectedPaymentType { get; set; }
         /// <summary>
         /// Discount In Percent if Any
         /// </summary>

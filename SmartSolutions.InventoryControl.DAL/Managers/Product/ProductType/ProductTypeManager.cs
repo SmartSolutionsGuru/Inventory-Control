@@ -39,7 +39,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductType
             {
                 parameters["@v_Name"] = model.Name == null ? DBNull.Value : (object)model.Name;
                 parameters["@v_IsActive"] = model.IsActive = true;
-                parameters["@v_IsDeleted"] = model.IsDeleted = false;
                 parameters["@v_CreatedAt"] = model.CreatedAt == null ? DateTime.Now : model.CreatedAt;
                 parameters["@v_CreatedBy"] = model.CreatedBy == null ? DBNull.Value : (object)model.CreatedBy;
                 parameters["@v_UpdatedAt"] = model.UpdatedAt == null ? DBNull.Value : (object)model.UpdatedAt;
@@ -47,7 +46,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductType
                 query = @"INSERT INTO ProductType
                                      (Name
                                      ,IsActive
-                                     ,IsDeleted
                                      ,CreatedAt
                                      ,CreatedBy
                                      ,UpdatedAt
@@ -55,7 +53,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductType
                              VALUES
                                    (@v_Name
                                    ,@v_IsActive
-                                   ,@v_IsDeleted
                                    ,@v_CreatedAt
                                    ,@v_CreatedBy
                                    ,@v_UpdatedAt
@@ -87,7 +84,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductType
                     {
                         model.Name = value?.GetValueFromDictonary("Name")?.ToString();
                         model.IsActive = value?.GetValueFromDictonary("IsActive")?.ToString()?.ToNullableBoolean();
-                        model.IsDeleted = value.GetValueFromDictonary("IsDeleted")?.ToString()?.ToNullableBoolean();
                     }
                 }
             }
@@ -104,7 +100,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductType
             string query = string.Empty;
             try
             {
-                query = @"Select * FROM ProductType Where IsActive=1 AND IsDeleted = 0";
+                query = @"Select * FROM ProductType Where IsActive=1";
                 var values = new List<Dictionary<string, object>>();
                 values = await Repository.QueryAsync(query: query);
 
@@ -139,7 +135,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductType
                 string query = string.Empty;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["2v_Id"] = Id;
-                query = @"UPDATE ProductType SET IsActive = 0, IsDeleted = 1 WHERE Id= @v_Id";
+                query = @"UPDATE ProductType SET IsActive = 0 WHERE Id= @v_Id";
                 await Repository.QueryAsync(query,parameters:parameters);
                 retVal = true;
             }

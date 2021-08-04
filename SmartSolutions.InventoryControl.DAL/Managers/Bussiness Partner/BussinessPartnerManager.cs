@@ -44,7 +44,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 parameters["@v_Address"] = partner?.Address;
                 parameters["@v_City"] = partner?.City;
                 parameters["@v_IsActive"] = partner.IsActive = true;
-                parameters["@v_IsDeleted"] = partner.IsDeleted = false;
                 parameters["@v_CreatedAt"] = partner.CreatedAt == null ? DateTime.Now : partner.CreatedAt;
                 parameters["@v_CreatedBy"] = partner.CreatedBy == null ? DBNull.Value : (object)partner.CreatedBy;
                 parameters["@v_UpdatedAt"] = partner.UpdatedAt == null ? DBNull.Value : (object)partner.UpdatedAt;
@@ -59,8 +58,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 }
                 parameters["@v_MobileNumbers"] = mobilenumbers;
                 string query = string.Empty;
-                query = @"INSERT INTO BussinessPartner (Name,BussinessName,PhoneNumber,MobileNumber,City,Address,IsActive,IsDeleted,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
-                                                  VALUES(@v_Name,@v_BussinessName,@v_PhoneNumber,@v_MobileNumbers,@v_City,@v_Address,@v_IsActive,@v_IsDeleted,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy);";
+                query = @"INSERT INTO BussinessPartner (Name,BussinessName,PhoneNumber,MobileNumber,City,Address,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                                  VALUES(@v_Name,@v_BussinessName,@v_PhoneNumber,@v_MobileNumbers,@v_City,@v_Address,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy);";
                 var result = await Repository.NonQueryAsync(query, parameters: parameters);
                 retVal = result > 0 ? true : false;
             }
@@ -79,7 +78,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             try
             {
                 string query = string.Empty;
-                query = @"SELECT * FROM BussinessPartner Where IsActive = 1 AND IsDeleted = 0";
+                query = @"SELECT * FROM BussinessPartner Where IsActive = 1";
                 var values = await Repository.QueryAsync(query);
                 if (values != null)
                 {
@@ -116,7 +115,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_Id"] = Id;
                 string query = string.Empty;
-                query = @"SELECT * FROM BussinessPartner WHERE Id = @v_Id AND IsActive = 1 AND IsDeleted = 0";
+                query = @"SELECT * FROM BussinessPartner WHERE Id = @v_Id AND IsActive = 1";
                 var values = await Repository.QueryAsync(query, parameters: parameters);
                 var value = values?.FirstOrDefault();
 
@@ -172,7 +171,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                     string query = string.Empty;
                     Dictionary<string, object> parameters = new Dictionary<string, object>();
                     parameters["@v_PartnerId"] = partnerId;
-                    query = @"SELECT * FROM PartnerLedger WHERE PartnerId = @v_PartnerId AND IsActive =1 AND IsDeleted = 0 ORDER BY 1 DESC LIMIT 1";
+                    query = @"SELECT * FROM PartnerLedger WHERE PartnerId = @v_PartnerId AND IsActive =1  ORDER BY 1 DESC LIMIT 1";
                     var values = await Repository.QueryAsync(query, parameters: parameters);
                     if (values != null)
                     {
@@ -202,7 +201,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 string query = string.Empty;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_Id"] = Id;
-                query = @"UPDATE BussinessPartner SET IsActive = 0 AND IsDeleted = 1 WHERE Id = @v_Id";
+                query = @"UPDATE BussinessPartner SET IsActive = 0  WHERE Id = @v_Id";
                 var result = await Repository.NonQueryAsync(query, parameters: parameters);
                 retVal = result > 0 ? true : false;
             }
@@ -230,7 +229,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 parameters["@v_Address"] = partner?.Address;
                 parameters["@v_City"] = partner?.City;
                 parameters["@v_IsActive"] = partner.IsActive = true;
-                parameters["@v_IsDeleted"] = partner.IsDeleted = false;
                 parameters["@v_CreatedBy"] = partner.CreatedBy == null ? DBNull.Value : (object)partner.CreatedBy;
                 parameters["@v_UpdatedAt"] = partner.UpdatedAt == null ? DateTime.Now : partner.UpdatedAt;
                 parameters["@v_UpdatedBy"] = partner.UpdatedBy == null ? DBNull.Value : (object)partner.UpdatedBy;
@@ -245,7 +243,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 parameters["@v_MobileNumber"] = mobilenumbers;
                 query = @"UPDATE BussinessPartner SET Name = @v_Name, BussinessName = @v_BussinessName,PhoneNumber = @v_PhoneNumber
                         ,City = @v_City,Address = @v_Address,MobileNumber = @MobileNumber,IsActive = @v_IsActive
-                        ,IsDeleted = @v_IsDeleted,CreatedBy = @v_CreatedBy,UpdatedAt = @v_UpdatedAt
+                        ,CreatedBy = @v_CreatedBy,UpdatedAt = @v_UpdatedAt
                         ,UpdatedBy = @v_UpdatedBy Where Id = @v_Id";
                 var result = await Repository.NonQueryAsync(query, parameters: parameters);
                 retVal = result > 0 ? true : false;

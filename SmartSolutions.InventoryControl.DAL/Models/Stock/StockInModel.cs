@@ -1,8 +1,9 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
+using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
 using SmartSolutions.InventoryControl.DAL.Models.Warehouse;
 
-namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
+namespace SmartSolutions.InventoryControl.DAL.Models.Stock
 {
     /// <summary>
     /// Calss that is Responsible for Holding Inventory/Stock In
@@ -23,8 +24,10 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         public BussinessPartnerModel Partner { get; set; }
         public PurchaseOrderModel PurchaseOrder { get; set; }
         public PurchaseOrderDetailModel PurchaseOrderDetail { get; set; }
+        public ProductModel Product { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
+        public double Total { get; set; }
         public string Description { get; set; }
         public WarehouseModel Warehouse { get; set; }
         #endregion

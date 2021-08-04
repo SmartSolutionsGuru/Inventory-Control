@@ -393,7 +393,7 @@
                                           Width="150"
                                           Margin="0 0 0 0"
                                           Padding="5 0 0 0"
-                                          DisplayMemberPath="PaymentType"
+                                          DisplayMemberPath="Name"
                                           ItemsSource="{Binding  SaleInvoice.PaymentTypes,Mode=OneWay}"
                                           SelectedItem="{Binding SaleInvoice.SelectedPaymentType,Mode=TwoWay}"
                                           Style="{StaticResource BaseComboBox}"

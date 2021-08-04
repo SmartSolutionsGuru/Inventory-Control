@@ -36,9 +36,9 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductSubType
             {
                 string query = string.Empty;
                 if (Id == null)
-                    query = @"SELECT * FROM ProductSubType WHERE IsActive = 1 AND IsDeleted = 0";
+                    query = @"SELECT * FROM ProductSubType WHERE IsActive = 1";
                 else
-                    query = @"SELECT * FROM ProductSubType WHERE ProductTypeId = @v_Id AND  IsActive = 1 AND IsDeleted = 0";
+                    query = @"SELECT * FROM ProductSubType WHERE ProductTypeId = @v_Id AND  IsActive = 1";
                 var values = await Repository.QueryAsync(query, parameters: parameters);
                 if (values != null || values?.Count > 0)
                 {
@@ -70,7 +70,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductSubType
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_Id"] = Id;
-                string query = @"SELECT * FROM ProductSubType WHERE Id = @v_Id AND  IsActive = 1 AND IsDeleted = 0";
+                string query = @"SELECT * FROM ProductSubType WHERE Id = @v_Id AND  IsActive = 1";
                 var values = await Repository.QueryAsync(query, parameters: parameters);
                 if (values != null || values?.Count > 0)
                 {
@@ -106,14 +106,13 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductSubType
                     parameters["@v_ProductTypeId"] = productId;
                     parameters["@v_Name"] = model?.Name;
                     parameters["@v_IsActive"] = model.IsActive = true;
-                    parameters["@v_IsDeleted"] = model.IsDeleted = false;
                     parameters["@v_CreatedAt"] = model.CreatedAt == null ? DateTime.Now : model.CreatedAt;
                     parameters["@v_CreatedBy"] = model.CreatedBy == null ? DBNull.Value : (object)model.CreatedBy;
                     parameters["@v_UpdatedAt"] = model.UpdatedAt == null ? DBNull.Value : (object)model.UpdatedAt;
                     parameters["@v_UpdatedBy"] = model.UpdatedBy == null ? DBNull.Value : (object)model.UpdatedBy;
                     query = @"INSERT INTO ProductSubType 
-                             (ProductTypeId,Name,IsActive,IsDeleted,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
-                            VALUES(@v_ProductTypeId,@v_Name,@v_IsActive ,@v_IsDeleted ,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
+                             (ProductTypeId,Name,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                            VALUES(@v_ProductTypeId,@v_Name,@v_IsActive ,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
                     await Repository.QueryAsync(query, parameters: parameters);
                     retVal = true;
                 }
@@ -133,7 +132,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductSubType
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_Id"] = Id;
                 string query = string.Empty;
-                query = @"UPDATE ProductSubType SET IsActive = 0,IsDeleted = 1 WHERE Id = @v_Id";
+                query = @"UPDATE ProductSubType SET IsActive = 0 WHERE Id = @v_Id";
                 await Repository.QueryAsync(query,parameters:parameters);
                 retVal = true;
             }
@@ -153,9 +152,9 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductSubType
             {
                 string query = string.Empty;
                 if (Id == null)
-                    query = @"SELECT * FROM ProductSubType WHERE IsActive = 1 AND IsDeleted = 0";
+                    query = @"SELECT * FROM ProductSubType WHERE IsActive = 1";
                 else
-                    query = @"SELECT * FROM ProductSubType WHERE ProductTypeId = @v_Id AND  IsActive = 1 AND IsDeleted = 0";
+                    query = @"SELECT * FROM ProductSubType WHERE ProductTypeId = @v_Id AND  IsActive = 1";
                 var values =  Repository.Query(query, parameters: parameters);
                 if (values != null || values?.Count > 0)
                 {

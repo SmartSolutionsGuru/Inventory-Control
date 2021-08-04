@@ -75,7 +75,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Inventory
                 parameters["@v_CreatedBy"] = model.CreatedBy == null ? DBNull.Value : (object)model.CreatedBy;
                 parameters["@v_UpdatedAt"] = model.UpdatedAt == null ? DBNull.Value : (object)model.UpdatedAt;
                 parameters["@v_UpdatedBy"] = model.UpdatedBy == null ? DBNull.Value : (object)model.UpdatedBy;
-                query = @"INSERT INTO Inventory (InvoiceId,InvoiceGuid,ProductId,ProductColorId,ProductSizeId,Price,Quantity,IsStockIn,IsStockOut,StockInHand,Total,IsActive,IsDeleted,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                query = @"INSERT INTO StockIn (InvoiceId,InvoiceGuid,ProductId,ProductColorId,ProductSizeId,Price,Quantity,IsStockIn,IsStockOut,StockInHand,Total,IsActive,IsDeleted,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
                                         VALUES(@v_InvoiceId,@v_InvoiceGuid,@v_ProductId,@v_ProductColorId,@v_ProductSizeId,@v_Price,@v_Quantity,@v_IsStockIn,@v_IsStockOut,@v_StockInHand,@v_Total,@v_IsActive,@v_IsDeleted,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
                 var result = await Repository.NonQueryAsync(query, parameters: parameters);
                 retVal = result > 0 ? true : false;

@@ -61,6 +61,22 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Purchase
             return retVal;
         }
 
+        public async Task<int?> GetLastPurchaseOrderIdAsync()
+        {
+            int? lastRowId = null;
+            try
+            {
+                string query = "SELECT last_insert_rowid()";
+                var result = Repository.Query(query);
+                lastRowId = result?.FirstOrDefault().GetValueFromDictonary("last_insert_rowid()")?.ToString()?.ToNullableInt();
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return lastRowId;
+        }
+
         public async Task<PurchaseOrderModel> GetPurchaseOrderAsync(int? Id)
         {
             var purchasOrder = new PurchaseOrderModel();
@@ -77,8 +93,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Purchase
                     var purcahseOrder = new PurchaseOrderModel();
                     purcahseOrder.Id = value?.GetValueFromDictonary("Id").ToString()?.ToInt();
                     purcahseOrder.Status = EnumUtils.ParseEnum(value?.GetValueFromDictonary("Status")?.ToString(), OrderStatus.None);
-                    purcahseOrder.SubTotal = Convert.ToDecimal(value?.GetValueFromDictonary("SubTotal")?.ToString());
-                    purcahseOrder.GrandTotal = (decimal)value?.GetValueFromDictonary("Total")?.ToString().ToDecimal();
+                    purcahseOrder.SubTotal = Convert.ToDouble(value?.GetValueFromDictonary("SubTotal")?.ToString());
+                    purcahseOrder.GrandTotal = Convert.ToDouble(value?.GetValueFromDictonary("Total")?.ToString());
                     purcahseOrder.Partner = new Models.BussinessPartner.BussinessPartnerModel
                     {
                         Id = value?.GetValueFromDictonary("Id")?.ToString().ToInt(),

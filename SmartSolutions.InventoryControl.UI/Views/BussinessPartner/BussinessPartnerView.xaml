@@ -97,8 +97,8 @@
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="0.5*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="0.8*"/>
+                    <RowDefinition Height="1.2*"/>
                     <RowDefinition Height="120"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
@@ -110,17 +110,17 @@
                     <StackPanel Grid.Column="0">
                         <TextBlock Text="Bussiness Partner Type" 
                                    Foreground="{StaticResource GrayColorBrush}" 
-                                   FontSize="{StaticResource MediumSize}"
+                                   FontSize="{StaticResource NormalSize}"
                                    FontFamily="{StaticResource MediumFont}"
-                                   Margin="70 5 0 0"
+                                   Margin="40 5 0 0"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"/>
                         <ComboBox Height="45" 
                                   Width="250"
-                                  Margin="70 10 0 0"
+                                  Margin="40 10 0 0"
                                   BorderBrush="{StaticResource BlueColorBrush}"
                                   BorderThickness="1.7"
-                                  Padding="8 0 0 0"
+                                  Padding="20 0 0 0"
                                   FontFamily="{StaticResource MediumFont}"
                                   FontSize="{StaticResource MediumSize}"
                                   Foreground="{StaticResource GrayColorBrush}"
@@ -135,15 +135,15 @@
                     <StackPanel Grid.Column="1">
                         <TextBlock Text="Bussiness Partner Category" 
                                    Foreground="{StaticResource GrayColorBrush}" 
-                                   FontSize="{StaticResource MediumSize}"
+                                   FontSize="{StaticResource NormalSize}"
                                    FontFamily="{StaticResource MediumFont}"
-                                   Margin="70 5 0 0"
+                                   Margin="40 5 0 0"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"/>
                         <ComboBox Height="45" 
                                   Width="250"
-                                  Margin="70 10 0 0"
-                                  Padding="8 0 0 0"
+                                  Margin="40 10 0 0"
+                                  Padding="20 0 0 0"
                                   FontFamily="{StaticResource MediumFont}"
                                   FontSize="{StaticResource MediumSize}"
                                   BorderBrush="{StaticResource BlueColorBrush}"
@@ -317,7 +317,7 @@
                     </StackPanel>
                         <StackPanel Grid.Row="1" Margin="0 0 30 0">
                             <TextBlock Text="Select Amount Type" Margin="40 0 0 5" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}"/>
-                            <ComboBox Height="50" Width="250" Margin="0 5 0 0" ItemsSource="{Binding AmountType,Mode=OneWay}" SelectedItem="{Binding SelectedAmountType,Mode=TwoWay}" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" Style="{StaticResource BaseComboBox}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7"/>
+                            <ComboBox Height="50" Width="250" Margin="0 5 0 0" ItemsSource="{Binding AmountType,Mode=OneWay}" SelectedItem="{Binding SelectedAmountType,Mode=TwoWay}" ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Payment Type" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" Style="{StaticResource BaseComboBox}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7"/>
                         </StackPanel>
                     </Grid>
                     <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top">

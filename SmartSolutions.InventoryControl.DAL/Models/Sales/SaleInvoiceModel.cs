@@ -14,7 +14,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Sales
         public SaleInvoiceModel()
         {
             InvoiceGuid = Guid.NewGuid();
-            PaymentTypes = new List<Payments.PaymentTypeModel>();
+            PaymentTypes = new List<PaymentTypeModel>();
             Products = new List<StockModel>();
         }
         #endregion
@@ -39,10 +39,17 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Sales
         /// Selected Bussiness Partner With Which Opreation is Performed
         /// </summary>
         public BussinessPartnerModel SelectedPartner { get; set; }
+        //public List<PaymentTypeModel> PaymentTypes { get; set; }
+        private List<PaymentTypeModel> _PaymentTypes;
         /// <summary>
         /// Payment Types Like Jazz Cash Bank Cash etc...
         /// </summary>
-        public List<PaymentTypeModel> PaymentTypes { get; set; }
+        public List<PaymentTypeModel> PaymentTypes
+        {
+            get { return _PaymentTypes; }
+            set { _PaymentTypes = value; NotifyOfPropertyChange(nameof(PaymentTypes)); }
+        }
+
         /// <summary>
         /// Selected Payment Type
         /// </summary>

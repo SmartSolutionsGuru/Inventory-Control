@@ -26,6 +26,6 @@ namespace SmartSolutions.InventoryControl.UI.Helpers.SettingHelper
         /// <summary>
         /// Logged in User 
         /// </summary>
-        //public static Repo.Models.IdentityModels.IdentityUserModel LoggedInUser { get; set; }
+        public static DAL.Models.Authentication.IdentityUserModel LoggedInUser { get; set; }
     }
 }

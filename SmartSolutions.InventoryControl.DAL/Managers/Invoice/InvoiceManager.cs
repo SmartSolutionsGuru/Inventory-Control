@@ -136,7 +136,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
         }
 
 
-        public async Task<bool> RemoveLastInvoiceAsync(Guid InvoiceGuid)
+        public async Task<bool> RemoveLastPurchaseInvoiceAsync(Guid InvoiceGuid)
         {
             bool retVal = false;
             try
