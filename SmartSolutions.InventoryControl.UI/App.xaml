@@ -16,6 +16,7 @@
                 <ResourceDictionary Source="Resources\Styles\Text.xaml"/>
                 <ResourceDictionary Source="Resources\Styles\Button.xaml"/>
                 <ResourceDictionary Source="Resources\Styles\ComboBox.xaml"/>
+                <ResourceDictionary Source="Resources\Styles\CheckBox.xaml"/>
                 <ResourceDictionary Source="Resources\Styles\ListView.xaml"/>
                 <ResourceDictionary Source="Resources\ControlDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>

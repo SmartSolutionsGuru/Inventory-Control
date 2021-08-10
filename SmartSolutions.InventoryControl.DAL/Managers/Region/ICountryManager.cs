@@ -10,5 +10,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Region
     {
         Task<IEnumerable<CountryModel>> GetCountriesAsync();
         Task<CountryModel> GetCountryByIdAsync(int? Id);
+        Task<CountryModel> GetCountryByNameAsync(string countryName);
     }
 }

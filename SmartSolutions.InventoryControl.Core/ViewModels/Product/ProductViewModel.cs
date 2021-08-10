@@ -1,8 +1,11 @@
 ﻿using Caliburn.Micro;
+using Notifications.Wpf;
+using SmartSolutions.InventoryControl.DAL;
 using SmartSolutions.InventoryControl.DAL.Models.Inventory;
 using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
 using SmartSolutions.InventoryControl.DAL.Models.Stock;
+using SmartSolutions.InventoryControl.DAL.Models.Warehouse;
 using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
@@ -23,6 +26,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         private readonly DAL.Managers.Product.IProductManager _productManager;
         private readonly DAL.Managers.Invoice.IPurchaseInvoiceManager _purcahaseInvoiceManager;
         private readonly DAL.Managers.Inventory.IInventoryManager _inventoryManager;
+        private readonly DAL.Managers.Warehouse.IWarehouseManager _warehouseManager;
+        private readonly DAL.Managers.Stock.OpeningStock.IOpeningStockManager _openingStockManager;
+
+        //private readonly NotificationManager notificationManager;
         #endregion
 
         #region Constructor
@@ -33,7 +40,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                                 DAL.Managers.Product.ProductSize.IProductSizeManager productSizeManager,
                                 DAL.Managers.Product.IProductManager productManager,
                                 DAL.Managers.Invoice.IPurchaseInvoiceManager purcahseInvoiceManager,
-                                DAL.Managers.Inventory.IInventoryManager inventoryManager)
+                                DAL.Managers.Inventory.IInventoryManager inventoryManager,
+                                DAL.Managers.Warehouse.IWarehouseManager warehouseManager,
+                                DAL.Managers.Stock.OpeningStock.IOpeningStockManager openingStockManager)
         {
             IsAddProductPressed = true;
             _productTypeManager = productTypeManager;
@@ -43,6 +52,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
             _productColorManager = productColorManager;
             _purcahaseInvoiceManager = purcahseInvoiceManager;
             _inventoryManager = inventoryManager;
+            _warehouseManager = warehouseManager;
+            _openingStockManager = openingStockManager;
+
+           // notificationManager = new NotificationManager();
         }
         #endregion
 
@@ -55,6 +68,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
             ProductTypes = (await _productTypeManager.GetAllProductsTypesAsync()).ToList();
             ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
             ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
+            Warehouses = (await _warehouseManager.GetAllWarehousesAsync()).ToList();
+            SelectedWarehouse = Warehouses?.FirstOrDefault();
             IsLoading = false;
         }
 
@@ -187,6 +202,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                 {
                     model.Color = ProductColor;
                 }
+                model.CreatedBy = AppSettings.LoggedInUser.DisplayName;
                 await _productColorManager.AddProductColorAsync(model);
                 IsAddProductColor = false;
                 ProductColor = string.Empty;
@@ -242,6 +258,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
             {
                 var warehouse = IoC.Get<Warehouse.WarehouseViewModel>();
                 await IoC.Get<IDialogManager>().ShowDialogAsync(warehouse);
+                Warehouses = (await _warehouseManager.GetAllWarehousesAsync()).ToList();
+                SelectedWarehouse = Warehouses?.OrderBy(x => x.CreatedAt).FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -258,49 +276,40 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                 LoadingMessage = "Saving Product...";
                 if (model == null)
                     model = new ProductModel();
-                bool erroResult = VerifyIsDataFilled();
+                bool errorResult = VerifyIsDataFilled();
 
-                if (erroResult == false)
+                if (errorResult == false)
                 {
                     model.Name = ProductName;
                     model.ProductType = SelectedProductType;
                     model.ProductSubType = SelectedProductSubType;
                     model.ProductColor = ProductSelectedColor;
                     model.ProductSize = ProductSelectedSize;
+                    model.CreatedBy = AppSettings.LoggedInUser.DisplayName;
                     model.Image = ProductImage;
                     bool result = await _productManager.AddProductAsync(model);
                     if (result)
                     {
-                        if (InitialQuantity > 0)
-                        {
-                            ProductInitialQuantityInvoice = new PurchaseInvoiceModel();
-                            ProductInitialQuantityInvoice.InvoiceId = _purcahaseInvoiceManager.GenrateInvoiceNumber("IQ");
-                            ProductInitialQuantityInvoice.Description = "Product Initial Quantity Addition";
-                            var transactionResult = await _purcahaseInvoiceManager.SavePurchaseInoiceAsync(ProductInitialQuantityInvoice);
-                            if (transactionResult)
-                            {
-                                InitialQuantityInventory = new InventoryModel();
-                                InitialQuantityInventory.InvoiceId = ProductInitialQuantityInvoice.InvoiceId;
-                                InitialQuantityInventory.InvoiceGuid = ProductInitialQuantityInvoice.InvoiceGuid;
-                                InitialQuantityInventory.ProductColor = ProductSelectedColor;
-                                InitialQuantityInventory.ProductSize = ProductSelectedSize;
-                                InitialQuantityInventory.Product = await _productManager.GetLastAddedProduct();
-                                InitialQuantityInventory.Quantity = InitialQuantity;
-                                InitialQuantityInventory.StockInHand = InitialQuantity;
-                                InitialQuantityInventory.IsStockIn = true;
-                                var inventoryResult = await _inventoryManager.AddInventoryAsync(InitialQuantityInventory);
-                                if (inventoryResult)
-                                {
-                                    ClearProductDetails();
-                                }
-                                else
-                                {
-                                    await _purcahaseInvoiceManager.RemoveLastInvoiceAsync(ProductInitialQuantityInvoice.InvoiceGuid);
-                                    ClearProductDetails();
-                                    //TODO: Here we Display the USer Frindly Message for not Adding Quantity
-                                }
-                            }
+                        InitialStock = new OpeningStockModel();
+                        InitialStock.Product =  await _productManager.GetLastAddedProduct();
+                        InitialStock.Warehouse = SelectedWarehouse;
+                        InitialStock.Quantity = InitialQuantity;
+                        InitialStock.Price = EstimatedPrice;
+                        InitialStock.Total = InitialQuantity * EstimatedPrice;
+                        InitialStock.Description = "Initial Stock Of Product";
+                        InitialStock.CreatedBy = AppSettings.LoggedInUser.DisplayName;
+                        var initialStockResult = await _openingStockManager.AddOpeningStockAsync(InitialStock);
 
+                        if (initialStockResult)
+                        {
+                            ClearProductDetails();
+                            NotificationManager.Show(new NotificationContent { Title = "Success", Message = "Successfully Added Product", Type = NotificationType.Success }, areaName: "WindowArea");
+                        }
+                        else
+                        {
+                            await _purcahaseInvoiceManager.RemoveLastPurchaseInvoiceAsync(ProductInitialQuantityInvoice.InvoiceGuid);
+                            ClearProductDetails();
+                            NotificationManager.Show(new NotificationContent { Title = "Error", Message = "Quantity Of Product Not Added", Type = NotificationType.Error }, areaName: "WindowArea");
                         }
                         IsLoading = false;
                     }
@@ -312,6 +321,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                 }
                 else
                 {
+                    IsLoading = false;
                     return;
                 }
             }
@@ -328,6 +338,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
             ProductSelectedSize = null;
             ProductImage = null;
             InitialQuantity = 0;
+            EstimatedPrice = 0;
             ProductName = string.Empty;
         }
         #endregion
@@ -341,28 +352,34 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                 if (string.IsNullOrEmpty(ProductName))
                 {
                     ProductNameError = true;
-                    return retVal = true;
+                    return ProductNameError;
                 }
                 else if (SelectedProductType == null)
                 {
                     ProductTypeError = true;
-                    return retVal = true;
+                    return ProductTypeError;
                 }
                 else if (SelectedProductSubType == null)
                 {
                     ProductSubTyprError = true;
-                    return retVal = true;
+                    return ProductSubTyprError;
                 }
                 else if (ProductSelectedColor == null)
                 {
                     ProductColorError = true;
-                    return retVal = true;
+                    return ProductColorError;
                 }
                 else if (ProductSelectedSize == null)
                 {
                     ProductSizeError = true;
-                    return retVal = true;
+                    return ProductSizeError;
                 }
+                else if (SelectedWarehouse == null)
+                {
+                    IsWarehouseNotSelected = true;
+                    return IsWarehouseNotSelected;
+                }
+
             }
             catch (Exception ex)
             {
@@ -391,7 +408,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         #endregion
 
         #region Properties
-        public InventoryModel InitialQuantityInventory { get; set; }
+        public OpeningStockModel InitialStock { get; set; }
+        //public InventoryModel InitialQuantityInventory { get; set; }
         public PurchaseInvoiceModel ProductInitialQuantityInvoice { get; set; }
         private bool _ProductTypeError;
         /// <summary>
@@ -682,6 +700,38 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         {
             get { return _Product; }
             set { _Product = value; NotifyOfPropertyChange(nameof(Product)); }
+        }
+        private List<WarehouseModel> _Warehouses;
+
+        public List<WarehouseModel> Warehouses
+        {
+            get { return _Warehouses; }
+            set { _Warehouses = value; NotifyOfPropertyChange(nameof(Warehouses)); }
+        }
+        private WarehouseModel _SelectedWarehouse;
+        /// <summary>
+        /// Selected warehouse
+        /// </summary>
+        public WarehouseModel SelectedWarehouse
+        {
+            get { return _SelectedWarehouse; }
+            set { _SelectedWarehouse = value; NotifyOfPropertyChange(nameof(SelectedWarehouse)); }
+        }
+        private bool _IsWarehouseNotSelected;
+
+        public bool IsWarehouseNotSelected
+        {
+            get { return _IsWarehouseNotSelected; }
+            set { _IsWarehouseNotSelected = value; NotifyOfPropertyChange(nameof(IsWarehouseNotSelected)); }
+        }
+        private decimal _EstimatedPrice;
+        /// <summary>
+        /// Ideal Price Of Initial Stock
+        /// </summary>
+        public decimal EstimatedPrice
+        {
+            get { return _EstimatedPrice; }
+            set { _EstimatedPrice = value; NotifyOfPropertyChange(nameof(EstimatedPrice)); }
         }
 
         #endregion

@@ -12,6 +12,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Reflection;
+using Notifications.Wpf;
 
 namespace SmartSolutions.InventoryControl.UI
 {
@@ -26,6 +27,7 @@ namespace SmartSolutions.InventoryControl.UI
         {
             IoCContanier.IoC = new SmartSolutions.InventoryControl.MEF.MEF();
             Initialize();
+            Notification = new NotificationManager();
         }
 
         #endregion
@@ -118,5 +120,6 @@ namespace SmartSolutions.InventoryControl.UI
             return retVal;
         }
         #endregion
+        public NotificationManager  Notification { get; set; }
     }
 }

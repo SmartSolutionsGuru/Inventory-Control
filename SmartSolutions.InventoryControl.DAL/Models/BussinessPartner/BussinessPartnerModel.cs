@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartSolutions.InventoryControl.DAL.Models.Region;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +8,18 @@ namespace SmartSolutions.InventoryControl.DAL.Models.BussinessPartner
 {
     public class BussinessPartnerModel : BaseModel
     {
+        #region Constructor
+        public BussinessPartnerModel()
+        {
+            PartnerType = new BussinessPartnerTypeModel();
+            PartnerCategory = new BussinessPartnerCategoryModel();
+            City = new CityModel();
+        }
+        #endregion
+
+        #region Properties
+        public BussinessPartnerTypeModel PartnerType { get; set; }
+        public BussinessPartnerCategoryModel PartnerCategory { get; set; }
         /// <summary>
         /// Offical Bussiness Name
         /// </summary>
@@ -41,7 +54,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.BussinessPartner
         /// <summary>
         /// City of Bussiness
         /// </summary>
-        public string City { get; set; }
+        public CityModel City { get; set; }
         /// <summary>
         /// Mobile Numbers
         /// </summary>
@@ -51,5 +64,6 @@ namespace SmartSolutions.InventoryControl.DAL.Models.BussinessPartner
         /// </summary>
         public string Address { get; set; }
 
+        #endregion
     }
 }

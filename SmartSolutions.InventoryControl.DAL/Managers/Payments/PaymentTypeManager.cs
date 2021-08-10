@@ -24,7 +24,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Payments
             Repository = GetRepository<PaymentTypeModel>();
         }
         #endregion
-        public async Task<IEnumerable<PaymentTypeModel>> GetAllPaymentTypesAsync()
+        public async Task<IEnumerable<PaymentTypeModel>> GetAllPaymentMethodsAsync()
         {
             List<PaymentTypeModel> paymentTypes = new List<PaymentTypeModel>();
             try
@@ -48,6 +48,34 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Payments
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return paymentTypes;
+        }
+
+        public async Task<PaymentTypeModel> GetPaymentMethodByIdAsync(int? Id)
+        {
+            if (Id == null || Id == 0) return null;
+            var paymentMethod = new PaymentTypeModel();
+            try
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_Id"] = Id;
+                string query = @"SELECT * FROM PaymentType WHERE Id = @v_Id AND IsActive = 1";
+                var values = await Repository.QueryAsync(query);
+                if (values != null || values?.Count > 0)
+                {
+                    foreach (var value in values)
+                    {
+                        paymentMethod.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                        paymentMethod.Name = value?.GetValueFromDictonary("Name")?.ToString();
+                        paymentMethod.PaymentType = value?.GetValueFromDictonary("PaymentType")?.ToString();
+                        paymentMethod.Description = value?.GetValueFromDictonary("Description")?.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return paymentMethod;
         }
     }
 }

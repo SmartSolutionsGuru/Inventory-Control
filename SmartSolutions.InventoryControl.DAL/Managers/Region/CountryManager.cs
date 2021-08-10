@@ -86,6 +86,33 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Region
             }
             return country;
         }
+
+        public async Task<CountryModel> GetCountryByNameAsync(string countryName)
+        {
+            if (string.IsNullOrEmpty(countryName)) return null;
+            CountryModel country = new CountryModel();
+            try
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_CountryName"] = countryName;
+                string query = @"SELECT * FROM Country WHERE Name = @v_CountryName";
+                var values = await Repository.QueryAsync(query,parameters:parameters);
+                if(values != null && values?.Count > 0)
+                {
+                    var value = values.FirstOrDefault();
+                    country.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                    country.Name = value?.GetValueFromDictonary("Name")?.ToString();
+                    country.NiceName = value?.GetValueFromDictonary("NiceName")?.ToString();
+                    country.PhoneCode = value?.GetValueFromDictonary("PhoneCode")?.ToString()?.ToNullableInt() ?? 0;
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return country;
+        }
         #endregion
     }
 }

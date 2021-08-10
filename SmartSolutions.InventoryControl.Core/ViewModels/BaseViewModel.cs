@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Notifications.Wpf;
 using SmartSolutions.InventoryControl.Core.Helpers;
 using SmartSolutions.InventoryControl.Core.Helpers.WindowHelper;
 using System;
@@ -46,7 +47,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         [ImportingConstructor]
         public BaseViewModel() 
         {
-           
+            NotificationManager = new NotificationManager();
         }
 
         public BaseViewModel(Window window)
@@ -95,6 +96,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
             else
                 return;
+          
 
         }
         #endregion
@@ -240,7 +242,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _DimmableOverlayVisible; }
             set { _DimmableOverlayVisible = value; NotifyOfPropertyChange(nameof(DimmableOverlayVisible)); }
         }
-
+        public INotificationManager  NotificationManager { get; set; }
         #endregion
 
         #region Events

@@ -24,6 +24,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Login
         #endregion
 
         #region Public Properties
+        private bool _IsSecretKeyEmpty;
+         /// <summary>
+         /// flag for Indicating Secret Key is not available
+         /// </summary>
+        public bool IsSecretKeyEmpty
+        {
+            get { return _IsSecretKeyEmpty; }
+            set { _IsSecretKeyEmpty = value; NotifyOfPropertyChange(nameof(IsSecretKeyEmpty)); }
+        }
+
         /// <summary>
         /// The UserName of the user
         /// </summary>
@@ -279,7 +289,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Login
                     else
                     {
                         //If user is Entering New Password
-                        if ((!string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(ReTypePassword)) && string.Equals(Password, ReTypePassword))
+                        if (!string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(ReTypePassword) && string.Equals(Password, ReTypePassword))
                         {
                             await _authenticationManager.ChangePasswordAsync(Password, ReTypePassword, User);
                             _eventAggregator?.PublishOnCurrentThread("LOGGED-IN");
@@ -308,8 +318,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Login
         }
         public async Task ChangePasswordAsync()
         {
+            IsLoading = true;
             await RunCommandAsync(() => LoginIsRunning, async () =>
             {
+                LoadingMessage = "Verfing Credentials...";
                 if (!string.IsNullOrEmpty(SecretKey))
                 {
                     var resultUser = await _authenticationManager.FindUserByKeyAsync(SecretKey, UserName);
@@ -320,7 +332,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Login
                         User = resultUser;
                     }
                 }
+                else
+                {
+                    //TODO: send User Friendly Message that SecretKey Or UserName is Not Filled
+                    IsSecretKeyEmpty = true;
+                }
             });
+            IsLoading = false;
+        }
+
+        public void Cancel()
+        {
+            IsLoginForget = false;
         }
         #endregion
     }

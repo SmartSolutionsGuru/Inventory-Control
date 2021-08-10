@@ -1,4 +1,5 @@
-﻿using SmartSolutions.Util.LogUtils;
+﻿using SmartSolutions.InventoryControl.Plugins.Repositories;
+using SmartSolutions.Util.LogUtils;
 using System;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -9,14 +10,24 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.BackUp
     [Export(typeof(IDatabaseBackupManager)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class DatabaseBackupManager : BaseManager, IDatabaseBackupManager
     {
+        #region Private Members
         bool retVal = false;
+        private readonly IRepository Repository;
+        #endregion
+
+        #region Constructor
+        public DatabaseBackupManager()
+        {
+            //Repository = GetRepository<>();
+        }
+        #endregion
 
         public async Task<bool> BackUpDataBase(string databaseName)
         {
             bool retVal = false;
             try
             {
-
+                  
             }
             catch (Exception ex)
             {

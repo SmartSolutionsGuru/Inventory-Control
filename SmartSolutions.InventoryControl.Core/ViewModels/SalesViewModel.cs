@@ -8,6 +8,7 @@ using SmartSolutions.InventoryControl.DAL.Models.Inventory;
 using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.InventoryControl.DAL.Models.Sales;
 using SmartSolutions.InventoryControl.DAL.Models.Stock;
+using SmartSolutions.Util.DecimalsUtils;
 using SmartSolutions.Util.LogUtils;
 using SmartSolutions.Util.NumericUtils;
 using System;
@@ -78,7 +79,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
             ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
             SaleInvoice = new SaleInvoiceModel();
-            SaleInvoice.PaymentTypes = (await _paymentTypeManager.GetAllPaymentTypesAsync()).ToList();
+            SaleInvoice.PaymentTypes = (await _paymentTypeManager.GetAllPaymentMethodsAsync()).ToList();
             SaleInvoice.InvoiceId = _saleInvoiceManager.GenrateInvoiceNumber("S");
             if (Partners != null || Partners?.Count > 0)
                 PartnerSuggetion = new PartnerSuggestionProvider(Partners);
@@ -207,6 +208,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     SaleInvoice.Payment = Payment;
                     bool invoiceResult = await _saleInvoiceManager.SaveSaleInoiceAsync(SaleInvoice);
                     if (invoiceResult)
+                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Invoice Saved Successfully", Type = Notifications.Wpf.NotificationType.Success });
+                    else
+                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success",Message = "Invoice Not Saved",Type = Notifications.Wpf.NotificationType.Error});
+                    if (invoiceResult)
                     {
                         var lastRowId = _saleInvoiceManager.GetLastRowId();
                         if (lastRowId != null)
@@ -224,6 +229,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                     transaction.PaymentMode = "Receivable";
                                     transaction.PaymentType = SaleInvoice.SelectedPaymentType;
                                     var resultTransaction = await _transactionManager.SaveTransactionAsync(transaction);
+                                    if (resultTransaction)
+                                        NotificationManager.Show(new Notifications.Wpf.NotificationContent{Title = "Success",Message = "Transaction Completed Successfully", Type = Notifications.Wpf.NotificationType.Success });
+                                    else
+                                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Transaction Not Completed", Type = Notifications.Wpf.NotificationType.Error });
                                     //If transaction is Successfully Completed
                                     if (resultTransaction)
                                     {
@@ -234,28 +243,24 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                             if (result != null)
                                             {
                                                 //We decicde on this flag either payment is Debit Or credit
-                                                if (result.IsBalancePayable)
+                                                if (result.CurrentBalanceType == DAL.Models.PaymentType.DR)
                                                 {
-                                                    partnerLedger.BalanceAmount = result.BalanceAmount - Payment;
-                                                    if (partnerLedger.BalanceAmount < 0)
-                                                        partnerLedger.IsBalancePayable = true;
+                                                    partnerLedger.CurrentBalance = result.CurrentBalance - Payment;
+                                                    if (partnerLedger.CurrentBalance < 0)
+                                                        partnerLedger.CurrentBalanceType = DAL.Models.PaymentType.CR;
                                                     else
-                                                        partnerLedger.IsBalancePayable = false;
+                                                        partnerLedger.CurrentBalanceType = DAL.Models.PaymentType.DR;
 
                                                 }
                                                 else
                                                 {
-                                                    partnerLedger.BalanceAmount = result.BalanceAmount + Payment;
-                                                    if (partnerLedger.BalanceAmount < 0)
-                                                        partnerLedger.IsBalancePayable = true;
+                                                    partnerLedger.CurrentBalance = result.CurrentBalance + Payment;
+                                                    if (partnerLedger.CurrentBalance < 0)
+                                                        partnerLedger.CurrentBalanceType =  DAL.Models.PaymentType.DR;
                                                     else
-                                                        partnerLedger.IsBalancePayable = false;
+                                                        partnerLedger.CurrentBalanceType =  DAL.Models.PaymentType.CR;
                                                 }
                                             }
-                                            partnerLedger.IsAmountReceived = true;
-                                            partnerLedger.InvoiceGuid = SaleInvoice.InvoiceGuid;
-                                            partnerLedger.InvoiceId = SaleInvoice.InvoiceId;
-                                            partnerLedger.TransactionGuid = transaction.TransactionGuid;
                                             await _partnerLedgerManager.AddPartnerBalance(partnerLedger);
                                         }
                                     }
@@ -295,7 +300,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 }
                 var resultPartner = await _partnerLedgerManager.GetPartnerLedgerLastBalance(SelectedPartner.Id.Value);
                 if (resultPartner != null)
-                    PreviousBalance = resultPartner.BalanceAmount.ToString()?.ToInt() ?? 0;
+                    PreviousBalance = resultPartner.CurrentBalance.ToString()?.ToDecimal() ?? 0;
                 GrandTotal = PreviousBalance + InvoiceTotal;
             }
             catch (Exception ex)
@@ -332,21 +337,21 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Properties
-        private double _Payment;
+        private decimal _Payment;
         /// <summary>
         /// Payment Amount recived By Customer
         /// </summary>
-        public double Payment
+        public decimal Payment
         {
             get { return _Payment; }
             set { _Payment = value; NotifyOfPropertyChange(nameof(Payment)); }
         }
 
-        private double _InvoiceTotal;
+        private decimal _InvoiceTotal;
         /// <summary>
         /// Current Invoice Total Amount
         /// </summary>
-        public double InvoiceTotal
+        public decimal InvoiceTotal
         {
             get { return _InvoiceTotal; }
             set { _InvoiceTotal = value; NotifyOfPropertyChange(nameof(InvoiceTotal)); }
@@ -551,11 +556,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _PercentDiscount; }
             set { _PercentDiscount = value; NotifyOfPropertyChange(nameof(PercentDiscount)); }
         }
-        private double _GrandTotal;
+        private decimal _GrandTotal;
         /// <summary>
         /// Grand Total Amount Of Transaction
         /// </summary>
-        public double GrandTotal
+        public decimal GrandTotal
         {
             get { return _GrandTotal; }
             set { _GrandTotal = value; NotifyOfPropertyChange(nameof(GrandTotal)); }
@@ -578,11 +583,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _DiscountPrice; }
             set { _DiscountPrice = value; NotifyOfPropertyChange(nameof(DiscountPrice)); }
         }
-        private int _PreviousBalance;
+        private decimal _PreviousBalance;
         /// <summary>
         /// Privous Balance of that Partner 
         /// </summary>
-        public int PreviousBalance
+        public decimal PreviousBalance
         {
             get { return _PreviousBalance; }
             set { _PreviousBalance = value; NotifyOfPropertyChange(nameof(PreviousBalance)); }

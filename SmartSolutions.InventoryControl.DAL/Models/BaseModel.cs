@@ -45,16 +45,6 @@ namespace SmartSolutions.InventoryControl.DAL.Models
         /// Is this object row is deleted or not
         /// </summary>
         public bool? IsDeleted { get; set; }
-        ///// <summary>
-        ///// Adobe Illustrater (Path) for Image
-        ///// </summary>
-        //public string Image { get; set; }
-
-        ///// <summary>
-        ///// Image Color for that Product
-        ///// </summary>
-        //public string ImageColor { get; set; }
-
         #endregion
 
         #region Events
@@ -68,5 +58,11 @@ namespace SmartSolutions.InventoryControl.DAL.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
+    }
+    public enum PaymentType
+    {
+        None = 0,
+        DR = 1,
+        CR = 2
     }
 }

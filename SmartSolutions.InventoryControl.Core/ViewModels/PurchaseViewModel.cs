@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;
+using SmartSolutions.InventoryControl.DAL;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.DAL.Models.Inventory;
 using SmartSolutions.InventoryControl.DAL.Models.Product;
@@ -18,6 +19,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
     public class PurchaseViewModel : BaseViewModel
     {
         #region Private Members
+        private readonly DAL.Managers.Stock.StockIn.IStockInManager _stockInManager;
         private readonly DAL.Managers.Inventory.IInventoryManager _inventoryManager;
         private readonly DAL.Managers.Product.IProductManager _productManager;
         private readonly DAL.Managers.Bussiness_Partner.IBussinessPartnerManager _bussinessPartnerManager;
@@ -27,31 +29,39 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private readonly DAL.Managers.Bussiness_Partner.IPartnerLedgerManager _partnerLedgerManager;
         private readonly DAL.Managers.Warehouse.IWarehouseManager _warehouseManager;
         private readonly DAL.Managers.Payments.IPaymentTypeManager _paymentTypeManager;
+        private readonly DAL.Managers.Purchase.IPurchaseOrderManager _purchaseOrderManager;
+        private readonly DAL.Managers.Purchase.IPurchaseOrderDetailManager _purchaseOrderDetailManager;
         #endregion
 
         #region Constructor
         public PurchaseViewModel() { }
 
         [ImportingConstructor]
-        public PurchaseViewModel(DAL.Managers.Inventory.IInventoryManager inventoryManager
-                                , DAL.Managers.Product.IProductManager productManager
-                                , DAL.Managers.Bussiness_Partner.IBussinessPartnerManager bussinessPartnerManager
-                                , DAL.Managers.Product.ProductColor.IProductColorManager productColorManager
+        public PurchaseViewModel(DAL.Managers.Stock.StockIn.IStockInManager stockInManager 
+                                , DAL.Managers.Inventory.IInventoryManager inventoryManager 
+                                , DAL.Managers.Product.IProductManager productManager 
+                                , DAL.Managers.Bussiness_Partner.IBussinessPartnerManager bussinessPartnerManager 
+                                , DAL.Managers.Product.ProductColor.IProductColorManager productColorManager 
                                 , DAL.Managers.Product.ProductSize.IProductSizeManager productSizeManager
-                                , DAL.Managers.Invoice.IPurchaseInvoiceManager invoiceManager
+                                , DAL.Managers.Invoice.IPurchaseInvoiceManager purchaseInvoiceManager
                                 , DAL.Managers.Bussiness_Partner.IPartnerLedgerManager partnerLedgerManager
                                 , DAL.Managers.Warehouse.IWarehouseManager warehouseManager
-                                , DAL.Managers.Payments.IPaymentTypeManager paymentTypeManager)
+                                , DAL.Managers.Payments.IPaymentTypeManager paymentTypeManager
+                                , DAL.Managers.Purchase.IPurchaseOrderManager purchaseOrderManager
+                                , DAL.Managers.Purchase.IPurchaseOrderDetailManager purchaseOrderDetailManager)
         {
+            _stockInManager = stockInManager;
             _inventoryManager = inventoryManager;
             _productManager = productManager;
             _bussinessPartnerManager = bussinessPartnerManager;
             _productColorManager = productColorManager;
             _productSizeManager = productSizeManager;
-            _purchaseInvoiceManager = invoiceManager;
+            _purchaseInvoiceManager = purchaseInvoiceManager;
             _partnerLedgerManager = partnerLedgerManager;
             _warehouseManager = warehouseManager;
             _paymentTypeManager = paymentTypeManager;
+            _purchaseOrderManager = purchaseOrderManager;
+            _purchaseOrderDetailManager = purchaseOrderDetailManager;
         }
         #endregion
 
@@ -60,8 +70,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             if (Execute.InDesignMode)
             {
-                ProductGrid = new ObservableCollection<InventoryModel>();
-                var model = new InventoryModel();
+                ProductGrid = new ObservableCollection<StockInModel>();
+                var model = new StockInModel();
                 AutoId = 0;
                 AddProduct(model);
             }
@@ -78,12 +88,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
                 Warehouses = (await _warehouseManager.GetAllWarehousesAsync()).ToList();
                 PurchaseOrder = new PurchaseOrderModel();
-                PurchaseOrderDetail = new List<PurchaseOrderDetailModel>();
+                PurchaseOrderDetails = new List<PurchaseOrderDetailModel>();
                 PurchaseInvoice = new PurchaseInvoiceModel();
-                PurchaseInvoice.PaymentTypes = (await _paymentTypeManager.GetAllPaymentTypesAsync()).ToList();
+                PurchaseInvoice.PaymentTypes = (await _paymentTypeManager.GetAllPaymentMethodsAsync()).ToList();
                 PurchaseInvoice.InvoiceId = _purchaseInvoiceManager.GenrateInvoiceNumber("P");
-                ProductGrid = new ObservableCollection<InventoryModel>();
-                var model = new InventoryModel();
+                ProductGrid = new ObservableCollection<StockInModel>();
+                var model = new StockInModel();
                 AutoId = 0;
                 AddProduct(model);
                 if (Venders != null)
@@ -98,14 +108,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        public void AddProduct(InventoryModel product)
+        public void AddProduct(StockInModel product)
         {
             try
             {
                 ++AutoId;
-                var newProduct = new InventoryModel();
-                newProduct.InvoiceGuid = PurchaseInvoice.InvoiceGuid;
-                newProduct.InvoiceId = PurchaseInvoice.InvoiceId;
+                var purchaseOrderDetail = new PurchaseOrderDetailModel();
+                purchaseOrderDetail.Product = StockIn?.Product;
+                var newProduct = new StockInModel();
                 CalculateInvoiceTotal();
                 ProductGrid.Add(newProduct);
                 //TODO: Here we add the PurchaseOrderDetail Values  in PurchaseOrderDetail List 
@@ -116,14 +126,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        public async void RemoveProduct(InventoryModel product)
+        public async void RemoveProduct(StockInModel product)
         {
             try
             {
                 if (AutoId == 1)
                 {
                     ProductGrid.Remove(product);
-                    product = new InventoryModel();
+                    product = new StockInModel();
                     ProductGrid.Add(product);
                     ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
                     ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
@@ -172,18 +182,53 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 #endregion
 
                 #region Gerating PO And Filling Details
-
+                PurchaseOrder.Partner = new BussinessPartnerModel { Id = SelectedPartner?.Id};
+                PurchaseOrder.Status = PurchaseOrderModel.OrderStatus.New;
+                PurchaseOrder.Description = "Order Placed";
+                PurchaseOrder.SubTotal = PurchaseInvoice.InvoiceTotal;
+                PurchaseOrder.Discount = PurchaseInvoice.Discount;
+                PurchaseOrder.GrandTotal = PurchaseInvoice.InvoiceTotal;
+                PurchaseOrder.IsActive = true;
+                PurchaseOrder.CreatedAt = DateTime.Now;
+                PurchaseOrder.CreatedBy = AppSettings.LoggedInUser.DisplayName;
+                var orderResult = await _purchaseOrderManager.CreatePurchaseOrderAsync(PurchaseOrder);
+                if(orderResult)
+                {
+                   int?  purchaseOrderId = await _purchaseOrderManager.GetLastPurchaseOrderIdAsync();
+                    if (purchaseOrderId > 0)
+                    {
+                        if (ProductGrid != null || ProductGrid?.Count > 0)
+                        {
+                            foreach (var product in ProductGrid)
+                            {
+                                var orderDetail = new PurchaseOrderDetailModel();
+                                orderDetail.PurchaseOrder = PurchaseOrder;
+                                orderDetail.Product = product.Product;
+                                orderDetail.ProductColor = product.Product?.ProductColor;
+                                orderDetail.ProductSize = product.Product?.ProductSize;
+                                orderDetail.Total = product.Total;
+                                orderDetail.Price = product.Price;
+                                orderDetail.Quantity = product.Quantity;
+                                orderDetail.IsActive = true;
+                                orderDetail.CreatedAt = DateTime.Now;
+                                orderDetail.CreatedBy = AppSettings.LoggedInUser?.DisplayName;
+                                PurchaseOrderDetails.Add(orderDetail);
+                            }
+                            await _purchaseOrderDetailManager.AddPurchaseOrderBulkDetailAsync(PurchaseOrderDetails);
+                        }
+                    }
+                }
                 #endregion
 
+                #region Creating  Purchase Invoice
                 if (ProductGrid != null || ProductGrid?.Count > 0)
                 {
-                    var productList = new List<InventoryModel>();
-                    foreach (var product in ProductGrid)
+                    var productList = new List<StockInModel>();
+                    foreach (var stock in ProductGrid)
                     {
-                        if (!string.IsNullOrEmpty(product.Product.Name))
+                        if (!string.IsNullOrEmpty(stock.Product.Name))
                         {
-                            product.IsStockIn = true;
-                            productList.Add(product);
+                            productList.Add(stock);
                         }
                     }
                     PurchaseInvoice.SelectedPartner = SelectedPartner;
@@ -200,8 +245,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                         {
                             if (lastRowId > 0)
                             {
-                                var resultInventory = await _inventoryManager.AddBulkInventoryAsync(productList);
-                                if (resultInventory)
+                                //var resultInventory = await _inventoryManager.AddBulkInventoryAsync(productList);
+                                var resultStockIn = await _stockInManager.AddBulkStockInAsync(productList);
+                                if (resultStockIn)
                                 {
 
                                 }
@@ -210,6 +256,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     }
                     IsLoading = false;
                 }
+                #endregion
             }
             catch (Exception ex)
             {
@@ -222,7 +269,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             {
                 SelectedPurchaseType = string.Empty;
                 SelectedPartner = new BussinessPartnerModel();
-                ProductGrid = new ObservableCollection<InventoryModel>();
+                ProductGrid = new ObservableCollection<StockInModel>();
                 InvoiceTotal = 0;
                 PercentDiscount = 0;
                 DiscountPrice = 0;
@@ -248,8 +295,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 var selectedPartnerLedger = await _partnerLedgerManager.GetPartnerLedgerLastBalance(SelectedPartner.Id.Value);
                 if (selectedPartnerLedger != null)
                 {
-                    PreviousBalance = selectedPartnerLedger.BalanceAmount;
-                    BalanceType = selectedPartnerLedger.AmountPayable == 1 ? "Payable" : "Receivable";
+                    PreviousBalance = selectedPartnerLedger.CurrentBalance;
+                    BalanceType = selectedPartnerLedger.CurrentBalanceType.ToString();
                     GrandTotal = PreviousBalance + InvoiceTotal;
                 }
                 else
@@ -275,11 +322,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 GrandTotal = InvoiceTotal + PreviousBalance;
             }
         }
-        public void CalculateDiscountPrice(int percentDiscount, double discountAmount)
+        public void CalculateDiscountPrice(int percentDiscount, decimal discountAmount)
         {
             if (percentDiscount != 0)
             {
-                var newInvoiceTotal = ReCalculateInvoicePrice();
+                decimal newInvoiceTotal = ReCalculateInvoicePrice();
                 if (newInvoiceTotal > 0 && newInvoiceTotal > InvoiceTotal)
                 {
                     InvoiceTotal = newInvoiceTotal;
@@ -294,9 +341,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 GrandTotal = InvoiceTotal + PreviousBalance;
             }
         }
-        private double ReCalculateInvoicePrice()
+        private decimal ReCalculateInvoicePrice()
         {
-            var newInvoiceTotal = 0d;
+            decimal newInvoiceTotal = 0;
             if (ProductGrid != null || ProductGrid?.Count > 0)
             {
                 foreach (var product in ProductGrid)
@@ -323,7 +370,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
 
         #region Properties
         public PurchaseOrderModel PurchaseOrder { get; set;}
-        public List<PurchaseOrderDetailModel> PurchaseOrderDetail { get; set; }
+        public List<PurchaseOrderDetailModel> PurchaseOrderDetails { get; set; }
         public StockInModel StockIn { get; set; }
         private List<DAL.Models.Warehouse.WarehouseModel> _Warehouses;
         /// <summary>
@@ -332,7 +379,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public List<DAL.Models.Warehouse.WarehouseModel> Warehouses
         {
             get { return _Warehouses; }
-            set { _Warehouses = value; NotifyOfPropertyChange(nameof(SelectedWarehouse)); }
+            set { _Warehouses = value; NotifyOfPropertyChange(nameof(Warehouses)); }
         }
         private DAL.Models.Warehouse.WarehouseModel _SelectedWarehouse;
         /// <summary>
@@ -354,11 +401,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             set { _BalanceType = value; NotifyOfPropertyChange(nameof(BalanceType)); }
         }
 
-        private double _PreviousBalance;
+        private decimal _PreviousBalance;
         /// <summary>
         /// Previous Balance Of Selected Partner
         /// </summary>
-        public double PreviousBalance
+        public decimal PreviousBalance
         {
             get { return _PreviousBalance; }
             set { _PreviousBalance = value; NotifyOfPropertyChange(nameof(PreviousBalance)); }
@@ -496,51 +543,51 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             set { _PercentDiscount = value; NotifyOfPropertyChange(nameof(PercentDiscount)); /*CalculateDiscountPrice();*/ }
         }
 
-        private double _DiscountPrice;
+        private decimal _DiscountPrice;
         /// <summary>
         /// Price After Calculating Discount
         /// </summary>
-        public double DiscountPrice
+        public decimal DiscountPrice
         {
             get { return _DiscountPrice; }
             set { _DiscountPrice = value; NotifyOfPropertyChange(nameof(DiscountPrice)); /*CalculateDiscountPrice(0, DiscountPrice);*/ }
         }
 
-        private double _InvoiceTotal;
+        private decimal _InvoiceTotal;
         /// <summary>
         /// Invoice Grand Total 
         /// </summary>
-        public double InvoiceTotal
+        public decimal InvoiceTotal
         {
             get { return _InvoiceTotal; }
             set { _InvoiceTotal = value; NotifyOfPropertyChange(nameof(InvoiceTotal)); }
         }
 
 
-        private double _GrandTotal;
+        private decimal _GrandTotal;
         /// <summary>
         /// Grand Total Amount Of Transaction
         /// </summary>
-        public double GrandTotal
+        public decimal GrandTotal
         {
             get { return _GrandTotal; }
             set { _GrandTotal = value; NotifyOfPropertyChange(nameof(GrandTotal)); }
         }
 
-        private double _Payment;
+        private decimal _Payment;
         /// <summary>
         /// Payment Which is Made to Supply Partner
         /// </summary>
-        public double Payment
+        public decimal Payment
         {
             get { return _Payment; }
             set { _Payment = value; NotifyOfPropertyChange(nameof(Payment)); OnPaymentRecived(); }
         }
-        private ObservableCollection<InventoryModel> _ProductGrid;
+        private ObservableCollection<StockInModel> _ProductGrid;
         /// <summary>
         /// Grid for Display Products
         /// </summary>
-        public ObservableCollection<InventoryModel> ProductGrid
+        public ObservableCollection<StockInModel> ProductGrid
         {
             get { return _ProductGrid; }
             set { _ProductGrid = value; NotifyOfPropertyChange(nameof(ProductGrid)); }

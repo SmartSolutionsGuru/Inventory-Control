@@ -164,43 +164,49 @@
                     </PasswordBox>
 
                     <Grid Grid.Row="3"                        
-                      VerticalAlignment="Center"
-                      Visibility="{Binding CanReTypePassword,Converter={StaticResource BooleanToVisibilityConverter},ConverterParameter='inverse'}"
-                      Margin="5 0 0 0">
+                          VerticalAlignment="Center"
+                          Visibility="{Binding CanReTypePassword,Converter={StaticResource BooleanToVisibilityConverter},ConverterParameter='inverse'}"
+                          Margin="5 0 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
+                        <!-- Style="{StaticResource CheckBoxBaseStyle}"-->
                         <CheckBox Grid.Column="0" 
-                                  Height="25"                          
                                   Content="Login as Admin"
                                   FontWeight="DemiBold"
+                                  FontSize="{StaticResource MediumSize}"
                                   Foreground="{StaticResource PureWhiteColorBrush}"
                                   HorizontalAlignment="Center"
+                                  Style="{StaticResource CheckBoxBaseStyle}"
                                   VerticalAlignment="Center"
                                   IsChecked="{Binding IsLoginAsAdmin,Mode=TwoWay}"
                                   Margin="40 5 0 0"
                                   BorderBrush="{StaticResource LightBlueColorBrush}"/>
-                        <Button Grid.Column="1"
-                            x:Name="ForgetPassword"
-                            Height="30" 
-                            Width="120"
-                            Margin="0 0 80 0"
-                            Background="Transparent"
-                            Content="Forgot Password ?"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            BorderThickness="0"
-                            Foreground="{StaticResource PureWhiteColorBrush}"
-                            FontSize="{StaticResource MediumSize}"
-                            FontFamily="{StaticResource LightFont}"
-                            Command="{Binding ForgetPasswordCommand}"/>
+
+                        <Button x:Name="ForgetPassword"
+                                Grid.Column="1"
+                                Height="30" 
+                                Width="120"
+                                Margin="0 5 80 0"
+                                Padding="0 5"
+                                Background="Transparent"
+                                Content="Forgot Password ?"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource ContentButton}"
+                                BorderThickness="0"
+                                Foreground="{StaticResource PureWhiteColorBrush}"
+                                FontSize="{StaticResource MediumSize}"
+                                FontFamily="{StaticResource LightFont}"
+                                Command="{Binding ForgetPasswordCommand}"/>
                     </Grid>
 
                     <!--Background="{StaticResource WordOrangeBrush}"-->
                     <Button Grid.Row="4" 
                             Width="320" 
                             Height="48"
+                            Margin="0 5 0 0"
                             Content="LOGIN"
                             IsDefault="True"
                             HorizontalAlignment="Stretch"
@@ -256,13 +262,24 @@
                              ControlExtensions:WaterMarkTextExtension.RightWatermarkIconVisibility="Collapsed"
                              Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
                     <TextBlock Grid.Row="2" 
-                           Text="Stay Relax Enter Your Secret Key" 
                            FontFamily="{StaticResource LightFont}"
                            FontSize="{StaticResource NormalSize}"
-                           Foreground="{StaticResource PureWhiteColorBrush}"
                            HorizontalAlignment="Center"
                            Margin="0 0 0 0"
-                           VerticalAlignment="Bottom"/>
+                           VerticalAlignment="Bottom">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
+                                <Setter Property="Text" Value="Stay Relax Enter Your Secret Key"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSecretKeyEmpty,Mode=OneWay}" Value="True">
+                                        <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                        <Setter Property="Text" Value="Enter Your Secret Key"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
 
                     <TextBox Grid.Row="3" 
                              Height="48" 
@@ -273,12 +290,12 @@
                              HorizontalAlignment="Center"
                              VerticalAlignment="Top"
                              TextAlignment="Left"
-                             Text="{Binding SecretKey}"                     
+                             Text="{Binding SecretKey,Mode=TwoWay}"                     
                              FontSize="{StaticResource HeadingSize}"
                              ControlExtensions:MiscControlExtensions.CornerRadius="25"
                              ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
                              ControlExtensions:WaterMarkTextExtension.WatermarkIconColor="{StaticResource LightGrayColorBrush}"
-                             ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Partner}"
+                             ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_SecretKey}"
                              ControlExtensions:WaterMarkTextExtension.IsMonitoring="True"                    
                              ControlExtensions:WaterMarkTextExtension.RightWatermarkIconVisibility="Collapsed"
                              Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
@@ -299,7 +316,8 @@
                             Foreground="{StaticResource PureWhiteColorBrush}"
                             FontFamily="{StaticResource LightFont}"
                             FontSize="{StaticResource NormalSize}"/>
-                    <Button Grid.Row="5" 
+                    <Button x:Name="Cancel"
+                            Grid.Row="5" 
                             Width="320" 
                             Height="48"
                             Background="{StaticResource LightGrayColorBrush}"

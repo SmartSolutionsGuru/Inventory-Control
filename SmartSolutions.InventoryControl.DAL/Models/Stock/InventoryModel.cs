@@ -60,12 +60,12 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
             get { return _Quantity; }
             set { _Quantity = value; NotifyOfPropertyChange(nameof(Quantity)); StockInHand -= Quantity; }
         }
-        private double _Total;
+        private decimal _Total;
 
-        public double Total
+        public decimal Total
         {
-            get { return _Total = Quantity * (double)Price; }
-            set { _Total = value = Quantity * (double)Price; NotifyOfPropertyChange(nameof(Total)); }
+            get { return _Total = Quantity * (decimal)Price; }
+            set { _Total = value = Quantity * (decimal)Price; NotifyOfPropertyChange(nameof(Total)); }
         }
 
         public bool IsStockIn { get; set; }
@@ -101,7 +101,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         private void OnPriceChange()
         {
             if (Quantity == 0 || Price == 0) return;
-            Total = Quantity * (double)Price;
+            Total = Quantity * (decimal)Price;
 
         }
         #endregion

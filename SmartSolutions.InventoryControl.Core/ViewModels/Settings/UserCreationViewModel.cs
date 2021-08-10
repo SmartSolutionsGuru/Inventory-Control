@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using SmartSolutions.InventoryControl.DAL;
+using SmartSolutions.InventoryControl.DAL.Models.Authentication;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Settings
                     SecretKey = "SecretKey"
                 };
             }
-            User = new DAL.Models.Authentication.IdentityUserModel();
+            User = new IdentityUserModel();
         }
         public async Task Save()
         {
@@ -96,10 +97,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Settings
         #endregion
 
         #region Properties
-        private DAL.Models.Authentication.IdentityUserModel _User;
-        public DAL.Models.Authentication.IdentityUserModel User
+        private IdentityUserModel _User;
+        public IdentityUserModel User
         {
-            get { return _User ?? new DAL.Models.Authentication.IdentityUserModel(); }
+            get { return _User; }
             set { _User = value; NotifyOfPropertyChange(nameof(User)); }
         }
         private bool _IsAdmin;
@@ -166,6 +167,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Settings
             get { return _ReTypePassword; }
             set { _ReTypePassword = value; NotifyOfPropertyChange(nameof(ReTypePassword)); }
         }
+        private bool _IsPasswordErrorMessage;
+        /// <summary>
+        /// IsPassword Error Message 
+        /// </summary>
+        public bool IsPasswordErrorMessage
+        {
+            get { return _IsPasswordErrorMessage; }
+            set { _IsPasswordErrorMessage = value; NotifyOfPropertyChange(nameof(IsPasswordErrorMessage)); }
+        }
+
 
         #endregion
     }

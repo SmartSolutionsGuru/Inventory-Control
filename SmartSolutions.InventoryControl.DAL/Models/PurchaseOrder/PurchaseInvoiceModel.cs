@@ -56,7 +56,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
         /// <summary>
         /// Discount Amiunt Exactly
         /// </summary>
-        public double Discount { get; set; }
+        public decimal Discount { get; set; }
         /// <summary>
         /// List Of Products on Which Opreation is Performed
         /// </summary>
@@ -72,11 +72,11 @@ namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
         /// <summary>
         /// Amount Of Payment which is Paid Or Recived
         /// </summary>
-        public double Payment { get; set; }
+        public decimal Payment { get; set; }
         /// <summary>
         /// Grand Total Of transaction
         /// </summary>
-        public double InvoiceTotal { get; set; }
+        public decimal InvoiceTotal { get; set; }
         #endregion
     }
 }

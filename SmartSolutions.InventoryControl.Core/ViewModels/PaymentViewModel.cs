@@ -45,8 +45,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             base.OnActivate();
             //PaymentTypes = new List<string> { "Unknown", "Cash", "Bank", "JazzCash", "Easy Paisa", "U Paisa", "Partial", "Other" };
-            PaymentTypes = (await _paymentTypeManager.GetAllPaymentTypesAsync()).ToList();
-            Payment = new DAL.Models.PaymentModel();
+            PaymentTypes = (await _paymentTypeManager.GetAllPaymentMethodsAsync()).ToList();
+            Payment = new PaymentModel();
             BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
             PartnerSuggetion = new Helpers.SuggestionProvider.PartnerSuggestionProvider(BussinessPartners);
             IsReceiveAmount = true;
@@ -84,8 +84,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             var partnerLedger = await _bussinessPartnerManager.GetPartnerCurrentBalanceAsync(SelectedPartner.Id.Value);
             if (partnerLedger != null)
             {
-                CurrentPartnerBalance = partnerLedger.BalanceAmount;
-                AmountType = partnerLedger?.IsBalancePayable == true ? "Payable" : "Receivable";
+                CurrentPartnerBalance = partnerLedger.CurrentBalance;
+                AmountType = partnerLedger?.CurrentBalanceType.ToString();
                 IsAmountAvailable = true;
             }
 
@@ -140,9 +140,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _SelectedPartner; }
             set { _SelectedPartner = value; NotifyOfPropertyChange(nameof(SelectedPartner)); GetPartnerBalance(); }
         }
-        private DAL.Models.PaymentModel _Payment;
+        private DAL.Models.Payments.PaymentModel _Payment;
 
-        public DAL.Models.PaymentModel Payment
+        public DAL.Models.Payments.PaymentModel Payment
         {
             get { return _Payment; }
             set { _Payment = value; NotifyOfPropertyChange(nameof(Payment)); }
@@ -154,11 +154,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _PaymentImage; }
             set { _PaymentImage = value; NotifyOfPropertyChange(nameof(PaymentImage)); }
         }
-        private double _CurrentPartnerBalance;
+        private decimal _CurrentPartnerBalance;
         /// <summary>
         /// Current Selected Partner Balance Amount
         /// </summary>
-        public double CurrentPartnerBalance
+        public decimal CurrentPartnerBalance
         {
             get { return _CurrentPartnerBalance; }
             set { _CurrentPartnerBalance = value; NotifyOfPropertyChange(nameof(CurrentPartnerBalance)); }

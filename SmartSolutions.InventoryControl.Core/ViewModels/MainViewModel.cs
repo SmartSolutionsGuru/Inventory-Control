@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Notifications.Wpf;
 using SmartSolutions.InventoryControl.Core.ViewModels.Dialogs;
 using SmartSolutions.InventoryControl.Core.ViewModels.Settings;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
@@ -15,6 +16,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private readonly IEventAggregator _eventAggregator;
         private readonly DAL.Managers.BackUp.IDatabaseBackupManager _databaseBackupManager;
         private readonly DAL.Managers.Settings.ISystemSettingManager _systemSettingManager;
+        private readonly NotificationManager notificationManager;
+        //private readonly INotificationManager _notificationManager;
         #endregion
 
         #region Constructor
@@ -23,11 +26,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         [ImportingConstructor]
         public MainViewModel(IEventAggregator eventAggregator
                             , DAL.Managers.Settings.ISystemSettingManager systemSettingManager
-                            , DAL.Managers.BackUp.IDatabaseBackupManager databaseBackupManager)
+                            , DAL.Managers.BackUp.IDatabaseBackupManager databaseBackupManager
+                           /* , INotificationManager notificationManager*/)
         {
             _eventAggregator = eventAggregator;
             _systemSettingManager = systemSettingManager;
             _databaseBackupManager = databaseBackupManager;
+            // _notificationManager = notificationManager;
+             notificationManager = new NotificationManager();
         }
         #endregion
 
@@ -103,6 +109,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             IsReportProceeded = false;
             IsSalesProceeded = false;
             Handle(IoC.Get<PaymentViewModel>());
+           // _notificationManager.Show(new NotificationContent { Title = "Test",Message = "Test Notification",},areaName:"WindowArea");
         }
         public void Handle(Screen screen)
         {

@@ -4,8 +4,7 @@
                     xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
                     xmlns:control="clr-namespace:SmartSolutions.InventoryControl.UI.CustomControls"
                     xmlns:converters="clr-namespace:SmartSolutions.InventoryControl.UI.Converters"
-                    xmlns:ControlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
-                    xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Resources.Styles">
+                    xmlns:ControlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions">
 
     <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <converters:StringToBrushConverter x:Key="StringToBrushConverter" />

@@ -37,6 +37,9 @@ namespace SmartSolutions.InventoryControl.UI.Views
             InitializeComponent();
             DataContextChanged += OnDataContextChanged;
             ViewModel = new ShellViewModel(this);
+            Height = SystemParameters.FullPrimaryScreenHeight;
+            Width = SystemParameters.PrimaryScreenWidth;
+            var toolbarHeight = SystemParameters.PrimaryScreenHeight - SystemParameters.FullPrimaryScreenHeight - SystemParameters.WindowCaptionHeight;
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)

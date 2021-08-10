@@ -4,10 +4,8 @@ using SmartSolutions.Util.DictionaryUtils;
 using SmartSolutions.Util.LogUtils;
 using SmartSolutions.Util.NumericUtils;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice

@@ -1,20 +1,20 @@
-﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
-using SmartSolutions.InventoryControl.DAL.Models.Inventory;
+﻿using SmartSolutions.InventoryControl.DAL.Models;
+using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
-using SmartSolutions.Util.BooleanUtils;
+using SmartSolutions.Util.DecimalsUtils;
 using SmartSolutions.Util.DictionaryUtils;
+using SmartSolutions.Util.EnumUtils;
 using SmartSolutions.Util.LogUtils;
 using SmartSolutions.Util.NumericUtils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
 {
-    [Export(typeof(IPartnerLedgerManager)),PartCreationPolicy(CreationPolicy.Shared)]
+    [Export(typeof(IPartnerLedgerManager)),PartCreationPolicy(CreationPolicy.NonShared)]
     public class PartnerLedgerManager : BaseManager, IPartnerLedgerManager
     {
         #region Private Members
@@ -24,10 +24,9 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
 
         #region Constructor
         [ImportingConstructor]
-        public PartnerLedgerManager(IBussinessPartnerManager bussinessPartnerManager)
+        public PartnerLedgerManager()
         {
             Repository = GetRepository<BussinessPartnerLedgerModel>();
-            _bussinessPartnerManager = bussinessPartnerManager;
         }
 
         #endregion
@@ -47,24 +46,18 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 string query = string.Empty;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_PartnerId"] = partnerLedger?.Partner?.Id;
-                parameters["@v_InvoiceId"] = partnerLedger?.InvoiceId;
-                parameters["@v_InvoiceGuid"] = partnerLedger?.InvoiceGuid;
-                parameters["@v_IsBalancePayable"] = partnerLedger?.IsBalancePayable;
-                parameters["@v_AmountRecivable"] = partnerLedger?.AmountReciveable;
-                parameters["@v_AmountPayable"] = partnerLedger?.AmountPayable;
-                parameters["@v_IsAmountRecived"] = partnerLedger?.IsAmountReceived ?? true;
-                parameters["@v_IsAmountPaid"] = partnerLedger?.IsAmountPaid ?? false;
-                parameters["@v_BalanceAmount"] = partnerLedger?.BalanceAmount;
-                parameters["@v_Description"] = partnerLedger?.Description;
+                parameters["@v_PaymentId"] = partnerLedger?.Payment?.Id;
+                parameters["@v_CurrentBalance"] = partnerLedger.CurrentBalance;
+                parameters["@v_CurrentBalanceType"] = partnerLedger?.CurrentBalanceType;
+                parameters["@v_Description"] = partnerLedger?.Description == null ? DBNull.Value : (object)partnerLedger.Description;
                 parameters["@v_IsActive"] = partnerLedger.IsActive = true;
-                parameters["@v_IsDeleted"] = partnerLedger.IsDeleted = false;
                 parameters["@v_CreatedAt"] = partnerLedger.CreatedAt == null ? DateTime.Now : partnerLedger.CreatedAt;
                 parameters["@v_CreatedBy"] = partnerLedger.CreatedBy == null ? DBNull.Value : (object)partnerLedger.CreatedBy;
                 parameters["@v_UpdatedAt"] = partnerLedger.UpdatedAt == null ? DBNull.Value : (object)partnerLedger.UpdatedAt;
                 parameters["@v_UpdatedBy"] = partnerLedger.UpdatedBy == null ? DBNull.Value : (object)partnerLedger.UpdatedBy;
 
-                query = @"INSERT INTO PartnerLedger(PartnerId,InvoiceId,InvoiceGuid,IsBalancePayable,AmountReciveable,AmountPayable,IsAmountRecived,IsAmountPaid,BalanceAmount,Description,IsActive,IsDeleted,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
-                                    VALUES(@v_PartnerId,@v_InvoiceId,@v_InvoiceGuid,@v_IsBalancePayable,@v_AmountReciveable,@v_AmountPayable,@v_BalanceAmount,@v_Description,@v_IsActive,@v_IsDeleted,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy);";
+                query = @"INSERT INTO PartnerLedgerAccounts(PartnerId,PaymentId,CurrentBalance,CurrentBalanceType,Description,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                    VALUES(@v_PartnerId,@v_PaymentId,@v_CurrentBalance,@v_CurrentBalanceType,@v_Description,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy);";
                var result =  await Repository.NonQueryAsync(query: query, parameters: parameters);
                 retVal = result > 0 ?  true : false;
             }
@@ -75,9 +68,9 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             return retVal;
         }
 
-         
         public async Task<BussinessPartnerLedgerModel> GetPartnerLedgerLastBalance(int partnerId)
         {
+            if (partnerId == 0) return null;
             BussinessPartnerLedgerModel retVal = null;
             try
             {
@@ -94,10 +87,9 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                     var value = values?.FirstOrDefault();
                     var partnerLedger = new BussinessPartnerLedgerModel();
                     partnerLedger.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
-                    partnerLedger.AmountPayable = Convert.ToDouble(value?.GetValueFromDictonary("AmountPayable")?.ToString()?.ToInt());
-                    partnerLedger.AmountReciveable = Convert.ToDouble(value?.GetValueFromDictonary("AmountReciveable")?.ToString()?.ToInt());
-                    partnerLedger.BalanceAmount = Convert.ToDouble(value?.GetValueFromDictonary("BalanceAmount")?.ToString()?.ToInt());
-                    partnerLedger.IsBalancePayable = value?.GetValueFromDictonary("IsBalancePayable")?.ToString()?.ToNullableBoolean() ?? false;
+                    partnerLedger.Payment = new Models.Payments.PaymentModel { Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt()};
+                    partnerLedger.CurrentBalance = value?.GetValueFromDictonary("CurrentBalance")?.ToString()?.ToDecimal() ?? 0;
+                    partnerLedger.CurrentBalanceType =value?.GetValueFromDictonary("CurrentBalanceType")?.ToString().ToEnum<PaymentType>() ?? PaymentType.None;
                     retVal = partnerLedger; 
                 }
             }
@@ -108,34 +100,28 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             return retVal;
         }
 
-        public async Task<bool> UpdatePartnerBalance(BussinessPartnerLedgerModel partnerLedger)
+        public async Task<bool> UpdatePartnerCurrentBalance(BussinessPartnerLedgerModel partnerLedger)
         {
             bool retVal = false;
             try
             {
-
+                //Null Guard
                 if (partnerLedger == null) return false;
                 string query = string.Empty;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_PartnerId"] = partnerLedger.Partner?.Id;
-                parameters["@v_InvoiceId"] = partnerLedger.InvoiceId;
-                parameters["@v_InvoiceGuid"] = partnerLedger.InvoiceGuid;
-                parameters["@v_IsBalancePayable"] = partnerLedger.IsBalancePayable;
-                parameters["@v_AmountRecivable"] = partnerLedger.AmountReciveable;
-                parameters["@v_AmountPayable"] = partnerLedger.AmountPayable;
-                parameters["@v_IsAmountRecived"] = partnerLedger?.IsAmountReceived ?? true;
-                parameters["@v_IsAmountPaid"] = partnerLedger?.IsAmountPaid ?? false;
-                parameters["@v_BalanceAmount"] = partnerLedger.BalanceAmount;
+                parameters["@v_PaymentId"] = partnerLedger?.Payment?.Id;
+                parameters["@v_CurrentBalance"] = partnerLedger.CurrentBalance;
+                parameters["@v_CurrentBalanceType"] = partnerLedger?.CurrentBalanceType;
                 parameters["@v_Description"] = partnerLedger.Description;
                 parameters["@v_IsActive"] = partnerLedger.IsActive = true;
-                parameters["@v_IsDeleted"] = partnerLedger.IsDeleted = false;
                 parameters["@v_CreatedAt"] = partnerLedger.CreatedAt == null ? DateTime.Now : partnerLedger.CreatedAt;
                 parameters["@v_CreatedBy"] = partnerLedger.CreatedBy == null ? DBNull.Value : (object)partnerLedger.CreatedBy;
                 parameters["@v_UpdatedAt"] = partnerLedger.UpdatedAt == null ? DBNull.Value : (object)partnerLedger.UpdatedAt;
                 parameters["@v_UpdatedBy"] = partnerLedger.UpdatedBy == null ? DBNull.Value : (object)partnerLedger.UpdatedBy;
 
-                query = @"INSERT INTO PartnerLedger(PartnerId,InvoiceId,InvoiceGuid,IsBalancePayable,AmountReciveable,AmountPayable,IsAmountRecived,IsAmountPaid,BalanceAmount,Description,IsActive,IsDeleted,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
-                                    VALUES(@v_PartnerId,@v_InvoiceId,@v_InvoiceGuid,@v_IsBalancePayable,@v_AmountReciveable,@v_AmountPayable,@v_BalanceAmount,@v_Description,@v_IsActive,@v_IsDeleted,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy);";
+                query = @"INSERT INTO PartnerLedger(PartnerId,PaymentId,CuurentBalance,CurrentBalanceType,Description,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                    VALUES(@v_PartnerId,@v_PaymentId,@v_CurrentBalance,@v_CurrentBalanceType,@v_Description,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy);";
                 var result = await Repository.NonQueryAsync(query: query, parameters: parameters);
                 retVal = result > 0 ? true : false;
             }

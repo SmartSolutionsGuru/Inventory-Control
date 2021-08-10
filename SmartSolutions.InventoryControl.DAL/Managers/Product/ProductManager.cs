@@ -102,9 +102,17 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
         public async Task<ProductModel> GetLastAddedProduct()
         {
             var product = new ProductModel();
+            string query = string.Empty;
             try
             {
-                string query = @"SELECT * FROM  Product Order by 1 DESC LIMIT 1";
+                if (Repository.Type == DBTypes.SQLITE)
+                {
+                     query = @"SELECT * FROM  Product Order by 1 DESC LIMIT 1";
+                }
+                else if(Repository.Type.Equals(DBTypes.SQLServer))
+                {
+                    query = @"SELECT TOP 1 *  FROM Product ORDER BY Id DESC";
+                }
                 var values = await Repository.QueryAsync(query);
                 var value = values.FirstOrDefault();
                 product.ProductType = new ProductTypeModel();
@@ -127,7 +135,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
             }
             catch (Exception ex)
             {
-                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return product;
         }

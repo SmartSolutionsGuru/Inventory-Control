@@ -35,7 +35,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Settings
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_settingId"] = Id;
-                string query = "SELECT * FROM SystemSetting WHERE SettingKey = @v_settingId";
+                string query = "SELECT * FROM SystemSettings WHERE SettingKey = @v_settingId";
                 var values = await Repository.QueryAsync(query: query, parameters: parameters);
                 if (values != null || values?.Count > 0)
                 {
@@ -63,7 +63,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Settings
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_settingKey"] = key;
-                string query = "SELECT * FROM SystemSetting WHERE SettingKey = @v_settingKey";
+                string query = "SELECT * FROM SystemSettings WHERE SettingKey = @v_settingKey";
                 var values = await Repository.QueryAsync(query: query, parameters: parameters);
                 if(values != null || values?.Count > 0)
                 {

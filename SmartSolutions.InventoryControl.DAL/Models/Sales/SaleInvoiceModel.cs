@@ -77,11 +77,11 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Sales
         /// <summary>
         /// Amount Of Payment which is Paid Or Recived
         /// </summary>
-        public double Payment { get; set; }
+        public decimal Payment { get; set; }
         /// <summary>
         /// Grand Total Of transaction
         /// </summary>
-        public double InvoiceTotal { get; set; }
+        public decimal InvoiceTotal { get; set; }
 
         #endregion
     }

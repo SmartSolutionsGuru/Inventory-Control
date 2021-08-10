@@ -37,7 +37,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductColor
                     string query = string.Empty;
                     Dictionary<string, object> parameters = new Dictionary<string, object>();
                     parameters["@v_Color"] = model.Color;
-                    parameters["@v_Name"] = model?.Name;
+                    parameters["@v_Name"] = model?.Name ?? model.Color;
                     parameters["@v_IsActive"] = model.IsActive = true;
                     parameters["@v_CreatedAt"] = model.CreatedAt == null ? DateTime.Now : model.CreatedAt;
                     parameters["@v_CreatedBy"] = model.CreatedBy == null ? DBNull.Value : (object)model.CreatedBy;
@@ -46,8 +46,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductColor
                     query = @"INSERT INTO ProductColor 
                              (Color,Name,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
                             VALUES(@v_Color,@v_Name,@v_IsActive ,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
-                    await Repository.QueryAsync(query, parameters: parameters);
-                    retVal = true;
+                    var result = await Repository.NonQueryAsync(query, parameters: parameters);
+                    retVal = result > 0 ? true : false;
                 }
             }
             catch (Exception ex)
@@ -157,7 +157,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductColor
                     parameters["@v_UpdatedBy"] = model.UpdatedBy;
                     string query = string.Empty;
                     query = @"UPDATE ProductColor SET Name,Color,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy VALUES";
-                    await Repository.QueryAsync(query:query,parameters:parameters);
+                    await Repository.QueryAsync(query: query, parameters: parameters);
                 }
             }
             catch (Exception ex)

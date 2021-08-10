@@ -6,6 +6,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Payments
 {
     public interface IPaymentTypeManager
     {
-        Task<IEnumerable<PaymentTypeModel>> GetAllPaymentTypesAsync();
+        Task<IEnumerable<PaymentTypeModel>> GetAllPaymentMethodsAsync();
+        Task<PaymentTypeModel> GetPaymentMethodByIdAsync(int? Id);
     }
 }

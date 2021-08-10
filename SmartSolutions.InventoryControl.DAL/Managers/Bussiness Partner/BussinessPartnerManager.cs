@@ -1,8 +1,10 @@
-﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
+﻿using SmartSolutions.InventoryControl.DAL.Models;
+using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.BooleanUtils;
 using SmartSolutions.Util.DateAndTimeUtils;
 using SmartSolutions.Util.DictionaryUtils;
+using SmartSolutions.Util.EnumUtils;
 using SmartSolutions.Util.LogUtils;
 using SmartSolutions.Util.NumericUtils;
 using System;
@@ -38,16 +40,11 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 string mobilenumbers = string.Empty;
+                parameters["@v_PartnerTypeId"] = partner?.PartnerType?.Id;
+                parameters["@v_PartnerCategoryId"] = partner?.PartnerCategory?.Id;
                 parameters["@v_Name"] = partner?.Name;
                 parameters["@v_BussinessName"] = partner?.BussinessName;
                 parameters["@v_PhoneNumber"] = partner?.PhoneNumber;
-                parameters["@v_Address"] = partner?.Address;
-                parameters["@v_City"] = partner?.City;
-                parameters["@v_IsActive"] = partner.IsActive = true;
-                parameters["@v_CreatedAt"] = partner.CreatedAt == null ? DateTime.Now : partner.CreatedAt;
-                parameters["@v_CreatedBy"] = partner.CreatedBy == null ? DBNull.Value : (object)partner.CreatedBy;
-                parameters["@v_UpdatedAt"] = partner.UpdatedAt == null ? DBNull.Value : (object)partner.UpdatedAt;
-                parameters["@v_UpdatedBy"] = partner.UpdatedBy == null ? DBNull.Value : (object)partner.UpdatedBy;
                 if (partner?.MobileNumbers?.Count > 0)
                 {
                     foreach (var item in partner?.MobileNumbers)
@@ -57,9 +54,16 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                     mobilenumbers = mobilenumbers.Remove(mobilenumbers.Length - 1);
                 }
                 parameters["@v_MobileNumbers"] = mobilenumbers;
+                parameters["@v_Address"] = partner?.Address == null ? DBNull.Value : (object)partner.Address;
+                parameters["@v_CityId"] = partner?.City?.Id;
+                parameters["@v_IsActive"] = partner.IsActive = true;
+                parameters["@v_CreatedAt"] = partner.CreatedAt == null ? DateTime.Now : partner.CreatedAt;
+                parameters["@v_CreatedBy"] = partner.CreatedBy == null ? DBNull.Value : (object)partner.CreatedBy;
+                parameters["@v_UpdatedAt"] = partner.UpdatedAt == null ? DBNull.Value : (object)partner.UpdatedAt;
+                parameters["@v_UpdatedBy"] = partner.UpdatedBy == null ? DBNull.Value : (object)partner.UpdatedBy;
                 string query = string.Empty;
-                query = @"INSERT INTO BussinessPartner (Name,BussinessName,PhoneNumber,MobileNumber,City,Address,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
-                                                  VALUES(@v_Name,@v_BussinessName,@v_PhoneNumber,@v_MobileNumbers,@v_City,@v_Address,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy);";
+                query = @"INSERT INTO BussinessPartner (PartnerTypeId,PartnerCategoryId,Name,BussinessName,PhoneNumber,MobileNumber,CityId,Address,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                                  VALUES(@v_PartnerTypeId,@v_PartnerCategoryId,@v_Name,@v_BussinessName,@v_PhoneNumber,@v_MobileNumbers,@v_CityId,@v_Address,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy);";
                 var result = await Repository.NonQueryAsync(query, parameters: parameters);
                 retVal = result > 0 ? true : false;
             }
@@ -88,7 +92,10 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                         partner.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                         partner.Name = value?.GetValueFromDictonary("Name")?.ToString();
                         partner.BussinessName = value?.GetValueFromDictonary("BussinessName")?.ToString();
-                        partner.City = value?.GetValueFromDictonary("City")?.ToString();
+                        partner.City = new Models.Region.CityModel
+                        {
+                            Id = value?.GetValueFromDictonary("CityId")?.ToString().ToNullableInt(),
+                        };
                         partner.PhoneNumber = value?.GetValueFromDictonary("PhoneNumber")?.ToString();
                         partner.Address = value?.GetValueFromDictonary("Address")?.ToString();
                         partner.CreatedAt = value?.GetValueFromDictonary("CreatedAt")?.ToString()?.ToNullableDateTime();
@@ -122,7 +129,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 partner.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                 partner.Name = value?.GetValueFromDictonary("Name")?.ToString();
                 partner.BussinessName = value?.GetValueFromDictonary("BussinessName")?.ToString();
-                partner.City = value?.GetValueFromDictonary("City")?.ToString();
+                partner.City = new Models.Region.CityModel { Id = value?.GetValueFromDictonary("City")?.ToString().ToNullableInt() };
                 partner.PhoneNumber = value?.GetValueFromDictonary("PhoneNumber")?.ToString();
                 partner.Address = value?.GetValueFromDictonary("Address")?.ToString();
                 var mobileNumber = value?.GetValueFromDictonary("MobileNumber")?.ToString();
@@ -139,8 +146,13 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             BussinessPartnerModel partner = null;
             try
             {
+                string query = string.Empty;
                 partner = new BussinessPartnerModel();
-                string query = @"SELECT * FROM  BussinessPartner Order by 1 DESC LIMIT 1";
+                if (Repository.Type == DBTypes.SQLITE)
+                    query = @"SELECT * FROM  BussinessPartner Order by 1 DESC LIMIT 1";
+                else if (Repository.Type == DBTypes.SQLServer)
+                    query = @"SELECT * FROM BussinessPartner WHERE Id = (SELECT MAX(Id) FROM BussinessPartner);";
+
                 var values = await Repository.QueryAsync(query);
                 var value = values.FirstOrDefault();
                 partner.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
@@ -178,9 +190,9 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                         var value = values.FirstOrDefault();
                         partnerLedger.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                         partnerLedger.Partner.Id = value?.GetValueFromDictonary("PartnerId")?.ToString()?.ToInt();
-                        partnerLedger.BalanceAmount = value?.GetValueFromDictonary("BalnceAmount")?.ToString()?.ToNullableInt() ?? 0;
+                        partnerLedger.CurrentBalance = value?.GetValueFromDictonary("CurrentBalance")?.ToString()?.ToNullableInt() ?? 0;
                         partnerLedger.IsActive = value?.GetValueFromDictonary("IsActive")?.ToString()?.ToNullableBoolean() ?? false;
-                        partnerLedger.IsBalancePayable = value?.GetValueFromDictonary("IsBalancePayable")?.ToString()?.ToNullableBoolean() ?? false;
+                        partnerLedger.CurrentBalanceType = value?.GetValueFromDictonary("CurrentBalanceType")?.ToString()?.ToEnum<PaymentType>() ?? PaymentType.None;
                     }
                 }
             }

@@ -1,11 +1,9 @@
-﻿using SmartSolutions.InventoryControl.DAL.Models.Inventory;
-using SmartSolutions.InventoryControl.DAL.Models.Stock;
+﻿using SmartSolutions.InventoryControl.DAL.Models.Stock;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockIn
@@ -23,6 +21,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockIn
             Repository = GetRepository<StockInModel>();
         }
         #endregion
+
+        #region ADD
         public async Task<bool> AddBulkStockInAsync(List<StockInModel> models)
         {
             bool retVal = false;
@@ -74,10 +74,21 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockIn
             }
             return retVal;
         }
+        #endregion
 
-        public Task<bool> RemoveBulkStockInAsync(List<StockInModel> models)
+        #region Remove
+        public async Task<bool> RemoveBulkStockInAsync(List<StockInModel> models)
         {
-            throw new NotImplementedException();
+            bool retVal = false;
+            try
+            {
+                await Repository.NonQueryAsync();
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
         }
 
         public async Task<bool> RemoveStockInAsync(int? Id)
@@ -98,5 +109,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockIn
             }
             return retVal;
         }
+        #endregion
     }
 }

@@ -107,7 +107,7 @@
                              Width="280"
                              Margin="10 0 0 0"
                              Padding="8 0 0 0"
-                             Text="{Binding User.FirstName,Mode=TwoWay}"
+                             Text="{Binding User.FullName,Mode=TwoWay}"
                              TextAlignment="Left"
                              FontFamily="{StaticResource MediumFont}"
                              FontSize="{StaticResource NormalSize}"
@@ -185,9 +185,9 @@
                                         <Setter Property="BorderThickness" Value="1"/>
                                         <Setter Property="ControlExtensions:PasswordHelper.PasswordIconVisibility" Value="Visible"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding CanReTypePassword}" Value="True">
+                                    <!--<DataTrigger Binding="{Binding CanReTypePassword}" Value="True">
                                         <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkText" Value="Enter Password"/>
-                                    </DataTrigger>
+                                    </DataTrigger>-->
                                 </Style.Triggers>
                             </Style>
                         </PasswordBox.Style>
@@ -234,9 +234,9 @@
                                         <Setter Property="BorderThickness" Value="1"/>
                                         <Setter Property="ControlExtensions:PasswordHelper.PasswordIconVisibility" Value="Visible"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding CanReTypePassword}" Value="True">
+                                    <!--<DataTrigger Binding="{Binding CanReTypePassword}" Value="True">
                                         <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkText" Value="Enter Password"/>
-                                    </DataTrigger>
+                                    </DataTrigger>-->
                                 </Style.Triggers>
                             </Style>
                         </PasswordBox.Style>

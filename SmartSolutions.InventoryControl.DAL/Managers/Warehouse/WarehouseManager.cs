@@ -6,7 +6,6 @@ using SmartSolutions.Util.NumericUtils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.DAL.Managers.Warehouse
@@ -21,7 +20,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Warehouse
         #region Constructor
         public WarehouseManager()
         {
-            Repository = GetRepository<WarehouseIssueModel>();
+            Repository = GetRepository<WarehouseModel>();
         }
         #endregion
 
@@ -55,6 +54,31 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Warehouse
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return warehouses;
+        }
+
+        /// <summary>
+        /// verifies that with this name Already Exist Or Not
+        /// </summary>
+        /// <param name="warehouseName"></param>
+        /// <returns>true if Exist</returns>
+        public async Task<bool> IsWarehouseNameAlreadyExist(string warehouseName)
+        {
+            if (string.IsNullOrEmpty(warehouseName)) return false;
+            bool retVal = false;
+            try
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_Name"] = warehouseName;
+                string query = @"SELECT * FROM Warehouses WHERE [Name] = @v_Name";
+                var values = await Repository.QueryAsync(query:query,parameters:parameters);
+                if (values != null || values?.Count > 0)
+                    return true;
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
         }
 
         public async Task<bool> SaveWarehouseAsync(WarehouseModel warehouse)

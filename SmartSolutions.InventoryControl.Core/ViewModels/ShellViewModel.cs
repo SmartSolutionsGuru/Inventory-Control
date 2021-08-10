@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Microsoft.SqlServer.Management.Smo;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels
 {
@@ -24,7 +25,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private string DirectoryName = "Smart Solutions";
         private readonly IDialogManager _dialog;
         private static string dbFile = null;
-        private readonly INotificationManager _notificationManager;
+        //private readonly INotificationManager _notificationManager;
         #endregion
 
         #region Constructor
@@ -43,7 +44,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             _eventAggregator = eventAggregator;
             _windowManager = windowManager;
             _dialog = dialogManager;
-            //_notificationManager = notificationManager;
+           // _notificationManager = notificationManager;
         }
         #endregion
 
@@ -75,7 +76,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             base.OnActivate();
             _eventAggregator.Subscribe(this);
+            //TODO: This Will be Work if login As Admin
+            //var isDbExist = VerifyDatabaseExist();
+            //if (isDbExist)
+            //{
+            //    var result = InitializeDatabaseConnection();
+            //}
+            //else
+            //{
+                    //TODO : here we Run The Script For Creating Database
+            //}
             var result = InitializeDatabaseConnection();
+
         }
         protected override void OnViewLoaded(object view)
         {
@@ -87,6 +99,20 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             base.OnDeactivate(close);
             _eventAggregator.Unsubscribe(this);
+        }
+        private bool VerifyDatabaseExist()
+        {
+            bool retVal = false;
+            try
+            {
+                //var dbExists = new Server(serverOrInstanceName).Databases.Contains(dataBaseName);
+                retVal = new Server(Environment.MachineName).Databases.Contains("SmartSolutions.InventoryControl");
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
         }
         private bool InitializeDatabaseConnection()
         {

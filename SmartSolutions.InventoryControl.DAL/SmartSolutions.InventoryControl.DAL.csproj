@@ -13,4 +13,9 @@
     <ProjectReference Include="..\SmartSolutions.Util\SmartSolutions.Util.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resources\Configs\" />
+    <Folder Include="Resources\Queries\" />
+  </ItemGroup>
+
 </Project>

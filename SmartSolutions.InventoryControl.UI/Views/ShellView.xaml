@@ -6,6 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views"
         xmlns:converter="clr-namespace:SmartSolutions.InventoryControl.UI.Converters"
+        xmlns:controls="clr-namespace:Notifications.Wpf.Controls;assembly=Notifications.Wpf"
         xmlns:Ap="clr-namespace:SmartSolutions.InventoryControl.UI.AttachedProperties"
         mc:Ignorable="d"
         Title="InventoryControl"
@@ -14,6 +15,7 @@
         Activated="OnActivated"
         Deactivated="OnDeactivated"
         WindowState="Normal"
+        WindowStartupLocation="CenterScreen"
         AllowsTransparency="True" 
         WindowStyle="None">
     <Window.Resources>
@@ -324,7 +326,7 @@
                             HorizontalContentAlignment="Stretch" 
                             IsHitTestVisible="True"
                             />
-            
+            <controls:NotificationArea x:Name="WindowArea" Position="BottomRight" MaxItems="3"/>
             <!--#endregion-->
             
         </Grid>

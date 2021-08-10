@@ -3,10 +3,12 @@ using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.DAL.Managers.Purchase
 {
+    [Export(typeof(IPurchaseOrderDetailManager)),PartCreationPolicy(CreationPolicy.NonShared)]
     public class PurchaseOrderDetailManager : BaseManager, IPurchaseOrderDetailManager
     {
         #region Private Members
@@ -14,6 +16,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Purchase
         #endregion
 
         #region Constructor
+        [ImportingConstructor]
         public PurchaseOrderDetailManager()
         {
             Repository = GetRepository<PurchaseOrderDetailModel>();
