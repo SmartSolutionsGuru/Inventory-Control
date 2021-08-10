@@ -4,12 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cal="http://www.caliburnproject.org"
+             xmlns:autoComplete="http://wpfcontrols.com/"
+             xmlns:models="clr-namespace:SmartSolutions.InventoryControl.DAL.Models.Region;assembly=SmartSolutions.InventoryControl.DAL"
              xmlns:micro="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro"
              xmlns:viewModel="clr-namespace:SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner;assembly=SmartSolutions.InventoryControl.Core"
              xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views.BussinessPartner"
              xmlns:ControlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
              mc:Ignorable="d"
              d:DesignHeight="768" d:DesignWidth="1366">
+    <UserControl.Resources>
+        <DataTemplate x:Key="CityNameTemplate" DataType="{x:Type models:CityModel}">
+            <TextBlock Text="{Binding Name,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}"/>
+        </DataTemplate>
+    </UserControl.Resources>
     <Border>
         <Grid Background="{StaticResource PureWhiteColorBrush}">
             <Grid.RowDefinitions>
@@ -183,6 +190,8 @@
                         <TextBox Grid.Column="0" 
                              Height="45" 
                              Width="250"
+                             FontFamily="{StaticResource MediumFont}"
+                                 FontSize="{StaticResource MediumSize}"
                              Text="{Binding NewBussinessPartner.BussinessName,Mode=TwoWay}"
                              ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Bussiness Name"
                              Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
@@ -204,17 +213,21 @@
                             </TextBlock.Style>
                         </TextBlock>
                         <TextBox Grid.Column="1" 
-                             Height="45" 
-                             Width="250"
-                             Text="{Binding NewBussinessPartner.Name,Mode=TwoWay}"
-                             ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Full Name"
-                             Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
+                                 Height="45" 
+                                 Width="250"
+                                 FontFamily="{StaticResource MediumFont}"
+                                 FontSize="{StaticResource MediumSize}"
+                                 Text="{Binding NewBussinessPartner.Name,Mode=TwoWay}"
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Full Name"
+                                 Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2" Margin="0 0 40 0" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <TextBlock Text="Enter Phone Number" Margin="0 0 0 10" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource GrayColorBrush}"/>
                         <TextBox Grid.Column="2" 
                              Height="45" 
                              Width="250"
+                                 FontFamily="{StaticResource MediumFont}"
+                                 FontSize="{StaticResource NormalSize}"
                              Text="{Binding NewBussinessPartner.PhoneNumber,Mode=TwoWay}"
                              ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Phone Number"
                              Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
@@ -259,6 +272,8 @@
                             <TextBox Style="{StaticResource TextBoxVisibilityPathIconStyle}"
                                              Height="45"
                                              Width="250"
+                                     FontFamily="{StaticResource MediumFont}"
+                                     FontSize="{StaticResource NormalSize}"
                                              Text="{Binding PartnerMobileNumber,Mode=TwoWay}"
                                              VerticalAlignment="Top"
                                              Margin="0 10 0 0"
@@ -308,13 +323,28 @@
                                    HorizontalAlignment="Center"
                                    Margin="0 0 130 0"
                                    FontFamily="{StaticResource MediumFont}"/>
-                        <TextBox Height="50" 
+                        <!--<TextBox Height="50" 
                                  Width="250"
                                  Text="{Binding NewBussinessPartner.City,Mode=TwoWay}"
                                  Margin="0 10 0 0"
                                  Style="{StaticResource TextBoxVisibilityPathIconStyle}"
-                                 ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter City Name"/>
-                    </StackPanel>
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter City Name"/>-->
+                            <autoComplete:AutoCompleteTextBox Grid.Column="1" 
+                                                      Height="50"
+                                                      Width="250"
+                                                      Padding="8 0 0 0"
+                                                      Opacity="0.7"
+                                                      Watermark="Enter Vender Name"
+                                                      DisplayMember="Name"
+                                                      FontFamily="{StaticResource MediumFont}"
+                                                      Provider="{Binding CitySuggetion,Mode=TwoWay}"
+                                                      SelectedItem="{Binding SelectedCity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                      ItemTemplate="{StaticResource CityNameTemplate}"
+                                                      FontSize="{StaticResource MediumSize}"
+                                                              
+                                                      Foreground="{StaticResource GrayColorBrush}"
+                                                      Style="{StaticResource AutoCompleteTextBoxStyle}"/>
+                        </StackPanel>
                         <StackPanel Grid.Row="1" Margin="0 0 30 0">
                             <TextBlock Text="Select Amount Type" Margin="40 0 0 5" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}"/>
                             <ComboBox Height="50" Width="250" Margin="0 5 0 0" ItemsSource="{Binding AmountType,Mode=OneWay}" SelectedItem="{Binding SelectedAmountType,Mode=TwoWay}" ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Payment Type" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" Style="{StaticResource BaseComboBox}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7"/>
@@ -353,7 +383,7 @@
                     <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
                         <Button x:Name="Cancel"
                             Height="45" 
-                            Width="100"
+                            Width="150"
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Center"
                             Margin="0 0 5 0"
@@ -363,7 +393,7 @@
                         <Button x:Name="SavePartner"
                             cal:Message.Attach="SavePartner($dataContext)"
                             Height="45" 
-                            Width="100"
+                            Width="150"
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Center"
                             Margin="5 0 0 0"

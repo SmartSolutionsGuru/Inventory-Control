@@ -163,7 +163,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     if (resultPartner)
                         NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Partner Added Successfully", Type = Notifications.Wpf.NotificationType.Success }, areaName: "WindowArea");
                     else
-                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title= "Error",Message="Sorry Partner Not Added",Type= Notifications.Wpf.NotificationType.Error});
+                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Sorry Partner Not Added", Type = Notifications.Wpf.NotificationType.Error });
                     if (InitialAmount > 0)
                     {
                         if (resultPartner)
@@ -179,21 +179,24 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                             var paymentResult = await _paymentManager.AddPaymentAsync(payment);
                             if (paymentResult)
                             {
-                                NotificationManager.Show(new Notifications.Wpf.NotificationContent {Title = "Success",Message = "Inital Amount Added Successfully" , Type = Notifications.Wpf.NotificationType.Success});
+                                NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Inital Amount Added Successfully", Type = Notifications.Wpf.NotificationType.Success });
                                 //Here we Update the Partner Ledger Account
                                 var partnerLedger = new BussinessPartnerLedgerModel();
                                 partnerLedger.Partner = payment.Partner ?? await _bussinessPartnerManager.GetLastAddedPartner();
-                                partnerLedger.Payment =await  _paymentManager.GetLastPaymentByPartnerId(payment?.Partner.Id);
+                                partnerLedger.Payment = await _paymentManager.GetLastPaymentByPartnerId(payment?.Partner.Id);
                                 partnerLedger.CurrentBalance = payment.PaymentAmount;
                                 partnerLedger.CurrentBalanceType = payment.PaymentType;
                                 partnerLedger.Description = "Initial Deposit / Balance";
                                 partnerLedger.CreatedBy = AppSettings.LoggedInUser.DisplayName;
-                               var partnerResult =  await _partnerLedgerManager.AddPartnerBalance(partnerLedger);
+                                var partnerResult = await _partnerLedgerManager.AddPartnerBalance(partnerLedger);
                                 //Display user Friendly Toast
-                                if(partnerResult)
-                                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Partner Ledger Updated Successfully",Type = Notifications.Wpf.NotificationType.Success });
+                                if (partnerResult)
+                                {
+                                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Partner Ledger Updated Successfully", Type = Notifications.Wpf.NotificationType.Success });
+                                    ClearPartnerDetails();
+                                }
                                 else
-                                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Partner Ledger Not Updated",Type = Notifications.Wpf.NotificationType.Error });
+                                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Partner Ledger Not Updated", Type = Notifications.Wpf.NotificationType.Error });
                             }
                             else
                                 NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Inital Amount Not Added ", Type = Notifications.Wpf.NotificationType.Error });
@@ -240,94 +243,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         #endregion
 
         #region Private Methods
-        //private async Task<bool> UpdatePartnerLedgerAsync(object model)
-        //{
-        //    bool retVal = false;
-        //    try
-        //    {
-        //        if (model == null) return false;
-        //        if (model is PurchaseInvoiceModel)
-        //        {
-        //            var InitialBalanceInvoice = model as PurchaseInvoiceModel;
-        //            PartnerLedger = new BussinessPartnerLedgerModel();
-        //            PartnerLedger.Partner = await _bussinessPartnerManager.GetLastAddedPartner();
-        //            PartnerLedger.InvoiceId = InitialBalanceInvoice.InvoiceId;
-        //            PartnerLedger.InvoiceGuid = InitialBalanceInvoice.InvoiceGuid;
-        //            if (!string.IsNullOrEmpty(SelectedAmountType))
-        //            {
-        //                var balanceAmount = await _partnerLedgerManager.GetPartnerLedgerLastBalance(PartnerLedger.Partner.Id.Value);
-        //                if (SelectedAmountType.Equals("Payable"))
-        //                {
-        //                    PartnerLedger.IsBalancePayable = true;
-        //                    PartnerLedger.AmountPayable = (int)InitialAmount;
-        //                    PartnerLedger.BalanceAmount = (int)InitialAmount;
-        //                }
-        //                else if (SelectedAmountType.Equals("Receviable"))
-        //                {
-        //                    PartnerLedger.IsBalancePayable = false;
-        //                    PartnerLedger.AmountReciveable = (int)InitialAmount;
-        //                    PartnerLedger.BalanceAmount = (int)InitialAmount;
-        //                }
-        //                //Here we  we Remove the Transaction in Case Of Not Adding the Amount To Partner Ledger
-        //                var balnceResult = await _partnerLedgerManager.AddPartnerBalance(PartnerLedger);
-        //                if (balnceResult == false)
-        //                {
-        //                    await _purchaseInvoiceManager.RemoveLastPurchaseInvoiceAsync(InitialBalanceInvoice.InvoiceGuid);
-        //                    ClearPartnerDetails();
-        //                    //TODO: here we Display User Friendly Message that Inital Balance is Not Updated
-        //                    await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Sorry we are Unable To Update Inital Balance Please Try Again", options: Dialogs.MessageBoxOptions.Ok);
-        //                }
-        //                else
-        //                {
-        //                    ClearPartnerDetails();
-        //                }
-        //            }
-        //        }
-        //        else if (model is SaleInvoiceModel)
-        //        {
-        //            var InitialBalanceInvoice = model as PurchaseInvoiceModel;
-        //            PartnerLedger = new BussinessPartnerLedgerModel();
-        //            PartnerLedger.Partner = await _bussinessPartnerManager.GetLastAddedPartner();
-        //            PartnerLedger.InvoiceId = InitialBalanceInvoice.InvoiceId;
-        //            PartnerLedger.InvoiceGuid = InitialBalanceInvoice.InvoiceGuid;
-        //            if (!string.IsNullOrEmpty(SelectedAmountType))
-        //            {
-        //                var balanceAmount = await _partnerLedgerManager.GetPartnerLedgerLastBalance(PartnerLedger.Partner.Id.Value);
-        //                if (SelectedAmountType.Equals("Payable"))
-        //                {
-        //                    PartnerLedger.IsBalancePayable = true;
-        //                    PartnerLedger.AmountPayable = (int)InitialAmount;
-        //                    PartnerLedger.BalanceAmount = (int)InitialAmount;
-        //                }
-        //                else if (SelectedAmountType.Equals("Receviable"))
-        //                {
-        //                    PartnerLedger.IsBalancePayable = false;
-        //                    PartnerLedger.AmountReciveable = (int)InitialAmount;
-        //                    PartnerLedger.BalanceAmount = (int)InitialAmount;
-        //                }
-        //                //Here we  we Remove the Transaction in Case Of Not Adding the Amount To Partner Ledger
-        //                var balnceResult = await _partnerLedgerManager.AddPartnerBalance(PartnerLedger);
-        //                if (balnceResult == false)
-        //                {
-        //                    await _purchaseInvoiceManager.RemoveLastPurchaseInvoiceAsync(InitialBalanceInvoice.InvoiceGuid);
-        //                    ClearPartnerDetails();
-        //                    //TODO: here we Display User Friendly Message that Inital Balance is Not Updated
-        //                    await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Sorry we are Unable To Update Inital Balance Please Try Again", options: Dialogs.MessageBoxOptions.Ok);
-        //                }
-        //                else
-        //                {
-        //                    ClearPartnerDetails();
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
-        //    }
-        //    return retVal;
-        //}
+      
         #endregion
 
         #region Protected Methods
