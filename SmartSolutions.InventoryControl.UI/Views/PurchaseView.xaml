@@ -53,7 +53,7 @@
                            FontSize="{StaticResource MediumSize}"
                            FontFamily="{StaticResource MediumFont}"
                            Foreground="{StaticResource GrayColorBrush}"/>
-                <TextBlock Text="{Binding City,Mode=OneWay}"
+                <TextBlock Text="{Binding City.Name,Mode=OneWay}"
                            Grid.Row="1"
                            FontSize="{StaticResource SmallSize}"
                            FontFamily="{StaticResource MediumFont}"

@@ -10,7 +10,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
     {
         Task<bool> AddBussinesPartnerAsync(BussinessPartnerModel partner);
         Task<IEnumerable<BussinessPartnerModel>> GetAllBussinessPartnersAsync();
-        Task<BussinessPartnerModel> GetBussinessPartnerAsync(int? Id);
+        Task<BussinessPartnerModel> GetBussinessPartnerByIdAsync(int? Id);
         Task<bool> UpdateBussinessPartnerAsync(BussinessPartnerModel model);
         Task<bool> RemoveBussinessPartnerAsync(int? Id);
         Task<BussinessPartnerLedgerModel> GetPartnerCurrentBalanceAsync(int partnerId);

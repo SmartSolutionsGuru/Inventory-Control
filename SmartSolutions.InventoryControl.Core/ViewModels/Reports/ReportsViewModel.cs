@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartSolutions.InventoryControl.DAL.Managers.Product;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Text;
@@ -10,14 +11,30 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
     {
 
         #region Private Members
-
+        private readonly IProductManager _productManager;
         #endregion
 
         #region Costructor
         [ImportingConstructor]
-        public ReportsViewModel()
+        public ReportsViewModel(IProductManager productManager)
         {
+            _productManager = productManager;
+        }
+        #endregion
 
+        #region Methods
+        protected override void OnActivate()
+        {
+            base.OnActivate();
+            ReportsCategory = new List<string> 
+            {
+                "Bussiness Partners",
+                "Purchase",
+                "Products",
+                "Sales",
+                "Payments",
+                "Bank Accounts"
+            };
         }
         #endregion
 

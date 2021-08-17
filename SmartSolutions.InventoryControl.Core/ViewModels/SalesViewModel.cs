@@ -239,7 +239,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                         var partnerLedger = new BussinessPartnerLedgerModel();
                                         if (Payment > 0)
                                         {
-                                            var result = await _partnerLedgerManager.GetPartnerLedgerLastBalance(SelectedPartner?.Id ?? 0);
+                                            var result = await _partnerLedgerManager.GetPartnerLedgerLastBalanceAsync(SelectedPartner?.Id ?? 0);
                                             if (result != null)
                                             {
                                                 //We decicde on this flag either payment is Debit Or credit
@@ -261,7 +261,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                         partnerLedger.CurrentBalanceType =  DAL.Models.PaymentType.CR;
                                                 }
                                             }
-                                            await _partnerLedgerManager.AddPartnerBalance(partnerLedger);
+                                            await _partnerLedgerManager.AddPartnerBalanceAsync(partnerLedger);
                                         }
                                     }
                                     else
@@ -298,7 +298,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     PreviousBalance = 0;
                     return;
                 }
-                var resultPartner = await _partnerLedgerManager.GetPartnerLedgerLastBalance(SelectedPartner.Id.Value);
+                var resultPartner = await _partnerLedgerManager.GetPartnerLedgerLastBalanceAsync(SelectedPartner.Id.Value);
                 if (resultPartner != null)
                     PreviousBalance = resultPartner.CurrentBalance.ToString()?.ToDecimal() ?? 0;
                 GrandTotal = PreviousBalance + InvoiceTotal;

@@ -24,12 +24,12 @@
                 <TextBlock Text="{Binding Path=Name}"
                            FontSize="{StaticResource MediumSize}"
                            FontFamily="{StaticResource MediumFont}"
-                           Foreground="{StaticResource GrayColorBrush}"/>
-                <TextBlock Text="{Binding City,Mode=OneWay}"
-                           Grid.Row="1"
+                           Foreground="{StaticResource LightGrayColorBrush}"/>
+                <TextBlock Grid.Row="1"
+                           Text="{Binding Path= City.CityName}"
                            FontSize="{StaticResource SmallSize}"
                            FontFamily="{StaticResource MediumFont}"
-                           Foreground="{StaticResource LightGrayColorBrush}"/>
+                           Foreground="{StaticResource GrayColorBrush}"/>
                 <TextBlock  Grid.Row="2"
                             Text="{Binding PhoneNumber,Mode=OneWay}"
                             FontSize="{StaticResource SmallSize}"
@@ -55,7 +55,8 @@
                        FontFamily="{StaticResource MediumFont}" 
                        FontSize="{StaticResource HeadingSize}" 
                        Foreground="{StaticResource GreenColorBrush}"/>
-            <Button Grid.Row="1" 
+            <Button x:Name="GetPartnerBalanceSheet"
+                    Grid.Row="1" 
                     Height="70" 
                     Width="350" 
                     Background="{StaticResource BlueColorBrush}" 
@@ -67,7 +68,7 @@
                     <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
                         <Setter Property="Content">
                             <Setter.Value>
-                                <TextBlock FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource SubHeadingSize}" Foreground="{StaticResource PureWhiteColorBrush}"><Run Text="Amount is "/><Run Text="{Binding CurrentPartnerBalance,Mode=OneWay}"/><Run Text="{Binding AmountType,Mode=OneWay}"></Run></TextBlock>
+                                <TextBlock FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource SubHeadingSize}" Foreground="{StaticResource PureWhiteColorBrush}"><Run Text="Amount is "/><Run Text="{Binding CurrentPartnerBalance,Mode=OneWay}"/><Run Text=" "/> <Run Text="{Binding AmountType,Mode=OneWay}"></Run></TextBlock>
                             </Setter.Value>
                         </Setter>
                         <Style.Triggers>
@@ -110,7 +111,7 @@
                                  BorderThickness="1" 
                                  Height="50"
                                  ControlExtensions:MiscControlExtensions.CornerRadius="5" 
-                                 Content="Recive Amount" 
+                                 Content="Receive Amount" 
                                  HorizontalContentAlignment="Center" 
                                  VerticalContentAlignment="Center" 
                                  Margin="30,10"

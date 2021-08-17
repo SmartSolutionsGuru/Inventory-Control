@@ -59,7 +59,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Payments
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_Id"] = Id;
                 string query = @"SELECT * FROM PaymentType WHERE Id = @v_Id AND IsActive = 1";
-                var values = await Repository.QueryAsync(query);
+                var values = await Repository.QueryAsync(query,parameters:parameters);
                 if (values != null || values?.Count > 0)
                 {
                     foreach (var value in values)

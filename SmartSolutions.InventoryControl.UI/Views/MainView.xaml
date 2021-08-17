@@ -275,47 +275,47 @@
                         FontFamily="{StaticResource MediumFont}"
                         BorderBrush="{StaticResource LightGrayColorBrush}"
                         BorderThickness="1.5">
-                    <StackPanel Orientation="Horizontal">
-                        <Path Margin="0,5,10,5" Height="24" Data="{StaticResource Shape_Payment}" Stretch="Uniform" >
-                            <Path.Style>
-                                <Style TargetType="Path">
-                                    <Setter Property="Fill" Value="{StaticResource PureWhiteColorBrush}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsPaymentProceeded,Mode=OneWay}" Value="True">
-                                            <Setter Property="Fill" Value="{StaticResource LightGrayColorBrush}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Path.Style>
-                        </Path>
-                        <TextBlock TextAlignment="Center" Text="PAYMENTS" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="0,5" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" >
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
-                                    <Style.Triggers>
+                        <StackPanel Orientation="Horizontal">
+                            <Path Margin="0,5,10,5" Height="24" Data="{StaticResource Shape_Payment}" Stretch="Uniform" >
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Setter Property="Fill" Value="{StaticResource PureWhiteColorBrush}"/>
+                                        <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsPaymentProceeded,Mode=OneWay}" Value="True">
-                                            <Setter Property="Foreground" Value="{StaticResource LightGrayColorBrush}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </StackPanel>
-                    <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
-                            <Setter Property="Background" Value="{StaticResource LightGrayColorBrush}"/>
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
-                            <Style.Triggers>
+                                                <Setter Property="Fill" Value="{StaticResource LightGrayColorBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                            <TextBlock TextAlignment="Center" Text="PAYMENTS" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="0,5" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" >
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsPaymentProceeded,Mode=OneWay}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource LightGrayColorBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
+                                <Setter Property="Background" Value="{StaticResource LightGrayColorBrush}"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
+                                <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsPaymentProceeded,Mode=OneWay}" Value="True">
-                                    <Setter Property="Background" Value="{StaticResource PureWhiteColorBrush}"/>
-                                    <Setter Property="BorderThickness" Value="1"/>
-                                    <Setter Property="Foreground" Value="{StaticResource LightGrayColorBrush}"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
+                                        <Setter Property="Background" Value="{StaticResource PureWhiteColorBrush}"/>
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                        <Setter Property="Foreground" Value="{StaticResource LightGrayColorBrush}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
 
                     <Button Name="Reports" 
                         Grid.Row="7" 
@@ -452,20 +452,24 @@
 
                             <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" />
 
-                            <Button x:Name="UpdateDbBackup" ToolTip="Backup" Background="Transparent" Margin="{StaticResource HeaderLogoMargin}" Style="{StaticResource ContentButton}">
-                                <Path Stretch="Uniform" Data="{StaticResource Shape_Database}" Margin="{StaticResource HeaderLogoMargin}" ToolTip="{Binding PrinterName}">
-                                    <Path.Style>
-                                        <Style TargetType="Path">
-                                            <Setter Property="Fill" Value="{StaticResource GrayColorBrush}" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsDataSaved,Mode=OneWay}" Value="True">
-                                                    <Setter Property="Fill" Value="{StaticResource GreenColorBrush}" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Path.Style>
-                                </Path>
-                            </Button>
+                           <!--TODO have to Implement it Numbers-->
+                            <customControls:NotificationButton Value="{Binding TransactionCounter,Mode=OneWay}" BadgeMargin="0,-5,10,0" Height="30" Margin="0,0,0,0" Style="{StaticResource BadgeDanger}">
+                                <Button x:Name="UpdateDbBackup" ToolTip="Backup" Background="Transparent" Margin="{StaticResource HeaderLogoMargin}" Style="{StaticResource ContentButton}">
+                                    <Path Stretch="Uniform" Data="{StaticResource Shape_Database}" Margin="{StaticResource HeaderLogoMargin}" ToolTip="{Binding PrinterName}">
+                                        <Path.Style>
+                                            <Style TargetType="Path">
+                                                <Setter Property="Fill" Value="{StaticResource GrayColorBrush}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsDataSaved,Mode=OneWay}" Value="True">
+                                                        <Setter Property="Fill" Value="{StaticResource GreenColorBrush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Path.Style>
+                                    </Path>
+                                </Button>
+                            </customControls:NotificationButton>
+
                             <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" />
                             <Button x:Name="CreateUser" ToolTip="Settings" Background="Transparent" Margin="{StaticResource HeaderLogoMargin}" Style="{StaticResource ContentButton}">
                                 <Path Stretch="Uniform" Data="{StaticResource Shape_Setting}" Fill="{StaticResource GrayColorBrush}"  Width="20" />

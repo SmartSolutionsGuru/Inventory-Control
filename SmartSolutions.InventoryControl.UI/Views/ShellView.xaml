@@ -135,9 +135,10 @@
                                         </Grid>
                                     <!-- Window Buttons -->
                                     <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                        <Button x:Name="MinimizeWindow" Click="ClickMinimize" ToolTip="Minimize" Content="_" >
-                                            <Button.Style>
+                                            <Button x:Name="MinimizeWindow" Click="ClickMinimize" ToolTip="Minimize"  Content="_" >
+                                                <Button.Style>
                                                 <Style TargetType="{x:Type Button}">
+                                                   
                                                     <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
                                                     <Setter Property="Background" Value="Transparent"/>
                                                     <Setter Property="Padding" Value="8"/>

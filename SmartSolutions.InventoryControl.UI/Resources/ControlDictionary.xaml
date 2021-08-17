@@ -9,6 +9,7 @@
     <converter:StringToImageConverter x:Key="StringToImageConverter"/>
     <converter:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
     <converter:CalendarDayNameConverter x:Key="CalendarDayNameConverter"/>
+    <converter:BorderCircularClipConverter x:Key="BorderCircularClipConverter"/>
     <!-- design for scroll Viewer-->
     <Style x:Key="ScrollBarThumb" TargetType="{x:Type Thumb}">
         <Setter Property="OverridesDefaultStyle" Value="true"/>

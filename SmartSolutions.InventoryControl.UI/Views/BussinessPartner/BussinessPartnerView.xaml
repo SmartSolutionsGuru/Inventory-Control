@@ -317,18 +317,24 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                     <StackPanel  Margin="0 0 30 0">
-                        <TextBlock Text="Enter City Name" 
-                                   Foreground="{StaticResource GrayColorBrush}" 
-                                   FontSize="{StaticResource NormalSize}" 
-                                   HorizontalAlignment="Center"
-                                   Margin="0 0 130 0"
-                                   FontFamily="{StaticResource MediumFont}"/>
-                        <!--<TextBox Height="50" 
-                                 Width="250"
-                                 Text="{Binding NewBussinessPartner.City,Mode=TwoWay}"
-                                 Margin="0 10 0 0"
-                                 Style="{StaticResource TextBoxVisibilityPathIconStyle}"
-                                 ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter City Name"/>-->
+                            <TextBlock FontSize="{StaticResource NormalSize}" 
+                                       HorizontalAlignment="Center"
+                                       Margin="0 0 130 0"
+                                       FontFamily="{StaticResource MediumFont}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="Enter City Name"/>
+                                        <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding CityNotSelected,Mode=OneWay}" Value="True">
+                                                <Setter Property="Text" Value=" Please Enter City Name"/>
+                                                <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                            </DataTrigger> 
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
                             <autoComplete:AutoCompleteTextBox Grid.Column="1" 
                                                       Height="50"
                                                       Width="250"
@@ -429,7 +435,7 @@
                               Width="250"
                               Foreground="{StaticResource GrayColorBrush}"
                               FontFamily="{StaticResource MediumFont}"
-                              FontSize="{StaticResource NormalSize}"
+                              FontSize="{StaticResource MediumSize}"
                               DisplayMemberPath="FullName"
                               HorizontalAlignment="Left"
                               Margin="40 0 0 5"
@@ -443,7 +449,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="120"/>
+                        <RowDefinition Height="70"/>
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="0">
@@ -547,10 +553,10 @@
                                        FontFamily="{StaticResource MediumFont}"/>
                             <TextBox Grid.Column="2" 
                                      Height="150" 
-                                     Width="350"
+                                     Width="330"
                                      Margin="0 0 20 0"
                                      Text="{Binding SelectedBussinessPartner.Address,Mode=TwoWay}"
-                                     BorderThickness="1.3"
+                                     BorderThickness="1.7"
                                      ControlExtensions:MiscControlExtensions.CornerRadius="10"
                                      BorderBrush="{StaticResource BlueColorBrush}"
                                      TextWrapping="Wrap" 
@@ -558,7 +564,7 @@
                                      Foreground="{StaticResource GrayColorBrush}"
                                      FontFamily="{StaticResource MediumFont}"
                                      FontSize="{StaticResource NormalSize}"
-                                     Padding="8 8 0 0"></TextBox>
+                                     Padding="8 8 0 0"/>
                         </StackPanel>
                     </Grid>
                     <Grid Grid.Row="2">

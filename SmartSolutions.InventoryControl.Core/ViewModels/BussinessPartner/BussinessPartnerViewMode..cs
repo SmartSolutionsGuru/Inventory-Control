@@ -93,12 +93,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        public void RemovePartner()
+        public async void RemovePartner()
         {
             try
             {
                 NewBussinessPartner = null;
-                //_bussinessPartnerManager.RemoveBussinessPartner(SelectedBussinessPartner?.Id);
+                await _bussinessPartnerManager.RemoveBussinessPartnerAsync(SelectedBussinessPartner?.Id);
             }
             catch (Exception ex)
             {
@@ -152,7 +152,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     MobileNoError = true;
                     return;
                 }
-
+                 else if(SelectedCity == null)
+                {
+                    CityNotSelected = true;
+                        return;
+                }
                 if (NewBussinessPartner != null)
                 {
                     NewBussinessPartner.PartnerCategory = SelectedPartnerCategory;
@@ -183,12 +187,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                                 //Here we Update the Partner Ledger Account
                                 var partnerLedger = new BussinessPartnerLedgerModel();
                                 partnerLedger.Partner = payment.Partner ?? await _bussinessPartnerManager.GetLastAddedPartner();
-                                partnerLedger.Payment = await _paymentManager.GetLastPaymentByPartnerId(payment?.Partner.Id);
+                                partnerLedger.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(payment?.Partner.Id);
                                 partnerLedger.CurrentBalance = payment.PaymentAmount;
                                 partnerLedger.CurrentBalanceType = payment.PaymentType;
                                 partnerLedger.Description = "Initial Deposit / Balance";
                                 partnerLedger.CreatedBy = AppSettings.LoggedInUser.DisplayName;
-                                var partnerResult = await _partnerLedgerManager.AddPartnerBalance(partnerLedger);
+                                var partnerResult = await _partnerLedgerManager.AddPartnerBalanceAsync(partnerLedger);
                                 //Display user Friendly Toast
                                 if (partnerResult)
                                 {
@@ -271,7 +275,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             PartnerTypes = (await _partnerTypeManager.GetPartnerTypesAsync()).ToList();
             PartnerCategories = (await _partnerCategoryManager.GetPartnerCategoriesAsync()).ToList();
             //TODO: Here we HardCode the Pakistan Id But have to Change that
-            Cities = (await _cityManager.GetCitiesByCountryId(162)).ToList();
+            Cities = (await _cityManager.GetCitiesByCountryIdAsync(162)).ToList();
             CitySuggetion = new CitySuggetionProvider(Cities);
             IsLoading = false;
         }
@@ -282,6 +286,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         #endregion
 
         #region Properties
+        private bool _CityNotSelected;
+         /// <summary>
+         /// Flag for Vierification City is Selected Or Not
+         /// </summary>
+        public bool CityNotSelected
+        {
+            get { return _CityNotSelected; }
+            set { _CityNotSelected = value;  NotifyOfPropertyChange(nameof(CityNotSelected)); }
+        }
+
         private List<PaymentTypeModel> _PaymentMethods;
         /// <summary>
         /// Payment Method Like Jazz Cash ,Bank,Cash etc...

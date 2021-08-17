@@ -78,7 +78,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Warehouse
         {
             try
             {
-                Cities = (await _cityManager.GetCitiesByCountryId(countryId)).ToList();
+                Cities = (await _cityManager.GetCitiesByCountryIdAsync(countryId)).ToList();
             }
             catch (Exception ex)
             {

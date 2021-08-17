@@ -143,42 +143,49 @@ namespace SmartSolutions.Util.DecimalsUtils
         /// Leading and trailing whitespace chars are ignored
         /// </remarks>
         /// <returns>Decimal value of the string</returns>
+        /// 
         public static decimal ToDecimal(this string str)
         {
-            long value = 0;
-            var decimalPlaces = 0;
-            var hasDecimals = false;
-            var index = 0;
-            var length = str.Length;
-
-            while (index < length && char.IsWhiteSpace(str[index]))
-            {
-                index++;
-            }
-
-            while (index < length)
-            {
-                var ch = str[index++];
-                if (ch == '.')
-                {
-                    hasDecimals = true;
-                    decimalPlaces = 0;
-                }
-                else if (char.IsWhiteSpace(ch))
-                {
-                    break;
-                }
-                else
-                {
-                    value = value * 10 + (ch - '0');
-                    decimalPlaces++;
-                }
-            }
-
-            var lo = (int)value;
-            var mid = (int)(value >> 32);
-            return new decimal(lo, mid, 0, false, (byte)(hasDecimals ? decimalPlaces : 0));
+            decimal res = 0;
+            decimal.TryParse(str.Replace('.', ','), out res);
+            return res;
         }
+        //public static decimal ToDecimal(this string str)
+        //{
+        //    long value = 0;
+        //    var decimalPlaces = 0;
+        //    var hasDecimals = false;
+        //    var index = 0;
+        //    var length = str.Length;
+
+        //    while (index < length && char.IsWhiteSpace(str[index]))
+        //    {
+        //        index++;
+        //    }
+
+        //    while (index < length)
+        //    {
+        //        var ch = str[index++];
+        //        if (ch == '.')
+        //        {
+        //            hasDecimals = true;
+        //            decimalPlaces = 0;
+        //        }
+        //        else if (char.IsWhiteSpace(ch))
+        //        {
+        //            break;
+        //        }
+        //        else
+        //        {
+        //            value = value * 10 + (ch - '0');
+        //            decimalPlaces++;
+        //        }
+        //    }
+
+        //    var lo = (int)value;
+        //    var mid = (int)(value >> 32);
+        //    return new decimal(lo, mid, 0, false, (byte)(hasDecimals ? decimalPlaces : 0));
+        //}
 
         
     }

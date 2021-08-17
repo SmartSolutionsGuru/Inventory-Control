@@ -129,12 +129,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\BorderCircularClipConverter.cs" />
+    <Compile Include="Converters\BorderCircularConverter.cs" />
+    <Compile Include="CustomControls\FunctionEventArgs.cs" />
+    <Compile Include="CustomControls\NotificationButton.cs" />
     <Compile Include="CustomControls\SimplePanel.cs" />
+    <Compile Include="CustomControls\ValueBoxes.cs" />
+    <Compile Include="Helpers\ControlExtensions\BorderExtensions.cs" />
+    <Compile Include="Views\BussinessPartner\PartnerBalanceView.xaml.cs">
+      <DependentUpon>PartnerBalanceView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\PathInsertionView.xaml.cs">
       <DependentUpon>PathInsertionView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Reports\ReportsViewxaml.xaml.cs">
-      <DependentUpon>ReportsViewxaml.xaml</DependentUpon>
+    <Compile Include="Views\Reports\ReportsView.xaml.cs">
+      <DependentUpon>ReportsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Settings\UserCreationView.xaml.cs">
       <DependentUpon>UserCreationView.xaml</DependentUpon>
@@ -182,6 +191,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Styles\DataGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\Styles\ListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -190,7 +203,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Styles\ToolTip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\BussinessPartner\BussinessPartnerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\BussinessPartner\PartnerBalanceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -234,7 +255,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Reports\ReportsViewxaml.xaml">
+    <Page Include="Views\Reports\ReportsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

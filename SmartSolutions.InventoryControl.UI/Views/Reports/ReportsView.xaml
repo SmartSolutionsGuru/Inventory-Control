@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="SmartSolutions.InventoryControl.UI.Views.Reports.ReportsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controlExtension="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views.Reports"
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1366">
+    <Border Background="{StaticResource PureWhiteColorBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Reports" 
+                       FontSize="{StaticResource HeadingSize}" 
+                       Foreground="{StaticResource BlueColorBrush}" 
+                       FontFamily="{StaticResource MediumFont}" 
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Center" 
+                       Margin="0,10"/>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.8*"/>
+                    <ColumnDefinition Width="0.8*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox Height="45"
+                      Width="250"
+                      HorizontalAlignment="Center"
+                      Style="{StaticResource BaseComboBox}"
+                      Foreground="{StaticResource GrayColorBrush}"
+                      BorderThickness="1.7"
+                      BorderBrush="{StaticResource BlueColorBrush}"
+                      ItemsSource="{Binding ReportsCategory,Mode=OneWay}"
+                      SelectedItem="{Binding SelectedReportCategory,Mode=OneWay}"/>
+                <ComboBox Grid.Column="1"
+                          Height="45"
+                          Width="250"
+                          Foreground="{StaticResource GrayColorBrush}"
+                          BorderThickness="1.7"
+                          BorderBrush="{StaticResource BlueColorBrush}"
+                          Style="{StaticResource BaseComboBox}"
+                          HorizontalAlignment="Center"
+                          ItemsSource="{Binding ReportsSubCategory,Mode=OneWay}"
+                          SelectedItem="{Binding SelectedReportSubCategory,Mode=OneWay}"/>
+                <TextBox Height="45"
+                         Width="350"
+                         Grid.Column="2"
+                         BorderThickness="1.7"
+                         controlExtension:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Search}"
+                         controlExtension:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                         controlExtension:WaterMarkTextExtension.WatermarkText="Search Report"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         Foreground="{StaticResource GrayColorBrush}"
+                         FontFamily="{StaticResource MediumFont}"
+                         FontSize="{StaticResource MediumSize}"/>
+            </Grid>
+            <ContentControl Grid.Row="2" x:Name="ActiveReport"></ContentControl>
+        </Grid>
+    </Border>
+</UserControl>

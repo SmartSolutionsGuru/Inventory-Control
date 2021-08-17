@@ -7,7 +7,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Payments
     public interface IPaymentManager
     {
         Task<bool> AddPaymentAsync(PaymentModel payment);
-        Task<IEnumerable<PaymentModel>> GetPaymentsByPartnerId(int? Id);
-        Task<PaymentModel> GetLastPaymentByPartnerId(int? Id);
+        Task<IEnumerable<PaymentModel>> GetPaymentsByPartnerIdAsync(int? partnerId);
+        Task<PaymentModel> GetLastPaymentByPartnerIdAsync(int? partnerId);
+        Task<PaymentModel> GetPaymentByIdAsync(int? paymentId);
     }
 }

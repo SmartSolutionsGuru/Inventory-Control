@@ -17,7 +17,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private readonly DAL.Managers.BackUp.IDatabaseBackupManager _databaseBackupManager;
         private readonly DAL.Managers.Settings.ISystemSettingManager _systemSettingManager;
         private readonly NotificationManager notificationManager;
-        //private readonly INotificationManager _notificationManager;
         #endregion
 
         #region Constructor
@@ -26,13 +25,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         [ImportingConstructor]
         public MainViewModel(IEventAggregator eventAggregator
                             , DAL.Managers.Settings.ISystemSettingManager systemSettingManager
-                            , DAL.Managers.BackUp.IDatabaseBackupManager databaseBackupManager
-                           /* , INotificationManager notificationManager*/)
+                            , DAL.Managers.BackUp.IDatabaseBackupManager databaseBackupManager)
         {
             _eventAggregator = eventAggregator;
             _systemSettingManager = systemSettingManager;
             _databaseBackupManager = databaseBackupManager;
-            // _notificationManager = notificationManager;
              notificationManager = new NotificationManager();
         }
         #endregion
@@ -96,9 +93,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             IsPurchaseProceeded = false;
             IsPartnerProceeded = false;
             IsProductProceeded = false;
-            IsReportProceeded = true;
             IsSalesProceeded = false;
             IsPaymentProceeded = false;
+            IsReportProceeded = true;
+            Handle(IoC.Get<Reports.ReportsViewModel>());
         }
         public void Payments()
         {
@@ -118,7 +116,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 || screen is BussinessPartner.BussinessPartnerViewModel
                 || screen is PurchaseViewModel
                 || screen is PaymentViewModel
-                || screen is SalesViewModel)
+                || screen is SalesViewModel
+                || screen is Reports.ReportsViewModel)
             {
                 ActiveItem = screen;
                 ActivateItem(screen);
@@ -282,6 +281,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             get { return _CurrentUser; }
             set { _CurrentUser = value; NotifyOfPropertyChange(nameof(CurrentUser)); }
+        }
+        private int _TransactionCounter;
+        /// <summary>
+        /// Counter for Logging Transaction
+        /// </summary>
+        public int TransactionCounter
+        {
+            get { return _TransactionCounter; }
+            set { _TransactionCounter = value; NotifyOfPropertyChange(nameof(TransactionCounter)); }
         }
 
         #endregion

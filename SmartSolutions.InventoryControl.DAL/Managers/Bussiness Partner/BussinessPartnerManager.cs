@@ -1,4 +1,5 @@
-﻿using SmartSolutions.InventoryControl.DAL.Models;
+﻿using SmartSolutions.InventoryControl.DAL.Managers.Region;
+using SmartSolutions.InventoryControl.DAL.Models;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.BooleanUtils;
@@ -20,13 +21,15 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
     {
         #region Private Members
         private readonly IRepository Repository;
+        private readonly ICityManager _cityManager;
         #endregion
 
         #region Costructor
         [ImportingConstructor]
-        public BussinessPartnerManager()
+        public BussinessPartnerManager(ICityManager cityManager)
         {
             Repository = GetRepository<BussinessPartnerModel>();
+            _cityManager = cityManager;
         }
         #endregion
 
@@ -96,6 +99,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                         {
                             Id = value?.GetValueFromDictonary("CityId")?.ToString().ToNullableInt(),
                         };
+                        partner.City = await _cityManager.GetCityFromIdAsync(partner.City?.Id);
                         partner.PhoneNumber = value?.GetValueFromDictonary("PhoneNumber")?.ToString();
                         partner.Address = value?.GetValueFromDictonary("Address")?.ToString();
                         partner.CreatedAt = value?.GetValueFromDictonary("CreatedAt")?.ToString()?.ToNullableDateTime();
@@ -113,8 +117,9 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             }
             return partners;
         }
-        public async Task<BussinessPartnerModel> GetBussinessPartnerAsync(int? Id)
+        public async Task<BussinessPartnerModel> GetBussinessPartnerByIdAsync(int? Id)
         {
+            if (Id == null || Id == 0) return null;
             var partner = new BussinessPartnerModel();
             try
             {

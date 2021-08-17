@@ -9,7 +9,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Payments
         {
             Partner = new BussinessPartnerModel();
             PaymentRefrencePartner = new BussinessPartnerModel();
-
+            PaymentMethod = new PaymentTypeModel();
         }
         #endregion
 
@@ -24,6 +24,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Payments
         public byte[] PaymentImage { get; set; }
         public decimal PaymentAmount { get; set; }
         public bool IsPaymentReceived { get; set; }
+        public string Description { get; set; }
         #endregion
     }
   

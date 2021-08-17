@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
+﻿using Caliburn.Micro;
 using SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
-using System.Text;
-using System.Linq;
-using SmartSolutions.Util.LogUtils;
-using Caliburn.Micro;
-using SmartSolutions.InventoryControl.DAL.Models.Transaction;
-using SmartSolutions.InventoryControl.DAL.Managers.Invoice;
-using SmartSolutions.InventoryControl.DAL.Managers.Transaction;
 using SmartSolutions.InventoryControl.DAL.Models.Payments;
+using SmartSolutions.Util.LogUtils;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Linq;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels
 {
@@ -19,24 +15,24 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
     {
         #region Private Members
         private readonly IBussinessPartnerManager _bussinessPartnerManager;
-        private readonly IPurchaseInvoiceManager _purcahseInvoiceManager;
-        private readonly ITransactionManager _transactionManager;
+        private readonly IPartnerLedgerManager _partnerLedgerManager;
+        private readonly DAL.Managers.Payments.IPaymentManager _paymentManager;
         private readonly DAL.Managers.Payments.IPaymentTypeManager _paymentTypeManager;
         #endregion
 
         #region Constructor
         public PaymentViewModel() { }
-       
+
         [ImportingConstructor]
         public PaymentViewModel(IBussinessPartnerManager bussinessPartnerManager
-                                , IPurchaseInvoiceManager purchaseInvoiceManager
-                                , ITransactionManager transactionManager
-                                , DAL.Managers.Payments.IPaymentTypeManager paymentTypeManager)
+                                , DAL.Managers.Payments.IPaymentTypeManager paymentTypeManager
+                                , DAL.Managers.Payments.IPaymentManager paymentManager
+                                , IPartnerLedgerManager partnerLedgerManager)
         {
             _bussinessPartnerManager = bussinessPartnerManager;
-            _purcahseInvoiceManager = purchaseInvoiceManager;
-            _transactionManager = transactionManager;
             _paymentTypeManager = paymentTypeManager;
+            _paymentManager = paymentManager;
+            _partnerLedgerManager = partnerLedgerManager;
         }
         #endregion
 
@@ -44,7 +40,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         protected async override void OnActivate()
         {
             base.OnActivate();
-            //PaymentTypes = new List<string> { "Unknown", "Cash", "Bank", "JazzCash", "Easy Paisa", "U Paisa", "Partial", "Other" };
             PaymentTypes = (await _paymentTypeManager.GetAllPaymentMethodsAsync()).ToList();
             Payment = new PaymentModel();
             BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
@@ -55,16 +50,36 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             try
             {
-                TransactionModel transaction = new TransactionModel();
-                transaction.PaymentMode = IsPayAmount == true ? "Payable" : "Reciveable";
-                transaction.BussinessPartner = SelectedPartner;
-                //transaction.PartnerLastInvoice = await _purcahseInvoiceManager.GetPartnerLastPurchaseInvoiceAsync(SelectedPartner?.Id);
-                transaction.PaymentImage = PaymentImage;
-                transaction.PaymentType = SelectedPaymentType;
-                var resultTransaction = await _transactionManager.SaveTransactionAsync(transaction);
-                if (resultTransaction)
+                if (Payment == null) return;
+                Payment.PaymentAmount = Amount;
+                Payment.PaymentMethod = SelectedPaymentType;
+                PaymentImage = PaymentImage;
+                Payment.Partner = SelectedPartner;
+                Payment.PaymentType = IsReceiveAmount == true ? DAL.Models.PaymentType.DR : DAL.Models.PaymentType.CR;
+                Payment.Description = Description;
+                var paymentResult = await _paymentManager.AddPaymentAsync(payment: Payment);
+                if (paymentResult)
                 {
+                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Payment Added Successfully", Type = Notifications.Wpf.NotificationType.Success });
                     var partnerLedger = new BussinessPartnerLedgerModel();
+                    partnerLedger.Partner = SelectedPartner;
+                    partnerLedger.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(SelectedPartner?.Id ?? 0);
+                    var partnerCurrentStatus = new BussinessPartnerLedgerModel();
+                    partnerCurrentStatus = CalculateCurrentBalanceAndBalnceType(partnerLedger);
+                    partnerLedger.CurrentBalance = partnerCurrentStatus.CurrentBalance;//partnerLedger?.Payment?.PaymentType == DAL.Models.PaymentType.DR ? partnerLedger.CurrentBalance - partnerLedger.Payment.PaymentAmount : partnerLedger.CurrentBalance + partnerLedger.Payment.PaymentAmount;
+                    partnerLedger.CurrentBalanceType = partnerCurrentStatus.CurrentBalanceType;//partnerLedger.Payment.PaymentType;
+                    var ledgerResult = await _partnerLedgerManager.UpdatePartnerCurrentBalanceAsync(partnerLedger);
+                    if (ledgerResult)
+                    {
+                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Partner Ledger Updated Successfully ", Type = Notifications.Wpf.NotificationType.Success });
+                        ClearPaymentData();
+                    }
+                    else
+                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Partner Ledger Not Updated ", Type = Notifications.Wpf.NotificationType.Error });
+                }
+                else
+                {
+                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Payment Cannot Added ", Type = Notifications.Wpf.NotificationType.Error });
                 }
 
             }
@@ -73,6 +88,61 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
+
+        private BussinessPartnerLedgerModel CalculateCurrentBalanceAndBalnceType(BussinessPartnerLedgerModel partnerLedger)
+        {
+            var retVal = new BussinessPartnerLedgerModel();
+            try
+            {
+                //It Means We are Receiving Money and it is our Liablity
+                if (partnerLedger.CurrentBalance == 0 && IsReceiveAmount)
+                {
+                    retVal.CurrentBalance = Amount;
+                    retVal.CurrentBalanceType = DAL.Models.PaymentType.CR;
+
+                }
+                //It Means We are Paying Money and it is our Assets
+                else if (partnerLedger.CurrentBalance == 0 && IsPayAmount)
+                {
+                    retVal.CurrentBalance = Amount;
+                    retVal.CurrentBalanceType = DAL.Models.PaymentType.DR;
+                }
+                // We Assume that Partner 
+                if (partnerLedger.CurrentBalance > 0
+                    && IsReceiveAmount
+                    && (partnerLedger.CurrentBalanceType == DAL.Models.PaymentType.DR))
+                {
+                    var result = partnerLedger.CurrentBalance - Amount;
+                    //we assume amount recived from Partner is Less then his balance
+                    if (result > 0)
+                    {
+                        partnerLedger.CurrentBalance = result;
+                        partnerLedger.CurrentBalanceType = DAL.Models.PaymentType.DR;
+                    }
+                    //we assume amount received from partner is greater then his Balance
+                    else
+                    {
+                        partnerLedger.CurrentBalance = Math.Abs(result);
+                        partnerLedger.CurrentBalanceType = DAL.Models.PaymentType.CR;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
+        }
+
+        private void ClearPaymentData()
+        {
+            SelectedPartner = null;// new BussinessPartnerModel();
+            Payment = new PaymentModel();
+            CurrentPartnerBalance = 0;
+            PaymentImage = null;
+        }
+
         public void Cancel()
         {
             TryClose();
@@ -81,7 +151,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             if (SelectedPartner == null)
                 return;
-            var partnerLedger = await _bussinessPartnerManager.GetPartnerCurrentBalanceAsync(SelectedPartner.Id.Value);
+            var partnerLedger = await _partnerLedgerManager.GetPartnerLedgerLastBalanceAsync(SelectedPartner?.Id.Value ?? 0);
             if (partnerLedger != null)
             {
                 CurrentPartnerBalance = partnerLedger.CurrentBalance;
@@ -89,6 +159,28 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 IsAmountAvailable = true;
             }
 
+        }
+
+        public async void GetPartnerBalanceSheet()
+        {
+            try
+            {
+                var dlg = IoC.Get<BussinessPartner.PartnerBalanceViewModel>();
+                if (SelectedPartner != null)
+                {
+                    dlg.SelectedPartner = SelectedPartner;
+                    dlg.GetPartnerBalanceSheet(SelectedPartner);
+                    await IoC.Get<IDialogManager>().ShowDialogAsync(dlg);
+                }
+                else
+                {
+                    NotificationManager.Show(new Notifications.Wpf.NotificationContent {Title = "Information",Message = "Please Select Partner First",Type = Notifications.Wpf.NotificationType.Information });
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
         }
         #endregion
 
@@ -117,7 +209,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
 
         public Helpers.SuggestionProvider.PartnerSuggestionProvider PartnerSuggetion
         {
-            get { return _PartnerSuggetion; }
+            get { return _PartnerSuggetion ?? new Helpers.SuggestionProvider.PartnerSuggestionProvider(BussinessPartners); }
             set { _PartnerSuggetion = value; NotifyOfPropertyChange(nameof(PartnerSuggetion)); }
         }
 
@@ -140,9 +232,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _SelectedPartner; }
             set { _SelectedPartner = value; NotifyOfPropertyChange(nameof(SelectedPartner)); GetPartnerBalance(); }
         }
-        private DAL.Models.Payments.PaymentModel _Payment;
+        private PaymentModel _Payment;
 
-        public DAL.Models.Payments.PaymentModel Payment
+        public PaymentModel Payment
         {
             get { return _Payment; }
             set { _Payment = value; NotifyOfPropertyChange(nameof(Payment)); }

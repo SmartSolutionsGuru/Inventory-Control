@@ -1,11 +1,11 @@
 USE [master]
 GO
 
-/****** Object:  Database [SmartSolutions.InventoryControl]    Script Date: 8/6/2021 9:21:08 PM ******/
+/****** Object:  Database [SmartSolutions.InventoryControl]    Script Date: 8/12/2021 11:07:38 AM ******/
 CREATE DATABASE [SmartSolutions.InventoryControl]
  CONTAINMENT = NONE
  ON  PRIMARY 
-( NAME = N'SmartSolutions.InventoryControl', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\SmartSolutions.InventoryControl.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+( NAME = N'SmartSolutions.InventoryControl', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\SmartSolutions.InventoryControl.mdf' , SIZE = 73728KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
  LOG ON 
 ( NAME = N'SmartSolutions.InventoryControl_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\SmartSolutions.InventoryControl_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
  WITH CATALOG_COLLATION = DATABASE_DEFAULT
