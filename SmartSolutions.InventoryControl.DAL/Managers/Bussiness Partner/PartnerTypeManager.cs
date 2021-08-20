@@ -23,6 +23,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
         {
             Repository = GetRepository<BussinessPartnerTypeModel>();
         }
+
         #endregion
 
         #region GET Methods
@@ -50,6 +51,35 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return partnerTypes;
+        }
+
+        public async Task<BussinessPartnerTypeModel> GetPartnerTypeByIdAsync(int? Id)
+        {
+            var partnerType = new BussinessPartnerTypeModel();
+            try
+            {
+                if(Id == null || Id == 0) return null;
+                Dictionary<string, object> parameteres = new Dictionary<string, object>();
+                parameteres["@v_Id"] = Id;
+                string query = @"SELECT * FROM PartnerType WHERE ID = @v_Id AND IsActive = 1";
+                var values = await Repository.QueryAsync(query, parameters: parameteres);
+                if (values != null || values?.Count > 0)
+                {
+                    foreach (var value in values)
+                    {
+                        partnerType = new BussinessPartnerTypeModel();
+                        partnerType.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                        partnerType.Name = value?.GetValueFromDictonary("Name")?.ToString();
+                        partnerType.Description = value?.GetValueFromDictonary("Description")?.ToString();
+                    } 
+                }
+            }
+            catch (Exception ex)
+            {
+
+               LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return partnerType;
         }
         #endregion
     }

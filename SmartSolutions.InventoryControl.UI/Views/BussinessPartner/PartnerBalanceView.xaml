@@ -17,7 +17,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.7*"/>
                     </Grid.ColumnDefinitions>
                     <Path Grid.Column="0"
                           Height="22" 
@@ -33,19 +33,74 @@
                                VerticalAlignment="Center"
                                HorizontalAlignment="Center"
                                Text="{Binding HeadingText,Mode=OneWay,FallbackValue='Balance Sheet'}"/>
-                    <Button x:Name="Close" Grid.Column="2" 
+                    <Grid Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="ConvertToExcel"
+                                Click="ConvertToExcel_Click"
+                                Grid.Column="0"
+                                Style="{StaticResource ContentButton}"
+                                ToolTip="Convert To Excel"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                            <Path Height="22" 
+                                  Width="22"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Stretch="Uniform"
+                                  Fill="{StaticResource PureWhiteColorBrush}"
+                                  Data="{StaticResource Shape_Excel}"/>
+                        </Button>
+                        <!--x:Name="ConvertToPdf"-->
+                        <Button 
+                                Grid.Column="1"
+                                Click="ConvertToPdf_Click"
+                                Style="{StaticResource ContentButton}"
+                                ToolTip="Convert To PDF"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                            <Path Height="22" 
+                                  Width="22"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Stretch="Uniform"
+                                  Fill="{StaticResource PureWhiteColorBrush}"
+                                  Data="{StaticResource Shape_Pdf}"/>
+                        </Button>
+                        <Button x:Name="Print"
+                                Grid.Column="2"
+                                Style="{StaticResource ContentButton}"
+                                ToolTip="Print"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                            <Path Height="22" 
+                                  Width="22"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Stretch="Uniform"
+                                  Fill="{StaticResource PureWhiteColorBrush}"
+                                  Data="{StaticResource Shape_Print}"/>
+                        </Button>
+                        <Button x:Name="Close"
+                            Grid.Column="3"
                             Style="{StaticResource ContentButton}">
-                        <Path Height="22" 
+                            <Path Height="22" 
                               Width="22"
                               ToolTip="Close"
                               HorizontalAlignment="Right"
                               Margin="0 0 20 0"
                               Fill="{StaticResource PureWhiteColorBrush}" Stretch="Uniform" Data="{StaticResource Shape_Close2}"/>
-                    </Button>
+                        </Button>
+                    </Grid>
                 </Grid>
             </Border>
-            
-            <DataGrid Grid.Row="1"
+
+            <DataGrid x:Name="PartnerBalanceSheet"
+                      Grid.Row="1"
                       Margin="0"
                       ItemsSource="{Binding PartnerBalanceSheet,Mode=OneWay}"
                       SelectedItem="{Binding PartnerSelectedBalance,Mode=TwoWay}"

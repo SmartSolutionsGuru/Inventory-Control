@@ -13,8 +13,10 @@
                 <ResourceDictionary Source="Resources\Fonts.xaml"/>
                 <ResourceDictionary Source="Resources\FontSize.xaml"/>
                 <ResourceDictionary Source="Resources\Shapes.xaml"/>
+                <ResourceDictionary Source="Resources\Styles\ToolTip.xaml"/>
                 <ResourceDictionary Source="Resources\Styles\Text.xaml"/>
                 <ResourceDictionary Source="Resources\Styles\Button.xaml"/>
+                <ResourceDictionary Source="Resources\Styles\DataGrid.xaml"/>
                 <ResourceDictionary Source="Resources\Styles\ComboBox.xaml"/>
                 <ResourceDictionary Source="Resources\Styles\CheckBox.xaml"/>
                 <ResourceDictionary Source="Resources\Styles\ListView.xaml"/>

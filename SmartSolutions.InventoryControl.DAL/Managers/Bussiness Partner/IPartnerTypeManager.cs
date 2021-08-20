@@ -7,5 +7,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
     public interface IPartnerTypeManager
     {
         Task<IEnumerable<BussinessPartnerTypeModel>> GetPartnerTypesAsync();
+        Task<BussinessPartnerTypeModel> GetPartnerTypeByIdAsync(int? Id);
     }
 }

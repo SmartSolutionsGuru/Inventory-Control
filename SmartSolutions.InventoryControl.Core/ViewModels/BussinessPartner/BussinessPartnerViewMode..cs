@@ -77,6 +77,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         }
         public async void UpdatePartner()
         {
+            //null guard
+            if (SelectedBussinessPartner == null)
+            {
+                NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Please Select Partner", Type = Notifications.Wpf.NotificationType.Error });
+            }
             try
             {
                 NewBussinessPartner = null;
@@ -95,6 +100,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         }
         public async void RemovePartner()
         {
+            //null guard
+            if(SelectedBussinessPartner == null)
+            {
+                NotificationManager.Show(new Notifications.Wpf.NotificationContent {Title = "Error",Message = "Please Select Partner", Type = Notifications.Wpf.NotificationType.Error });
+            }
             try
             {
                 NewBussinessPartner = null;

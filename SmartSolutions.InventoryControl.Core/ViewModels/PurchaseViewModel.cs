@@ -82,6 +82,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
 
                 base.OnActivate();
                 PurchaseTypes = new List<string> { "Purchase", "Purchase Return" };
+                SelectedPurchaseType = PurchaseTypes.Where(x => x.Equals("Purchase")).FirstOrDefault();
                 Products = (await _productManager.GetAllProductsAsync()).ToList();
                 Venders = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
                 ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
@@ -213,9 +214,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                     orderDetail.Product = product.Product;
                                     orderDetail.ProductColor = product.Product?.ProductColor;
                                     orderDetail.ProductSize = product.Product?.ProductSize;
-                                    orderDetail.Total = product.Total;
-                                    orderDetail.Price = product.Price;
-                                    orderDetail.Quantity = product.Quantity;
+                                    orderDetail.Total = product.Total.Value;
+                                    orderDetail.Price = product.Price.Value;
+                                    orderDetail.Quantity = product.Quantity.Value;
                                     orderDetail.IsActive = true;
                                     orderDetail.CreatedAt = DateTime.Now;
                                     orderDetail.CreatedBy = AppSettings.LoggedInUser?.DisplayName;
@@ -241,9 +242,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                         PurchaseInvoice.SelectedPartner = SelectedPartner;
                         PurchaseInvoice.PaymentImage = PaymentImage;
                         PurchaseInvoice.PercentDiscount = PercentDiscount;
-                        PurchaseInvoice.Discount = DiscountPrice;
-                        PurchaseInvoice.InvoiceTotal = InvoiceTotal;
-                        PurchaseInvoice.Payment = Payment;
+                        PurchaseInvoice.Discount = DiscountPrice.Value;
+                        PurchaseInvoice.InvoiceTotal = InvoiceTotal.Value;
+                        PurchaseInvoice.Payment = Payment.Value;
                         bool invoiceResult = await _purchaseInvoiceManager.SavePurchaseInoiceAsync(PurchaseInvoice);
                         if (invoiceResult)
                         {
@@ -327,7 +328,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 InvoiceTotal = 0;
                 foreach (var product in ProductGrid)
                 {
-                    InvoiceTotal += product.Total;
+                    InvoiceTotal += product.Total.Value;
                 }
                 GrandTotal = InvoiceTotal + PreviousBalance;
             }
@@ -358,15 +359,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             {
                 foreach (var product in ProductGrid)
                 {
-                    newInvoiceTotal += product.Total;
+                    newInvoiceTotal += product.Total.Value;
                 }
                 if (PercentDiscount > 0)
                 {
-                    newInvoiceTotal = InvoiceTotal - DiscountPrice;
+                    newInvoiceTotal = InvoiceTotal.Value - DiscountPrice.Value;
                 }
                 else if (DiscountPrice > 0)
                 {
-                    newInvoiceTotal = InvoiceTotal - DiscountPrice;
+                    newInvoiceTotal = InvoiceTotal.Value - DiscountPrice.Value;
                 }
             }
 
@@ -553,42 +554,42 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             set { _PercentDiscount = value; NotifyOfPropertyChange(nameof(PercentDiscount)); /*CalculateDiscountPrice();*/ }
         }
 
-        private decimal _DiscountPrice;
+        private decimal? _DiscountPrice;
         /// <summary>
         /// Price After Calculating Discount
         /// </summary>
-        public decimal DiscountPrice
+        public decimal? DiscountPrice
         {
             get { return _DiscountPrice; }
             set { _DiscountPrice = value; NotifyOfPropertyChange(nameof(DiscountPrice)); /*CalculateDiscountPrice(0, DiscountPrice);*/ }
         }
 
-        private decimal _InvoiceTotal;
+        private decimal? _InvoiceTotal;
         /// <summary>
         /// Invoice Grand Total 
         /// </summary>
-        public decimal InvoiceTotal
+        public decimal? InvoiceTotal
         {
             get { return _InvoiceTotal; }
             set { _InvoiceTotal = value; NotifyOfPropertyChange(nameof(InvoiceTotal)); }
         }
 
 
-        private decimal _GrandTotal;
+        private decimal? _GrandTotal;
         /// <summary>
         /// Grand Total Amount Of Transaction
         /// </summary>
-        public decimal GrandTotal
+        public decimal? GrandTotal
         {
             get { return _GrandTotal; }
             set { _GrandTotal = value; NotifyOfPropertyChange(nameof(GrandTotal)); }
         }
 
-        private decimal _Payment;
+        private decimal? _Payment;
         /// <summary>
         /// Payment Which is Made to Supply Partner
         /// </summary>
-        public decimal Payment
+        public decimal? Payment
         {
             get { return _Payment; }
             set { _Payment = value; NotifyOfPropertyChange(nameof(Payment)); OnPaymentRecived(); }

@@ -246,7 +246,7 @@
 
 
                             <ScrollViewer Grid.Row="1" Grid.ColumnSpan="9" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                <ListView Grid.Row="1" Grid.ColumnSpan="9" ItemsSource="{Binding ProductGrid,Mode=OneWay}" SelectedItem="{Binding SelectedInventory,Mode=TwoWay}" Margin="0 0" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                <ListView Grid.Row="1" Grid.ColumnSpan="9" ItemsSource="{Binding ProductGrid,Mode=OneWay}" SelectedItem="{Binding SelectedInventory,Mode=TwoWay}"  Margin="0 0" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                                     <ListView.ItemTemplate>
                                         <DataTemplate DataType="stock:StockInModel">
                                             <Grid Margin="0 5">
@@ -299,10 +299,10 @@
                                                           Opacity="0.7"
                                                           VerticalAlignment="Top"
                                                           Margin="0 0 0 0"
-                                                          Padding="5 0 0 0"
+                                                          Padding="15 0 0 0"
                                                           HorizontalAlignment="Left"
                                                           FontFamily="{StaticResource MediumFont}"
-                                                          FontSize="{StaticResource NormalSize}"
+                                                          FontSize="{StaticResource MediumSize}"
                                                           Foreground="{StaticResource GrayColorBrush}"
                                                           ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl},Path=DataContext.ProductColors,Mode=TwoWay}"
                                                           SelectedItem="{Binding Product.ProductColor,Mode=TwoWay}"/>
@@ -318,9 +318,9 @@
                                                       ControlExtensions:WaterMarkTextExtension.WatermarkText="Product Size"
                                                       Opacity="0.7"
                                                       Margin="0 0 0 0"
-                                                      Padding="5 0 0 0"
+                                                      Padding="15 0 0 0"
                                                       FontFamily="{StaticResource MediumFont}"
-                                                      FontSize="{StaticResource NormalSize}"
+                                                      FontSize="{StaticResource MediumSize}"
                                                       Foreground="{StaticResource GrayColorBrush}"
                                                       ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl},Path=DataContext.ProductSizes,Mode=TwoWay}"
                                                       SelectedItem="{Binding Product.ProductSize,Mode=TwoWay}"/>
@@ -471,7 +471,7 @@
                                            HorizontalAlignment="Left"
                                            Margin="40 0 0 5"/>
                                 <TextBox Grid.Row="1" 
-                                        Height="50" 
+                                        Height="48" 
                                         Width="250"
                                         Margin="40 0 0 0"
                                         ScrollViewer.HorizontalScrollBarVisibility="Auto"

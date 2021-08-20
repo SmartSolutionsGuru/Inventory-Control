@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
 {
-    [Export(typeof(IPartnerCategoryManager)),PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export(typeof(IPartnerCategoryManager)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class PartnerCategoryManager : BaseManager, IPartnerCategoryManager
     {
         #region Private Members
@@ -33,7 +33,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             {
                 string query = @"SELECT * FROM PartnerCategory WHERE IsActive = 1";
                 var values = await Repository.QueryAsync(query: query);
-                if(values != null || values?.Count > 0)
+                if (values != null || values?.Count > 0)
                 {
                     foreach (var value in values)
                     {
@@ -50,6 +50,33 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return partnerCategories;
+        }
+
+        public async Task<BussinessPartnerCategoryModel> GetPartnerCategoryByIdAsync(int? Id)
+        {
+            if (Id == null || Id == 0) return null;
+            var partnerCategory = new BussinessPartnerCategoryModel();
+            try
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_Id"] = Id;
+                string query = @"SELECT * FROM PartnerCategory WHERE IsActive = 1";
+                var values = await Repository.QueryAsync(query: query);
+                if (values != null || values?.Count > 0)
+                {
+                    foreach (var value in values)
+                    {
+                        partnerCategory.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt() ?? 0;
+                        partnerCategory.Name = value?.GetValueFromDictonary("Name")?.ToString();
+                        partnerCategory.Description = value?.GetValueFromDictonary("Description")?.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return partnerCategory;
         }
         #endregion
     }

@@ -5,6 +5,7 @@
              xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro.Platform.Core"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
              xmlns:customControls="clr-namespace:SmartSolutions.InventoryControl.UI.CustomControls"
              xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views"
              mc:Ignorable="d"
@@ -44,13 +45,13 @@
                     <customControls:CustomCalender Grid.Row="1" Width="250" Height="300" />
 
                     <Button Name="Product" 
-                        Grid.Row="2" 
-                        Margin="5 0 5 5" 
-                        Padding="10" 
-                        VerticalContentAlignment="Center" 
-                        HorizontalContentAlignment="Center" 
-                        FontFamily="{StaticResource MediumFont}" 
-                        BorderBrush="#FFb14b4b">
+                            Grid.Row="2" 
+                            Margin="5 0 5 5" 
+                            Padding="10" 
+                            VerticalContentAlignment="Center" 
+                            HorizontalContentAlignment="Center" 
+                            FontFamily="{StaticResource MediumFont}" 
+                            BorderBrush="#FFb14b4b">
                         <StackPanel Orientation="Horizontal">
                             <Path Margin="0,0,10,0" 
                               Height="24"  
@@ -97,14 +98,14 @@
                     </Button>
 
                     <Button Name="BussinessPartner" 
-                        Grid.Row="3" 
-                        Margin="5 0 5 5" 
-                        Padding="10" 
-                        VerticalContentAlignment="Center" 
-                        HorizontalContentAlignment="Center" 
-                        FontFamily="{StaticResource MediumFont}" 
-                        BorderThickness="1" 
-                        BorderBrush="{StaticResource BlueColorBrush}">
+                            Grid.Row="3" 
+                            Margin="5 0 5 5" 
+                            Padding="10" 
+                            VerticalContentAlignment="Center" 
+                            HorizontalContentAlignment="Center" 
+                            FontFamily="{StaticResource MediumFont}" 
+                            BorderThickness="1" 
+                            BorderBrush="{StaticResource BlueColorBrush}">
                         <StackPanel Orientation="Horizontal">
                             <Path Margin="0,0,10,0" 
                               Height="24"  
@@ -151,14 +152,14 @@
                     </Button>
 
                     <Button Name="Purchase" 
-                        Grid.Row="4" 
-                        Margin="5" 
-                        Padding="10" 
-                        VerticalContentAlignment="Center" 
-                        HorizontalContentAlignment="Center" 
-                        FontFamily="{StaticResource MediumFont}" 
-                        BorderThickness="1" 
-                        BorderBrush="{StaticResource LightBlueColorBrush}" >
+                            Grid.Row="4" 
+                            Margin="5" 
+                            Padding="10" 
+                            VerticalContentAlignment="Center" 
+                            HorizontalContentAlignment="Center" 
+                            FontFamily="{StaticResource MediumFont}" 
+                            BorderThickness="1" 
+                            BorderBrush="{StaticResource LightBlueColorBrush}" >
                         <StackPanel Orientation="Horizontal">
                             <Path Margin="0,0,10,0" 
                               Height="24"  
@@ -176,13 +177,13 @@
                                 </Path.Style>
                             </Path>
                             <TextBlock  x:Name="Box" 
-                                    TextAlignment="Center" 
-                                    Text="PURCHASE" 
-                                    HorizontalAlignment="Center" 
-                                    VerticalAlignment="Center"  
-                                    Margin="0,5" 
-                                    FontSize="{StaticResource NormalSize}"
-                                    FontFamily="{StaticResource MediumFont}">
+                                        TextAlignment="Center" 
+                                        Text="PURCHASE" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center"  
+                                        Margin="0,5" 
+                                        FontSize="{StaticResource NormalSize}"
+                                        FontFamily="{StaticResource MediumFont}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Foreground" Value="White"/>
@@ -212,14 +213,14 @@
                     </Button>
 
                     <Button Name="Sales" 
-                        Grid.Row="5" 
-                        Margin="5" 
-                        Padding="10" 
-                        VerticalContentAlignment="Center" 
-                        HorizontalContentAlignment="Center" 
-                        FontFamily="{StaticResource MediumFont}" 
-                        BorderBrush="{StaticResource GreenColorBrush}"
-                        BorderThickness="1">
+                            Grid.Row="5" 
+                            Margin="5" 
+                            Padding="10" 
+                            VerticalContentAlignment="Center" 
+                            HorizontalContentAlignment="Center" 
+                            FontFamily="{StaticResource MediumFont}" 
+                            BorderBrush="{StaticResource GreenColorBrush}"
+                            BorderThickness="1">
                         <StackPanel Orientation="Horizontal">
                             <Path Margin="0,0,10,0" 
                               Height="24"  
@@ -267,14 +268,14 @@
                     </Button>
 
                     <Button Name="Payments" 
-                        Grid.Row="6" 
-                        Margin="5" 
-                        Padding="10"
-                        VerticalContentAlignment="Center" 
-                        HorizontalContentAlignment="Center"                         
-                        FontFamily="{StaticResource MediumFont}"
-                        BorderBrush="{StaticResource LightGrayColorBrush}"
-                        BorderThickness="1.5">
+                            Grid.Row="6" 
+                            Margin="5" 
+                            Padding="10"
+                            VerticalContentAlignment="Center" 
+                            HorizontalContentAlignment="Center"                         
+                            FontFamily="{StaticResource MediumFont}"
+                            BorderBrush="{StaticResource LightGrayColorBrush}"
+                            BorderThickness="1.5">
                         <StackPanel Orientation="Horizontal">
                             <Path Margin="0,5,10,5" Height="24" Data="{StaticResource Shape_Payment}" Stretch="Uniform" >
                                 <Path.Style>
@@ -318,13 +319,13 @@
                     </Button>
 
                     <Button Name="Reports" 
-                        Grid.Row="7" 
-                        Margin="5" Padding="10"
-                        HorizontalContentAlignment="Center" 
-                        VerticalContentAlignment="Center"  
-                        BorderBrush="{StaticResource OrangeColorBrush}"
-                        BorderThickness="1.5"
-                        FontFamily="{StaticResource MediumFont}">
+                            Grid.Row="7" 
+                            Margin="5" Padding="10"
+                            HorizontalContentAlignment="Center" 
+                            VerticalContentAlignment="Center"  
+                            BorderBrush="{StaticResource OrangeColorBrush}"
+                            BorderThickness="1.5"
+                            FontFamily="{StaticResource MediumFont}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -383,7 +384,7 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="35,8" HorizontalAlignment="Right" Height="25">
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="35,8" HorizontalAlignment="Right" Height="30">
                             <Button Background="Transparent" Margin="{StaticResource HeaderLogoMargin}" Style="{StaticResource IconGrowButton}">
                                 <Path Stretch="Uniform" Data="{StaticResource Shape_WhatsApp}" ToolTip="{Binding PrinterName}">
                                     <Path.Style>
@@ -398,7 +399,6 @@
                                     </Path.Style>
                                 </Path>
                             </Button>
-                            <!--<Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" />-->
                             <Button x:Name="SMS" Background="Transparent" ToolTip="SMS" Margin="{StaticResource HeaderLogoMargin}" FontSize="20" Style="{StaticResource ContentButton}" >
                                 <Button.Content>
                                     <Border x:Name="border">
@@ -449,10 +449,8 @@
                                     </Border>
                                 </Button.Content>
                             </Button>
-
                             <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" />
-
-                           <!--TODO have to Implement it Numbers-->
+                            <!--TODO have to Implement it Numbers-->
                             <customControls:NotificationButton Value="{Binding TransactionCounter,Mode=OneWay}" BadgeMargin="0,-5,10,0" Height="30" Margin="0,0,0,0" Style="{StaticResource BadgeDanger}">
                                 <Button x:Name="UpdateDbBackup" ToolTip="Backup" Background="Transparent" Margin="{StaticResource HeaderLogoMargin}" Style="{StaticResource ContentButton}">
                                     <Path Stretch="Uniform" Data="{StaticResource Shape_Database}" Margin="{StaticResource HeaderLogoMargin}" ToolTip="{Binding PrinterName}">
@@ -475,7 +473,81 @@
                                 <Path Stretch="Uniform" Data="{StaticResource Shape_Setting}" Fill="{StaticResource GrayColorBrush}"  Width="20" />
                             </Button>
                             <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" />
-                            <Button x:Name="PrintDocument" Background="Transparent" ToolTip="Print" Margin="{StaticResource HeaderLogoMargin}" Style="{StaticResource ContentButton}">
+                            <Button x:Name="PrintExcel" Background="Transparent" ToolTip="Print" Margin="{StaticResource HeaderLogoMargin}" >
+                                <Path Stretch="Uniform" Data="{StaticResource Shape_Excel}"  ToolTip="{Binding PrinterName}">
+                                    <Path.Style>
+                                        <Style TargetType="Path">
+                                            <Setter Property="Fill" Value="{StaticResource GrayColorBrush}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSettingActive,Mode=OneWay}" Value="True">
+                                                    <Setter Property="Fill" Value="#37ab00" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Path.Style>
+                                </Path>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsReportProceeded,Mode=OneWay}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                            <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" >
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsReportProceeded,Mode=OneWay}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                            <Button x:Name="PrintPdf" Background="Transparent" ToolTip="Print" Margin="{StaticResource HeaderLogoMargin}">
+                                <Path Stretch="Uniform" Data="{StaticResource Shape_Pdf}"  ToolTip="{Binding PrinterName}">
+                                    <Path.Style>
+                                        <Style TargetType="Path">
+                                            <Setter Property="Fill" Value="{StaticResource GrayColorBrush}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSettingActive,Mode=OneWay}" Value="True">
+                                                    <Setter Property="Fill" Value="#37ab00" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Path.Style>
+                                </Path>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsReportProceeded,Mode=OneWay}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                            <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" >
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsReportProceeded,Mode=OneWay}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                            <Button x:Name="PrintDocument" Background="Transparent" ToolTip="Print" Margin="{StaticResource HeaderLogoMargin}" >
                                 <Path Stretch="Uniform" Data="{StaticResource Shape_Print}"  ToolTip="{Binding PrinterName}">
                                     <Path.Style>
                                         <Style TargetType="Path">
@@ -488,82 +560,41 @@
                                         </Style>
                                     </Path.Style>
                                 </Path>
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsReportProceeded,Mode=OneWay}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
                             </Button>
-                            <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" />
-                            <!--cal:Message.Attach="Logout()"-->
-                            <!--<Button Style="{StaticResource ContentButton}" Padding="0" >
-                            <Grid Margin="{StaticResource HeaderLogoMargin}">
-                                <Path Data="{StaticResource Shape_Logout}" Stretch="Uniform" Fill="{StaticResource RedColorBrush}" />
-                            </Grid>
-                            -->
-                            <!--<Path Stretch="Uniform" Data="{StaticResource Shape_Gear}" Margin="{StaticResource HeaderLogoMargin}" Fill="{StaticResource GrayColorBrush2}" />-->
-                            <!--
-                        </Button>
-                        <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" />-->
-
-                            <ToggleButton Name="toggle_setting" Style="{StaticResource CustomContentToggleButtonStyle}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Padding="0">
-                                <Grid Margin="{StaticResource HeaderLogoMargin}">
-                                    <Border Height="25" Width="25" Background="{StaticResource LightBlueColorBrush}" CornerRadius="20" BorderThickness="1" BorderBrush="{StaticResource PureWhiteColorBrush}">
-                                        <TextBlock Text="{Binding CurrentUser.FirstName[0],FallbackValue='SB',TargetNullValue='SB'}" FontSize="{StaticResource SmallSize}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource PureWhiteColorBrush}"/>
-                                    </Border>
-                                </Grid>
-                                <!--<Path Stretch="Uniform" Data="{StaticResource Shape_Gear}" Margin="{StaticResource HeaderLogoMargin}" Fill="{StaticResource GrayColorBrush2}" />-->
-                            </ToggleButton>
-                            <!--<Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush4}"/>
-                        
-                        <Path Stretch="Uniform" Data="{StaticResource Shape_Wifi}" Margin="{StaticResource HeaderLogoMargin}" Fill="{StaticResource BlueColorBrush3}" />
-                        <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush4}" />
-
-                        <Path Stretch="Uniform" Data="{StaticResource Shape_Minimize}" Margin="{StaticResource HeaderLogoMargin}" Fill="{StaticResource GrayColorBrush}" />
-                        <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush4}" />
-                        
-                        <Image Margin="{StaticResource HeaderLogoMargin}" x:Name="img_powerIcon" Source="/Assets/powerIcon.png" />-->
-                        </StackPanel>
-
-                        <ContentControl x:Name="ActiveItem" Grid.Row="1" />
-
-                        <!--<Popup Grid.RowSpan="2" IsOpen="{Binding ElementName=toggle_setting, Path=IsChecked}" Placement="Bottom" PlacementTarget="{Binding ElementName=toggle_setting}" PopupAnimation="Slide" StaysOpen="False" HorizontalOffset="0" VerticalOffset="2" AllowsTransparency="True">
-                        <DockPanel Margin="1">
-                            <Border DockPanel.Dock="Bottom" Background="White" BorderBrush="{StaticResource GrayColorBrush2}" BorderThickness="1" Padding="15,5" CornerRadius="5">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    -->
-                        <!--<Button Grid.Row="0" Style="{StaticResource ContentButton}" FontFamily="{StaticResource LightFont}" FontSize="15">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Path Grid.Row="0" Data="{StaticResource Shape_Gear}" Stretch="Uniform" Fill="{StaticResource GrayColorBrush2}" Width="15" Margin="0,0,5,0" />
-                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="Settings" Foreground="{StaticResource GrayColorBrush2}" />
-                                        </StackPanel>
-                                    </Button>
-
-                                    <Line Grid.Row="1" X1="1" StrokeThickness="1" Stroke="{StaticResource GrayColorBrush2}" Stretch="Fill" Margin="0,5" StrokeDashCap="Square" StrokeEndLineCap="Square" />-->
-                        <!--
-
-                                    <Button cal:Message.Attach="Logout()" Grid.Row="2" Style="{StaticResource ContentButton}" FontFamily="{StaticResource LightFont}" FontSize="15">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Path Data="{StaticResource Shape_Logout}" Stretch="Uniform" Fill="{StaticResource GrayColorBrush2}" Width="15" Margin="0,0,5,0" />
-                                            <TextBlock Text="Logout" Foreground="{StaticResource GrayColorBrush2}" />
-                                        </StackPanel>
-                                    </Button>
-                                </Grid>
-                            </Border>
-                            <Path Data="M994.32084,49.036253 L1003.0833,39.831191 1011.4917,49.033735" Fill="White" Stroke="{StaticResource GrayColorBrush2}" StrokeThickness="1" HorizontalAlignment="Right" Height="8.622" Stretch="Uniform" VerticalAlignment="Top" StrokeEndLineCap="Triangle" Margin="0,0,15,-1.5" Width="15.218" StrokeStartLineCap="Triangle">
-                                <Path.Clip>
-                                    <RectangleGeometry Rect="0,0,15.218,8.15" />
-                                </Path.Clip>
+                            <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" >
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsReportProceeded,Mode=OneWay}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
                             </Path>
-                        </DockPanel>
-                    </Popup>-->
-
-
-
+                            <Button x:Name="LogOut" ToolTip="LogOut" Height="25" Width="25"   Style="{StaticResource ContentButton}" Background="{StaticResource BlueColorBrush}" controlExtensions:MiscControlExtensions.CornerRadius="30" Margin="{StaticResource HeaderLogoMargin}">
+                                <TextBlock Text="{Binding CurrentUser.DisplayName[0],FallbackValue='SB',TargetNullValue='SB'}" FontSize="{StaticResource MediumSize}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource PureWhiteColorBrush}"/>
+                            </Button>
+                        </StackPanel>
+                            <!--Main Content-->
+                        <ContentControl x:Name="ActiveItem" Grid.Row="1" />
                     </Grid>
                 </Border>
             </Grid>
 
+            <!--Layer For Displaying Loading Message-->
             <Border Background="{StaticResource GrayColorBrush}" CornerRadius="5" Opacity="0.5" >
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                     <maha:ProgressRing Height="100" Width="100" IsActive="True" Foreground="{StaticResource BlueColorBrush}"/>

@@ -7,6 +7,8 @@
 
   <ItemGroup>
     <PackageReference Include="Caliburn.Micro" Version="3.2.0" />
+    <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1000" />
+    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="161.46437.65" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0" />
   </ItemGroup>
@@ -16,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Resources\Notifications.Wpf-master\Notifications.Wpf-master\Notifications.Wpf\Notifications.Wpf.csproj" />
     <ProjectReference Include="..\AutoCompleteTextBox\AutoCompleteTextBox.csproj" />
     <ProjectReference Include="..\SmartSolutions.InventoryControl.DAL\SmartSolutions.InventoryControl.DAL.csproj" />
     <ProjectReference Include="..\SmartSolutions.Util\SmartSolutions.Util.csproj" />

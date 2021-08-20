@@ -17,7 +17,7 @@
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="ControlExtension:MiscControlExtensions.CornerRadius" Value="5" />
             <Setter Property="IsEnabled" Value="True" />
-            <!--<Setter Property="Template" Value="{StaticResource NoSelectionListViewItemTemplate}" />-->
+            <Setter Property="Template" Value="{StaticResource NoSelectionListViewItemTemplate}" />
             <Setter Property="Padding" Value="0" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="IsTabStop" Value="False" />

@@ -132,7 +132,7 @@
                              Width="280"
                              Padding="8 0 0 0"
                              Margin="10 0 0 0"
-                             Text="{Binding User.UserName,Mode=TwoWay}"
+                             Text="{Binding User.DisplayName,Mode=TwoWay}"
                              TextAlignment="Left"
                              FontFamily="{StaticResource MediumFont}"
                              FontSize="{StaticResource NormalSize}"
@@ -175,6 +175,7 @@
                                 <Setter Property="BorderBrush"  Value="{StaticResource BlueColorBrush}"/>
                                 <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
                                 <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconHeight" Value="15"/>
+                                <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconWidth" Value="18"/>
                                 <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility" Value="Visible"/>
                                 <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconPath" Value="{StaticResource Shape_ShowPassword}"/>
                                 <Setter Property="ControlExtensions:PasswordHelper.PasswordIconVisibility" Value="Collapsed"/>
@@ -224,6 +225,7 @@
                                 <Setter Property="BorderBrush"  Value="{StaticResource BlueColorBrush}"/>
                                 <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
                                 <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconHeight" Value="15"/>
+                                <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconWidth" Value="18"/>
                                 <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility" Value="Visible"/>
                                 <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconPath" Value="{StaticResource Shape_ShowPassword}"/>
                                 <Setter Property="ControlExtensions:PasswordHelper.PasswordIconVisibility" Value="Collapsed"/>
@@ -262,6 +264,8 @@
                              FontFamily="{StaticResource MediumFont}"
                              FontSize="{StaticResource NormalSize}"
                              Foreground="{StaticResource GrayColorBrush}"
+                             ControlExtensions:WaterMarkTextExtension.WatermarkIconHeight="25"
+                             ControlExtensions:WaterMarkTextExtension.WatermarkIconWidth="25"
                              ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_SecretKey}"
                              ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
                              VerticalContentAlignment="Bottom"

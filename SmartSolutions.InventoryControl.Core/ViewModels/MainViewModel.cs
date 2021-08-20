@@ -1,7 +1,9 @@
 ﻿using Caliburn.Micro;
 using Notifications.Wpf;
 using SmartSolutions.InventoryControl.Core.ViewModels.Dialogs;
+using SmartSolutions.InventoryControl.Core.ViewModels.Login;
 using SmartSolutions.InventoryControl.Core.ViewModels.Settings;
+using SmartSolutions.InventoryControl.DAL;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.LogUtils;
 using System;
@@ -47,6 +49,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
             base.OnActivate();
             NowTime = DateTime.Now;
+            CurrentUser = AppSettings.LoggedInUser;
+        }
+        public void LogOut()
+        {
+            try
+            {
+                _eventAggregator.PublishOnCurrentThread(IoC.Get<LoginViewModel>());
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Fatal);
+            }
         }
         public void Product()
         {
@@ -127,7 +141,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Sorry This Feature is Not Available Yet", options: Dialogs.MessageBoxOptions.Ok);
         }
-
         public async void CreateUser()
         {
             try
@@ -140,7 +153,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-
         public async void UpdateDbBackup()
         {
             try
@@ -165,7 +177,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-
         public void PrintDocument()
         {
             try

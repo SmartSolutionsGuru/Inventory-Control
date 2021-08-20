@@ -25,9 +25,9 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Stock
         public PurchaseOrderModel PurchaseOrder { get; set; }
         public PurchaseOrderDetailModel PurchaseOrderDetail { get; set; }
         public ProductModel Product { get; set; }
-        public int Quantity { get; set; }
-        public decimal Price { get; set; }
-        public decimal Total { get; set; }
+        public int? Quantity { get; set; }
+        public decimal? Price { get; set; }
+        public decimal? Total { get; set; }
         public string Description { get; set; }
         public WarehouseModel Warehouse { get; set; }
         #endregion

@@ -22,14 +22,20 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
         #region Private Members
         private readonly IRepository Repository;
         private readonly ICityManager _cityManager;
+        private readonly IPartnerTypeManager _partnerTypeManager;
+        private readonly IPartnerCategoryManager _partnerCategoryManager;
         #endregion
 
         #region Costructor
         [ImportingConstructor]
-        public BussinessPartnerManager(ICityManager cityManager)
+        public BussinessPartnerManager(ICityManager cityManager
+                                        , IPartnerTypeManager partnerTypeManager
+                                        , IPartnerCategoryManager partnerCategoryManager)
         {
             Repository = GetRepository<BussinessPartnerModel>();
             _cityManager = cityManager;
+            _partnerTypeManager = partnerTypeManager;
+            _partnerCategoryManager = partnerCategoryManager;
         }
         #endregion
 
@@ -94,6 +100,10 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                         var partner = new BussinessPartnerModel();
                         partner.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                         partner.Name = value?.GetValueFromDictonary("Name")?.ToString();
+                        partner.PartnerType = new BussinessPartnerTypeModel {Id =  value?.GetValueFromDictonary("PartnerTypeId")?.ToString()?.ToInt()};
+                        partner.PartnerType = await _partnerTypeManager.GetPartnerTypeByIdAsync(partner?.PartnerType?.Id);
+                        partner.PartnerCategory = new BussinessPartnerCategoryModel { Id = value?.GetValueFromDictonary("PartnerCategoryId")?.ToString()?.ToInt()};
+                        partner.PartnerCategory = await _partnerCategoryManager.GetPartnerCategoryByIdAsync(partner?.PartnerCategory?.Id);
                         partner.BussinessName = value?.GetValueFromDictonary("BussinessName")?.ToString();
                         partner.City = new Models.Region.CityModel
                         {
