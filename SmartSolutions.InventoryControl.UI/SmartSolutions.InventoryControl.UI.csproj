@@ -178,6 +178,9 @@
     <Compile Include="Views\Dialogs\PathInsertionView.xaml.cs">
       <DependentUpon>PathInsertionView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ProprietorInformationView.xaml.cs">
+      <DependentUpon>ProprietorInformationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Reports\BussinessPartner\DisplayAllPartnersView.xaml.cs">
       <DependentUpon>DisplayAllPartnersView.xaml</DependentUpon>
     </Compile>
@@ -283,6 +286,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Product\ProductView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProprietorInformationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -20,6 +20,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Settings
         #endregion
 
         #region Constructor
+        [ImportingConstructor]
         public SystemSettingManager()
         {
             Repository = GetRepository<SystemSettingModel>();
@@ -93,16 +94,16 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Settings
                 parameters["@v_Name"] = setting.Name;
                 parameters["@v_SettingKey"] = setting.SettingKey;
                 parameters["@v_SettingValue"] = setting.SettingValue;
-                parameters["@v_Value"] = setting.Value;
-                parameters["@v_DefaultValue"] = setting.DefaultValue;
-                parameters["@v_Description"] = setting.Description;
+                parameters["@v_Value"] = setting.Value == null ? DBNull.Value : (object)setting.Value;
+                parameters["@v_DefaultValue"] = setting.DefaultValue == null ? DBNull.Value : (object)setting.DefaultValue;
+                parameters["@v_Description"] = setting.Description == null ? DBNull.Value : (object)setting.Description;
                 parameters["@v_IsActive"] = setting.IsActive = true;
                 parameters["@v_CreatedAt"] = setting.CreatedAt == null ? DateTime.Now : setting.CreatedAt;
                 parameters["@v_CreatedBy"] = setting.CreatedBy == null ? DBNull.Value : (object)setting.CreatedBy;
                 parameters["@v_UpdatedAt"] = setting.UpdatedAt == null ? DBNull.Value : (object)setting.UpdatedAt;
                 parameters["@v_UpdatedBy"] = setting.UpdatedBy == null ? DBNull.Value : (object)setting.UpdatedBy;
-                string query = @"INSERT INTO SystemSettings(Name,SettingKey,SettingValue,DefaultValue,Description,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
-                                                    VALUES(@v_Name,@v_SettingKey,@v_SettingValue,@v_DefaultValue,@v_Description,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy);";
+                string query = @"INSERT INTO SystemSettings(Name,SettingKey,SettingValue,Value,DefaultValue,Description,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                                    VALUES(@v_Name,@v_SettingKey,@v_SettingValue,@v_Value,@v_DefaultValue,@v_Description,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy);";
                var result =  await Repository.NonQueryAsync(query:query,parameters:parameters);
                 retVal = result > 0 ? true : false;
             }

@@ -383,8 +383,32 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="35,8" HorizontalAlignment="Right" Height="30">
+                        <Grid Grid.Column="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.14*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Welcome" 
+                                       Foreground="{StaticResource LightGrayColorBrush}"
+                                       FontFamily="{StaticResource MediumFont}" 
+                                       FontSize="{StaticResource SubHeadingSize}" 
+                                       HorizontalAlignment="Left" 
+                                       VerticalAlignment="Center"
+                                       Margin="20 0 0 0"/>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{Binding ProprietorInfo.ProprietorName,Mode=OneWay,FallbackValue='XYZ '}" 
+                                           FontFamily="{StaticResource MediumFont}" 
+                                           FontSize="{StaticResource ExtraNormalSize}" 
+                                           Margin="0 5 0 0"
+                                           VerticalAlignment="Center" 
+                                           Foreground="{StaticResource BlueColorBrush}"/>
+                                <TextBlock Text="{Binding ProprietorInfo.BussinessName,Mode=OneWay}"
+                                           Foreground="{StaticResource GrayColorBrush}"
+                                           FontFamily="{StaticResource MediumFont}"
+                                           FontSize="{StaticResource MediumSize}"/>
+                            </StackPanel>
+                        </Grid>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="35,8" HorizontalAlignment="Right" Height="30">
                             <Button Background="Transparent" Margin="{StaticResource HeaderLogoMargin}" Style="{StaticResource IconGrowButton}">
                                 <Path Stretch="Uniform" Data="{StaticResource Shape_WhatsApp}" ToolTip="{Binding PrinterName}">
                                     <Path.Style>

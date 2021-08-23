@@ -4,6 +4,7 @@ using SmartSolutions.InventoryControl.Core.ViewModels.Dialogs;
 using SmartSolutions.InventoryControl.Core.ViewModels.Login;
 using SmartSolutions.InventoryControl.Core.ViewModels.Settings;
 using SmartSolutions.InventoryControl.DAL;
+using SmartSolutions.InventoryControl.DAL.Models;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.LogUtils;
 using System;
@@ -33,6 +34,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             _systemSettingManager = systemSettingManager;
             _databaseBackupManager = databaseBackupManager;
              notificationManager = new NotificationManager();
+            ProprietorInfo = AppSettings.Proprietor;
         }
         #endregion
 
@@ -301,6 +303,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             get { return _TransactionCounter; }
             set { _TransactionCounter = value; NotifyOfPropertyChange(nameof(TransactionCounter)); }
+        }
+        private ProprietorInformationModel _ProprietorInfo;
+        /// <summary>
+        /// Basic Info Of Properitor
+        /// </summary>
+        public ProprietorInformationModel ProprietorInfo
+        {
+            get { return _ProprietorInfo; }
+            set { _ProprietorInfo = value; NotifyOfPropertyChange(nameof(ProprietorInfo)); }
         }
 
         #endregion

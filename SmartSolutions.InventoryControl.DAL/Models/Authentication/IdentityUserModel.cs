@@ -6,7 +6,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Authentication
 {
    public class IdentityUserModel :BaseModel
     {
-        #region Default Constructor
+        #region  Constructor
 
         public IdentityUserModel() { }
 
@@ -42,6 +42,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Authentication
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string FullName { get; set; }
+        public string Initials { get; set; }
         public string Email { get; private set; }
         public string SecretKey { get; set; }
         public IdentityUserModel User { get; set; }

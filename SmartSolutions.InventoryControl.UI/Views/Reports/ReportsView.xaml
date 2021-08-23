@@ -62,20 +62,10 @@
                          FontFamily="{StaticResource MediumFont}"
                          FontSize="{StaticResource MediumSize}"/>
             </Grid>
-
-            <!--<Border Grid.Row="2" Padding="0" ClipToBounds="True">
-                <ContentPresenter Content="{TemplateBinding Content}" />
-            </Border>-->
             <ContentControl Grid.Row="2"
                             x:Name="ActiveItem"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"/>
-            <!--<DataGrid Grid.Row="2"
-                      BorderThickness="0"
-                      Margin="0,0"
-                      Background="{StaticResource LightestBlueColorBrush}">
-                
-            </DataGrid>-->
         </Grid>
     </Border>
 </UserControl>

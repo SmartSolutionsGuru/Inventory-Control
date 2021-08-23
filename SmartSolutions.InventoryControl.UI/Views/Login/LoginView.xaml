@@ -37,7 +37,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" 
-                           Text="Butt Buckle Store" 
+                           Text="{Binding Properitor.BussinessName,Mode=OneWay,FallbackValue='XYZ Company',TargetNullValue='XYZ Comapny'}" 
                            FontFamily="{StaticResource MediumFont}" 
                            HorizontalAlignment="Center" 
                            VerticalAlignment="Center"

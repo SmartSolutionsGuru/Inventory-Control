@@ -29,6 +29,10 @@ namespace SmartSolutions.InventoryControl.DAL
         /// </summary>
         public static Models.Authentication.IdentityUserModel LoggedInUser { get; set; }
         public static bool IsLoggedInUserAdmin { get; set; }
+        /// <summary>
+        /// Proprietor Information
+        /// </summary>
+        public static DAL.Models.ProprietorInformationModel Proprietor { get; set; }
 
     }
 }

@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.SqlServer.Management.Smo;
+using SmartSolutions.InventoryControl.DAL;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels
 {
@@ -25,7 +26,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private string DirectoryName = "Smart Solutions";
         private readonly IDialogManager _dialog;
         private static string dbFile = null;
-        //private readonly INotificationManager _notificationManager;
+        private readonly DAL.Managers.Proprietor.IProprietorInformationManager _proprietorInformationManager;
+        private readonly DAL.Managers.Settings.ISystemSettingManager _systemSettingManager;
         #endregion
 
         #region Constructor
@@ -39,12 +41,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public ShellViewModel(IEventAggregator eventAggregator
                               , IWindowManager windowManager
                               , IDialogManager dialogManager
-                             /* , INotificationManager notificationManager*/)
+                              , DAL.Managers.Proprietor.IProprietorInformationManager proprietorInformationManager
+                              , DAL.Managers.Settings.ISystemSettingManager systemSettingManager)
         {
             _eventAggregator = eventAggregator;
             _windowManager = windowManager;
             _dialog = dialogManager;
-           // _notificationManager = notificationManager;
+            _proprietorInformationManager = proprietorInformationManager;
+            _systemSettingManager = systemSettingManager;
         }
         #endregion
 
@@ -59,18 +63,31 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #region Methods
         public void Handle(Screen screen)
         {
-            if (screen is MainViewModel || screen is Login.LoginViewModel)
+            if (screen is MainViewModel || screen is Login.LoginViewModel || screen is ProprietorInformationViewModel)
             {
                 ActiveItem = screen;
                 ActivateItem(screen);
             }
 
         }
-        protected override void OnInitialize()
+        protected async override void OnInitialize()
         {
             base.OnInitialize();
             dbFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName, "InventoryControl.db");
-            Handle(IoC.Get<Login.LoginViewModel>());
+            var result = InitializeDatabaseConnection();
+            var settingResult = await _systemSettingManager.GetsystemSettingByKeyAsync("IsProprietorAvailable");
+            //Handle(IoC.Get<Login.LoginViewModel>());
+            if (settingResult != null)
+            {
+                if (settingResult.SettingValue == 1)
+                {
+                    DAL.AppSettings.Proprietor = await _proprietorInformationManager.GetProprietorInfoAsync();
+                    Handle(IoC.Get<Login.LoginViewModel>());
+                }
+                else
+                    Handle(IoC.Get<ProprietorInformationViewModel>());
+            }
+
         }
         protected override void OnActivate()
         {
@@ -84,9 +101,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             //}
             //else
             //{
-                    //TODO : here we Run The Script For Creating Database
+            //TODO : here we Run The Script For Creating Database
             //}
-            var result = InitializeDatabaseConnection();
+            //var result = InitializeDatabaseConnection();
 
         }
         protected override void OnViewLoaded(object view)

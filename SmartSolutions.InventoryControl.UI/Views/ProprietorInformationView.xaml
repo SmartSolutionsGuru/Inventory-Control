@@ -1,0 +1,310 @@
+﻿<UserControl x:Class="SmartSolutions.InventoryControl.UI.Views.ProprietorInformationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:controlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1366">
+    <Border Background="{StaticResource PureWhiteColorBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Please Enter Your Profile Information" Foreground="{StaticResource BlueColorBrush}" FontFamily="{StaticResource MediumFont}"
+                       FontSize="{StaticResource SubHeadingSize}"
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Center"/>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Height="45" 
+                         Width="280"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         HorizontalAlignment="Center"
+                         Text="{Binding CompanyName,Mode=TwoWay}"
+                         Foreground="{StaticResource GrayColorBrush}"
+                         FontFamily="{StaticResource MediumFont}"
+                         FontSize="{StaticResource MediumSize}"
+                         VerticalAlignment="Center"
+                         BorderThickness="1.7"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Company}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                         BorderBrush="{StaticResource BlueColorBrush}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkText="Company Name"
+                         ></TextBox>
+                <TextBox Height="45" 
+                         Width="280"
+                         Grid.Column="1"
+                         Text="{Binding ProprietorName,Mode=TwoWay}"
+                         Foreground="{StaticResource GrayColorBrush}"
+                         FontFamily="{StaticResource MediumFont}"
+                         FontSize="{StaticResource MediumSize}"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Partner}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                         BorderThickness="1.7"
+                         BorderBrush="{StaticResource BlueColorBrush}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkText="Propriter Name"
+                         ></TextBox>
+                <ComboBox Grid.Column="2"
+                          Style="{StaticResource BaseComboBox}"
+                          Height="50"
+                          Width="280"
+                          DisplayMemberPath="Name"
+                          MaxDropDownHeight="200"
+                          Foreground="{StaticResource GrayColorBrush}"
+                          FontFamily="{StaticResource MediumFont}"
+                          FontSize="{StaticResource MediumSize}"
+                          BorderThickness="1.7"
+                          BorderBrush="{StaticResource BlueColorBrush}"
+                          ItemsSource="{Binding BussinessTypes,Mode=OneWay}"
+                          SelectedItem="{Binding SelectedBussinessType,Mode=TwoWay}"
+                          controlExtensions:WaterMarkTextExtension.WatermarkText="Bussiness Type" />
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox Grid.Column="0"
+                          Style="{StaticResource BaseComboBox}"
+                          Height="50"
+                          Width="280"
+                          DisplayMemberPath="Name"
+                          MaxDropDownHeight="200"
+                          Foreground="{StaticResource GrayColorBrush}"
+                          FontFamily="{StaticResource MediumFont}"
+                          FontSize="{StaticResource MediumSize}"
+                          BorderThickness="1.7"
+                          BorderBrush="{StaticResource BlueColorBrush}"
+                          ItemsSource="{Binding BussinessCwtegories,Mode=OneWay}"
+                          SelectedItem="{Binding SelectedBussinessCategory,Mode=TwoWay}"
+                          controlExtensions:WaterMarkTextExtension.WatermarkText="Bussiness Type" />
+                <TextBox Height="45" 
+                         Width="280"
+                         Grid.Column="1"
+                         Text="{Binding LandLineNumber,Mode=TwoWay}"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         HorizontalAlignment="Center"
+                         Foreground="{StaticResource GrayColorBrush}"
+                         FontFamily="{StaticResource MediumFont}"
+                         FontSize="{StaticResource MediumSize}"
+                         VerticalAlignment="Center"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Phone}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                         BorderThickness="1.7"
+                         BorderBrush="{StaticResource BlueColorBrush}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkText="LandLine Number"
+                         ></TextBox>
+                <TextBox Height="45" 
+                         Width="280"
+                         Grid.Column="2"
+                         Text="{Binding LandLineNumber1,Mode=TwoWay}"
+                         Foreground="{StaticResource GrayColorBrush}"
+                         FontFamily="{StaticResource MediumFont}"
+                         FontSize="{StaticResource MediumSize}"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                           controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Phone}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                         BorderThickness="1.7"
+                         BorderBrush="{StaticResource BlueColorBrush}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkText="LandLine Number2"
+                         ></TextBox>
+            </Grid>
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox Grid.Column="0"
+                          Style="{StaticResource BaseComboBox}"
+                          Height="50"
+                          Width="280"
+                          DisplayMemberPath="Name"
+                          MaxDropDownHeight="100"
+                          Foreground="{StaticResource GrayColorBrush}"
+                          FontFamily="{StaticResource MediumFont}"
+                          FontSize="{StaticResource MediumSize}"
+                          BorderThickness="1.7"
+                          BorderBrush="{StaticResource BlueColorBrush}"
+                          ItemsSource="{Binding Cities,Mode=OneWay}"
+                          SelectedItem="{Binding SelectedCity,Mode=TwoWay}"
+                          controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                          controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_City}"
+                          controlExtensions:WaterMarkTextExtension.WatermarkText="Select City" />
+                <TextBox Height="45" 
+                         Width="280"
+                         Grid.Column="1"
+                         Text="{Binding MobileNumber,Mode=TwoWay}"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         HorizontalAlignment="Center"
+                         Foreground="{StaticResource GrayColorBrush}"
+                         FontFamily="{StaticResource MediumFont}"
+                         FontSize="{StaticResource MediumSize}"
+                         VerticalAlignment="Center"
+                         BorderThickness="1.7"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Mobile}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                         BorderBrush="{StaticResource BlueColorBrush}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkText="Mobile Number"
+                         ></TextBox>
+                <TextBox Height="45" 
+                         Width="280"
+                         Grid.Column="2"
+                         Text="{Binding MobileNumber1,Mode=TwoWay}"
+                         Foreground="{StaticResource GrayColorBrush}"
+                         FontFamily="{StaticResource MediumFont}"
+                         FontSize="{StaticResource MediumSize}"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         BorderThickness="1.7"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Mobile}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                         BorderBrush="{StaticResource BlueColorBrush}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkText="Mobile Number2"
+                         />
+            </Grid>
+            <Grid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Height="45" 
+                         Width="280"
+                         Grid.Column="0"
+                         Text="{Binding WhatsAppNumber,Mode=TwoWay}"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         HorizontalAlignment="Center"
+                         Foreground="{StaticResource GrayColorBrush}"
+                         FontFamily="{StaticResource MediumFont}"
+                         FontSize="{StaticResource MediumSize}"
+                         VerticalAlignment="Center"
+                         BorderThickness="1.7"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_WhatsApp}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                         BorderBrush="{StaticResource BlueColorBrush}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkText="WhatsApp Number"
+                         ></TextBox>
+                <TextBox Height="75" 
+                         Width="280"
+                         Grid.Column="1"
+                         Text="{Binding BussinessAddress,Mode=TwoWay}"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         HorizontalAlignment="Center"
+                         Foreground="{StaticResource GrayColorBrush}"
+                         FontFamily="{StaticResource MediumFont}"
+                         FontSize="{StaticResource MediumSize}"
+                         VerticalAlignment="Center"
+                         BorderThickness="1.7"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Location}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                         BorderBrush="{StaticResource BlueColorBrush}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkText="Bussiness Address"
+                         ></TextBox>
+                <TextBox Height="75" 
+                         Width="280"
+                         Text="{Binding HomeAddress,Mode=TwoWay}"
+                         Grid.Column="2"
+                         Foreground="{StaticResource GrayColorBrush}"
+                         FontFamily="{StaticResource MediumFont}"
+                         FontSize="{StaticResource MediumSize}"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         BorderThickness="1.7"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Location}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                         BorderBrush="{StaticResource BlueColorBrush}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkText="Home Address"
+                         />
+            </Grid>
+            <Grid Grid.Row="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Height="45" 
+                         Width="280"
+                         Grid.Column="0"
+                         Text="{Binding BankInfo,Mode=TwoWay}"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         HorizontalAlignment="Center"
+                         Foreground="{StaticResource GrayColorBrush}"
+                         FontFamily="{StaticResource MediumFont}"
+                         FontSize="{StaticResource MediumSize}"
+                         VerticalAlignment="Center"
+                         BorderThickness="1.7"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Bank}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                         BorderBrush="{StaticResource BlueColorBrush}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkText="Bank "
+                         ></TextBox>
+                <TextBox Height="75" 
+                         Width="280"
+                         Grid.Column="1"
+                         Text="{Binding Description,Mode=TwoWay}"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         HorizontalAlignment="Center"
+                         Foreground="{StaticResource GrayColorBrush}"
+                         FontFamily="{StaticResource MediumFont}"
+                         FontSize="{StaticResource MediumSize}"
+                         VerticalAlignment="Center"
+                         BorderThickness="1.7"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Report}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                         BorderBrush="{StaticResource BlueColorBrush}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkText="Description"
+/>
+                
+            </Grid>
+            <Grid Grid.Row="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="1" HorizontalAlignment="Right" Margin="0 0 70 0" VerticalAlignment="Center" Orientation="Horizontal">
+                    <Button x:Name="Cancel"
+                            Style="{StaticResource ContentButton}"
+                            Height="45" 
+                            Width="150"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Margin="10 0"
+                            Background="{StaticResource LightGrayColorBrush}"
+                            Foreground="{StaticResource GrayColorBrush}"
+                            Content="Cancel"/>
+                    <Button x:Name="Submit"
+                            Style="{StaticResource ContentButton}"
+                            Height="45" 
+                            Width="150"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Margin="10 0"
+                            Background="{StaticResource GreenColorBrush}"
+                            Foreground="{StaticResource PureWhiteColorBrush}"
+                            Content="Submit"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

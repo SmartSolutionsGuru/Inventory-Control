@@ -172,6 +172,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Login
             set { _SecretKey = value; NotifyOfPropertyChange(nameof(SecretKey)); }
         }
         public IdentityUserModel User { get; set; }
+        private DAL.Models.ProprietorInformationModel _Properitor;
+
+        public DAL.Models.ProprietorInformationModel Properitor
+        {
+            get { return _Properitor; }
+            set { _Properitor = value; }
+        }
+
+
 
         #endregion
 
@@ -202,6 +211,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Login
             _authenticationManager = authenticationManager;
             // Create commands
             LoginCommand = new RelayParameterizedCommand(async (parameter) => await LoginAsync(parameter));
+            Properitor = AppSettings.Proprietor;
         }
 
 
