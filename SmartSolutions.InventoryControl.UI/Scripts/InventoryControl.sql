@@ -1,7 +1,7 @@
 USE [master]
 GO
 
-/****** Object:  Database [SmartSolutions.InventoryControl]    Script Date: 8/12/2021 11:07:38 AM ******/
+/****** Object:  Database [SmartSolutions.InventoryControl]    Script Date: 8/25/2021 5:18:44 PM ******/
 CREATE DATABASE [SmartSolutions.InventoryControl]
  CONTAINMENT = NONE
  ON  PRIMARY 

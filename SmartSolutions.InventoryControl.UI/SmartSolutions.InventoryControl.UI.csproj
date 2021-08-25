@@ -172,6 +172,9 @@
     <Compile Include="CustomControls\SimplePanel.cs" />
     <Compile Include="CustomControls\ValueBoxes.cs" />
     <Compile Include="Helpers\ControlExtensions\BorderExtensions.cs" />
+    <Compile Include="Views\Bank\BankView.xaml.cs">
+      <DependentUpon>BankView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\BussinessPartner\PartnerBalanceView.xaml.cs">
       <DependentUpon>PartnerBalanceView.xaml</DependentUpon>
     </Compile>
@@ -246,6 +249,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\ToolTip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Bank\BankView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -28,6 +28,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <TextBlock TextAlignment="Center" Margin="0 0 0 0"
@@ -367,6 +368,60 @@
                                         <Setter Property="Background" Value="{StaticResource PureWhiteColorBrush}"/>
                                         <Setter Property="BorderThickness" Value="1"/>
                                         <Setter Property="Foreground" Value="{StaticResource OrangeColorBrush}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    
+                    <Button Name="Bank" 
+                            Grid.Row="8" 
+                            Margin="5" Padding="10"
+                            HorizontalContentAlignment="Center" 
+                            VerticalContentAlignment="Center"  
+                            BorderBrush="#B96839"
+                            BorderThickness="1.5"
+                            FontFamily="{StaticResource MediumFont}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Path Grid.Column="0" Data="{StaticResource Shape_Bank}" Stretch="Uniform" Width="22" Grid.RowSpan="2" Margin="0 0 5 0">
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Setter Property="Fill" Value="White"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsReportProceeded,Mode=OneWay}" Value="True">
+                                                <Setter Property="Fill" Value="#B96839"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                            <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"  TextWrapping="WrapWithOverflow" Text="BANK" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" Margin="0 5 0 0">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsReportProceeded,Mode=OneWay}" Value="True">
+                                                <Setter Property="Foreground" Value="#B96839"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
+                                <Setter Property="Background" Value="#B96839"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsReportProceeded}" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource PureWhiteColorBrush}"/>
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                        <Setter Property="Foreground" Value="#B96839"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
