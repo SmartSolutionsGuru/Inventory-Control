@@ -1,0 +1,255 @@
+﻿<UserControl x:Class="SmartSolutions.InventoryControl.UI.Views.Bank.BankAccountView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ControlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
+             xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views.Bank"
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1366">
+    <Border Background="{StaticResource PureWhiteColorBrush}">
+        <!--TODO: Update And Remove is Not Implemented-->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <RadioButton Grid.Column="0" 
+                             BorderBrush="{StaticResource GreenColorBrush}" 
+                             BorderThickness="1" 
+                             ControlExtensions:MiscControlExtensions.CornerRadius="5" 
+                             Content="Add Bank Account" 
+                             HorizontalContentAlignment="Center" 
+                             VerticalContentAlignment="Center" 
+                             Margin="30,10"
+                             GroupName="ProductGroup"
+                             IsChecked="{Binding IsAddBankPressed,Mode=TwoWay}"
+                             Background="{StaticResource GreenColorBrush}" >
+                <RadioButton.Style>
+                    <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                        <Style.Triggers>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="Foreground" Value="{StaticResource GreenColorBrush}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </RadioButton.Style>
+            </RadioButton>
+            <RadioButton Grid.Column="1" 
+                             BorderBrush="{StaticResource OrangeColorBrush}" 
+                             BorderThickness="1" 
+                             ControlExtensions:MiscControlExtensions.CornerRadius="5" 
+                             Content="Update Bank Account" 
+                             HorizontalContentAlignment="Center" 
+                             VerticalContentAlignment="Center" 
+                             Margin="30,10"
+                             GroupName="ProductGroup"
+                             IsChecked="{Binding IsUpdateBankPressed,Mode=TwoWay}"
+                             ControlExtensions:MiscControlExtensions.UncheckedForeground="{StaticResource RedColorBrush}"
+                            
+                             Background="{StaticResource OrangeColorBrush}" >
+                <RadioButton.Style>
+                    <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                        <Style.Triggers>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="Foreground" Value="{StaticResource OrangeColorBrush}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </RadioButton.Style>
+            </RadioButton>
+            <RadioButton Grid.Column="2" 
+                             Margin="30,10"
+                             Content="Remove Bank Account"
+                             HorizontalContentAlignment="Center"
+                             VerticalContentAlignment="Center"
+                             FontFamily="{StaticResource MediumFont}"
+                             FontSize="{StaticResource NormalSize}"
+                             BorderThickness="1"
+                             GroupName="ProductGroup"
+                             IsChecked="{Binding IsRemoveBankPressed,Mode=TwoWay}"
+                             BorderBrush="{StaticResource RedColorBrush}"
+                             Background="{StaticResource RedColorBrush}">
+                <RadioButton.Style>
+                    <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                        <Style.Triggers>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </RadioButton.Style>
+            </RadioButton>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <!--<RowDefinition Height="*"/>-->
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ComboBox Height="45" 
+                              Width="280" 
+                              ToolTip="Banks"
+                              DisplayMemberPath="Name"
+                              ItemsSource="{Binding Banks,Mode=OneWay}"
+                              SelectedItem="{Binding SelectedBank,Mode=TwoWay}"
+                              Style="{StaticResource BaseComboBox}"
+                              Foreground="{StaticResource GrayColorBrush}"
+                              BorderBrush="{StaticResource BlueColorBrush}"
+                              BorderThickness="1.7"
+                              FontFamily="{StaticResource MediumFont}"
+                              FontSize="{StaticResource MediumSize}"
+                              Margin="5,0"
+                              ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Bank"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                    <Button x:Name="AddBank"
+                            Height="35" 
+                            Width="35"
+                            ToolTip="Add Bank"
+                            Margin="5,0"
+                            Background="{StaticResource GreenColorBrush}"
+                            Style="{StaticResource ContentButton}">
+                        <Path Height="20" Width="20" Stretch="Uniform" Fill="{StaticResource PureWhiteColorBrush}" Data="{StaticResource Shape_Plus1}"/>
+                    </Button>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <ComboBox Height="45" 
+                              Width="280" 
+                              ToolTip="Branches"
+                              DisplayMemberPath="Name"
+                              ItemsSource="{Binding BankBranches,Mode=OneWay}"
+                              SelectedItem="{Binding SelectedBranch,Mode=TwoWay}"
+                              Style="{StaticResource BaseComboBox}"
+                              Foreground="{StaticResource GrayColorBrush}"
+                              BorderBrush="{StaticResource BlueColorBrush}"
+                              FontFamily="{StaticResource MediumFont}"
+                              FontSize="{StaticResource MediumSize}"
+                              BorderThickness="1.7"
+                              Margin="5,0"
+                              ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Bank Branch"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                    <Button x:Name="AddBranch"
+                            Height="35" 
+                            Width="35"
+                            ToolTip="Add Branch"
+                            Margin="5,0"
+                            Background="{StaticResource GreenColorBrush}"
+                            Style="{StaticResource ContentButton}">
+                        <Path Height="20" Width="20" Stretch="Uniform" Fill="{StaticResource PureWhiteColorBrush}" Data="{StaticResource Shape_Plus1}"/>
+                    </Button>
+                </StackPanel>
+                <ComboBox Grid.Column="2" 
+                          Height="45"
+                          Width="280"
+                          Style="{StaticResource BaseComboBox}"
+                          Foreground="{StaticResource GrayColorBrush}"
+                          BorderThickness="1.7"
+                          ControlExtensions:WaterMarkTextExtension.WatermarkText="Account Type"
+                          BorderBrush="{StaticResource BlueColorBrush}"
+                          ItemsSource="{Binding AccountTypes,Mode=OneWay}"
+                          SelectedItem="{Binding SelectedAccountType,Mode=TwoWay}"/>
+                <ComboBox Grid.Row="1" 
+                          Height="45"
+                          Width="280"
+                          Style="{StaticResource BaseComboBox}"
+                          Foreground="{StaticResource GrayColorBrush}"
+                          BorderThickness="1.7"
+                          ControlExtensions:WaterMarkTextExtension.WatermarkText="Account Type"
+                          BorderBrush="{StaticResource BlueColorBrush}"
+                          ItemsSource="{Binding AccountStatus,Mode=OneWay}"
+                          SelectedItem="{Binding SelectedAccountStatus,Mode=TwoWay}"/>
+                <TextBox Grid.Row="1"
+                         Height="45"
+                         Width="280"
+                         Text="{Binding BankAccountNumber,Mode=TwoWay}"
+                         BorderThickness="1.7"
+                         BorderBrush="{StaticResource BlueColorBrush}"
+                         Grid.Column="1"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Account #"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_User_ID}"/>
+                <TextBox Grid.Row="1"
+                         Grid.Column="2"
+                         Height="45"
+                         Width="280"
+                         Text="{Binding InitialBalance,Mode=TwoWay}"
+                         BorderThickness="1.7"
+                         BorderBrush="{StaticResource BlueColorBrush}"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Initial Balance"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_User_Identity}"/>
+                <DatePicker Grid.Row="2" 
+                            Grid.Column="0"
+                            Height="45"
+                            SelectedDate="{Binding AccountOpeningDate,Mode=TwoWay}"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Width="280"></DatePicker>
+                <TextBox Grid.Row="2"
+                         Grid.Column="1"
+                         Height="75"
+                         Text="{Binding Description,Mode=TwoWay}"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         Width="280"
+                         BorderThickness="1.7"
+                         BorderBrush="{StaticResource BlueColorBrush}"
+                         Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Description"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                         ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Report}"/>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                           Grid.Row="3"
+                           Grid.Column="2">
+                    <Button x:Name="Cancel"
+                                    Style="{StaticResource ContentButton}"
+                                    Background="{StaticResource LightGrayColorBrush}"
+                                    Foreground="{StaticResource GrayColorBrush}"
+                                    Content="Cancel"
+                                    Margin="5 0"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Height="45"
+                                    Width="100"/>
+                    <Button x:Name="AddAccount"
+                                    Style="{StaticResource ContentButton}"
+                                    Background="{StaticResource GreenColorBrush}"
+                                    Foreground="{StaticResource PureWhiteColorBrush}"
+                                    Content="Submit"
+                                    Margin="5 0"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Height="45"
+                                    Width="100">
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

@@ -392,7 +392,7 @@
                                     <Style TargetType="Path">
                                         <Setter Property="Fill" Value="White"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsReportProceeded,Mode=OneWay}" Value="True">
+                                            <DataTrigger Binding="{Binding IsBankProceeded,Mode=OneWay}" Value="True">
                                                 <Setter Property="Fill" Value="#B96839"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -404,7 +404,7 @@
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsReportProceeded,Mode=OneWay}" Value="True">
+                                            <DataTrigger Binding="{Binding IsBankProceeded,Mode=OneWay}" Value="True">
                                                 <Setter Property="Foreground" Value="#B96839"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -418,7 +418,7 @@
                                 <Setter Property="BorderThickness" Value="0"/>
                                 <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsReportProceeded}" Value="True">
+                                    <DataTrigger Binding="{Binding IsBankProceeded,Mode=OneWay}" Value="True">
                                         <Setter Property="Background" Value="{StaticResource PureWhiteColorBrush}"/>
                                         <Setter Property="BorderThickness" Value="1"/>
                                         <Setter Property="Foreground" Value="#B96839"/>

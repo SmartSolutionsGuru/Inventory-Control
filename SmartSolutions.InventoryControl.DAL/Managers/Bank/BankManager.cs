@@ -23,7 +23,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
         [ImportingConstructor]
         public BankManager()
         {
-
+            Repository = GetRepository<BankModel>();
         }
         #endregion
 

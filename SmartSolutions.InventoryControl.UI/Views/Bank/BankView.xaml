@@ -1,91 +1,189 @@
 ﻿<UserControl x:Class="SmartSolutions.InventoryControl.UI.Views.Bank.BankView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ControlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:ControlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
              xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views.Bank"
-             mc:Ignorable="d" 
-             d:DesignHeight="768" d:DesignWidth="1366">
-    <Border Background="{StaticResource PureWhiteColorBrush}">
+             mc:Ignorable="d"
+             Height="400"
+             Width="650"
+             d:DesignHeight="400" d:DesignWidth="650">
+    <Border>
+        <!--TODO: Update And Remove Implemention is Due-->
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="70"/>
+                <RowDefinition Height="60"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <RadioButton Grid.Column="0" 
-                             BorderBrush="{StaticResource GreenColorBrush}" 
-                             BorderThickness="1" 
-                             ControlExtensions:MiscControlExtensions.CornerRadius="5" 
-                             Content="Add Bank" 
-                             HorizontalContentAlignment="Center" 
-                             VerticalContentAlignment="Center" 
-                             Margin="30,10"
-                             GroupName="ProductGroup"
-                             IsChecked="{Binding IsAddProductPressed,Mode=TwoWay}"
-                             Background="{StaticResource GreenColorBrush}" >
-                <RadioButton.Style>
-                    <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
-                        <Style.Triggers>
-                            <Trigger Property="IsChecked" Value="False">
-                                <Setter Property="Foreground" Value="{StaticResource GreenColorBrush}"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </RadioButton.Style>
-            </RadioButton>
-            <RadioButton Grid.Column="1" 
-                             BorderBrush="{StaticResource OrangeColorBrush}" 
-                             BorderThickness="1" 
-                             ControlExtensions:MiscControlExtensions.CornerRadius="5" 
-                             Content="Update Bank" 
-                             HorizontalContentAlignment="Center" 
-                             VerticalContentAlignment="Center" 
-                             Margin="30,10"
-                             GroupName="ProductGroup"
-                             IsChecked="{Binding IsUpdateProduct,Mode=TwoWay}"
-                             ControlExtensions:MiscControlExtensions.UncheckedForeground="{StaticResource RedColorBrush}"
-                            
-                             Background="{StaticResource OrangeColorBrush}" >
-                <RadioButton.Style>
-                    <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
-                        <Style.Triggers>
-                            <Trigger Property="IsChecked" Value="False">
-                                <Setter Property="Foreground" Value="{StaticResource OrangeColorBrush}"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </RadioButton.Style>
-            </RadioButton>
-            <RadioButton Grid.Column="2" 
-                             Margin="30,10"
-                             Content="Remove Bank"
-                             HorizontalContentAlignment="Center"
-                             VerticalContentAlignment="Center"
-                             FontFamily="{StaticResource MediumFont}"
-                             FontSize="{StaticResource NormalSize}"
-                             BorderThickness="1"
-                             GroupName="ProductGroup"
-                             IsChecked="{Binding IsRemoveProduct,Mode=TwoWay}"
-                             BorderBrush="{StaticResource RedColorBrush}"
-                             Background="{StaticResource RedColorBrush}">
-                <RadioButton.Style>
-                    <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
-                        <Style.Triggers>
-                            <Trigger Property="IsChecked" Value="False">
-                                <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </RadioButton.Style>
-            </RadioButton>
-            </Grid>
+            <Border Grid.Row="0" Background="{StaticResource BlueColorBrush}" CornerRadius="10 10 0 0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Path Height="30" 
+                          Width="30"
+                          HorizontalAlignment="Left"
+                          Margin="10 0 0 0"
+                          Fill="{StaticResource PureWhiteColorBrush}" 
+                          Stretch="Uniform"
+                          Data="{StaticResource Shape_Bank}"/>
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="BANK" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource NormalSize}" Foreground="{StaticResource PureWhiteColorBrush}"/>
+                    <Button x:Name="Close" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 10 0" Style="{StaticResource ContentButton}">
+                        <Path Height="35" Width="35" Fill="{StaticResource PureWhiteColorBrush}" Stretch="Uniform" Data="{StaticResource Shape_Close2}"/>
+                    </Button>
+                </Grid>
+            </Border>
+            <Border Grid.Row="1" CornerRadius="0 0 10 10" Background="{StaticResource PureWhiteColorBrush}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="70"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <RadioButton Grid.Column="0" 
+                                     BorderBrush="{StaticResource GreenColorBrush}" 
+                                     BorderThickness="1" 
+                                     ControlExtensions:MiscControlExtensions.CornerRadius="5" 
+                                     Content="Add Bank" 
+                                     HorizontalContentAlignment="Center" 
+                                     VerticalContentAlignment="Center" 
+                                     Margin="30,15"
+                                     GroupName="ProductGroup"
+                                     IsChecked="{Binding IsBankAdded,Mode=TwoWay}"
+                                     Background="{StaticResource GreenColorBrush}" >
+                            <RadioButton.Style>
+                                <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Foreground" Value="{StaticResource GreenColorBrush}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </RadioButton.Style>
+                        </RadioButton>
+                        <RadioButton Grid.Column="1" 
+                                    BorderBrush="{StaticResource OrangeColorBrush}" 
+                                    BorderThickness="1" 
+                                    ControlExtensions:MiscControlExtensions.CornerRadius="5" 
+                                    Content="Update Bank" 
+                                    HorizontalContentAlignment="Center" 
+                                    VerticalContentAlignment="Center" 
+                                    Margin="30,15"
+                                    GroupName="ProductGroup"
+                                    IsChecked="{Binding IsBankUpdated,Mode=TwoWay}"
+                                    ControlExtensions:MiscControlExtensions.UncheckedForeground="{StaticResource RedColorBrush}"
+                                    Background="{StaticResource OrangeColorBrush}" >
+                            <RadioButton.Style>
+                                <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Foreground" Value="{StaticResource OrangeColorBrush}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </RadioButton.Style>
+                        </RadioButton>
+                        <RadioButton Grid.Column="2" 
+                                     Margin="30,15"
+                                     Content="Remove Bank"
+                                     HorizontalContentAlignment="Center"
+                                     VerticalContentAlignment="Center"
+                                     FontFamily="{StaticResource MediumFont}"
+                                     FontSize="{StaticResource NormalSize}"
+                                     BorderThickness="1"
+                                     GroupName="ProductGroup"
+                                     IsChecked="{Binding IsBankRemoved,Mode=TwoWay}"
+                                     BorderBrush="{StaticResource RedColorBrush}"
+                                     Background="{StaticResource RedColorBrush}">
+                            <RadioButton.Style>
+                                <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="False">
+                                            <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </RadioButton.Style>
+                        </RadioButton>
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Height="45"
+                                 Width="250"
+                                 Text="{Binding BankName,Mode=TwoWay}"
+                                 BorderThickness="1.7"
+                                 BorderBrush="{StaticResource BlueColorBrush}"
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkText="Bank Name"
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Bank}"
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                                 Foreground="{StaticResource GrayColorBrush}"
+                                 FontFamily="{StaticResource MediumFont}"
+                                 FontSize="{StaticResource MediumSize}"
+                                 Style="{StaticResource TextBoxVisibilityPathIconStyle}"></TextBox>
+                        <TextBox Grid.Column="1" 
+                                 Height="100"
+                                 Width="250"
+                                 TextWrapping="Wrap"
+                                 HorizontalScrollBarVisibility="Disabled"
+                                 VerticalScrollBarVisibility="Auto"
+                                 AcceptsReturn="True"
+                                 Text="{Binding Description,Mode=TwoWay}"
+                                 Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                                 FontFamily="{StaticResource MediumFont}"
+                                 FontSize="{StaticResource MediumSize}"
+                                 Foreground="{StaticResource GrayColorBrush}"
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkText="Description"
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Report}"
+                                 ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"></TextBox>
+                    </Grid>
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="0.8*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Column="2">
+                            <Button x:Name="Cancel"
+                                    Style="{StaticResource ContentButton}"
+                                    Background="{StaticResource LightGrayColorBrush}"
+                                    Foreground="{StaticResource GrayColorBrush}"
+                                    Content="Cancel"
+                                    Margin="5 0"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Height="45"
+                                    Width="100"/>
+                            <Button x:Name="AddBank"
+                                    Style="{StaticResource ContentButton}"
+                                    Background="{StaticResource GreenColorBrush}"
+                                    Foreground="{StaticResource PureWhiteColorBrush}"
+                                    Content="Submit"
+                                    Margin="5 0"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Height="45"
+                                    Width="100">
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
         </Grid>
     </Border>
 </UserControl>

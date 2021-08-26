@@ -18,6 +18,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
         #endregion
 
         #region Constructor
+        [ImportingConstructor]
         public BankBranchManager()
         {
             Repository = GetRepository<BankBranchModel>();
@@ -34,15 +35,21 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_Name"] = bankBranch?.Name;
                 parameters["@v_BankId"] = bankBranch?.Bank?.Id;
+                parameters["@v_Address"] = bankBranch.Address == null ? DBNull.Value : (object)bankBranch.Address;
+                parameters["@v_BarnchDetail"] = bankBranch.BarnchDetails == null ? DBNull.Value : (object)bankBranch.BarnchDetails;
                 parameters["@v_BussinessPhone"] = bankBranch.BussinessPhone == null ? DBNull.Value : (object)bankBranch.BussinessPhone;
                 parameters["@v_BussinessPhone1"] = bankBranch.BussinessPhone1 == null ? DBNull.Value : (object)bankBranch.BussinessPhone1;
                 parameters["@v_MobilePhone"] = bankBranch.MobilePhone == null ? DBNull.Value : (object)bankBranch.MobilePhone;
                 parameters["@v_MobilePhone1"] = bankBranch.MobilePhone1 == null ? DBNull.Value : (object)bankBranch.MobilePhone1;
                 parameters["@v_Email"] = bankBranch.Email == null ? DBNull.Value : (object)bankBranch.Email;
                 parameters["@v_Description"] = bankBranch.Description == null ? DBNull.Value : (object)bankBranch.Description;
-                parameters["@v_Address"] = bankBranch.Address == null ? DBNull.Value : (object)bankBranch.Address;
-                parameters["@v_BarnchDetails"] = bankBranch.BarnchDetails == null ? DBNull.Value : (object)bankBranch.BarnchDetails;
-                string query = @"";
+                parameters["@v_IsActive"] = bankBranch.IsActive = true;
+                parameters["@v_CreatedAt"] = bankBranch.CreatedAt == null ? DateTime.Now : bankBranch.CreatedAt;
+                parameters["@v_CreatedBy"] = bankBranch.CreatedBy == null ? DBNull.Value : (object)bankBranch.CreatedBy;
+                parameters["@v_UpdatedAt"] = bankBranch.UpdatedAt == null ? DBNull.Value : (object)bankBranch.UpdatedAt;
+                parameters["@v_UpdatedBy"] = bankBranch.UpdatedBy == null ? DBNull.Value : (object)bankBranch.UpdatedBy;
+                string query = @"INSERT INTO BankBranch (Name,BankId,Address,BranchDetail,BussinessPhone,BussinessPhone1,MobilePhone,MobilePhone1,Email,Description,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                       VALUES(@v_Name,@v_BankId,@v_Address,@v_BarnchDetail,@v_BussinessPhone,@v_BussinessPhone1,@v_MobilePhone,@v_MobilePhone1,@v_Email,@v_Description,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
                 var result = await Repository.NonQueryAsync(query,parameters:parameters);
                 retVal = result > 0 ? true : false;
             }
@@ -99,6 +106,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
             try
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_Id"] = Id;
                 string query = @"SELECT * FROM BankBranch WHERE BankId = @v_Id AND IsActive = 1";
                 var values = await Repository.QueryAsync(query,parameters:parameters);
                 if (values != null || values?.Count > 0)
@@ -116,6 +124,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
                         branch.Email = value?.GetValueFromDictonary("Email")?.ToString();
                         branch.BarnchDetails = value?.GetValueFromDictonary("BranchDetails")?.ToString();
                         branch.Bank = new BankModel { Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt() };
+                        branches.Add(branch);
                     }
                 }
             }

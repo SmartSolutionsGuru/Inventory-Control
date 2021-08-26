@@ -17,10 +17,8 @@
         public string BussinessPhone { get; set; }
         public string BussinessPhone1 { get; set; }
         public string BussinessPhone2 { get; set; }
-        public string BussinessPhone3 { get; set; }
-        public string BussinessPhone4 { get; set; }
-        public string MobilePhone { get; set; }
         public string MobilePhone1 { get; set; }
+        public string MobilePhone { get; set; }
         public string Email { get; set; }
         #endregion
     }

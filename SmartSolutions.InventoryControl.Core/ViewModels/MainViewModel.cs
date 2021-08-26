@@ -66,6 +66,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         public void Product()
         {
+            IsBankProceeded = false;
             IsProductProceeded = true;
             IsPartnerProceeded = false;
             IsPurchaseProceeded = false;
@@ -76,6 +77,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         public void BussinessPartner()
         {
+            IsBankProceeded = false;
             IsPartnerProceeded = true;
             IsProductProceeded = false;
             IsPurchaseProceeded = false;
@@ -86,6 +88,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         public void Purchase()
         {
+            IsBankProceeded = false;
             IsPurchaseProceeded = true;
             IsPartnerProceeded = false;
             IsProductProceeded = false;
@@ -96,6 +99,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         public void Sales()
         {
+            IsBankProceeded = false;
             IsPurchaseProceeded = false;
             IsPartnerProceeded = false;
             IsProductProceeded = false;
@@ -106,6 +110,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         public void Reports()
         {
+            IsBankProceeded = false;
             IsPurchaseProceeded = false;
             IsPartnerProceeded = false;
             IsProductProceeded = false;
@@ -122,8 +127,27 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             IsProductProceeded = false;
             IsReportProceeded = false;
             IsSalesProceeded = false;
+            IsBankProceeded = false;
             Handle(IoC.Get<PaymentViewModel>());
            // _notificationManager.Show(new NotificationContent { Title = "Test",Message = "Test Notification",},areaName:"WindowArea");
+        }
+        public void Bank()
+        {
+            try
+            {
+                IsBankProceeded = true;
+                IsPaymentProceeded = false;
+                IsPurchaseProceeded = false;
+                IsPartnerProceeded = false;
+                IsProductProceeded = false;
+                IsReportProceeded = false;
+                IsSalesProceeded = false;
+                Handle(IoC.Get<Bank.BankAccountViewModel>());
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
         }
         public void Handle(Screen screen)
         {
@@ -133,7 +157,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 || screen is PurchaseViewModel
                 || screen is PaymentViewModel
                 || screen is SalesViewModel
-                || screen is Reports.ReportsViewModel)
+                || screen is Reports.ReportsViewModel
+                || screen is Bank.BankAccountViewModel)
             {
                 ActiveItem = screen;
                 ActivateItem(screen);
@@ -193,6 +218,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Properties
+        private bool _IsBankProceeded;
+
+        public bool IsBankProceeded
+        {
+            get { return _IsBankProceeded; }
+            set { _IsBankProceeded = value; NotifyOfPropertyChange(nameof(IsBankProceeded)); }
+        }
+
         private bool _IsProductProceeded;
         /// <summary>
         /// For Product Button Pressed

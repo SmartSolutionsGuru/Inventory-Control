@@ -27,5 +27,9 @@ namespace SmartSolutions.InventoryControl.UI.Helpers.SettingHelper
         /// Logged in User 
         /// </summary>
         public static DAL.Models.Authentication.IdentityUserModel LoggedInUser { get; set; }
+        /// <summary>
+        /// Proprietor Information
+        /// </summary>
+        public static DAL.Models.ProprietorInformationModel Proprietor { get; set; }
     }
 }
