@@ -202,7 +202,7 @@
                 </StackPanel>
                 <StackPanel Grid.Column="2" Margin="0 0 0 0">
                     <TextBlock Text="Payment Picture" Margin="0 0 0 5" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource GrayColorBrush}" HorizontalAlignment="Center"/>
-                    <Button Height="150" Width="150" Margin="0 0 0 0" Style="{StaticResource ContentButton}" Click="Button_Click" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7">
+                    <Button Height="140" Width="140" Margin="0 0 0 0" Style="{StaticResource ContentButton}" Click="Button_Click" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7">
                         <Image Source="{Binding PaymentImage,Mode=TwoWay,Converter={StaticResource BytesToBitmapImageConverter}}" Stretch="UniformToFill"/>
                     </Button>
                 </StackPanel>

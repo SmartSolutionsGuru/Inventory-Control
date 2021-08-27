@@ -170,7 +170,7 @@
                           Style="{StaticResource BaseComboBox}"
                           Foreground="{StaticResource GrayColorBrush}"
                           BorderThickness="1.7"
-                          ControlExtensions:WaterMarkTextExtension.WatermarkText="Account Type"
+                          ControlExtensions:WaterMarkTextExtension.WatermarkText="Account Status"
                           BorderBrush="{StaticResource BlueColorBrush}"
                           ItemsSource="{Binding AccountStatus,Mode=OneWay}"
                           SelectedItem="{Binding SelectedAccountStatus,Mode=TwoWay}"/>

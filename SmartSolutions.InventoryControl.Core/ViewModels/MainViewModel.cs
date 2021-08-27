@@ -129,7 +129,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             IsSalesProceeded = false;
             IsBankProceeded = false;
             Handle(IoC.Get<PaymentViewModel>());
-           // _notificationManager.Show(new NotificationContent { Title = "Test",Message = "Test Notification",},areaName:"WindowArea");
         }
         public void Bank()
         {

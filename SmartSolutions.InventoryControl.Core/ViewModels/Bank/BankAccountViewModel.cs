@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using SmartSolutions.InventoryControl.DAL;
 using SmartSolutions.InventoryControl.DAL.Managers.Bank;
 using SmartSolutions.InventoryControl.DAL.Models.Bank;
 using SmartSolutions.Util.LogUtils;
@@ -17,14 +18,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Bank
         #region Private Members
         private readonly IBankManager _bankManager;
         private readonly IBankBranchManager _bankBranchManager;
+        private readonly IBankAccountManager _bankAccountManager;
         #endregion
 
         #region Constructor
         [ImportingConstructor]
-        public BankAccountViewModel(IBankManager bankManager, IBankBranchManager bankBranchManager)
+        public BankAccountViewModel(IBankManager bankManager, IBankBranchManager bankBranchManager, IBankAccountManager bankAccountManager)
         {
             _bankManager = bankManager;
             _bankBranchManager = bankBranchManager;
+            _bankAccountManager = bankAccountManager;
         }
         #endregion
 
@@ -34,6 +37,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Bank
             base.OnActivate();
             IsAddBankPressed = true;
             Banks = (await _bankManager.GetAllBanksAsync()).ToList();
+            AccountTypes = new List<string> { "Current", "Saving", "Default" };
+            AccountStatus = new List<string> { "Working", "Close", "Transition", "Foreign Currency", "Other" };
         }
 
         public async void AddBank()
@@ -74,11 +79,36 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Bank
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        public void AddAccount()
+        public async void AddAccount()
         {
             try
             {
+                //TODO: Here we have to Perform verification
+                var bankAccount = new BankAccountModel();
+                bankAccount.Branch = SelectedBranch;
+                bankAccount.AccountStatus = SelectedAccountStatus;
+                bankAccount.AccountType = SelectedAccountType;
+                bankAccount.AccountNumber = BankAccountNumber;
+                bankAccount.OpeningDate = AccountOpeningDate;
+                bankAccount.OpeningBalance = InitialBalance;
+                bankAccount.Description = Description;
+                bankAccount.CreatedBy = AppSettings.LoggedInUser.DisplayName;
+                var result = await _bankAccountManager.AddBankAccountAsync(bankAccount);
+                if (result)
+                {
+                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Successfully Added Bank Account", Type = Notifications.Wpf.NotificationType.Success });
+                    SelectedAccountStatus = string.Empty;
+                    SelectedAccountStatus = string.Empty;
+                    BankAccountNumber = string.Empty;
+                    InitialBalance = null;
 
+                    Description = string.Empty;
+                    //TryClose();
+                }
+                else
+                {
+                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "SorryCannot Add Bank Account", Type = Notifications.Wpf.NotificationType.Error });
+                }
             }
             catch (Exception ex)
             {
@@ -156,6 +186,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Bank
         {
             get { return _AccountTypes; }
             set { _AccountTypes = value; NotifyOfPropertyChange(nameof(AccountTypes)); }
+        }
+        private string _SelectedAccountType;
+
+        public string SelectedAccountType
+        {
+            get { return _SelectedAccountType; }
+            set { _SelectedAccountType = value; NotifyOfPropertyChange(nameof(SelectedAccountType)); }
         }
 
         private List<string> _AccountStatus;

@@ -35,13 +35,13 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
                 parameters["@v_OpeningDate"] = bankAccount?.OpeningDate;
                 parameters["@v_AccountNumber"] = bankAccount?.AccountNumber;
                 parameters["@v_OpeningBalance"] = bankAccount?.OpeningBalance;
-                parameters["@v_Description"] = bankAccount.Description;
+                parameters["@v_Description"] = bankAccount.Description == null ? DBNull.Value : (object)bankAccount.Description;
                 parameters["@v_IsActive"] = bankAccount.IsActive = true;
                 parameters["@v_CreatedAt"] = bankAccount.CreatedAt == null ? DateTime.Now : bankAccount.CreatedAt;
                 parameters["@v_CreatedBy"] = bankAccount.CreatedBy == null ? DBNull.Value : (object)bankAccount.CreatedBy;
                 parameters["@v_UpdatedAt"] = bankAccount.UpdatedAt == null ? DBNull.Value : (object)bankAccount.UpdatedAt;
                 parameters["@v_UpdatedBy"] = bankAccount.UpdatedBy == null ? DBNull.Value : (object)bankAccount.UpdatedBy;
-                string query = @"INSERT INTO BankAccount (BranchId,AccountType,AccountStatus,OpeningDate,OpeningDate,AccountNumber,openingBalance,Description,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                string query = @"INSERT INTO BankAccount (BranchId,AccountType,AccountStatus,OpeningDate,AccountNumber,OpeningBalance,Description,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
                                                     VALUES(@v_BranchId,@v_AccountType,@v_AccountStatus,@v_OpeningDate,@v_AccountNumber,@v_OpeningBalance,@v_Description,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
                var result =  await Repository.NonQueryAsync(query,parameters:parameters);
                 retVal = result > 0 ? true : false;

@@ -33,6 +33,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         private readonly DAL.Managers.Payments.IPaymentTypeManager _paymentTypeManager;
         private readonly DAL.Managers.Region.ICityManager _cityManager;
         private readonly DAL.Managers.Payments.IPaymentManager _paymentManager;
+        private readonly DAL.Managers.Bussiness_Partner.IChartOfAccountManager _chartOfAccountManager;
 
         #endregion
 
@@ -46,7 +47,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                                         , IPartnerCategoryManager partnerCategoryManager
                                         , DAL.Managers.Payments.IPaymentTypeManager paymentTypeManager
                                         , DAL.Managers.Region.ICityManager cityManager
-                                        , DAL.Managers.Payments.IPaymentManager paymentManager)
+                                        , DAL.Managers.Payments.IPaymentManager paymentManager
+                                        , DAL.Managers.Bussiness_Partner.IChartOfAccountManager chartOfAccountManager)
         {
             _bussinessPartnerManager = bussinessPartnerManager;
             _purchaseInvoiceManager = purchaseInvoiceManager;
@@ -57,6 +59,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             _paymentTypeManager = paymentTypeManager;
             _cityManager = cityManager;
             _paymentManager = paymentManager;
+            _chartOfAccountManager = chartOfAccountManager;
 
         }
         #endregion
@@ -175,7 +178,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     NewBussinessPartner.CreatedBy = AppSettings.LoggedInUser.DisplayName;
                     var resultPartner = await _bussinessPartnerManager.AddBussinesPartnerAsync(NewBussinessPartner);
                     if (resultPartner)
+                    {
                         NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Partner Added Successfully", Type = Notifications.Wpf.NotificationType.Success }, areaName: "WindowArea");
+                      
+                    }
                     else
                         NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Sorry Partner Not Added", Type = Notifications.Wpf.NotificationType.Error });
                     if (InitialAmount > 0)
