@@ -34,7 +34,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         private readonly DAL.Managers.Region.ICityManager _cityManager;
         private readonly DAL.Managers.Payments.IPaymentManager _paymentManager;
         private readonly DAL.Managers.Bussiness_Partner.IChartOfAccountManager _chartOfAccountManager;
-
+        private readonly IPartnerSetupAccountManager _partnerSetupAccountManager;
         #endregion
 
         #region Constructor
@@ -48,7 +48,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                                         , DAL.Managers.Payments.IPaymentTypeManager paymentTypeManager
                                         , DAL.Managers.Region.ICityManager cityManager
                                         , DAL.Managers.Payments.IPaymentManager paymentManager
-                                        , DAL.Managers.Bussiness_Partner.IChartOfAccountManager chartOfAccountManager)
+                                        , DAL.Managers.Bussiness_Partner.IChartOfAccountManager chartOfAccountManager
+                                        , IPartnerSetupAccountManager partnerSePartnetupAccountManager)
         {
             _bussinessPartnerManager = bussinessPartnerManager;
             _purchaseInvoiceManager = purchaseInvoiceManager;
@@ -60,6 +61,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             _cityManager = cityManager;
             _paymentManager = paymentManager;
             _chartOfAccountManager = chartOfAccountManager;
+            _partnerSetupAccountManager = partnerSePartnetupAccountManager;
 
         }
         #endregion
@@ -180,7 +182,19 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     if (resultPartner)
                     {
                         NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Partner Added Successfully", Type = Notifications.Wpf.NotificationType.Success }, areaName: "WindowArea");
-                      
+                        var newAddedPartner = await _bussinessPartnerManager.GetLastAddedPartner();
+                       var accountList =  await _partnerSetupAccountManager.GenratePartnerAccountCodeAsync(SelectedPartnerType.Name, newAddedPartner?.Id.Value ?? 0);
+                        if(accountList != null || accountList?.Count > 0)
+                        {
+                            foreach (var item in accountList)
+                            {
+                                var partnersetupAccount = new BussinessPartnerSetupAccountModel();
+                                partnersetupAccount.Partner = newAddedPartner;
+                                partnersetupAccount.PartnerAccountCode = item;
+                                partnersetupAccount.PartnerAccountType = SelectedPartnerType;
+                                await _partnerSetupAccountManager.SavePartnerSetAccountAsync(partnersetupAccount);
+                            }
+                        }
                     }
                     else
                         NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Sorry Partner Not Added", Type = Notifications.Wpf.NotificationType.Error });

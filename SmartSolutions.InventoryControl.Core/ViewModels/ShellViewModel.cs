@@ -76,7 +76,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             dbFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName, "InventoryControl.db");
             var result = InitializeDatabaseConnection();
             var settingResult = await _systemSettingManager.GetsystemSettingByKeyAsync("IsProprietorAvailable");
-            //Handle(IoC.Get<Login.LoginViewModel>());
             if (settingResult != null)
             {
                 if (settingResult.SettingValue == 1)
@@ -175,9 +174,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     string host = Environment.MachineName;
                     string port = "1433";
                     string database = "SmartSolutions.InventoryControl";
-                    //string username = "SOLOINSIGHT\\sbutt";
-                    string username = "sa";
-                    string password = "Pakistan@123";
+                    string username = "SOLOINSIGHT\\sbutt";
+                    //string username = WindowsIdentity.GetCurrent().Name;/* "sa";*/
+                    //string password = "Pakistan@123";
+                    string password = "";
+
 
 
 
@@ -222,6 +223,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     ConnectionInfo.Instance.Database = database;
                     ConnectionInfo.Instance.UserName = username;
                     ConnectionInfo.Instance.Password = password;
+                    //TODO: ForTesting Purpose
+                    AppSettings.IsLoggedInUserAdmin = true;
                     if (DAL.AppSettings.IsLoggedInUserAdmin)
                         ConnectionInfo.Instance.ConnectionString = string.Format($"data source=localhost; Initial Catalog=" + database + ";Integrated Security = SSPI;");
                     else

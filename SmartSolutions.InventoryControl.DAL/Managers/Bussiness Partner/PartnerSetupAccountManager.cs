@@ -1,5 +1,6 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
+using SmartSolutions.Util.EnumUtils;
 using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
         #endregion
 
         #region Costructor
+        [ImportingConstructor]
         public PartnerSetupAccountManager(IChartOfAccountManager chartOfAccountManager)
         {
             Repository = GetRepository<BussinessPartnerSetupAccountModel>();
@@ -53,29 +55,66 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
         }
         #endregion
 
-        #region Private Helepers
+        #region Public Helepers
         /// <summary>
         ///  Method that Will 
         /// Genrate Account Code According To Specification
         /// </summary>
         /// <returns></returns>
-        public async Task<string> GenratePartnerAccountCodeAsync(string partnerType,int partnerId)
+        public async Task<List<string>> GenratePartnerAccountCodeAsync(string partnerType,int partnerId)
         {
-            if (string.IsNullOrEmpty(partnerType) || partnerId == 0) return string.Empty;
-            string accountCode = string.Empty;
+            if (string.IsNullOrEmpty(partnerType) || partnerId == 0) return new List<string>();
+            var charAccount = new ChartOfAccountModel();
+            List<string> accountCode = new List<string>();
             try
             {
                 switch (partnerType)
                 {
                     case "Vender":
+                         charAccount = await _chartOfAccountManager.GetChartOfAccountByHeadingAsync(AccountHeading.AccountsPayable.ToDescription());
+                        if(charAccount != null)
+                        {
+                            accountCode.Add($"{charAccount.AccountNumber}-{partnerId}");
+                        }
                         break;
                     case "Customer":
+                        charAccount = await _chartOfAccountManager.GetChartOfAccountByHeadingAsync(AccountHeading.AccountsReceivable.ToDescription());
+                        if (charAccount != null)
+                        {
+                            accountCode.Add($"{charAccount.AccountNumber}-{partnerId}");
+                        }
                         break;
                     case "Both":
+                        charAccount = await _chartOfAccountManager.GetChartOfAccountByHeadingAsync(AccountHeading.AccountsPayable.ToDescription());
+                        if (charAccount != null)
+                        {
+                            accountCode.Add($"{charAccount.AccountNumber}-{partnerId}");
+                        }
+                        charAccount = await _chartOfAccountManager.GetChartOfAccountByHeadingAsync(AccountHeading.AccountsReceivable.ToDescription());
+                        if (charAccount != null)
+                        {
+                            accountCode.Add($"{charAccount.AccountNumber}-{partnerId}");
+                        }
                         break;
                     case "broker":
+                        charAccount = await _chartOfAccountManager.GetChartOfAccountByHeadingAsync(AccountHeading.PurchaseCommisions.ToDescription());
+                        if (charAccount != null)
+                        {
+                            accountCode.Add($"{charAccount.AccountNumber}-{partnerId}");
+                        }
+                        charAccount = await _chartOfAccountManager.GetChartOfAccountByHeadingAsync(AccountHeading.SaleCommisions.ToDescription());
+                        if (charAccount != null)
+                        {
+                            accountCode.Add($"{charAccount.AccountNumber}-{partnerId}");
+                        }
                         break;
                     case "Shiper":
+                        //TODO: REplace it With Poper Account
+                        charAccount = await _chartOfAccountManager.GetChartOfAccountByHeadingAsync(AccountHeading.MotorVehicle.ToDescription());
+                        if (charAccount != null)
+                        {
+                            accountCode.Add($"{charAccount.AccountNumber}-{partnerId}");
+                        }
                         break;
                     default:
                         break;

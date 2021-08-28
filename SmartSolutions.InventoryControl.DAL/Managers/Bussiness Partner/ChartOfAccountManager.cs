@@ -21,6 +21,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
         #endregion
 
         #region Constructor
+        [ImportingConstructor]
         public ChartOfAccountManager()
         {
             Repository = GetRepository<ChartOfAccountModel>();
@@ -96,20 +97,20 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_Heading"] = heading;
-                string query = @"SELECT * FROM ChartOfAccount WHERE AccountHeading = @v_Category";
+                string query = @"SELECT * FROM ChartOfAccount WHERE AccountHeading = @v_Heading";
                 var values = await Repository.QueryAsync(query, parameters: parameters);
                 if(values != null || values?.Count > 0)
                 {
                     var value = values?.FirstOrDefault();
+                    retVal.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                     retVal.AccountCategory = value?.GetValueFromDictonary("AccountCategory")?.ToString();
                     retVal.AccountSubCategory = value?.GetValueFromDictonary("AccountSubCategory")?.ToString();
-                    retVal.AccountHeading = (AccountHeading)value?.GetValueFromDictonary("AccountHeading")?.ToString().ToEnum<AccountHeading>();
-                    retVal.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                    retVal.AccountNumber = value?.GetValueFromDictonary("AccountNumber")?.ToString();
+                    //retVal.AccountHeading = (AccountHeading)value?.GetValueFromDictonary("AccountHeading")?.ToString().ToEnum<AccountHeading>();
                 }
             }
             catch (Exception ex)
             {
-
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return retVal;
