@@ -106,6 +106,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                     retVal.AccountCategory = value?.GetValueFromDictonary("AccountCategory")?.ToString();
                     retVal.AccountSubCategory = value?.GetValueFromDictonary("AccountSubCategory")?.ToString();
                     retVal.AccountNumber = value?.GetValueFromDictonary("AccountNumber")?.ToString();
+                    retVal.Description = value?.GetValueFromDictonary("Description")?.ToString();
                     //retVal.AccountHeading = (AccountHeading)value?.GetValueFromDictonary("AccountHeading")?.ToString().ToEnum<AccountHeading>();
                 }
             }

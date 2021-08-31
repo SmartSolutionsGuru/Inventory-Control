@@ -25,11 +25,39 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Stock
         public PurchaseOrderModel PurchaseOrder { get; set; }
         public PurchaseOrderDetailModel PurchaseOrderDetail { get; set; }
         public ProductModel Product { get; set; }
-        public int? Quantity { get; set; }
-        public decimal? Price { get; set; }
-        public decimal? Total { get; set; }
+        private int? _Quantity;
+
+        public int? Quantity
+        {
+            get { return _Quantity; }
+            set { _Quantity = value; NotifyOfPropertyChange(nameof(Quantity)); }
+        }
+        private decimal? _Price;
+
+        public decimal? Price
+        {
+            get { return _Price; }
+            set { _Price = value; NotifyOfPropertyChange(nameof(Price)); OnPriceChange(); }
+        }
+
+        private decimal? _Total;
+        public decimal? Total
+        {
+            get { return _Total = (Price ?? 0) * (Quantity ?? 0); }
+            set { _Total = value; NotifyOfPropertyChange(nameof(Total)); }
+        }
+
         public string Description { get; set; }
         public WarehouseModel Warehouse { get; set; }
+        #endregion
+
+        #region Private Helpers
+        private void OnPriceChange()
+        {
+            if (Quantity == 0 || Price == 0) return;
+            Total = Quantity * (decimal)Price;
+
+        }
         #endregion
     }
 }

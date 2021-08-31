@@ -6,6 +6,7 @@ using SmartSolutions.InventoryControl.DAL.Models.Inventory;
 using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
 using SmartSolutions.InventoryControl.DAL.Models.Stock;
+using SmartSolutions.InventoryControl.DAL.Models.Warehouse;
 using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
@@ -84,7 +85,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 PurchaseTypes = new List<string> { "Purchase", "Purchase Return" };
                 SelectedPurchaseType = PurchaseTypes.Where(x => x.Equals("Purchase")).FirstOrDefault();
                 Products = (await _productManager.GetAllProductsAsync()).ToList();
-                Venders = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
+                Venders = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
                 ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
                 ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
                 Warehouses = (await _warehouseManager.GetAllWarehousesAsync()).ToList();
@@ -97,10 +98,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 var model = new StockInModel();
                 AutoId = 0;
                 AddProduct(model);
-                if (Venders != null)
-                    PartnerSuggetion = new PartnerSuggestionProvider(Venders);
-                if (Products != null)
-                    ProductSuggetion = new ProductSuggestionProvider(Products);
+                //if (Venders != null)
+                //    PartnerSuggetion = new PartnerSuggestionProvider(Venders);
+                //if (Products != null)
+                //    ProductSuggetion = new ProductSuggestionProvider(Products);
                 IsLoading = false;
 
             }
@@ -116,11 +117,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 ++AutoId;
                 var purchaseOrderDetail = new PurchaseOrderDetailModel();
                 purchaseOrderDetail.Product = StockIn?.Product;
+                purchaseOrderDetail.ProductColor = StockIn?.Product?.ProductColor;
+                purchaseOrderDetail.ProductSize = StockIn?.Product?.ProductSize;
+                purchaseOrderDetail.Price = StockIn?.Price.Value;
+                purchaseOrderDetail.Quantity = StockIn?.Quantity;
+                purchaseOrderDetail.Total = StockIn?.Total.Value;
+                purchaseOrderDetail.Description = StockIn?.Description;
+                PurchaseOrderDetails.Add(purchaseOrderDetail);
                 var newProduct = new StockInModel();
                 CalculateInvoiceTotal();
                 ProductGrid.Add(newProduct);
-                //TODO: Here we add the PurchaseOrderDetail Values  in PurchaseOrderDetail List 
-                ProductSuggetion = new ProductSuggestionProvider(Products);
+                SelectedProduct = new ProductModel();
+                SelectedWarehouse = new WarehouseModel();
             }
             catch (Exception ex)
             {
@@ -185,12 +193,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 //Other wise Go for Purchase
                 if (SelectedPurchaseType.Equals("Purchase Return"))
                 {
-                       
+
                 }
                 else
                 {
+                    //Purchase Section
                     #region Gerating PO And Filling Details
-                    PurchaseOrder.Partner = new BussinessPartnerModel { Id = SelectedPartner?.Id };
+                    PurchaseOrder.Partner.Id = SelectedPartner?.Id;
                     PurchaseOrder.Status = PurchaseOrderModel.OrderStatus.New;
                     PurchaseOrder.Description = "Order Placed";
                     PurchaseOrder.SubTotal = PurchaseInvoice.InvoiceTotal;
@@ -205,22 +214,26 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                         int? purchaseOrderId = await _purchaseOrderManager.GetLastPurchaseOrderIdAsync();
                         if (purchaseOrderId > 0)
                         {
-                            if (ProductGrid != null || ProductGrid?.Count > 0)
+                            if (PurchaseOrderDetails != null || PurchaseOrderDetails?.Count > 0)
                             {
-                                foreach (var product in ProductGrid)
+                                foreach (var productDetails in PurchaseOrderDetails)
                                 {
-                                    var orderDetail = new PurchaseOrderDetailModel();
-                                    orderDetail.PurchaseOrder = PurchaseOrder;
-                                    orderDetail.Product = product.Product;
-                                    orderDetail.ProductColor = product.Product?.ProductColor;
-                                    orderDetail.ProductSize = product.Product?.ProductSize;
-                                    orderDetail.Total = product.Total.Value;
-                                    orderDetail.Price = product.Price.Value;
-                                    orderDetail.Quantity = product.Quantity.Value;
-                                    orderDetail.IsActive = true;
-                                    orderDetail.CreatedAt = DateTime.Now;
-                                    orderDetail.CreatedBy = AppSettings.LoggedInUser?.DisplayName;
-                                    PurchaseOrderDetails.Add(orderDetail);
+                                    // Here we Only Update the the PO Id
+                                    productDetails.PurchaseOrder.Id = purchaseOrderId;
+
+                                    //var orderDetail = new PurchaseOrderDetailModel();
+                                    //orderDetail.PurchaseOrder.Id = purchaseOrderId;
+                                    //orderDetail.PurchaseOrder = PurchaseOrder;
+                                    //orderDetail.Product = product.Product;
+                                    //orderDetail.ProductColor = product.Product?.ProductColor;
+                                    //orderDetail.ProductSize = product.Product?.ProductSize;
+                                    //orderDetail.Total = product.Total.Value;
+                                    //orderDetail.Price = product.Price.Value;
+                                    //orderDetail.Quantity = product.Quantity.Value;
+                                    productDetails.IsActive = true;
+                                    productDetails.CreatedAt = DateTime.Now;
+                                    productDetails.CreatedBy = AppSettings.LoggedInUser?.DisplayName;
+                                    //PurchaseOrderDetails.Add(orderDetail);
                                 }
                                 await _purchaseOrderDetailManager.AddPurchaseOrderBulkDetailAsync(PurchaseOrderDetails);
                             }
@@ -328,7 +341,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 InvoiceTotal = 0;
                 foreach (var product in ProductGrid)
                 {
-                    InvoiceTotal += product.Total.Value;
+                    InvoiceTotal += product.Total ?? 0;
                 }
                 GrandTotal = InvoiceTotal + PreviousBalance;
             }
@@ -376,6 +389,29 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public void OnPaymentRecived()
         {
             GrandTotal = PreviousBalance + (InvoiceTotal - Payment);
+        }
+        public async void FilterVenders(string searchText)
+        {
+            try
+            {
+                Venders = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync(searchText)).ToList();
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+        public async void FilterProducts(string search)
+        {
+            try
+            {
+                Products = (await _productManager.GetAllProductsAsync(search)).ToList();
+            }
+            catch (Exception ex)
+            {
+
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
         }
         #endregion
 
@@ -529,12 +565,29 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _Products; }
             set { _Products = value; NotifyOfPropertyChange(nameof(Products)); }
         }
+        private ProductModel _SelectedProduct;
+
+        public ProductModel SelectedProduct
+        {
+            get { return _SelectedProduct; }
+            set { _SelectedProduct = value; NotifyOfPropertyChange(nameof(SelectedProduct)); }
+        }
+
+
         private List<BussinessPartnerModel> _Venders;
         public List<BussinessPartnerModel> Venders
         {
             get { return _Venders; }
             set { _Venders = value; NotifyOfPropertyChange(nameof(Venders)); }
         }
+        private List<BussinessPartnerModel> _DisplayVenders;
+
+        public List<BussinessPartnerModel> DisplayVenders
+        {
+            get { return _DisplayVenders; }
+            set { _DisplayVenders = value; NotifyOfPropertyChange(nameof(DisplayVenders)); }
+        }
+
         private byte[] _PaymentImage;
         /// <summary>
         /// Payment Image 
@@ -603,16 +656,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _ProductGrid; }
             set { _ProductGrid = value; NotifyOfPropertyChange(nameof(ProductGrid)); }
         }
-        private InventoryModel _SelectedInventory;
+        private StockInModel _SelectedInventory;
         /// <summary>
         /// Selected Row of Inventory
         /// </summary>
-        public InventoryModel SelectedInventory
+        public StockInModel SelectedInventory
         {
             get { return _SelectedInventory; }
             set { _SelectedInventory = value; NotifyOfPropertyChange(nameof(SelectedInventory)); }
         }
-
         #endregion
     }
 }

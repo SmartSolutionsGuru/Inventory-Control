@@ -22,6 +22,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.BussinessPartner
         public BussinessPartnerModel Partner { get; set; }
         public string PartnerAccountCode { get; set; }
         public BussinessPartnerTypeModel PartnerAccountType { get; set; }
+        public string Description { get; set; }
         #endregion
     }
    

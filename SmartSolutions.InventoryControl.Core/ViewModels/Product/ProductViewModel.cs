@@ -55,7 +55,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
             _warehouseManager = warehouseManager;
             _openingStockManager = openingStockManager;
 
-           // notificationManager = new NotificationManager();
+            // notificationManager = new NotificationManager();
         }
         #endregion
 
@@ -98,11 +98,20 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                 ProductTypeModel model = new ProductTypeModel();
                 model.Name = ProductType;
                 if (!string.IsNullOrEmpty(ProductType))
-                    await _productTypeManager.AddProductTypeAsync(model);
-                IsAddProduct = false;
-                ProductType = string.Empty;
-                ProductTypes = (await _productTypeManager.GetAllProductsTypesAsync()).ToList();
-                SelectedProductType = ProductTypes.LastOrDefault();
+                {
+                    var addProductResult = await _productTypeManager.AddProductTypeAsync(model);
+                    if (addProductResult)
+                    {
+                        NotificationManager.Show(new NotificationContent { Title = "Success", Message = "Product Type Add Successfully", Type = NotificationType.Success });
+                        IsAddProduct = false;
+                        ProductType = string.Empty;
+                        ProductTypes = (await _productTypeManager.GetAllProductsTypesAsync()).ToList();
+                        SelectedProductType = ProductTypes.LastOrDefault();
+
+                    }
+                    else
+                        NotificationManager.Show(new NotificationContent { Title = "Error", Message = "Product Type Not Add", Type = NotificationType.Error });
+                }
                 IsLoading = false;
 
             }
@@ -138,7 +147,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         {
             try
             {
-                await _productSubTypeManager.RemoveProductSubTypeAsync(SelectedProductSubType.Id);
+                var isProductsubTypeRemoved = await _productSubTypeManager.RemoveProductSubTypeAsync(SelectedProductSubType?.Id);
+                if (isProductsubTypeRemoved)
+                    NotificationManager.Show(new NotificationContent { Title = "Success", Message = "Product Type Add Successfully", Type = NotificationType.Success });
+                else
+                    NotificationManager.Show(new NotificationContent { Title = "Error", Message = "Product Type Not Add", Type = NotificationType.Error });
             }
             catch (Exception ex)
             {
@@ -156,17 +169,25 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                     ProductSubTypeModel model = new ProductSubTypeModel();
                     model.Name = ProductSubType;
                     if (SelectedProductType != null)
-                        await _productSubTypeManager.AddProductSubTypeAsync(SelectedProductType?.Id, model);
+                    {
+                        var isAddProductSubType = await _productSubTypeManager.AddProductSubTypeAsync(SelectedProductType?.Id, model);
+                        if (isAddProductSubType)
+                        {
+                            NotificationManager.Show(new NotificationContent { Title = "Success", Message = "Product Sub Type Add Successfully", Type = NotificationType.Success });
+                            IsAddSubProduct = false;
+                            ProductSubType = string.Empty;
+                            ProductSubTypes = (await _productSubTypeManager.GetAllProductSubTypeAsync(SelectedProductType.Id)).ToList();
+                            SelectedProductSubType = ProductSubTypes.LastOrDefault();
+                        }
+                        else
+                            NotificationManager.Show(new NotificationContent { Title = "Error", Message = "Product Sub Type Not Add", Type = NotificationType.Error });
+                    }
                     else
                     {
                         ProductTypeError = true;
                         IsLoading = false;
                         return;
                     }
-                    IsAddSubProduct = false;
-                    ProductSubType = string.Empty;
-                    ProductSubTypes = (await _productSubTypeManager.GetAllProductSubTypeAsync(SelectedProductType.Id)).ToList();
-                    SelectedProductSubType = ProductSubTypes.LastOrDefault();
                     IsLoading = false;
                 }
             }
@@ -187,9 +208,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         {
             IsAddProductColor = true;
         }
-        public void RemoveProductColors()
+        public async void RemoveProductColors()
         {
-            _productColorManager.RemoveProductColorAsync(ProductSelectedColor?.Id);
+            var isProductRemoved = await _productColorManager.RemoveProductColorAsync(ProductSelectedColor?.Id);
+            if (isProductRemoved)
+                NotificationManager.Show(new NotificationContent { Title = "Success", Message = "Product Color Removed Successfully", Type = NotificationType.Success });
+            else
+                NotificationManager.Show(new NotificationContent { Title = "Error", Message = "Product Color Not Removed", Type = NotificationType.Error });
+
         }
         public async void AddProductColors()
         {
@@ -203,11 +229,17 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                     model.Color = ProductColor;
                 }
                 model.CreatedBy = AppSettings.LoggedInUser.DisplayName;
-                await _productColorManager.AddProductColorAsync(model);
-                IsAddProductColor = false;
-                ProductColor = string.Empty;
-                ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
-                ProductSelectedColor = ProductColors.LastOrDefault();
+                var isproductColorAdded = await _productColorManager.AddProductColorAsync(model);
+                if (isproductColorAdded)
+                {
+                    NotificationManager.Show(new NotificationContent { Title = "Success", Message = "Product Color Add Successfully", Type = NotificationType.Success });
+                    IsAddProductColor = false;
+                    ProductColor = string.Empty;
+                    ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
+                    ProductSelectedColor = ProductColors.LastOrDefault();
+                }
+                else
+                    NotificationManager.Show(new NotificationContent { Title = "Error", Message = "Product Color Not Added", Type = NotificationType.Error });
                 IsLoading = false;
             }
             catch (Exception ex)
@@ -236,13 +268,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                 LoadingMessage = "Saving...";
                 if (!string.IsNullOrEmpty(ProductSize))
                     model.Size = ProductSize;
-                await _productSizeManager.AddProductSizeAsync(model);
-                IsAddProductSize = false;
-                ProductSize = string.Empty;
-                ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
-                ProductSelectedSize = ProductSizes.LastOrDefault();
+                var sizeAddResult = await _productSizeManager.AddProductSizeAsync(model);
+                if (sizeAddResult)
+                {
+                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Succesfully Product Size Added", Type = NotificationType.Success });
+                    IsAddProductSize = false;
+                    ProductSize = string.Empty;
+                    ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
+                    ProductSelectedSize = ProductSizes.LastOrDefault();
+                }
+                else
+                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Product Size not Added", Type = NotificationType.Error });
                 IsLoading = false;
-
             }
             catch (Exception ex)
             {
@@ -291,10 +328,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                     if (result)
                     {
                         InitialStock = new OpeningStockModel();
-                        InitialStock.Product =  await _productManager.GetLastAddedProduct();
+                        InitialStock.Product = await _productManager.GetLastAddedProduct();
                         InitialStock.Warehouse = SelectedWarehouse;
                         InitialStock.Quantity = InitialQuantity;
                         InitialStock.Price = EstimatedPrice;
+                        InitialStock.Warehouse = SelectedWarehouse;
                         InitialStock.Total = InitialQuantity * EstimatedPrice;
                         InitialStock.Description = "Initial Stock Of Product";
                         InitialStock.CreatedBy = AppSettings.LoggedInUser.DisplayName;
@@ -304,11 +342,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                         {
                             ClearProductDetails();
                             NotificationManager.Show(new NotificationContent { Title = "Success", Message = "Successfully Added Product", Type = NotificationType.Success }, areaName: "WindowArea");
+                            ClearProductDetails();
                         }
                         else
                         {
                             await _purcahaseInvoiceManager.RemoveLastPurchaseInvoiceAsync(ProductInitialQuantityInvoice.InvoiceGuid);
-                            ClearProductDetails();
                             NotificationManager.Show(new NotificationContent { Title = "Error", Message = "Quantity Of Product Not Added", Type = NotificationType.Error }, areaName: "WindowArea");
                         }
                         IsLoading = false;
@@ -397,7 +435,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         {
             try
             {
-                ProductSubTypes = (_productSubTypeManager.GetAllProductSubType(Id)).ToList();
+                ProductSubTypes = _productSubTypeManager.GetAllProductSubType(Id).ToList();
             }
             catch (Exception ex)
             {
@@ -409,7 +447,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
 
         #region Properties
         public OpeningStockModel InitialStock { get; set; }
-        //public InventoryModel InitialQuantityInventory { get; set; }
         public PurchaseInvoiceModel ProductInitialQuantityInvoice { get; set; }
         private bool _ProductTypeError;
         /// <summary>

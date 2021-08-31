@@ -9,6 +9,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
     public interface IPartnerSetupAccountManager
     {
         Task<bool> SavePartnerSetAccountAsync(BussinessPartnerSetupAccountModel partnersetupAccount);
-        Task<List<string>> GenratePartnerAccountCodeAsync(string partnerType, int partnerId);
+        Task<List<Dictionary<string,string>>> GenratePartnerAccountCodeAsync(string partnerType, int partnerId);
     }
 }

@@ -20,10 +20,10 @@ namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
         public ProductColorModel ProductColor { get; set; }
         public ProductSizeModel ProductSize { get; set; }
         public string Description { get; set; }
-        public decimal Price { get; set; }
-        public int Quantity { get; set; }
-        public decimal Discount { get; set; }
-        public decimal Total { get; set; }
+        public decimal? Price { get; set; }
+        public int? Quantity { get; set; }
+        public decimal? Discount { get; set; }
+        public decimal? Total { get; set; }
         #endregion
     }
 }

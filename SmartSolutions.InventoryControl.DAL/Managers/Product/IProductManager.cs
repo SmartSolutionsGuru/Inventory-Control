@@ -9,7 +9,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
         Task<bool> AddProductAsync(ProductModel model);
         Task<bool> UpdateProductAsync(ProductModel product);
         Task<bool> RemoveProductAsync(int? Id);
-        Task<IEnumerable<ProductModel>> GetAllProductsAsync();
+        Task<IEnumerable<ProductModel>> GetAllProductsAsync(string srachText = null);
         Task<ProductModel> GetProductByIdAsync(int? Id);
         Task<ProductModel> GetLastAddedProduct();
     }

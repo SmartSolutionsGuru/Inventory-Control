@@ -31,6 +31,7 @@
     <ControlTemplate x:Key="ComboBoxTemplate" TargetType="{x:Type ComboBox}">
         <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition MinWidth="35" Width="0"/>
             </Grid.ColumnDefinitions>
@@ -41,17 +42,17 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <Button Style="{StaticResource BaseButton}" Padding="0,5" Visibility="{TemplateBinding ControlExtensions:ComboBoxExtensions.ShowSelectAll, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Button Style="{StaticResource ContentButton}" Padding="0,5" Visibility="{TemplateBinding ControlExtensions:ComboBoxExtensions.ShowSelectAll, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Border BorderBrush="Transparent" Padding="2,1" Background="{TemplateBinding Background}">
                                 <TextBlock Text="SELECT ALL" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" />
                             </Border>
 
-                            <!--<i:Interaction.Triggers>
+                            <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
                                     <ei:ChangePropertyAction PropertyName="IsChecked" Value="False" TargetObject="{Binding RelativeSource={RelativeSource TemplatedParent}}"/>
                                     <ei:ChangePropertyAction PropertyName="SelectedIndex" Value="-1" TargetObject="{Binding RelativeSource={RelativeSource TemplatedParent}}"/>
                                 </i:EventTrigger>
-                            </i:Interaction.Triggers>-->
+                            </i:Interaction.Triggers>
                         </Button>
                         <ScrollViewer x:Name="DropDownScrollViewer" Grid.Row="1">
                             <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled" Grid.Row="1">
@@ -64,9 +65,19 @@
                     </Grid>
                 </Border>
             </Popup>
+            <Path x:Name="WatermarkIconPath"
+                  Grid.Column="0"
+                  Width="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconWidth}"
+                  Height="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconHeight}"
+                  Data="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconPath}"
+                  Fill="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconColor}"
+                  Margin="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconMargin}"
+                  StrokeThickness="{TemplateBinding BorderThickness}"
+                  Stretch="Uniform"
+                  Visibility="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility}"/>
 
             <ToggleButton x:Name="toggleButton" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.ColumnSpan="2" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxToggleButton}"/>
-            <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Content="{TemplateBinding SelectionBoxItem}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+            <ContentPresenter x:Name="contentPresenter" Grid.Row="1" Grid.Column="1" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Content="{TemplateBinding SelectionBoxItem}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                 <ContentPresenter.Resources>
                     <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockBaseStyle}">
                         <Setter Property="TextWrapping" Value="NoWrap" />
@@ -101,103 +112,7 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-
-    <ControlTemplate x:Key="ComboBoxEditableTemplate" TargetType="{x:Type ComboBox}">
-        <Grid x:Name="templateRoot" SnapsToDevicePixels="true" Background="{StaticResource PureWhiteColorBrush}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition MinWidth="35" Width="0"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock x:Name="error" Grid.Column="2" Visibility="Visible" Text="{TemplateBinding ControlExtensions:WaterMarkTextExtension.ValidationErrorMessage}" VerticalAlignment="Bottom" Margin="2,0" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding ControlExtensions:WaterMarkTextExtension.ValidationErrorColor}" FontSize="12" FontFamily="{TemplateBinding FontFamily}" TextTrimming="CharacterEllipsis"/>
-            <Image Source="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIcon}" Width="35" Height="32" Stretch="Uniform" Margin="13,0" Visibility="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility}" VerticalAlignment="Center" />
-            <Line Grid.Column="1" Stroke="{TemplateBinding Foreground}" StrokeThickness="{TemplateBinding BorderThickness}" Stretch="Fill" Y1="1" Margin="4,10,0,10" Visibility="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility}" VerticalAlignment="Center" />
-            <Popup x:Name="PART_Popup" MinWidth="{Binding ElementName=templateRoot, Path=ActualWidth}" AllowsTransparency="true" Grid.Column="0" Grid.ColumnSpan="4" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{StaticResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                <Border x:Name="dropDownBorder" BorderBrush="{StaticResource LightBlueColorBrush}" BorderThickness="1" Background="{StaticResource PureWhiteColorBrush}" CornerRadius="5" >
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <ScrollViewer x:Name="DropDownScrollViewer" Grid.Row="2">
-                            <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
-                                <Canvas Grid.Row="2" x:Name="canvas" HorizontalAlignment="Left" MinHeight="35" VerticalAlignment="Top" Width="0">
-                                    <Rectangle x:Name="opaqueRect" 
-                                               Fill="{Binding Background, ElementName=dropDownBorder}" 
-                                               Height="{Binding ActualHeight, ElementName=dropDownBorder}" 
-                                               Width="{Binding ActualWidth, ElementName=dropDownBorder}"/>
-                                </Canvas>
-                                <ItemsPresenter Grid.Row="2" 
-                                                x:Name="ItemsPresenter" 
-                                                KeyboardNavigation.DirectionalNavigation="Contained" 
-                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                            </Grid>
-                        </ScrollViewer>
-                    </Grid>
-                </Border>
-            </Popup>
-            <ToggleButton x:Name="toggleButton" Grid.ColumnSpan="4" BorderBrush="{TemplateBinding BorderBrush}" Content="{Binding }" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxToggleButton}" ControlExtensions:MiscControlExtensions.CornerRadius="{TemplateBinding ControlExtensions:MiscControlExtensions.CornerRadius}"/>
-            <!--<ContentPresenter x:Name="contentPresenter" Grid.Column="2" TextBlock.Foreground="Black" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Content="{TemplateBinding SelectionBoxItem}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>-->
-            <TextBlock x:Name="txt_watermark"
-                       Grid.Column="2" 
-                       Text="{TemplateBinding Text}"
-                       Visibility="Visible" 
-                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
-                       Margin="{TemplateBinding Padding}" 
-                       FontSize="{TemplateBinding FontSize}" 
-                       FontFamily="{TemplateBinding FontFamily}" 
-                       Foreground="{TemplateBinding Foreground}" 
-                       IsHitTestVisible="False" />
-            <!--<Border x:Name="border" Grid.Column="2" Background="{TemplateBinding Background}" Margin="{TemplateBinding BorderThickness}">
-                
-            </Border>-->
-
-            <!--<TextBlock Opacity="0.8" 
-                       Visibility="Collapsed" 
-                       x:Name="placeholder" 
-                       Grid.Column="2" 
-                       Text="{TemplateBinding Text}" 
-                       VerticalAlignment="Center" 
-                       HorizontalAlignment="Left" 
-                       TextWrapping="NoWrap" 
-                       TextTrimming="CharacterEllipsis"  
-                       Margin="2,0" Padding="{TemplateBinding Padding}" 
-                       Foreground="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkColor}" 
-                       FontSize="{TemplateBinding FontSize}" 
-                       FontFamily="{TemplateBinding FontFamily}"/>-->
-        </Grid>
-        <ControlTemplate.Triggers>
-            <Trigger Property="SelectedItem" Value="{x:Null}">
-                <Setter TargetName="txt_watermark" Property="Visibility" Value="Visible" />
-                <!--<Setter TargetName="txt_watermark" Property="Text" Value="{Binding SelectedValue, RelativeSource={RelativeSource TemplatedParent}}" />-->
-                <Setter TargetName="txt_watermark" Property="Text"  Value="{Binding (ControlExtensions:WaterMarkTextExtension.WatermarkText), RelativeSource={RelativeSource TemplatedParent}}" />
-                <Setter Property="Opacity" Value="0.8"/>
-            </Trigger>
-            <Trigger Property="IsKeyboardFocusWithin" Value="true">
-                <Setter Property="Foreground" Value="Black"/>
-            </Trigger>
-            <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
-            </Trigger>
-            <Trigger Property="HasItems" Value="false">
-                <Setter Property="Height" TargetName="dropDownBorder" Value="95"/>
-            </Trigger>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsGrouping" Value="true"/>
-                    <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
-                </MultiTrigger.Conditions>
-                <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
-            </MultiTrigger>
-            <Trigger Property="ScrollViewer.CanContentScroll" SourceName="DropDownScrollViewer" Value="false">
-                <Setter Property="Canvas.Top" TargetName="opaqueRect" Value="{Binding VerticalOffset, ElementName=DropDownScrollViewer}"/>
-                <Setter Property="Canvas.Left" TargetName="opaqueRect" Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}"/>
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-
-
+    
     <!--ComboBox Style-->
     <Style x:Key="BaseComboBox" TargetType="ComboBox">
         <Setter Property="ControlExtensions:MiscControlExtensions.CornerRadius" Value="5" />
@@ -216,8 +131,10 @@
         <Setter Property="ScrollViewer.Background" Value="#ffffff"/>
         <Setter Property="ScrollViewer.BorderBrush" Value="#FF666666"/>
         <Setter Property="ScrollViewer.BorderThickness" Value="1"/>
+        <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconWidth" Value="30"/>
+        <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconHeight" Value="30"/>
         <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkColor" Value="{StaticResource LightGrayColorBrush}"/>
-        <Setter Property="ControlExtensions:WaterMarkTextExtension.ValidationErrorColor" Value="{StaticResource RedColorBrush}"/>
+        <!--<Setter Property="ControlExtensions:WaterMarkTextExtension.ValidationErrorColor" Value="{StaticResource RedColorBrush}"/>-->
         <Setter Property="ControlExtensions:WaterMarkTextExtension.SelectionBrush" Value="{StaticResource VeryLightBlueColorBrush}"/>
         <Setter Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility" Value="Collapsed"/>
         <Setter Property="ScrollViewer.PanningMode" Value="Both"/>
@@ -232,8 +149,17 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition MinWidth="35" Width="0"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock x:Name="error" Grid.Column="2" Visibility="Visible" Text="{TemplateBinding ControlExtensions:WaterMarkTextExtension.ValidationErrorMessage}" VerticalAlignment="Bottom" Margin="2,0" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding  ControlExtensions:WaterMarkTextExtension.ValidationErrorColor}" FontSize="12" FontFamily="{TemplateBinding FontFamily}" TextTrimming="CharacterEllipsis"/>
-                        <Path Data="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconPath}" Width="35" Height="32" Fill="{TemplateBinding Foreground}" Stretch="Uniform" Margin="13,0" Visibility="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility}" VerticalAlignment="Center" />
+                        <!--TODO: Testing Purpose Fix It Later-->
+                        <!--<TextBlock x:Name="error" Grid.Column="2" Visibility="Visible" Text="{TemplateBinding ControlExtensions:WaterMarkTextExtension.ValidationErrorMessage}" VerticalAlignment="Bottom" Margin="2,0" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding  ControlExtensions:WaterMarkTextExtension.ValidationErrorColor}" FontSize="12" FontFamily="{TemplateBinding FontFamily}" TextTrimming="CharacterEllipsis"/>-->
+                        <TextBlock x:Name="error" Grid.Column="2" Visibility="Collapsed" Text="Error" VerticalAlignment="Bottom" Margin="2,0" Padding="{TemplateBinding Padding}" Foreground="{StaticResource RedColorBrush}"/>
+                        <Path Data="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconPath}" 
+                              Width="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconWidth}" 
+                              Height="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconHeight}" 
+                              Fill="{TemplateBinding Foreground}" 
+                              Stretch="Uniform" 
+                              Margin="0,0" 
+                              Visibility="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility}" 
+                              VerticalAlignment="Center" />
                         <Line Grid.Column="1" Stroke="{TemplateBinding Foreground}" StrokeThickness="{TemplateBinding BorderThickness}" Stretch="Fill" Y1="1" Margin="4,10,0,10" Visibility="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility}" VerticalAlignment="Center" />
                         <Popup x:Name="PART_Popup" MinWidth="{Binding ElementName=templateRoot, Path=ActualWidth}" AllowsTransparency="true" Grid.Column="0" Grid.ColumnSpan="4" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{StaticResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom">
                             <Border x:Name="dropDownBorder" BorderBrush="{StaticResource LightGrayColorBrush}" CornerRadius="5" BorderThickness="0.7" Background="#FFFFFF">
@@ -317,6 +243,102 @@
         </Setter>
     </Style>
 
+    <ControlTemplate x:Key="ComboBoxEditableTemplate" TargetType="{x:Type ComboBox}">
+        <Grid x:Name="templateRoot" SnapsToDevicePixels="true" Background="{StaticResource PureWhiteColorBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition MinWidth="35" Width="0"/>
+            </Grid.ColumnDefinitions>
+            <!--<TextBlock x:Name="error" Grid.Column="2" Visibility="Visible" Text="{TemplateBinding ControlExtensions:WaterMarkTextExtension.ValidationErrorMessage}" VerticalAlignment="Bottom" Margin="2,0" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding ControlExtensions:WaterMarkTextExtension.ValidationErrorColor}" FontSize="12" FontFamily="{TemplateBinding FontFamily}" TextTrimming="CharacterEllipsis"/>-->
+            <TextBlock x:Name="error" Grid.Column="2" Visibility="Visible" Text="Error" VerticalAlignment="Bottom" Margin="2,0" Padding="{TemplateBinding Padding}" Foreground="{StaticResource RedColorBrush}" FontSize="12" FontFamily="{TemplateBinding FontFamily}" TextTrimming="CharacterEllipsis"/>
+            <Image Source="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIcon}" Width="35" Height="32" Stretch="Uniform" Margin="13,0" Visibility="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility}" VerticalAlignment="Center" />
+            <Line Grid.Column="1" Stroke="{TemplateBinding Foreground}" StrokeThickness="{TemplateBinding BorderThickness}" Stretch="Fill" Y1="1" Margin="4,10,0,10" Visibility="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility}" VerticalAlignment="Center" />
+            <Popup x:Name="PART_Popup" MinWidth="{Binding ElementName=templateRoot, Path=ActualWidth}" AllowsTransparency="true" Grid.Column="0" Grid.ColumnSpan="4" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{StaticResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                <Border x:Name="dropDownBorder" BorderBrush="{StaticResource LightBlueColorBrush}" BorderThickness="1" Background="{StaticResource PureWhiteColorBrush}" CornerRadius="5" >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <ScrollViewer x:Name="DropDownScrollViewer" Grid.Row="2">
+                            <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
+                                <Canvas Grid.Row="2" x:Name="canvas" HorizontalAlignment="Left" MinHeight="35" VerticalAlignment="Top" Width="0">
+                                    <Rectangle x:Name="opaqueRect" 
+                                               Fill="{Binding Background, ElementName=dropDownBorder}" 
+                                               Height="{Binding ActualHeight, ElementName=dropDownBorder}" 
+                                               Width="{Binding ActualWidth, ElementName=dropDownBorder}"/>
+                                </Canvas>
+                                <ItemsPresenter Grid.Row="2" 
+                                                x:Name="ItemsPresenter" 
+                                                KeyboardNavigation.DirectionalNavigation="Contained" 
+                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </Grid>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Popup>
+            <ToggleButton x:Name="toggleButton" Grid.ColumnSpan="4" BorderBrush="{TemplateBinding BorderBrush}" Content="{Binding }" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxToggleButton}" ControlExtensions:MiscControlExtensions.CornerRadius="{TemplateBinding ControlExtensions:MiscControlExtensions.CornerRadius}"/>
+            <!--<ContentPresenter x:Name="contentPresenter" Grid.Column="2" TextBlock.Foreground="Black" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Content="{TemplateBinding SelectionBoxItem}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>-->
+            <TextBlock x:Name="txt_watermark"
+                       Grid.Column="2" 
+                       Text="{TemplateBinding Text}"
+                       Visibility="Visible" 
+                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                       Margin="{TemplateBinding Padding}" 
+                       FontSize="{TemplateBinding FontSize}" 
+                       FontFamily="{TemplateBinding FontFamily}" 
+                       Foreground="{TemplateBinding Foreground}" 
+                       IsHitTestVisible="False" />
+            <Border x:Name="border" Grid.Column="2" Background="{TemplateBinding Background}" Margin="{TemplateBinding BorderThickness}">
+                
+            </Border>
+
+            <!--<TextBlock Opacity="0.8" 
+                       Visibility="Collapsed" 
+                       x:Name="placeholder" 
+                       Grid.Column="2" 
+                       Text="{TemplateBinding Text}" 
+                       VerticalAlignment="Center" 
+                       HorizontalAlignment="Left" 
+                       TextWrapping="NoWrap" 
+                       TextTrimming="CharacterEllipsis"  
+                       Margin="2,0" Padding="{TemplateBinding Padding}" 
+                       Foreground="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkColor}" 
+                       FontSize="{TemplateBinding FontSize}" 
+                       FontFamily="{TemplateBinding FontFamily}"/>-->
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="SelectedItem" Value="{x:Null}">
+                <Setter TargetName="txt_watermark" Property="Visibility" Value="Visible" />
+                <!--<Setter TargetName="txt_watermark" Property="Text" Value="{Binding SelectedValue, RelativeSource={RelativeSource TemplatedParent}}" />-->
+                <Setter TargetName="txt_watermark" Property="Text"  Value="{Binding (ControlExtensions:WaterMarkTextExtension.WatermarkText), RelativeSource={RelativeSource TemplatedParent}}" />
+                <Setter Property="Opacity" Value="0.8"/>
+            </Trigger>
+            <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                <Setter Property="Foreground" Value="Black"/>
+            </Trigger>
+            <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
+            </Trigger>
+            <Trigger Property="HasItems" Value="false">
+                <Setter Property="Height" TargetName="dropDownBorder" Value="95"/>
+            </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsGrouping" Value="true"/>
+                    <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+            </MultiTrigger>
+            <Trigger Property="ScrollViewer.CanContentScroll" SourceName="DropDownScrollViewer" Value="false">
+                <Setter Property="Canvas.Top" TargetName="opaqueRect" Value="{Binding VerticalOffset, ElementName=DropDownScrollViewer}"/>
+                <Setter Property="Canvas.Left" TargetName="opaqueRect" Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
     <!--<DataTemplate x:Key="ContentExtendingDropdownTemplate" DataType="{x:Type models:BaseModel}">
         <Border x:Name="border" BorderThickness="0" BorderBrush="Transparent">
             <Grid Margin="0 0 0 0">
@@ -341,7 +363,9 @@
                            Margin="5 0 0 0">
                 </TextBlock>
             </Grid>
-            --><!-- Add a render scale transform --><!--
+            -->
+    <!-- Add a render scale transform -->
+    <!--
             <Border.RenderTransform>
                 <ScaleTransform />
             </Border.RenderTransform>
@@ -504,7 +528,7 @@
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FontWeight" Value="Regular"/>
-        <Setter Property="BorderBrush" Value="{StaticResource BlueColorBrush3}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource LightBlueColorBrush}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
@@ -515,9 +539,9 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            <TextBlock FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource NormalFont}" Foreground="{StaticResource GrayColorBrush}" Text="{Binding Name,Mode=OneWay}"/>
-                            <TextBlock x:Name="CompanyNameTextBlock"  Grid.Row="1" FontSize="{StaticResource NormalFontSize}" FontFamily="{StaticResource NormalFont}" Foreground="{StaticResource LightGrayColorBrush}" Text="{Binding CompanyName,Mode=OneWay}"/>
-                            <TextBlock Grid.Row="2" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource NormalFont}" Foreground="{StaticResource GrayColorBrush3}" Text="{Binding Mobile,Mode=OneWay}"/>
+                            <TextBlock FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource GrayColorBrush}" Text="{Binding Name,Mode=OneWay}"/>
+                            <TextBlock x:Name="CompanyNameTextBlock"  Grid.Row="1" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource LightGrayColorBrush}" Text="{Binding CompanyName,Mode=OneWay}"/>
+                            <TextBlock Grid.Row="2" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource LightBlueColorBrush}" Text="{Binding Mobile,Mode=OneWay}"/>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -532,19 +556,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
-    <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource BaseComboBox}" />
-    <Style x:Key="BaseSearchableComboBox" TargetType="{x:Type control:SearchableComboBox}" BasedOn="{StaticResource BaseComboBox}">
-        <Setter Property="IsSynchronizedWithCurrentItem" Value="False" />
-        <Setter Property="FontFamily" Value="{StaticResource LightFont}" />
-        <Setter Property="Template" Value="{StaticResource SearchableComboBoxEditableTemplate}" />
-        <Style.Triggers>
-            <Trigger Property="IsEditable" Value="true">
-                <Setter Property="Template" Value="{StaticResource SearchableComboBoxEditableTemplate}"/>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-    <Style TargetType="{x:Type control:SearchableComboBox}" BasedOn="{StaticResource BaseSearchableComboBox}" />
+
 
     <ControlTemplate x:Key="SearchableComboBoxEditableTemplate" TargetType="{x:Type control:SearchableComboBox}">
         <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
@@ -555,7 +567,11 @@
                 <ColumnDefinition MinWidth="35" Width="0"/>
             </Grid.ColumnDefinitions>
             <!--<ToggleButton Grid.ColumnSpan="4" Opacity="0" Focusable="False" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press"/>-->
-            <TextBlock x:Name="error" Grid.Column="2" Visibility="{TemplateBinding ControlExtensions:WaterMarkTextExtension.ValidationErrorMessage.ValidationErrorVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{TemplateBinding ControlExtensions:WaterMarkTextExtension.ValidationErrorMessage}" VerticalAlignment="Bottom" Margin="2,0" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding ControlExtensions:WaterMarkTextExtension.ValidationErrorColor}" FontSize="12" FontFamily="{TemplateBinding FontFamily}" TextTrimming="CharacterEllipsis"/>
+
+            <!--TODO Testing Purpose-->
+            <TextBlock x:Name="error" Grid.Column="2" Visibility="Visible" Text="Error" VerticalAlignment="Bottom" Margin="2,0" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding ControlExtensions:WaterMarkTextExtension.ValidationErrorColor}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" TextTrimming="CharacterEllipsis"/>
+            <!--<TextBlock x:Name="error" Grid.Column="2" Visibility="Collapsed"  VerticalAlignment="Bottom" Margin="2,0" Padding="{TemplateBinding Padding}" Text="Error" Foreground="{StaticResource RedColorBrush}"/>-->
+
             <!--<TextBlock x:Name="DisplayText" Grid.Column="2" Text="{TemplateBinding Text}" VerticalAlignment="Bottom" Margin="2,0" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding ControlHelpers:WaterMarkTextHelper.ValidationErrorColor}" FontSize="12" FontFamily="{TemplateBinding FontFamily}" TextTrimming="CharacterEllipsis"/>-->
             <Image Grid.Column="0"
                    Source="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIcon}" 
@@ -565,9 +581,19 @@
                    Margin="13,0" 
                    Visibility="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility}" 
                    VerticalAlignment="Center" />
+            <Path x:Name="WatermarkIconPath"
+                  Grid.Column="0"
+                  Width="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconWidth}"
+                  Height="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconHeight}"
+                  Data="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconPath}"
+                  Fill="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconColor}"
+                  Margin="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconMargin}"
+                  StrokeThickness="{TemplateBinding BorderThickness}"
+                  Stretch="Uniform"
+                  Visibility="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility}"/>
             <Line Grid.Column="1" Stroke="{TemplateBinding Foreground}" StrokeThickness="{TemplateBinding BorderThickness}" Stretch="Fill" Y1="1" Margin="4,10,0,10" Visibility="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility}" VerticalAlignment="Center" />
             <Popup x:Name="PART_Popup" Width="{Binding ElementName=templateRoot, Path=ActualWidth}" AllowsTransparency="true" Grid.Column="0" Grid.ColumnSpan="4" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{StaticResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                <Border x:Name="dropDownBorder" BorderBrush="{StaticResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="0.3" Background="{StaticResource WhiteColorBrush}" CornerRadius="5" >
+                <Border x:Name="dropDownBorder" BorderBrush="{StaticResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="0.3" Background="{StaticResource PureWhiteColorBrush}" CornerRadius="5" >
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -584,7 +610,7 @@
                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" 
                                  IsReadOnly="False"
                                  Style="{StaticResource TextBoxVisibilityPathIconStyle}" 
-                                 FontSize="{StaticResource SmallFontSize}" 
+                                 FontSize="{StaticResource SmallSize}" 
                                  FontFamily="{StaticResource MediumFont}" 
                                  BorderThickness="2"
                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" 
@@ -592,7 +618,6 @@
                                  CaretBrush="{TemplateBinding Foreground}" 
                                  SelectionBrush="{TemplateBinding ControlExtensions:WaterMarkTextExtension.SelectionBrush}"  
                                  MaxHeight="35"
-                                 
                                  ControlExtensions:WaterMarkTextExtension.WatermarkText="Search..." 
                                  ControlExtensions:WaterMarkTextExtension.WatermarkColor="{StaticResource LightGrayColorBrush}" 
                                  ControlExtensions:WaterMarkTextExtension.RightWatermarkIconPath="{StaticResource Shape_Search}" 
@@ -600,7 +625,8 @@
                                  ControlExtensions:WaterMarkTextExtension.WatermarkIconColor="#ffedf2f8" 
                                  ControlExtensions:WaterMarkTextExtension.WatermarkIconHeight="17" 
                                  ControlExtensions:WaterMarkTextExtension.IsMonitoring="True"  />
-                        <Button x:Name="SelectAllButton" Grid.Row="1" Style="{StaticResource ContentButton}" Padding="3,5" Visibility="{TemplateBinding ControlExtensions:ComboBoxExtension.ShowSelectAll, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <!-- Visibility="{TemplateBinding ControlExtensions:ComboBoxExtension.ShowSelectAll, Converter={StaticResource BooleanToVisibilityConverter}}"-->
+                        <Button x:Name="SelectAllButton" Grid.Row="1" Visibility="Collapsed" Style="{StaticResource ContentButton}" Padding="3,5">
                             <Border BorderBrush="Transparent" Padding="2,1" Background="{TemplateBinding Background}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -625,7 +651,7 @@
                                 <Canvas Grid.Row="2" x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
                                     <Rectangle x:Name="opaqueRect" Fill="{Binding Background, ElementName=dropDownBorder}" Height="{Binding ActualHeight, ElementName=dropDownBorder}" Width="{Binding ActualWidth, ElementName=dropDownBorder}"/>
                                 </Canvas>
-                                <ItemsPresenter Grid.Row="2" x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                <!--<ItemsPresenter Grid.Row="2" x:Name="ItemsPresenter"  KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>-->
                                 <!--ItemContainerStyle="{StaticResource ListBoxItemCheckBoxStyle}"-->
                                 <ListBox Grid.Row="2" 
                                          x:Name="PART_CurrentList" 
@@ -644,8 +670,8 @@
                                         <GroupStyle HidesIfEmpty="True">
                                             <GroupStyle.HeaderTemplate>
                                                 <DataTemplate>
-                                                    <Border Padding="0,5" Background="{StaticResource GrayColorBrush4}">
-                                                        <TextBlock Margin="10 0 0 0" Foreground="{StaticResource WhiteColorBrush}" Text="{Binding Name}" />
+                                                    <Border Padding="0,5" Background="{StaticResource GrayColorBrush}">
+                                                        <TextBlock Margin="10 0 0 0" Foreground="{StaticResource PureWhiteColorBrush}" Text="{Binding Name}" />
                                                         <Border.Style>
                                                             <Style TargetType="Border">
                                                                 <Style.Triggers>
@@ -670,23 +696,11 @@
                 </Border>
             </Popup>
             <ToggleButton x:Name="toggleButton" Grid.ColumnSpan="4" BorderBrush="{TemplateBinding BorderBrush}" Content="{TemplateBinding Text}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxToggleButton}" ControlExtensions:MiscControlExtensions.CornerRadius="{TemplateBinding ControlExtensions:MiscControlExtensions.CornerRadius}"/>
-            <TextBlock x:Name="txt_watermark" Grid.Column="2" Text="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkText}" Visibility="Collapsed" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" Foreground="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkColor}" IsHitTestVisible="False" />
-            <Border x:Name="border" Grid.Column="2" Background="{TemplateBinding Background}" Margin="{TemplateBinding BorderThickness}">
-                
-            </Border>
-            <!--<controls:GifImage2 x:Name="loader" Grid.ColumnSpan="4" GifSource="/Smart Reception;component/Assets/iconDataLoading.gif" IsPlaying="{TemplateBinding helpers:ControlHelper.IsLoading}" Visibility="{TemplateBinding helpers:ControlHelper.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Right" Height="30" Margin="30,0" />-->
-            <TextBlock x:Name="placeholder" Grid.ColumnSpan="3" Text="{TemplateBinding Text}" VerticalAlignment="Center" TextWrapping="NoWrap"  TextTrimming="CharacterEllipsis" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" IsHitTestVisible="False"/>
-
-            <!--GBL-3195 Updated Content Presenter for Selected Box Display--> 
-            <ContentPresenter x:Name="contentPresenter" Content="{TemplateBinding SelectedItem}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" ContentTemplate="{TemplateBinding AltSelectionBoxItemTemplate}" Grid.Column="2" IsHitTestVisible="False"/>
+            <TextBlock x:Name="txt_watermark" Grid.Column="2" Visibility="Collapsed"  Text="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkText}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" Foreground="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkColor}" IsHitTestVisible="False" />
+            <ContentPresenter x:Name="contentPresenter" Content="{TemplateBinding SelectedItem}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" ContentTemplate="{TemplateBinding AltSelectionBoxItemTemplate}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Grid.Column="2" IsHitTestVisible="False"/>
         </Grid>
         <ControlTemplate.Triggers>
-            <!--<Trigger Property="ConverterParameters" Value="True">
-                <Setter Property="TextBlock.Text" TargetName="placeholder" Value="{Binding Text,Converter={StaticResource StringToReverseConverter},ConverterParameter='true'}"/>
-            </Trigger>-->
-            <!--<Trigger Property="controls:ComboBoxSelectionAltTemplateBehaviour.SelectionBoxAltTemplate" Value="{x:Null}">
-                <Setter Property="ContentTemplate" Value="{Binding SelectionBoxItemTemplate,RelativeSource={RelativeSource TemplatedParent}}" TargetName="ContentSite"/>
-            </Trigger>-->
+            
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Opacity" TargetName="templateRoot" Value="0.75"/>
             </Trigger>
@@ -705,8 +719,6 @@
             </Trigger>
             <Trigger Property="SelectedItem" Value="{x:Null}">
                 <Setter TargetName="txt_watermark" Property="Visibility" Value="Visible" />
-                <Setter TargetName="txt_watermark" Property="Text" Value="{Binding SelectedValue, RelativeSource={RelativeSource TemplatedParent}}" />
-                <Setter TargetName="txt_watermark" Property="Text" Value="{Binding (ControlExtensions:WaterMarkTextExtension.WatermarkText), RelativeSource={RelativeSource TemplatedParent}}" />
             </Trigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="true">
                 <Setter Property="Foreground" Value="Black"/>
@@ -729,6 +741,17 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-   
-
+    
+    <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource BaseComboBox}" />
+    <Style x:Key="BaseSearchableComboBox" TargetType="{x:Type control:SearchableComboBox}" BasedOn="{StaticResource BaseComboBox}">
+        <Setter Property="IsSynchronizedWithCurrentItem" Value="False" />
+        <Setter Property="FontFamily" Value="{StaticResource MediumFont}" />
+        <Setter Property="Template" Value="{StaticResource SearchableComboBoxEditableTemplate}" />
+        <Style.Triggers>
+            <Trigger Property="IsEditable" Value="true">
+                <Setter Property="Template" Value="{StaticResource SearchableComboBoxEditableTemplate}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type control:SearchableComboBox}" BasedOn="{StaticResource BaseSearchableComboBox}" />
 </ResourceDictionary>

@@ -438,7 +438,7 @@
                                            HorizontalAlignment="Left"
                                            Margin="40 0 0 5"/>
                                 <TextBox Grid.Row="1" 
-                                        Height="50" 
+                                        Height="48" 
                                         Width="250"
                                         Margin="40 0 0 0"
                                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
@@ -460,7 +460,6 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-
 
                             </Grid>
                             <Grid Grid.Row="3" Grid.Column="3">

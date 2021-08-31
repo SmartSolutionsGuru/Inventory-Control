@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using SmartSolutions.InventoryControl.UI.Helpers;
+using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,6 +62,35 @@ namespace SmartSolutions.InventoryControl.UI.Views
                 if (value < 0)
                     value = 0;
                 ViewModel.CalculateDiscountPrice(value, 0);
+            }
+        }
+
+        private void SearchableComboBox_SearchCounter(object sender, EventArgs e)
+        {
+            try
+            {
+                var control = sender as TextBox;
+                if (string.IsNullOrEmpty(control?.Text)) return;
+                ViewModel.FilterVenders(control?.Text);
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+
+        private void ProductSearchCounter(object sender, EventArgs e)
+        {
+            try
+            {
+                var control = sender as TextBox;
+                var text = control?.Text;
+                if (string.IsNullOrEmpty(text)) return;
+                ViewModel.FilterProducts(text);
+            }
+            catch (Exception ex)
+            {
+               LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
     }

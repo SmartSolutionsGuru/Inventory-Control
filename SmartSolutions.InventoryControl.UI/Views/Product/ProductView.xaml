@@ -145,7 +145,8 @@
                                        FontSize="{StaticResource MediumSize}"
                                        Background="{StaticResource PureWhiteColorBrush}"
                                        ControlExtensions:MiscControlExtensions.CornerRadius="5"
-                                       ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Collapsed"
+                                       ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                                       ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Delivery}"
                                        ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Product Type"/>
                             <Button x:Name="OpenAddProductType"
                                     Style="{StaticResource ContentButton}" 

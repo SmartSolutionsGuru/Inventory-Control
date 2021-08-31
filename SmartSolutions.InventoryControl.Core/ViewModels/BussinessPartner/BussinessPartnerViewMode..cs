@@ -190,7 +190,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                             {
                                 var partnersetupAccount = new BussinessPartnerSetupAccountModel();
                                 partnersetupAccount.Partner = newAddedPartner;
-                                partnersetupAccount.PartnerAccountCode = item;
+                                partnersetupAccount.PartnerAccountCode = item["Code"];
+                                partnersetupAccount.Description = item["Description"];
                                 partnersetupAccount.PartnerAccountType = SelectedPartnerType;
                                 await _partnerSetupAccountManager.SavePartnerSetAccountAsync(partnersetupAccount);
                             }

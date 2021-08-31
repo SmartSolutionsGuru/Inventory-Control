@@ -948,3 +948,5 @@ sqlite-net-master/tests/SQLite.Tests/TransactionTest.cs
 sqlite-net-master/tests/SQLite.Tests/UnicodeTest.cs
 
 sqlite-net-master/tests/SQLite.Tests/UniqueTest.cs
+
+SmartSolutions.Util/obj/Debug/netstandard2.0/

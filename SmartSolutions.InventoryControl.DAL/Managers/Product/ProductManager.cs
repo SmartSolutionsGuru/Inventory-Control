@@ -60,22 +60,20 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
             }
             return retVal;
         }
-        public async Task<IEnumerable<ProductModel>> GetAllProductsAsync()
+        public async Task<IEnumerable<ProductModel>> GetAllProductsAsync(string searchText = null)
         {
             List<ProductModel> Products = new List<ProductModel>();
             try
             {
-                string query = @"SELECT * FROM Product WHERE IsActive = 1"; ;
-                var values = await Repository.QueryAsync(query);
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_searchText"] = searchText == null ? searchText = string.Empty : searchText;
+                string query = @"SELECT * FROM Product WHERE Name LIKE @v_searchText + '%' AND IsActive = 1"; ;
+                var values = await Repository.QueryAsync(query,parameters:parameters);
                 if (values != null)
                 {
                     foreach (var value in values)
                     {
                         var product = new ProductModel();
-                        product.ProductType = new ProductTypeModel();
-                        product.ProductSubType = new ProductSubTypeModel();
-                        product.ProductColor = new ProductColorModel();
-                        product.ProductSize = new ProductSizeModel();
                         product.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                         product.Name = value?.GetValueFromDictonary("Name")?.ToString();
                         product.ProductType.Id = value?.GetValueFromDictonary("ProductTypeId")?.ToString()?.ToInt();
@@ -88,7 +86,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                         product.CreatedBy = value?.GetValueFromDictonary("CreatedBy")?.ToString();
                         product.UpdatedAt = value?.GetValueFromDictonary("UpdatedAt")?.ToString()?.ToNullableDateTime();
                         product.UpdatedBy = value?.GetValueFromDictonary("UpdatedBy")?.ToString();
-
                         Products.Add(product);
                     }
                 }

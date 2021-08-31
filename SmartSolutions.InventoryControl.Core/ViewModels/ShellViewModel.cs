@@ -174,10 +174,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     string host = Environment.MachineName;
                     string port = "1433";
                     string database = "SmartSolutions.InventoryControl";
-                    string username = "SOLOINSIGHT\\sbutt";
-                    //string username = WindowsIdentity.GetCurrent().Name;/* "sa";*/
-                    //string password = "Pakistan@123";
-                    string password = "";
+                    //string username = WindowsIdentity.GetCurrent().Name;
+                    string username = "sa";
+                    string password = "Pakistan@123";
+                    //string password = "";
 
 
 
@@ -223,8 +223,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     ConnectionInfo.Instance.Database = database;
                     ConnectionInfo.Instance.UserName = username;
                     ConnectionInfo.Instance.Password = password;
-                    //TODO: ForTesting Purpose
-                    AppSettings.IsLoggedInUserAdmin = true;
+                    AppSettings.IsLoggedInUserAdmin = IsUserAdmin();
                     if (DAL.AppSettings.IsLoggedInUserAdmin)
                         ConnectionInfo.Instance.ConnectionString = string.Format($"data source=localhost; Initial Catalog=" + database + ";Integrated Security = SSPI;");
                     else
@@ -304,6 +303,28 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
             else
                 return;
+        }
+
+        private bool IsUserAdmin()
+        {
+            //bool value to hold our return value
+            bool isAdmin;
+            try
+            {
+                //get the currently logged in user
+                WindowsIdentity user = WindowsIdentity.GetCurrent();
+                WindowsPrincipal principal = new WindowsPrincipal(user);
+                isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                isAdmin = false;
+            }
+            catch (Exception ex)
+            {
+                isAdmin = false;
+            }
+            return isAdmin;
         }
 
         #endregion

@@ -85,14 +85,16 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
         #endregion
 
         #region GET
-        public async Task<IEnumerable<BussinessPartnerModel>> GetAllBussinessPartnersAsync()
+        public async Task<IEnumerable<BussinessPartnerModel>> GetAllBussinessPartnersAsync(string search = null)
         {
             var partners = new List<BussinessPartnerModel>();
             try
             {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_searchText"] = search == null ? search = string.Empty : search;
                 string query = string.Empty;
-                query = @"SELECT * FROM BussinessPartner Where IsActive = 1";
-                var values = await Repository.QueryAsync(query);
+                query = @"SELECT * FROM BussinessPartner Where Name LIKE @v_searchText + '%' AND IsActive = 1";
+                var values = await Repository.QueryAsync(query,parameters:parameters);
                 if (values != null)
                 {
                     foreach (var value in values)

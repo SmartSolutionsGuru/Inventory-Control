@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Notifications.Wpf;
 using SmartSolutions.InventoryControl.Core.ViewModels;
 using SmartSolutions.InventoryControl.Core.ViewModels.Dialogs;
 using SmartSolutions.InventoryControl.Plugins.IoC;
@@ -9,10 +10,8 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
-using System.Security.Principal;
-using System.Threading.Tasks;
 using System.Reflection;
-using Notifications.Wpf;
+using System.Security.Principal;
 
 namespace SmartSolutions.InventoryControl.UI
 {

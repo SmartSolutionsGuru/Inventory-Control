@@ -49,7 +49,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Purchase
                 parameters["@v_UpdatedAt"] = purchaseOrder.UpdatedAt == null ? DBNull.Value : (object)purchaseOrder.UpdatedAt;
                 parameters["@v_UpdatedBy"] = purchaseOrder.UpdatedBy == null ? DBNull.Value : (object)purchaseOrder.UpdatedBy;
 
-                string query = @"INSERT INTO PurchaseOrderMaster (PartnerId,Status,Description,ShippingId,SubTotal,Discount,GrandTotal,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy) +
+                string query = @"INSERT INTO PurchaseOrderMaster (PartnerId,Status,Description,ShippingId,SubTotal,Discount,GrandTotal,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
                                                             VALUES(@v_PartnerId,@v_Status,@v_Description,@v_ShippingId,@v_SubTotal,@v_Discount,@v_GrandTotal,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy);";
                 var result = await Repository.NonQueryAsync(query, parameters: parameters);
                 retVal = result > 0 ? true : false;
