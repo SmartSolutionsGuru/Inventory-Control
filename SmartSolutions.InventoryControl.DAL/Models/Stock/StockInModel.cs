@@ -25,6 +25,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Stock
         public PurchaseOrderModel PurchaseOrder { get; set; }
         public PurchaseOrderDetailModel PurchaseOrderDetail { get; set; }
         public ProductModel Product { get; set; }
+        public int? PurchaseInvoiceId { get; set; }
         private int? _Quantity;
 
         public int? Quantity

@@ -1,0 +1,11 @@
+TODO for InventoryControl
+
+1) Have To Involve Taxation
+
+
+Work To Do Or Implementaion have to Be Done
+1) Check If Item Already Exist With Same Name then Information Message Want to add it or Not
+2) Update the Folder for Images and Remove from database
+3) Validation For Phone Number And Name etc...
+$) Replace the AutoComplete Box With searchableComboBox
+6) Convert The Queries from Code To SQL Files

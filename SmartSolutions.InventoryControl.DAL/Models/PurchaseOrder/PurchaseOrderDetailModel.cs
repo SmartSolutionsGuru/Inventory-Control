@@ -1,4 +1,5 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.Product;
+using SmartSolutions.InventoryControl.DAL.Models.Warehouse;
 
 namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
 {
@@ -24,6 +25,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
         public int? Quantity { get; set; }
         public decimal? Discount { get; set; }
         public decimal? Total { get; set; }
+        public WarehouseModel  Warehouse { get; set; }
         #endregion
     }
 }

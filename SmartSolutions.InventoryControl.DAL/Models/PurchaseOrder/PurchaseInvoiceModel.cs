@@ -12,7 +12,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
         public PurchaseInvoiceModel()
         {
             InvoiceGuid = Guid.NewGuid();
-            PaymentTypes = new List<Payments.PaymentTypeModel>();
+            PaymentTypes = new List<PaymentTypeModel>();
             Products = new List<StockModel>();
         }
         #endregion
@@ -72,7 +72,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
         /// <summary>
         /// Amount Of Payment which is Paid Or Recived
         /// </summary>
-        public decimal Payment { get; set; }
+        public PaymentModel Payment { get; set; }
         /// <summary>
         /// Grand Total Of transaction
         /// </summary>

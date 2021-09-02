@@ -33,6 +33,10 @@ namespace SmartSolutions.InventoryControl.DAL
         /// Proprietor Information
         /// </summary>
         public static DAL.Models.ProprietorInformationModel Proprietor { get; set; }
+        /// <summary>
+        /// Path For Cached Images
+        /// </summary>
+        public static  string ImageCachedPath { get; set; }
 
     }
 }

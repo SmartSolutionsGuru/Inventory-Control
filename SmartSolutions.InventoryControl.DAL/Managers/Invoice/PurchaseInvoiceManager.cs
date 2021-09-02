@@ -4,6 +4,7 @@ using SmartSolutions.Util.DictionaryUtils;
 using SmartSolutions.Util.LogUtils;
 using SmartSolutions.Util.NumericUtils;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
@@ -70,9 +71,9 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
             int? lastRowId = null;
             try
             {
-                string query = "SELECT last_insert_rowid()";
+                string query = @"SELECT IDENT_CURRENT('PurchaseInvoice') AS Id";
                 var result = Repository.Query(query);
-                lastRowId = result?.FirstOrDefault().GetValueFromDictonary("last_insert_rowid()")?.ToString()?.ToNullableInt();
+                lastRowId = result?.FirstOrDefault().GetValueFromDictonary("Id")?.ToString()?.ToNullableInt();
             }
             catch (Exception ex)
             {
@@ -112,10 +113,28 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
 
         public async Task<bool> SavePurchaseInoiceAsync(PurchaseInvoiceModel invoice)
         {
+            if (invoice == null) return false;
             bool retVal = false;
             try
             {
-
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_InvoiceId"] = invoice?.InvoiceId;
+                parameters["@v_InvoiceGuid"] = invoice?.InvoiceGuid.ToString();
+                parameters["@v_PaymentTypeId"] = invoice?.SelectedPaymentType?.Id ?? 0;
+                parameters["@v_PartnerId"] = invoice?.SelectedPartner?.Id;
+                parameters["@v_PaymentId"] = invoice?.Payment?.Id;
+                parameters["@v_InvoiceTotal"] = invoice?.InvoiceTotal;
+                parameters["@v_Discount"] = invoice?.Discount;
+                parameters["@v_PaymentImage"] = invoice?.PaymentImage == null ? DBNull.Value : (object)invoice.PaymentImage;
+                parameters["@v_IsActive"] = invoice.IsActive = true;
+                parameters["@v_CreatedAt"] = invoice.CreatedAt == null ? DateTime.Now : invoice.CreatedAt;
+                parameters["@v_CreatedBy"] = invoice.CreatedBy == null ? DBNull.Value : (object)invoice.CreatedBy;
+                parameters["@v_UpdatedAt"] = invoice.UpdatedAt == null ? DBNull.Value : (object)invoice.UpdatedAt;
+                parameters["@v_UpdatedBy"] = invoice.UpdatedBy == null ? DBNull.Value : (object)invoice.UpdatedBy;
+                string query = @"INSERT INTO PurchaseInvoice(InvoiceId,InvoiceGuid,PaymentTypeId,PartnerId,PaymentId,InvoiceTotal,Discount,PaymentImage,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                                    VALUES(@v_InvoiceId,@v_InvoiceGuid,@v_PaymentTypeId,@v_PartnerId,@v_PaymentId,@v_InvoiceTotal,@v_Discount,@v_PaymentImage,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
+                var result = await Repository.NonQueryAsync(query, parameters: parameters);
+                retVal = result > 0 ? true : false;
             }
             catch (Exception ex)
             {

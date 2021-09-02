@@ -8,6 +8,7 @@ using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
 using SmartSolutions.InventoryControl.DAL.Models.Stock;
 using SmartSolutions.InventoryControl.DAL.Models.Warehouse;
 using SmartSolutions.Util.LogUtils;
+using SmartSolutions.Util.NumericUtils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -115,15 +116,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             try
             {
                 ++AutoId;
-                var purchaseOrderDetail = new PurchaseOrderDetailModel();
-                purchaseOrderDetail.Product = StockIn?.Product;
-                purchaseOrderDetail.ProductColor = StockIn?.Product?.ProductColor;
-                purchaseOrderDetail.ProductSize = StockIn?.Product?.ProductSize;
-                purchaseOrderDetail.Price = StockIn?.Price.Value;
-                purchaseOrderDetail.Quantity = StockIn?.Quantity;
-                purchaseOrderDetail.Total = StockIn?.Total.Value;
-                purchaseOrderDetail.Description = StockIn?.Description;
-                PurchaseOrderDetails.Add(purchaseOrderDetail);
                 var newProduct = new StockInModel();
                 CalculateInvoiceTotal();
                 ProductGrid.Add(newProduct);
@@ -199,6 +191,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 {
                     //Purchase Section
                     #region Gerating PO And Filling Details
+
                     PurchaseOrder.Partner.Id = SelectedPartner?.Id;
                     PurchaseOrder.Status = PurchaseOrderModel.OrderStatus.New;
                     PurchaseOrder.Description = "Order Placed";
@@ -216,66 +209,106 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                         {
                             if (PurchaseOrderDetails != null || PurchaseOrderDetails?.Count > 0)
                             {
-                                foreach (var productDetails in PurchaseOrderDetails)
+                                foreach (var product in ProductGrid)
                                 {
-                                    // Here we Only Update the the PO Id
-                                    productDetails.PurchaseOrder.Id = purchaseOrderId;
-
-                                    //var orderDetail = new PurchaseOrderDetailModel();
-                                    //orderDetail.PurchaseOrder.Id = purchaseOrderId;
-                                    //orderDetail.PurchaseOrder = PurchaseOrder;
-                                    //orderDetail.Product = product.Product;
-                                    //orderDetail.ProductColor = product.Product?.ProductColor;
-                                    //orderDetail.ProductSize = product.Product?.ProductSize;
-                                    //orderDetail.Total = product.Total.Value;
-                                    //orderDetail.Price = product.Price.Value;
-                                    //orderDetail.Quantity = product.Quantity.Value;
-                                    productDetails.IsActive = true;
-                                    productDetails.CreatedAt = DateTime.Now;
-                                    productDetails.CreatedBy = AppSettings.LoggedInUser?.DisplayName;
-                                    //PurchaseOrderDetails.Add(orderDetail);
-                                }
-                                await _purchaseOrderDetailManager.AddPurchaseOrderBulkDetailAsync(PurchaseOrderDetails);
-                            }
-                        }
-                    }
-                    #endregion
-
-                    #region Creating  Purchase Invoice
-                    if (ProductGrid != null || ProductGrid?.Count > 0)
-                    {
-                        var productList = new List<StockInModel>();
-                        foreach (var stock in ProductGrid)
-                        {
-                            if (!string.IsNullOrEmpty(stock.Product.Name))
-                            {
-                                productList.Add(stock);
-                            }
-                        }
-                        PurchaseInvoice.SelectedPartner = SelectedPartner;
-                        PurchaseInvoice.PaymentImage = PaymentImage;
-                        PurchaseInvoice.PercentDiscount = PercentDiscount;
-                        PurchaseInvoice.Discount = DiscountPrice.Value;
-                        PurchaseInvoice.InvoiceTotal = InvoiceTotal.Value;
-                        PurchaseInvoice.Payment = Payment.Value;
-                        bool invoiceResult = await _purchaseInvoiceManager.SavePurchaseInoiceAsync(PurchaseInvoice);
-                        if (invoiceResult)
-                        {
-                            var lastRowId = _purchaseInvoiceManager.GetLastRowId();
-                            if (lastRowId != null)
-                            {
-                                if (lastRowId > 0)
-                                {
-                                    //var resultInventory = await _inventoryManager.AddBulkInventoryAsync(productList);
-                                    var resultStockIn = await _stockInManager.AddBulkStockInAsync(productList);
-                                    if (resultStockIn)
+                                    if (product.Product != null)
                                     {
-
+                                        // Here we Only Update the the PO Id
+                                        var purchaseOrderDetail = new PurchaseOrderDetailModel();
+                                        purchaseOrderDetail.PurchaseOrder.Id = purchaseOrderId;
+                                        PurchaseOrder.Id = purchaseOrderId;
+                                        purchaseOrderDetail.PurchaseOrder = PurchaseOrder;
+                                        purchaseOrderDetail.Product = product.Product;
+                                        purchaseOrderDetail.ProductColor = product.Product?.ProductColor;
+                                        purchaseOrderDetail.ProductSize = product.Product?.ProductSize;
+                                        purchaseOrderDetail.Total = product.Total.Value;
+                                        purchaseOrderDetail.Price = product.Price.Value;
+                                        purchaseOrderDetail.Quantity = product.Quantity.Value;
+                                        purchaseOrderDetail.Warehouse = product.Warehouse;
+                                        purchaseOrderDetail.IsActive = true;
+                                        purchaseOrderDetail.Discount = PurchaseInvoice?.Discount ?? 0;
+                                        purchaseOrderDetail.CreatedAt = DateTime.Now;
+                                        purchaseOrderDetail.CreatedBy = AppSettings.LoggedInUser?.DisplayName;
+                                        PurchaseOrderDetails.Add(purchaseOrderDetail);
                                     }
                                 }
+                                //Fetching Order Detail Id,s
+                                var resultOrderDetail = await _purchaseOrderDetailManager.AddPurchaseOrderBulkDetailAsync(PurchaseOrderDetails);
+                                if (resultOrderDetail)
+                                {
+                                    var orderdetailIds = await _purchaseOrderDetailManager.GetOrderDetailIdByOrderIdAsync(purchaseOrderId);
+                                    for (int i = 0; i < orderdetailIds.Count; i++)
+                                    {
+                                        //Assigning Id,s of OrderDetails To Order details Object
+                                        PurchaseOrderDetails.ElementAtOrDefault(i).Id = Convert.ToInt32(orderdetailIds.ElementAtOrDefault(i));
+                                    }
+                                    #region Creating  Purchase Invoice
+                                    if (Payment == null || Payment == 0)
+                                    {
+                                        //  Here we assume that Payment is not Added
+                                        if (ProductGrid != null || ProductGrid?.Count > 0)
+                                        {
+                                            var productList = new List<StockInModel>();
+                                            foreach (var stock in ProductGrid)
+                                            {
+                                                var itemNo = ProductGrid.IndexOf(stock) + 1;
+                                                var selectedOrderDetail = PurchaseOrderDetails.ElementAtOrDefault(itemNo);
+
+                                                if (selectedOrderDetail != null)
+                                                {
+                                                    stock.Partner = SelectedPartner;
+                                                    stock.PurchaseOrder = PurchaseOrder;
+                                                    stock.Product = selectedOrderDetail?.Product;
+                                                    stock.PurchaseOrderDetail.Id = selectedOrderDetail.Id;
+                                                    //stock.Quantity = selectedOrderDetail.Quantity;
+                                                    //stock.Price = selectedOrderDetail.Price;
+                                                    //stock.Total = selectedOrderDetail.Total;
+                                                    stock.Description = $"Purchase Product {selectedOrderDetail?.Product?.Name} From {SelectedPartner?.Name} In Price {selectedOrderDetail?.Price} Quantity {selectedOrderDetail?.Quantity} At {selectedOrderDetail?.CreatedAt}";
+                                                    stock.Warehouse = selectedOrderDetail.Warehouse;
+                                                    if (!string.IsNullOrEmpty(stock?.Product?.Name))
+                                                    {
+                                                        productList.Add(stock);
+                                                    } 
+                                                }
+                                            }
+                                            PurchaseInvoice.SelectedPartner = SelectedPartner;
+                                            PurchaseInvoice.PaymentImage = PaymentImage;
+                                            PurchaseInvoice.PercentDiscount = PercentDiscount;
+                                            PurchaseInvoice.Discount = DiscountPrice ?? 0;
+                                            PurchaseInvoice.InvoiceTotal = InvoiceTotal.Value;
+                                            PurchaseInvoice.Payment = new DAL.Models.Payments.PaymentModel { Id = 0, PaymentAmount = Payment ?? 0 };
+                                            bool invoiceResult = await _purchaseInvoiceManager.SavePurchaseInoiceAsync(PurchaseInvoice);
+                                            if (invoiceResult)
+                                            {
+                                                var lastRowId = _purchaseInvoiceManager.GetLastRowId();
+                                                if (lastRowId != null)
+                                                {
+                                                    if (lastRowId > 0)
+                                                    {
+                                                        foreach (var item in productList)
+                                                        {
+                                                            item.PurchaseInvoiceId = lastRowId;
+                                                        }
+                                                        var resultStockIn = await _stockInManager.AddBulkStockInAsync(productList);
+                                                        if (resultStockIn)
+                                                        {
+                                                            // TODO: Here we Add the Second Effect Of Double Entry system
+                                                            NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success",Message = "Successfully Stock Added",Type= Notifications.Wpf.NotificationType.Success});
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            IsLoading = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // Here Payment is Paid
+                                    }
+                                    #endregion
+                                }
                             }
                         }
-                        IsLoading = false;
                     }
                     #endregion
                 }
@@ -419,20 +452,20 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public PurchaseOrderModel PurchaseOrder { get; set; }
         public List<PurchaseOrderDetailModel> PurchaseOrderDetails { get; set; }
         public StockInModel StockIn { get; set; }
-        private List<DAL.Models.Warehouse.WarehouseModel> _Warehouses;
+        private List<WarehouseModel> _Warehouses;
         /// <summary>
         /// List Of Warehouses whicha are avaiable
         /// </summary>
-        public List<DAL.Models.Warehouse.WarehouseModel> Warehouses
+        public List<WarehouseModel> Warehouses
         {
             get { return _Warehouses; }
             set { _Warehouses = value; NotifyOfPropertyChange(nameof(Warehouses)); }
         }
-        private DAL.Models.Warehouse.WarehouseModel _SelectedWarehouse;
+        private WarehouseModel _SelectedWarehouse;
         /// <summary>
         /// Selected Warehouse In Which Stock Is Store
         /// </summary>
-        public DAL.Models.Warehouse.WarehouseModel SelectedWarehouse
+        public WarehouseModel SelectedWarehouse
         {
             get { return _SelectedWarehouse; }
             set { _SelectedWarehouse = value; NotifyOfPropertyChange(nameof(SelectedWarehouse)); }
@@ -470,29 +503,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             set { _PurchaseInvoice = value; NotifyOfPropertyChange(nameof(PurchaseInvoice)); }
         }
 
-        private PartnerSuggestionProvider _PartnerSuggetion;
-        /// <summary>
-        /// Peoperty for Partner Suggetion
-        /// </summary>
-        public PartnerSuggestionProvider PartnerSuggetion
-        {
-            get { return _PartnerSuggetion; }
-            set { _PartnerSuggetion = value; NotifyOfPropertyChange(nameof(PartnerSuggetion)); }
-        }
+
         private BussinessPartnerModel _SelectedPartner;
         public BussinessPartnerModel SelectedPartner
         {
             get { return _SelectedPartner; }
-            set { _SelectedPartner = value; NotifyOfPropertyChange(nameof(SelectedPartner)); OnSelectingPartner(); PartnerSuggetion = new PartnerSuggestionProvider(Venders); }
-        }
-        private ProductSuggestionProvider _ProductSuggetion;
-        /// <summary>
-        /// List of Product Suggetions
-        /// </summary>
-        public ProductSuggestionProvider ProductSuggetion
-        {
-            get { return _ProductSuggetion; }
-            set { _ProductSuggetion = value; NotifyOfPropertyChange(nameof(ProductSuggetion)); }
+            set { _SelectedPartner = value; NotifyOfPropertyChange(nameof(SelectedPartner)); OnSelectingPartner(); }
         }
 
         private bool _VenderError;

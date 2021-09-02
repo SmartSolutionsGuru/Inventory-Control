@@ -66,9 +66,11 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Purchase
             int? lastRowId = null;
             try
             {
-                string query = "SELECT last_insert_rowid()";
+                //string query = "SELECT last_insert_rowid()";
+                string query = @"SELECT IDENT_CURRENT('PurchaseOrderMaster') AS Id";
                 var result = await Repository.QueryAsync(query);
-                lastRowId = result?.FirstOrDefault().GetValueFromDictonary("last_insert_rowid()")?.ToString()?.ToNullableInt();
+                if (result != null || result?.Count > 0)
+                    lastRowId = result?.FirstOrDefault().GetValueFromDictonary("Id")?.ToString()?.ToInt() ?? 0;
             }
             catch (Exception ex)
             {
