@@ -88,7 +88,16 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
             PurchaseInvoiceModel invoice = null;
             try
             {
-
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_Id"] = Id ?? 0;
+                string query = @"SELECT * FROM PurchaseInvoice WHERE Id = @v_Id AND IsActive = 1";
+                var values = await Repository.QueryAsync(query, parameters: parameters);
+                if(values != null || values?.Count > 0)
+                {
+                    //TODO: have to Cmplete this
+                    var value = values?.FirstOrDefault();
+                    invoice.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                }
             }
             catch (Exception ex)
             {

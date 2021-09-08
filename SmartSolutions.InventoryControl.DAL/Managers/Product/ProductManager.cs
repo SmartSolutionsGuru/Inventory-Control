@@ -67,7 +67,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_searchText"] = searchText == null ? searchText = string.Empty : searchText;
-                string query = @"SELECT * FROM Product WHERE Name LIKE @v_searchText + '%' AND IsActive = 1"; ;
+                string query = @"SELECT * FROM Product WHERE Name LIKE @v_searchText + '%' AND IsActive = 1";
                 var values = await Repository.QueryAsync(query,parameters:parameters);
                 if (values != null)
                 {
@@ -82,10 +82,11 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                         product.ProductSize.Id = value?.GetValueFromDictonary("ProductSizeId")?.ToString()?.ToInt();
                         product.Image = value?.GetValueFromDictonary("Image") as byte[];
                         product.IsActive = value?.GetValueFromDictonary("IsActive")?.ToString()?.ToNullableBoolean();
-                        product.CreatedAt = value?.GetValueFromDictonary("CreatedAt")?.ToString()?.ToNullableDateTime();
-                        product.CreatedBy = value?.GetValueFromDictonary("CreatedBy")?.ToString();
-                        product.UpdatedAt = value?.GetValueFromDictonary("UpdatedAt")?.ToString()?.ToNullableDateTime();
-                        product.UpdatedBy = value?.GetValueFromDictonary("UpdatedBy")?.ToString();
+
+                        //product.CreatedAt = value?.GetValueFromDictonary("CreatedAt")?.ToString()?.ToNullableDateTime();
+                        //product.CreatedBy = value?.GetValueFromDictonary("CreatedBy")?.ToString();
+                        //product.UpdatedAt = value?.GetValueFromDictonary("UpdatedAt")?.ToString()?.ToNullableDateTime();
+                        //product.UpdatedBy = value?.GetValueFromDictonary("UpdatedBy")?.ToString();
                         Products.Add(product);
                     }
                 }

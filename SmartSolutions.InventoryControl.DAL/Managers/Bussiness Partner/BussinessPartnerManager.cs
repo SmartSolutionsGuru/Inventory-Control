@@ -94,7 +94,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 parameters["@v_searchText"] = search == null ? search = string.Empty : search;
                 string query = string.Empty;
                 query = @"SELECT * FROM BussinessPartner Where Name LIKE @v_searchText + '%' AND IsActive = 1";
-                var values = await Repository.QueryAsync(query,parameters:parameters);
+                var values = await Repository.QueryAsync(query, parameters: parameters);
                 if (values != null)
                 {
                     foreach (var value in values)
@@ -102,9 +102,9 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                         var partner = new BussinessPartnerModel();
                         partner.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                         partner.Name = value?.GetValueFromDictonary("Name")?.ToString();
-                        partner.PartnerType = new BussinessPartnerTypeModel {Id =  value?.GetValueFromDictonary("PartnerTypeId")?.ToString()?.ToInt()};
+                        partner.PartnerType = new BussinessPartnerTypeModel { Id = value?.GetValueFromDictonary("PartnerTypeId")?.ToString()?.ToInt() };
                         partner.PartnerType = await _partnerTypeManager.GetPartnerTypeByIdAsync(partner?.PartnerType?.Id);
-                        partner.PartnerCategory = new BussinessPartnerCategoryModel { Id = value?.GetValueFromDictonary("PartnerCategoryId")?.ToString()?.ToInt()};
+                        partner.PartnerCategory = new BussinessPartnerCategoryModel { Id = value?.GetValueFromDictonary("PartnerCategoryId")?.ToString()?.ToInt() };
                         partner.PartnerCategory = await _partnerCategoryManager.GetPartnerCategoryByIdAsync(partner?.PartnerCategory?.Id);
                         partner.BussinessName = value?.GetValueFromDictonary("BussinessName")?.ToString();
                         partner.City = new Models.Region.CityModel
@@ -114,11 +114,11 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                         partner.City = await _cityManager.GetCityFromIdAsync(partner.City?.Id);
                         partner.PhoneNumber = value?.GetValueFromDictonary("PhoneNumber")?.ToString();
                         partner.Address = value?.GetValueFromDictonary("Address")?.ToString();
-                        partner.CreatedAt = value?.GetValueFromDictonary("CreatedAt")?.ToString()?.ToNullableDateTime();
-                        partner.CreatedBy = value?.GetValueFromDictonary("CreatedBy")?.ToString();
                         var mobileNumber = value?.GetValueFromDictonary("MobileNumber")?.ToString();
                         if (!string.IsNullOrEmpty(mobileNumber))
                             partner.MobileNumbers = new List<string>(mobileNumber.Split(','));
+                        //partner.CreatedAt = value?.GetValueFromDictonary("CreatedAt")?.ToString()?.ToNullableDateTime();
+                        //partner.CreatedBy = value?.GetValueFromDictonary("CreatedBy")?.ToString();
                         partners.Add(partner);
                     }
                 }
@@ -158,6 +158,58 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             }
             return partner;
         }
+
+        public async Task<IEnumerable<BussinessPartnerModel>> GetBussinessPartnersByTypeAsync(List<int?> typeId)
+        {
+            //TODO: have to Fix the Issue it is not Working Now
+            if (typeId == null || typeId?.Count == 0) return null;
+            List<BussinessPartnerModel> partners = new List<BussinessPartnerModel>();
+            try
+            {
+                var Ids = string.Empty;
+                foreach (var item in typeId)
+                {
+                    Ids = string.Join(",", item);
+                }
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_Ids"] = Ids;
+                string query = @" SELECT * FROM BussinessPartner WHERE PartnerTypeId IN(" + "@v_Ids" + ")";
+                var values = await Repository.QueryAsync(query);
+                if (values != null || values?.Count > 0)
+                {
+                    foreach (var value in values)
+                    {
+                        var partner = new BussinessPartnerModel();
+                        partner.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                        partner.Name = value?.GetValueFromDictonary("Name")?.ToString();
+                        partner.PartnerType = new BussinessPartnerTypeModel { Id = value?.GetValueFromDictonary("PartnerTypeId")?.ToString()?.ToInt() };
+                        partner.PartnerType = await _partnerTypeManager.GetPartnerTypeByIdAsync(partner?.PartnerType?.Id);
+                        partner.PartnerCategory = new BussinessPartnerCategoryModel { Id = value?.GetValueFromDictonary("PartnerCategoryId")?.ToString()?.ToInt() };
+                        partner.PartnerCategory = await _partnerCategoryManager.GetPartnerCategoryByIdAsync(partner?.PartnerCategory?.Id);
+                        partner.BussinessName = value?.GetValueFromDictonary("BussinessName")?.ToString();
+                        partner.City = new Models.Region.CityModel
+                        {
+                            Id = value?.GetValueFromDictonary("CityId")?.ToString().ToNullableInt(),
+                        };
+                        partner.City = await _cityManager.GetCityFromIdAsync(partner.City?.Id);
+                        partner.PhoneNumber = value?.GetValueFromDictonary("PhoneNumber")?.ToString();
+                        partner.Address = value?.GetValueFromDictonary("Address")?.ToString();
+                        partner.CreatedAt = value?.GetValueFromDictonary("CreatedAt")?.ToString()?.ToNullableDateTime();
+                        partner.CreatedBy = value?.GetValueFromDictonary("CreatedBy")?.ToString();
+                        var mobileNumber = value?.GetValueFromDictonary("MobileNumber")?.ToString();
+                        if (!string.IsNullOrEmpty(mobileNumber))
+                            partner.MobileNumbers = new List<string>(mobileNumber.Split(','));
+                        partners.Add(partner);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return partners;
+        }
+
         public async Task<BussinessPartnerModel> GetLastAddedPartner()
         {
             BussinessPartnerModel partner = null;

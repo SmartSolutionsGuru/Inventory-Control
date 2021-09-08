@@ -282,8 +282,9 @@
                                        HorizontalAlignment="Left" 
                                        Margin="5 0 0 0"/>
 
+                            <!-- Have to Replace List View With DataGrid-->
                             <ScrollViewer Grid.Row="1" Grid.ColumnSpan="9" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                <ListView Grid.Row="1" Grid.ColumnSpan="9" ItemsSource="{Binding ProductGrid,Mode=OneWay}" SelectedItem="{Binding SelectedInventory,Mode=TwoWay}"  Margin="0 0" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                <ListView Grid.Row="1" Grid.ColumnSpan="9" ItemsSource="{Binding ProductGrid,Mode=OneWay}"  SelectedItem="{Binding SelectedInventory,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"   Margin="0 0" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                                     <ListView.ItemTemplate>
                                         <DataTemplate DataType="stock:StockInModel">
                                             <Grid Margin="0 5">

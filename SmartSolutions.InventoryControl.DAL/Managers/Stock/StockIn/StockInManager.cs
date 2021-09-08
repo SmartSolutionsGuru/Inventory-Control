@@ -54,13 +54,13 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockIn
                 parameters["@v_ProductId"] = model?.Product?.Id;
                 parameters["@v_Quantity"] = model?.Quantity;
                 parameters["@v_PurchaseOrderId"] = model?.PurchaseOrder?.Id;
-                parameters["PurchaseInvoiceId"] = model?.PurchaseInvoiceId;
+                parameters["@v_PurchaseInvoiceId"] = model?.PurchaseInvoiceId;
                 parameters["@v_Price"] = model?.Price;
                 parameters["@v_Total"] = model.Total;
                 parameters["@v_Description"] = string.IsNullOrEmpty(model?.Description) ? DBNull.Value : (object)model.Description;
                 parameters["@v_IsActive"] = model.IsActive = true;
                 parameters["@v_CreatedAt"] = model.CreatedAt == null ? DateTime.Now : model.CreatedAt;
-                parameters["@v_CreatedBy"] = model.CreatedBy == null ? DBNull.Value : (object)model.CreatedBy;
+                parameters["@v_CreatedBy"] = model.CreatedBy == null ? AppSettings.LoggedInUser.DisplayName : (object)model.CreatedBy;
                 parameters["@v_UpdatedAt"] = model.UpdatedAt == null ? DBNull.Value : (object)model.UpdatedAt;
                 parameters["@v_UpdatedBy"] = model.UpdatedBy == null ? DBNull.Value : (object)model.UpdatedBy;
                 parameters["@v_WarehouseId"] = model.Warehouse?.Id == null ? DBNull.Value : (object)model.Warehouse?.Id;

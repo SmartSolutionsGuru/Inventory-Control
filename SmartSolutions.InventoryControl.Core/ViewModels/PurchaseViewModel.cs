@@ -3,6 +3,7 @@ using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;
 using SmartSolutions.InventoryControl.DAL;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.DAL.Models.Inventory;
+using SmartSolutions.InventoryControl.DAL.Models.Payments;
 using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
 using SmartSolutions.InventoryControl.DAL.Models.Stock;
@@ -99,10 +100,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 var model = new StockInModel();
                 AutoId = 0;
                 AddProduct(model);
-                //if (Venders != null)
-                //    PartnerSuggetion = new PartnerSuggestionProvider(Venders);
-                //if (Products != null)
-                //    ProductSuggetion = new ProductSuggestionProvider(Products);
                 IsLoading = false;
 
             }
@@ -191,7 +188,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 {
                     //Purchase Section
                     #region Gerating PO And Filling Details
-
                     PurchaseOrder.Partner.Id = SelectedPartner?.Id;
                     PurchaseOrder.Status = PurchaseOrderModel.OrderStatus.New;
                     PurchaseOrder.Description = "Order Placed";
@@ -243,67 +239,85 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                         PurchaseOrderDetails.ElementAtOrDefault(i).Id = Convert.ToInt32(orderdetailIds.ElementAtOrDefault(i));
                                     }
                                     #region Creating  Purchase Invoice
-                                    if (Payment == null || Payment == 0)
+                                    //if (Payment == null || Payment == 0)
+                                    //{
+                                    //  Here we assume that Payment is not Added
+                                    if (ProductGrid != null || ProductGrid?.Count > 0)
                                     {
-                                        //  Here we assume that Payment is not Added
-                                        if (ProductGrid != null || ProductGrid?.Count > 0)
+                                        var productList = new List<StockInModel>();
+                                        foreach (var stock in ProductGrid)
                                         {
-                                            var productList = new List<StockInModel>();
-                                            foreach (var stock in ProductGrid)
-                                            {
-                                                var itemNo = ProductGrid.IndexOf(stock) + 1;
-                                                var selectedOrderDetail = PurchaseOrderDetails.ElementAtOrDefault(itemNo);
+                                            var itemNo = ProductGrid.IndexOf(stock);
+                                            var selectedOrderDetail = PurchaseOrderDetails.ElementAtOrDefault(itemNo);
 
-                                                if (selectedOrderDetail != null)
+                                            if (selectedOrderDetail != null)
+                                            {
+                                                stock.Partner = SelectedPartner;
+                                                stock.PurchaseOrder = PurchaseOrder;
+                                                stock.Product = selectedOrderDetail?.Product;
+                                                stock.PurchaseOrderDetail.Id = selectedOrderDetail.Id;
+                                                stock.Description = $"Purchase Product {selectedOrderDetail?.Product?.Name} From {SelectedPartner?.Name} In Price {selectedOrderDetail?.Price} Quantity {selectedOrderDetail?.Quantity} At {selectedOrderDetail?.CreatedAt}";
+                                                stock.Warehouse = selectedOrderDetail.Warehouse;
+                                                if (!string.IsNullOrEmpty(stock?.Product?.Name))
                                                 {
-                                                    stock.Partner = SelectedPartner;
-                                                    stock.PurchaseOrder = PurchaseOrder;
-                                                    stock.Product = selectedOrderDetail?.Product;
-                                                    stock.PurchaseOrderDetail.Id = selectedOrderDetail.Id;
-                                                    //stock.Quantity = selectedOrderDetail.Quantity;
-                                                    //stock.Price = selectedOrderDetail.Price;
-                                                    //stock.Total = selectedOrderDetail.Total;
-                                                    stock.Description = $"Purchase Product {selectedOrderDetail?.Product?.Name} From {SelectedPartner?.Name} In Price {selectedOrderDetail?.Price} Quantity {selectedOrderDetail?.Quantity} At {selectedOrderDetail?.CreatedAt}";
-                                                    stock.Warehouse = selectedOrderDetail.Warehouse;
-                                                    if (!string.IsNullOrEmpty(stock?.Product?.Name))
-                                                    {
-                                                        productList.Add(stock);
-                                                    } 
+                                                    productList.Add(stock);
                                                 }
                                             }
-                                            PurchaseInvoice.SelectedPartner = SelectedPartner;
-                                            PurchaseInvoice.PaymentImage = PaymentImage;
-                                            PurchaseInvoice.PercentDiscount = PercentDiscount;
-                                            PurchaseInvoice.Discount = DiscountPrice ?? 0;
-                                            PurchaseInvoice.InvoiceTotal = InvoiceTotal.Value;
-                                            PurchaseInvoice.Payment = new DAL.Models.Payments.PaymentModel { Id = 0, PaymentAmount = Payment ?? 0 };
-                                            bool invoiceResult = await _purchaseInvoiceManager.SavePurchaseInoiceAsync(PurchaseInvoice);
-                                            if (invoiceResult)
+                                        }
+                                        PurchaseInvoice.SelectedPartner = SelectedPartner;
+                                        PurchaseInvoice.PaymentImage = PaymentImage;
+                                        PurchaseInvoice.PercentDiscount = PercentDiscount;
+                                        PurchaseInvoice.Discount = DiscountPrice ?? 0;
+                                        PurchaseInvoice.InvoiceTotal = InvoiceTotal.Value;
+                                        PurchaseInvoice.Payment = new PaymentModel { Id = 0, PaymentAmount = Payment ?? 0 };
+                                        bool invoiceResult = await _purchaseInvoiceManager.SavePurchaseInoiceAsync(PurchaseInvoice);
+                                        if (invoiceResult)
+                                        {
+                                            var lastRowId = _purchaseInvoiceManager.GetLastRowId();
+                                            if (lastRowId != null)
                                             {
-                                                var lastRowId = _purchaseInvoiceManager.GetLastRowId();
-                                                if (lastRowId != null)
+                                                if (lastRowId > 0)
                                                 {
-                                                    if (lastRowId > 0)
+                                                    foreach (var item in productList)
                                                     {
-                                                        foreach (var item in productList)
+                                                        item.PurchaseInvoiceId = lastRowId;
+                                                    }
+                                                    var resultStockIn = await _stockInManager.AddBulkStockInAsync(productList);
+                                                    if (resultStockIn)
+                                                    {
+                                                        // here we Update the Partner Ledger Account
+                                                        BussinessPartnerLedgerModel partnerLedger = new BussinessPartnerLedgerModel();
+                                                        partnerLedger.Partner = SelectedPartner;
+                                                        var selectedPArtnerBalance = await _partnerLedgerManager.GetPartnerLedgerLastBalanceAsync(SelectedPartner?.Id ?? 0);
+                                                        partnerLedger.CR = InvoiceTotal.Value;
+                                                        partnerLedger.InvoiceId = productList?.FirstOrDefault()?.PurchaseInvoiceId;
+                                                        partnerLedger.CurrentBalance = partnerLedger.CurrentBalance + InvoiceTotal.Value;
+                                                        partnerLedger.CurrentBalanceType = DAL.Models.PaymentType.CR;
+                                                        partnerLedger.Description = $"{SelectedPartner.Name} Sells Stock Amount Of {InvoiceTotal.Value} Invoice Of{PurchaseInvoice.InvoiceId} At {PurchaseInvoice.CreatedAt}";
+                                                        var result = await _partnerLedgerManager.UpdatePartnerCurrentBalanceAsync(partnerLedger);
+                                                        if (result)
                                                         {
-                                                            item.PurchaseInvoiceId = lastRowId;
-                                                        }
-                                                        var resultStockIn = await _stockInManager.AddBulkStockInAsync(productList);
-                                                        if (resultStockIn)
-                                                        {
-                                                            // TODO: Here we Add the Second Effect Of Double Entry system
-                                                            NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success",Message = "Successfully Stock Added",Type= Notifications.Wpf.NotificationType.Success});
+                                                            NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Successfully Stock Added", Type = Notifications.Wpf.NotificationType.Success });
+                                                            PurchaseInvoice.InvoiceId = _purchaseInvoiceManager.GenrateInvoiceNumber("P");
+                                                            Clear();
+                                                            if(Payment != null || Payment > 0)
+                                                            {
+                                                                // Here Payment is made
+                                                                var payment = new PaymentModel();
+                                                                payment.Partner = SelectedPartner;
+                                                                payment.PaymentMethod = PurchaseInvoice?.SelectedPaymentType;
+                                                                payment.PaymentType = DAL.Models.PaymentType.CR;
+                                                                payment.PaymentImage = PaymentImage;
+                                                                payment.PaymentAmount = Payment ?? 0;
+                                                                payment.IsPaymentReceived = false;
+                                                                payment.Description = $"Payment is Made To {SelectedPartner?.Name} against {productList?.FirstOrDefault()?.PurchaseInvoiceId} at {DateTime.Now}";
+                                                            }
                                                         }
                                                     }
                                                 }
                                             }
-                                            IsLoading = false;
                                         }
-                                    }
-                                    else
-                                    {
-                                        // Here Payment is Paid
+                                        IsLoading = false;
                                     }
                                     #endregion
                                 }
@@ -312,8 +326,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     }
                     #endregion
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -327,6 +339,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 SelectedPurchaseType = string.Empty;
                 SelectedPartner = new BussinessPartnerModel();
                 ProductGrid = new ObservableCollection<StockInModel>();
+                var newProduct = new StockInModel();
+                ProductGrid.Add(newProduct);
                 InvoiceTotal = 0;
                 PercentDiscount = 0;
                 DiscountPrice = 0;
