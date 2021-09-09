@@ -86,6 +86,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 base.OnActivate();
                 PurchaseTypes = new List<string> { "Purchase", "Purchase Return" };
                 SelectedPurchaseType = PurchaseTypes.Where(x => x.Equals("Purchase")).FirstOrDefault();
+                //TODO: Loading is Slow due to Product Image
                 Products = (await _productManager.GetAllProductsAsync()).ToList();
                 Venders = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
                 ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
@@ -182,7 +183,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 //Other wise Go for Purchase
                 if (SelectedPurchaseType.Equals("Purchase Return"))
                 {
-
+                    #region Genrate  Purchase Return Order 
+                    var purchasereturnInvoice = new PurchaseReturnInvoiceModel();
+                    purchasereturnInvoice.Partner = SelectedPartner;
+                    #endregion
                 }
                 else
                 {
@@ -364,6 +368,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             {
                 if (SelectedPartner == null) return;
                 var selectedPartnerLedger = await _partnerLedgerManager.GetPartnerLedgerLastBalanceAsync(SelectedPartner.Id.Value);
+              
                 if (selectedPartnerLedger != null)
                 {
                     PreviousBalance = selectedPartnerLedger.CurrentBalance;
@@ -373,7 +378,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 else
                 {
                     PreviousBalance = 0;
-                    //BalanceType = "Receivable";
+                }
+                if (SelectedPurchaseType.Equals("Purchase Return"))
+                {
+                    //Here we Get Only those Product Which are sell by that Specific Partner
+                    Products = (await _productManager.GetAllProductsPurchasedByPartnerAsync(SelectedPartner?.Id)).ToList();
                 }
             }
             catch (Exception ex)
@@ -456,7 +465,37 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
             catch (Exception ex)
             {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+        private void OnSelectedPurchaseType(string purchaseType)
+        {
+            if (string.IsNullOrEmpty(purchaseType)) return;
+            try
+            {
+                if(purchaseType.Equals("Purchase Return"))
+                {
+                    PurchaseInvoice.InvoiceId = _purchaseInvoiceManager.GenrateInvoiceNumber("PR");
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
 
+        private void OnSelectedProduct(ProductModel selectedProduct)
+        {
+            if (selectedProduct == null) return;
+            try
+            {
+                if(SelectedPurchaseType.Equals("Purchase Return"))
+                {
+                    
+                }
+            }
+            catch (Exception ex)
+            {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
@@ -566,7 +605,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public string SelectedPurchaseType
         {
             get { return _SelectedPurchaseType; }
-            set { _SelectedPurchaseType = value; NotifyOfPropertyChange(nameof(SelectedPurchaseType)); }
+            set { _SelectedPurchaseType = value; NotifyOfPropertyChange(nameof(SelectedPurchaseType)); OnSelectedPurchaseType(SelectedPurchaseType); }
         }
         private List<ProductSizeModel> _ProductSizes;
         /// <summary>
@@ -600,7 +639,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public ProductModel SelectedProduct
         {
             get { return _SelectedProduct; }
-            set { _SelectedProduct = value; NotifyOfPropertyChange(nameof(SelectedProduct)); }
+            set { _SelectedProduct = value; NotifyOfPropertyChange(nameof(SelectedProduct)); OnSelectedProduct(SelectedProduct); }
         }
 
 

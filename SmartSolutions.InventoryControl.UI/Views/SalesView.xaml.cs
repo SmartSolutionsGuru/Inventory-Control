@@ -59,5 +59,34 @@ namespace SmartSolutions.InventoryControl.UI.Views
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
+
+        private void SearchableComboBox_SearchCounter(object sender, EventArgs e)
+        {
+            try
+            {
+                var control = sender as TextBox;
+                if (string.IsNullOrEmpty(control?.Text)) return;
+                ViewModel.FilterPartners(control?.Text);
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+
+        private void ProductSearchCounter(object sender, EventArgs e)
+        {
+            try
+            {
+                var control = sender as TextBox;
+                var text = control?.Text;
+                if (string.IsNullOrEmpty(text)) return;
+                ViewModel.FilterProducts(text);
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
     }
 }

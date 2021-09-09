@@ -62,13 +62,14 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
         }
         public async Task<IEnumerable<ProductModel>> GetAllProductsAsync(string searchText = null)
         {
+            //TODO: Query is Slow due To Image Loading Fix this
             List<ProductModel> Products = new List<ProductModel>();
             try
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_searchText"] = searchText == null ? searchText = string.Empty : searchText;
                 string query = @"SELECT * FROM Product WHERE Name LIKE @v_searchText + '%' AND IsActive = 1";
-                var values = await Repository.QueryAsync(query,parameters:parameters);
+                var values = await Repository.QueryAsync(query, parameters: parameters);
                 if (values != null)
                 {
                     foreach (var value in values)
@@ -83,10 +84,10 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                         product.Image = value?.GetValueFromDictonary("Image") as byte[];
                         product.IsActive = value?.GetValueFromDictonary("IsActive")?.ToString()?.ToNullableBoolean();
 
-                        //product.CreatedAt = value?.GetValueFromDictonary("CreatedAt")?.ToString()?.ToNullableDateTime();
-                        //product.CreatedBy = value?.GetValueFromDictonary("CreatedBy")?.ToString();
-                        //product.UpdatedAt = value?.GetValueFromDictonary("UpdatedAt")?.ToString()?.ToNullableDateTime();
-                        //product.UpdatedBy = value?.GetValueFromDictonary("UpdatedBy")?.ToString();
+                        product.CreatedAt = value?.GetValueFromDictonary("CreatedAt")?.ToString()?.ToNullableDateTime();
+                        product.CreatedBy = value?.GetValueFromDictonary("CreatedBy")?.ToString();
+                        product.UpdatedAt = value?.GetValueFromDictonary("UpdatedAt")?.ToString()?.ToNullableDateTime();
+                        product.UpdatedBy = value?.GetValueFromDictonary("UpdatedBy")?.ToString();
                         Products.Add(product);
                     }
                 }
@@ -97,6 +98,57 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
             }
             return Products;
         }
+
+        public async Task<IEnumerable<ProductModel>> GetAllProductsAvailableInStockAsync()
+        {
+            var products = new List<ProductModel>();
+            try
+            {
+                await Repository.QueryAsync();
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return products;
+        }
+
+        public async Task<IEnumerable<ProductModel>> GetAllProductsPurchasedByPartnerAsync(int? partnerId)
+        {
+            if (partnerId == null || partnerId == 0) return null;
+            var products = new List<ProductModel>();
+            try
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_partnerId"] = partnerId;
+                string query = @"SELECT s.ProductId  , p.Name,p.ProductTypeId,p.ProductSubTypeId,p.ProductColorId,p.Image,p.IsActive 
+                               FROM StockIn s
+                               Inner Join Product p ON p.Id = s.ProductId 
+                               WHERE s.PartnerId = @v_partnerId";
+                var values = await Repository.QueryAsync(query, parameters: parameters);
+                if(values != null || values?.Count > 0)
+                {
+                    foreach (var value in values)
+                    {
+                        var product = new ProductModel();
+                        product.Id = value.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                        product.Name = value?.GetValueFromDictonary("Name")?.ToString();
+                        product.ProductType = new ProductTypeModel { Id = value?.GetValueFromDictonary("ProductTypeId")?.ToString()?.ToInt() };
+                        product.ProductSubType = new ProductSubTypeModel { Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt()};
+                        product.ProductColor = new ProductColorModel { Id = value.GetValueFromDictonary("Id")?.ToString()?.ToInt()};
+                        product.Image = value?.GetValueFromDictonary("Image") as byte[];
+                        product.IsActive = value?.GetValueFromDictonary("IsActive")?.ToString()?.ToNullableBoolean();
+                        products.Add(product);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return products;
+        }
+
         public async Task<ProductModel> GetLastAddedProduct()
         {
             var product = new ProductModel();
@@ -105,9 +157,9 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
             {
                 if (Repository.Type == DBTypes.SQLITE)
                 {
-                     query = @"SELECT * FROM  Product Order by 1 DESC LIMIT 1";
+                    query = @"SELECT * FROM  Product Order by 1 DESC LIMIT 1";
                 }
-                else if(Repository.Type.Equals(DBTypes.SQLServer))
+                else if (Repository.Type.Equals(DBTypes.SQLServer))
                 {
                     query = @"SELECT TOP 1 *  FROM Product ORDER BY Id DESC";
                 }

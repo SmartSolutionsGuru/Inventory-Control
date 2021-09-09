@@ -33,5 +33,12 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockIn
         /// <param name="models"></param>
         /// <returns></returns>
         Task<bool> RemoveBulkStockInAsync(List<StockInModel> models);
+
+        /// <summary>
+        /// Get the Stock In Of Specifi Product 
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        Task<IEnumerable<StockInModel>> GetStockInProduct(int? productId);
     }
 }

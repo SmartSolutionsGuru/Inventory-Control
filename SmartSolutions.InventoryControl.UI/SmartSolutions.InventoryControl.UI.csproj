@@ -175,6 +175,7 @@
     <Compile Include="CustomControls\SimplePanel.cs" />
     <Compile Include="CustomControls\ValueBoxes.cs" />
     <Compile Include="Helpers\ControlExtensions\BorderExtensions.cs" />
+    <Compile Include="Helpers\Decimal\TextBoxInputBehavior.cs" />
     <Compile Include="Helpers\Image\CacheImage.cs" />
     <Compile Include="Views\Bank\BankAccountView.xaml.cs">
       <DependentUpon>BankAccountView.xaml</DependentUpon>

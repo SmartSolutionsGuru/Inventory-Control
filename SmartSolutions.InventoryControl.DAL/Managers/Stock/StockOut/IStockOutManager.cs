@@ -32,6 +32,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockOut
         /// </summary>
         /// <param name="models"></param>
         /// <returns></returns>
-        Task<bool> RemoveBulkStockOutAsync(List<StockInModel> models);
+        Task<bool> RemoveBulkStockOutAsync(List<StockOutModel> models);
     }
 }

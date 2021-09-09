@@ -76,6 +76,23 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockIn
             }
             return retVal;
         }
+
+        #endregion
+
+        #region GET
+        public async Task<IEnumerable<StockInModel>> GetStockInProduct(int? productId)
+        {
+            var stocks = new List<StockInModel>();
+            try
+            {
+                await Repository.QueryAsync();
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return stocks;
+        }
         #endregion
 
         #region Remove

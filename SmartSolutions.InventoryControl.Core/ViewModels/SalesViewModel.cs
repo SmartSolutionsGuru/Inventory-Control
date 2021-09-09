@@ -32,6 +32,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private readonly DAL.Managers.Bussiness_Partner.IPartnerLedgerManager _partnerLedgerManager;
         private readonly DAL.Managers.Transaction.ITransactionManager _transactionManager;
         private readonly DAL.Managers.Payments.IPaymentTypeManager _paymentTypeManager;
+        private readonly DAL.Managers.Stock.StockOut.IStockOutManager _stockOutManager;
         #endregion
 
         #region Constructor
@@ -65,16 +66,17 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             if (Execute.InDesignMode)
             {
-                InventoryModel model = new InventoryModel();
-                ProductGrid = new ObservableCollection<InventoryModel>();
+                StockOutModel model = new StockOutModel();
+                ProductGrid = new ObservableCollection<StockOutModel>();
                 ProductGrid.Add(model);
             }
             IsLoading = true;
             LoadingMessage = "Loading...";
             base.OnActivate();
-            ProductGrid = new ObservableCollection<InventoryModel>();
+            ProductGrid = new ObservableCollection<StockOutModel>();
             InvoiceTypes = new List<string> { "Sales", "Sales Return" };
-            Partners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
+            SelectedInvoiceType = InvoiceTypes.Where(x=>x.Equals("Sales")).FirstOrDefault();
+            Partners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x=>x.Name).ToList();
             Products = (await _productManager.GetAllProductsAsync()).ToList();
             ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
             ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
@@ -85,7 +87,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 PartnerSuggetion = new PartnerSuggestionProvider(Partners);
             if (Products != null || Products?.Count > 0)
                 ProductSuggetion = new ProductSuggestionProvider(Products);
-            InventoryModel inventoryModel = new InventoryModel();
+            StockOutModel inventoryModel = new StockOutModel();
             AutoId = 0;
             AddProduct(inventoryModel);
             SelectedInventoryProduct = inventoryModel;
@@ -109,7 +111,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 {
                     if (SelectedProduct == null || SelectedProductColor == null || SelectedProductSize == null) return;
                     var availableStock = await _inventoryManager.GetLastStockInHandAsync(SelectedProduct, SelectedProductColor, SelectedProductSize);
-                    AvailableStock = availableStock.StockInHand;
+                    AvailableStock = availableStock.StockInHand.Value;
                 }
             }
             catch (Exception ex)
@@ -117,15 +119,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        public void AddProduct(InventoryModel model)
+        public void AddProduct(StockOutModel model)
         {
             try
             {
                 ++AutoId;
                 CalculateInvoiceTotal();
-                InventoryModel newproduct = new InventoryModel();
-                newproduct.InvoiceId = SaleInvoice.InvoiceId;
-                newproduct.InvoiceGuid = SaleInvoice.InvoiceGuid;
+                StockOutModel newproduct = new StockOutModel();
+                //newproduct.InvoiceId = SaleInvoice.InvoiceId;
+                //newproduct.InvoiceGuid = SaleInvoice.InvoiceGuid;
                 ProductGrid.Add(newproduct);
             }
             catch (Exception ex)
@@ -133,14 +135,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        public async void RemoveProduct(InventoryModel product)
+        public async void RemoveProduct(StockOutModel product)
         {
             try
             {
                 if (AutoId == 1)
                 {
                     ProductGrid.Remove(product);
-                    product = new InventoryModel();
+                    product = new StockOutModel();
                     ProductGrid.Add(product);
                     ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
                     ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
@@ -190,12 +192,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
 
                 if (ProductGrid != null || ProductGrid?.Count > 0)
                 {
-                    var productList = new List<InventoryModel>();
+                    var productList = new List<StockOutModel>();
                     foreach (var product in ProductGrid)
                     {
                         if (!string.IsNullOrEmpty(product.Product.Name))
                         {
-                            product.IsStockIn = true;
+                            //product.IsStockIn = true;
                             productList.Add(product);
                         }
                     }
@@ -218,8 +220,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                         {
                             if (lastRowId > 0)
                             {
-                                var resultInventory = await _inventoryManager.RemoveBulkInventoryAsync(productList);
-                                if (resultInventory)
+                                var resultStock = await _stockOutManager.RemoveBulkStockOutAsync(productList);
+                                //var resultInventory = await _inventoryManager.RemoveBulkInventoryAsync(productList);
+                                if (resultStock)
                                 {
                                     // Now we Create Transaction Object  for saving Transaction
                                     var transaction = new DAL.Models.Transaction.TransactionModel();
@@ -266,12 +269,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                     }
                                     else
                                     {
-                                        //TODO: Display Message Transaction Is Not Saved
+                                        NotificationManager.Show(new Notifications.Wpf.NotificationContent {Title = "Error",Message = "Cannot Saved Transaction ", Type= Notifications.Wpf.NotificationType.Error });
                                     }
                                 }
                                 else
                                 {
-                                    //TODO: Display User Friendly Message that Invoice is Not Saved
+                                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Cannot Saved Invoice ", Type = Notifications.Wpf.NotificationType.Error });
                                 }
                             }
                         }
@@ -287,6 +290,29 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public void Cancel()
         {
             TryClose();
+        }
+        public async void FilterPartners(string searchText)
+        {
+            try
+            {
+                Partners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync(searchText)).ToList();
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+
+        public async void FilterProducts(string search)
+        {
+            try
+            {
+                Products = (await _productManager.GetAllProductsAsync(search)).ToList();
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
         }
         private async void OnSelectedPartner()
         {
@@ -324,10 +350,25 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 {
                     foreach (var product in ProductGrid)
                     {
-                        InvoiceTotal += product.Total;
+                        InvoiceTotal += product.Total.Value;
                     }
                 }
                 GrandTotal = (InvoiceTotal + PreviousBalance);
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+        private void OnSelectedInvoiceType(string invoiceType)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(invoiceType)) return;
+                if(invoiceType.Equals("Sales Return"))
+                {
+                    SaleInvoice.InvoiceId = _saleInvoiceManager.GenrateInvoiceNumber("SR");
+                }
             }
             catch (Exception ex)
             {
@@ -358,11 +399,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
 
         public static int AutoId { get; set; }
-        private ObservableCollection<InventoryModel> _ProductGrid;
+        private ObservableCollection<StockOutModel> _ProductGrid;
         /// <summary>
         /// Product Grid for Display Product
         /// </summary>
-        public ObservableCollection<InventoryModel> ProductGrid
+        public ObservableCollection<StockOutModel> ProductGrid
         {
             get { return _ProductGrid; }
             set { _ProductGrid = value; NotifyOfPropertyChange(nameof(ProductGrid)); }
@@ -413,7 +454,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public string SelectedInvoiceType
         {
             get { return _SelectedInvoiceType; }
-            set { _SelectedInvoiceType = value; NotifyOfPropertyChange(nameof(SelectedInvoiceType)); }
+            set { _SelectedInvoiceType = value; NotifyOfPropertyChange(nameof(SelectedInvoiceType));  OnSelectedInvoiceType(SelectedInvoiceType); }
         }
 
         private List<BussinessPartnerModel> _Partners;
@@ -608,11 +649,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _IsProductSizeSelected; }
             set { _IsProductSizeSelected = value; NotifyOfPropertyChange(nameof(IsProductSizeSelected)); }
         }
-        private InventoryModel _SelectedInventoryProduct;
+        private StockOutModel _SelectedInventoryProduct;
         /// <summary>
         /// Selected Incentory from Invoice List
         /// </summary>
-        public InventoryModel SelectedInventoryProduct
+        public StockOutModel SelectedInventoryProduct
         {
             get { return _SelectedInventoryProduct; }
             set { _SelectedInventoryProduct = value; NotifyOfPropertyChange(nameof(SelectedInventoryProduct)); }
