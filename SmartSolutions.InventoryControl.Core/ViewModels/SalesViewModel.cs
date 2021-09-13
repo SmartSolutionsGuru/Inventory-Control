@@ -103,7 +103,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             else
                 TotalPrice = 0;
         }
-        public async void GetProductAvailableStock(InventoryModel selectedInvetory)
+        public async void GetProductAvailableStock(StockOutModel selectedInvetory)
         {
             try
             {
@@ -350,7 +350,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 {
                     foreach (var product in ProductGrid)
                     {
-                        InvoiceTotal += product.Total.Value;
+                        InvoiceTotal += product.Total ?? 0;
                     }
                 }
                 GrandTotal = (InvoiceTotal + PreviousBalance);

@@ -76,7 +76,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockOut
             return retVal;
         }
 
-        public async Task<bool> RemoveBulkStockOutAsync(List<StockInModel> models)
+        public async Task<bool> RemoveBulkStockOutAsync(List<StockOutModel> models)
         {
             bool retVal = false;
             try
@@ -89,6 +89,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockOut
             }
             return retVal;
         }
+      
 
         public async Task<bool> RemoveStockOutAsync(int? Id)
         {

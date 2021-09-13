@@ -178,6 +178,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     IsLoading = false;
                     return;
                 }
+                if(Payment != null || Payment > 0)
+                {
+                    
+                }
                 #endregion
                 //We Assume that if User Selected Purchase Return Then Perform This Section
                 //Other wise Go for Purchase
@@ -502,6 +506,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Properties
+        private bool _PaymentModeError;
+
+        public bool PaymentModeError
+        {
+            get { return _PaymentModeError; }
+            set { _PaymentModeError = value;  NotifyOfPropertyChange(nameof(PaymentModeError)); }
+        }
+
         public PurchaseOrderModel PurchaseOrder { get; set; }
         public List<PurchaseOrderDetailModel> PurchaseOrderDetails { get; set; }
         public StockInModel StockIn { get; set; }

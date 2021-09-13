@@ -48,7 +48,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             ProprietorInformation = new ProprietorInformationModel();
             Cities = (await _cityManager.GetCitiesByCountryNameAsync("Pakistan")).ToList();
             BussinessTypes = (await _partnerTypeManager.GetPartnerTypesAsync()).ToList();
-            BussinessCwtegories = (await _partnerCategoryManager.GetPartnerCategoriesAsync()).ToList();
+            BussinessCategories = (await _partnerCategoryManager.GetPartnerCategoriesAsync()).ToList();
 
         }
 
@@ -153,12 +153,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             set { _SelectedBussinessType = value; NotifyOfPropertyChange(nameof(SelectedBussinessType)); }
         }
 
-        private List<BussinessPartnerCategoryModel> _BussinessCwtegories;
+        private List<BussinessPartnerCategoryModel> _BussinessCategories;
 
-        public List<BussinessPartnerCategoryModel> BussinessCwtegories
+        public List<BussinessPartnerCategoryModel> BussinessCategories
         {
-            get { return _BussinessCwtegories; }
-            set { _BussinessCwtegories = value; NotifyOfPropertyChange(nameof(BussinessCwtegories)); }
+            get { return _BussinessCategories; }
+            set { _BussinessCategories = value; NotifyOfPropertyChange(nameof(BussinessCategories)); }
         }
         private BussinessPartnerCategoryModel _SelectedBussinessCategory;
 

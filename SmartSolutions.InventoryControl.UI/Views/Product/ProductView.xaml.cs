@@ -1,7 +1,9 @@
 ﻿using Microsoft.Win32;
 using SmartSolutions.InventoryControl.UI.Helpers;
+using SmartSolutions.InventoryControl.UI.Helpers.Image;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,12 +40,19 @@ namespace SmartSolutions.InventoryControl.UI.Views.Product
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Multiselect = false;
-            openFileDialog.Filter = "Image files (*.bmp, *.jpg)|*.bmp;*.jpg|All files (*.*)|*.*";
-           if(openFileDialog.ShowDialog() == true)
+            openFileDialog.Filter = "Image files (*.bmp, *.jpg,*.png)|*.bmp;*.jpg|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == true)
             {
                 string fileName = openFileDialog.FileNames.FirstOrDefault();
-                BitmapImage Image = new BitmapImage(new Uri(fileName));
-                ViewModel.ProductImage =Image?.ToByteArray();
+                var encoder = new PngBitmapEncoder();
+                var Image = new BitmapImage(new Uri(fileName,UriKind.Relative));
+                encoder.Frames.Add(BitmapFrame.Create(Image));
+                using (var stram = new FileStream("Testing",FileMode.Create,FileAccess.Write))
+                {
+                    encoder.Save(stram);
+                }
+                ViewModel.ProductImage = Image?.ToByteArray();
+                ViewModel.ImageName = System.IO.Path.GetFileName(fileName);
             }
         }
     }

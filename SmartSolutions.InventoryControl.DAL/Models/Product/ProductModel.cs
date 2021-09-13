@@ -18,6 +18,7 @@
         public ProductColorModel ProductColor { get; set; }
         public ProductSizeModel ProductSize { get; set; }
         public byte[] Image { get; set; }
+        public string ImagePath { get; set; }
         #endregion
     }
 }

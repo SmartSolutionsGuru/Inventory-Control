@@ -1,26 +1,29 @@
 ﻿using SmartSolutions.InventoryControl.DAL;
+using SmartSolutions.InventoryControl.Plugins.Image;
 using SmartSolutions.Util.LogUtils;
 using System;
-using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.UI.Helpers.Image
 {
-    public class CacheImage
+    [Export(typeof(ICacheImage)),PartCreationPolicy(CreationPolicy.Shared)]
+    public class CacheImage : ICacheImage
     {
         #region Private Members
-        private readonly  string ImageFolderPath;
+        public string ImageFolderPath { get; set; }
         #endregion
 
         #region Constructor
-         public CacheImage()
+        [ImportingConstructor]
+        public CacheImage()
         {
             try
             {
-                ImageFolderPath = Path.Combine(Path.GetDirectoryName(new Uri(System.Reflection.Assembly.GetEntryAssembly().CodeBase).LocalPath),"ImageCache");
+                
+                //ImageFolderPath = Path.Combine(Path.GetDirectoryName(new Uri(System.Reflection.Assembly.GetEntryAssembly().CodeBase).LocalPath), "ImageCache");
+                ImageFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SmartSolutions", "ImageCache");
                 if (!Directory.Exists(ImageFolderPath))
                     Directory.CreateDirectory(ImageFolderPath);
             }
@@ -31,6 +34,37 @@ namespace SmartSolutions.InventoryControl.UI.Helpers.Image
         }
         #endregion
 
+        public  string SaveImageToDirectory(byte[] image, string imageName)
+        {
+            string retVal = string.Empty;
+            try
+            {
+                if (image == null) return string.Empty;
 
+                File.WriteAllBytes($"{AppSettings.ImageCachedFolderPath}\\{imageName}", image);
+                retVal = Path.Combine(AppSettings.ImageCachedFolderPath, imageName);
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
+        }
+
+        public byte[] GetImageFromPath(string imagePath)
+        {
+            if(imagePath == null) return null;
+            byte[] image = null;
+            try
+            {
+                Bitmap bitmap = new Bitmap(imagePath);
+                image =  bitmap.ToByteArray();
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return image;
+        }
     }
 }

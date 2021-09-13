@@ -107,7 +107,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductSubType
                     parameters["@v_Name"] = model?.Name;
                     parameters["@v_IsActive"] = model.IsActive = true;
                     parameters["@v_CreatedAt"] = model.CreatedAt == null ? DateTime.Now : model.CreatedAt;
-                    parameters["@v_CreatedBy"] = model.CreatedBy == null ? DBNull.Value : (object)model.CreatedBy;
+                    parameters["@v_CreatedBy"] = model.CreatedBy == null ?AppSettings.LoggedInUser.DisplayName : (object)model.CreatedBy;
                     parameters["@v_UpdatedAt"] = model.UpdatedAt == null ? DBNull.Value : (object)model.UpdatedAt;
                     parameters["@v_UpdatedBy"] = model.UpdatedBy == null ? DBNull.Value : (object)model.UpdatedBy;
                     query = @"INSERT INTO ProductSubType 

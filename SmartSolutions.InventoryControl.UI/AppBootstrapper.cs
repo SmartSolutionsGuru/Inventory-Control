@@ -2,11 +2,14 @@
 using Notifications.Wpf;
 using SmartSolutions.InventoryControl.Core.ViewModels;
 using SmartSolutions.InventoryControl.Core.ViewModels.Dialogs;
+using SmartSolutions.InventoryControl.Plugins.Image;
 using SmartSolutions.InventoryControl.Plugins.IoC;
+using SmartSolutions.InventoryControl.UI.Helpers.Image;
 using SmartSolutions.InventoryControl.UI.Helpers.SettingHelper;
 using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
@@ -19,14 +22,18 @@ namespace SmartSolutions.InventoryControl.UI
     {
         #region Public members
         public CompositionContainer _container { get; private set; }
+        private readonly ICacheImage _cacheImage;
         #endregion
 
         #region Construcotr
+        [ImportingConstructor]
         public AppBootstrapper()
         {
             IoCContanier.IoC = new SmartSolutions.InventoryControl.MEF.MEF();
+            _cacheImage = new CacheImage();
             Initialize();
             Notification = new NotificationManager();
+            // _cacheImage = cacheImage;
         }
 
         #endregion
@@ -59,8 +66,7 @@ namespace SmartSolutions.InventoryControl.UI
             //IoCContanier.IoC.AddExportedValue<IDialogManager>(new DialogBaseViewModel());
             IoCContanier.IoC.Compose();
             DAL.AppSettings.IsLoggedInUserAdmin = IsLoggedInUserAdmin();
-
-
+            DAL.AppSettings.ImageCachedFolderPath = _cacheImage.ImageFolderPath;
         }
         protected override object GetInstance(Type service, string key) => IoCContanier.IoC.GetInstance(service, key);
         protected override IEnumerable<object> GetAllInstances(Type service) => IoCContanier.IoC.GetAllInstances(service);
@@ -108,17 +114,17 @@ namespace SmartSolutions.InventoryControl.UI
             }
         }
 
-        private  bool IsLoggedInUserAdmin()
+        private bool IsLoggedInUserAdmin()
         {
             bool retVal = false;
             using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
             {
                 WindowsPrincipal principal = new WindowsPrincipal(identity);
-                retVal =  principal.IsInRole(WindowsBuiltInRole.Administrator);
+                retVal = principal.IsInRole(WindowsBuiltInRole.Administrator);
             }
             return retVal;
         }
         #endregion
-        public NotificationManager  Notification { get; set; }
+        public NotificationManager Notification { get; set; }
     }
 }

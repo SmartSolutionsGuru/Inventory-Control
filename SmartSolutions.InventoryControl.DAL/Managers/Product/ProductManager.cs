@@ -10,6 +10,7 @@ using SmartSolutions.Util.NumericUtils;
 using SmartSolutions.Util.BooleanUtils;
 using SmartSolutions.Util.DateAndTimeUtils;
 using System.Linq;
+using SmartSolutions.InventoryControl.Plugins.Image;
 
 namespace SmartSolutions.InventoryControl.DAL.Managers.Product
 {
@@ -18,12 +19,15 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
     {
         #region Private Members
         private readonly IRepository Repository;
+        private ICacheImage _cacheImage;
         #endregion
 
         #region Constructor
-        public ProductManager()
+        [ImportingConstructor]
+        public ProductManager(ICacheImage cacheImage)
         {
             Repository = GetRepository<ProductModel>();
+            _cacheImage = cacheImage;
         }
         #endregion
 
@@ -42,6 +46,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                     parameters["@v_ProductSubTypeId"] = model?.ProductSubType?.Id;
                     parameters["@v_ProductColorId"] = model?.ProductColor?.Id;
                     parameters["@v_ProductSizeId"] = model?.ProductSize?.Id;
+                    parameters["@V_ImagePath"] = model?.ImagePath == null ? DBNull.Value : (object)model.ImagePath;
                     parameters["@v_Image"] = model.Image == null ? DBNull.Value : (object)model.Image;
                     parameters["@v_IsActive"] = model.IsActive = true;
                     parameters["@v_CreatedAt"] = model.CreatedAt == null ? DateTime.Now : model.CreatedAt;
@@ -49,8 +54,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                     parameters["@v_UpdatedAt"] = model.UpdatedAt == null ? DBNull.Value : (object)model.UpdatedAt;
                     parameters["@v_UpdatedBy"] = model.UpdatedBy == null ? DBNull.Value : (object)model.UpdatedBy;
                 }
-                query = @"INSERT INTO Product (Name,ProductTypeId,ProductSubTypeId,ProductColorId,ProductSizeId,Image,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
-                                  VALUES(@v_Name,@v_ProductTypeId,@v_ProductSubTypeId,@v_ProductColorId,@v_ProductSizeId,@v_Image,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
+                query = @"INSERT INTO Product (Name,ProductTypeId,ProductSubTypeId,ProductColorId,ProductSizeId,ImagePath,Image,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                  VALUES(@v_Name,@v_ProductTypeId,@v_ProductSubTypeId,@v_ProductColorId,@v_ProductSizeId,@v_ImagePath,@v_Image,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
                 var result = await Repository.NonQueryAsync(query: query, parameters: parameters);
                 retVal = result > 0 ? true : false;
             }
@@ -81,6 +86,9 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                         product.ProductSubType.Id = value?.GetValueFromDictonary("ProductSubTypeId")?.ToString()?.ToInt();
                         product.ProductColor.Id = value?.GetValueFromDictonary("ProductColorId")?.ToString()?.ToInt();
                         product.ProductSize.Id = value?.GetValueFromDictonary("ProductSizeId")?.ToString()?.ToInt();
+                        product.ImagePath = value?.GetValueFromDictonary("ImagePath")?.ToString();
+                        if (!string.IsNullOrEmpty(product.ImagePath))
+                            product.Image = _cacheImage.GetImageFromPath(product.ImagePath);
                         product.Image = value?.GetValueFromDictonary("Image") as byte[];
                         product.IsActive = value?.GetValueFromDictonary("IsActive")?.ToString()?.ToNullableBoolean();
 
@@ -126,7 +134,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                                Inner Join Product p ON p.Id = s.ProductId 
                                WHERE s.PartnerId = @v_partnerId";
                 var values = await Repository.QueryAsync(query, parameters: parameters);
-                if(values != null || values?.Count > 0)
+                if (values != null || values?.Count > 0)
                 {
                     foreach (var value in values)
                     {
@@ -134,8 +142,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                         product.Id = value.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                         product.Name = value?.GetValueFromDictonary("Name")?.ToString();
                         product.ProductType = new ProductTypeModel { Id = value?.GetValueFromDictonary("ProductTypeId")?.ToString()?.ToInt() };
-                        product.ProductSubType = new ProductSubTypeModel { Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt()};
-                        product.ProductColor = new ProductColorModel { Id = value.GetValueFromDictonary("Id")?.ToString()?.ToInt()};
+                        product.ProductSubType = new ProductSubTypeModel { Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt() };
+                        product.ProductColor = new ProductColorModel { Id = value.GetValueFromDictonary("Id")?.ToString()?.ToInt() };
                         product.Image = value?.GetValueFromDictonary("Image") as byte[];
                         product.IsActive = value?.GetValueFromDictonary("IsActive")?.ToString()?.ToNullableBoolean();
                         products.Add(product);

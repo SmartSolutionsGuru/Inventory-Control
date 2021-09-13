@@ -6,6 +6,7 @@ using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
 using SmartSolutions.InventoryControl.DAL.Models.Stock;
 using SmartSolutions.InventoryControl.DAL.Models.Warehouse;
+using SmartSolutions.InventoryControl.Plugins.Image;
 using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
@@ -28,8 +29,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         private readonly DAL.Managers.Inventory.IInventoryManager _inventoryManager;
         private readonly DAL.Managers.Warehouse.IWarehouseManager _warehouseManager;
         private readonly DAL.Managers.Stock.OpeningStock.IOpeningStockManager _openingStockManager;
-
-        //private readonly NotificationManager notificationManager;
+        private readonly ICacheImage _cacheImage; 
         #endregion
 
         #region Constructor
@@ -42,18 +42,20 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                                 DAL.Managers.Invoice.IPurchaseInvoiceManager purcahseInvoiceManager,
                                 DAL.Managers.Inventory.IInventoryManager inventoryManager,
                                 DAL.Managers.Warehouse.IWarehouseManager warehouseManager,
-                                DAL.Managers.Stock.OpeningStock.IOpeningStockManager openingStockManager)
+                                DAL.Managers.Stock.OpeningStock.IOpeningStockManager openingStockManager,
+                                ICacheImage cacheImage)
         {
             IsAddProductPressed = true;
             _productTypeManager = productTypeManager;
-            _productManager = productManager;
             _productSubTypeManager = productSubTypeManager;
-            _productSizeManager = productSizeManager;
             _productColorManager = productColorManager;
+            _productSizeManager = productSizeManager;
+            _productManager = productManager;
             _purcahaseInvoiceManager = purcahseInvoiceManager;
             _inventoryManager = inventoryManager;
             _warehouseManager = warehouseManager;
             _openingStockManager = openingStockManager;
+            _cacheImage = cacheImage;
 
             // notificationManager = new NotificationManager();
         }
@@ -324,6 +326,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                     model.ProductSize = ProductSelectedSize;
                     model.CreatedBy = AppSettings.LoggedInUser.DisplayName;
                     model.Image = ProductImage;
+                    model.ImagePath = _cacheImage.SaveImageToDirectory(ProductImage,ImageName);
                     bool result = await _productManager.AddProductAsync(model);
                     if (result)
                     {
@@ -446,6 +449,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         #endregion
 
         #region Properties
+        public string ImageName { get; set; }
         public OpeningStockModel InitialStock { get; set; }
         public PurchaseInvoiceModel ProductInitialQuantityInvoice { get; set; }
         private bool _ProductTypeError;

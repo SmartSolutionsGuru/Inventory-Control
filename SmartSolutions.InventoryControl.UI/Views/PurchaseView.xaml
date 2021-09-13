@@ -437,7 +437,7 @@
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding VenderError,Mode=OneWay}" Value="True">
+                                                <DataTrigger Binding="{Binding PaymentModeError,Mode=OneWay}" Value="True">
                                                     <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
                                                 </DataTrigger>
                                             </Style.Triggers>

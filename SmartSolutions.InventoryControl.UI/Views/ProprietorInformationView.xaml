@@ -93,7 +93,7 @@
                           BorderBrush="{StaticResource BlueColorBrush}"
                           ItemsSource="{Binding BussinessCwtegories,Mode=OneWay}"
                           SelectedItem="{Binding SelectedBussinessCategory,Mode=TwoWay}"
-                          controlExtensions:WaterMarkTextExtension.WatermarkText="Bussiness Type" />
+                          controlExtensions:WaterMarkTextExtension.WatermarkText="Bussiness Category" />
                 <TextBox Height="45" 
                          Width="280"
                          Grid.Column="1"
@@ -138,7 +138,7 @@
                           Height="50"
                           Width="280"
                           DisplayMemberPath="Name"
-                          MaxDropDownHeight="100"
+                          MaxDropDownHeight="200"
                           Foreground="{StaticResource GrayColorBrush}"
                           FontFamily="{StaticResource MediumFont}"
                           FontSize="{StaticResource MediumSize}"

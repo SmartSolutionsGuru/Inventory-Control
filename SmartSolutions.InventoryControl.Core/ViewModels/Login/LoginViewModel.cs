@@ -21,13 +21,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Login
         #region Private Members
         private readonly IEventAggregator _eventAggregator;
         private readonly DAL.Managers.Authentication.IAuthenticationManager _authenticationManager;
+        private readonly DAL.Managers.Proprietor.IProprietorInformationManager _proprietorInformationManager;
         #endregion
 
         #region Public Properties
         private bool _IsSecretKeyEmpty;
-         /// <summary>
-         /// flag for Indicating Secret Key is not available
-         /// </summary>
+        /// <summary>
+        /// flag for Indicating Secret Key is not available
+        /// </summary>
         public bool IsSecretKeyEmpty
         {
             get { return _IsSecretKeyEmpty; }
@@ -205,13 +206,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Login
         /// </summary>
         [ImportingConstructor]
         public LoginViewModel(IEventAggregator eventAggregator,
-                              DAL.Managers.Authentication.IAuthenticationManager authenticationManager)
+                              DAL.Managers.Authentication.IAuthenticationManager authenticationManager,
+                              DAL.Managers.Proprietor.IProprietorInformationManager proprietorInformationManager)
         {
             _eventAggregator = eventAggregator;
             _authenticationManager = authenticationManager;
+            _proprietorInformationManager = proprietorInformationManager;
             // Create commands
             LoginCommand = new RelayParameterizedCommand(async (parameter) => await LoginAsync(parameter));
-            Properitor = AppSettings.Proprietor;
+
         }
 
 
@@ -229,6 +232,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Login
             if (Execute.InDesignMode)
             {
                 IsLoginForget = false;
+            }
+        }
+        protected async override void OnActivate()
+        {
+            base.OnActivate();
+            if (AppSettings.Proprietor != null)
+                Properitor = AppSettings.Proprietor;
+            else
+            {
+                Properitor = await _proprietorInformationManager.GetProprietorInfoAsync();
             }
         }
         #endregion
@@ -253,7 +266,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Login
                     if (!string.IsNullOrEmpty(Password))
                     {
 
-                        IdentityUserModel user = await _authenticationManager.AuthenticateUserAsync(UserName, clearPassword,isAdmin: IsLoginAsAdmin);
+                        IdentityUserModel user = await _authenticationManager.AuthenticateUserAsync(UserName, clearPassword, isAdmin: IsLoginAsAdmin);
 
                         //Get the Current Principle Object
 
@@ -267,7 +280,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Login
 
                         if (user != null)
                         {
-                           // customPrincipal.Identity = new CustomIdentity(user.DisplayName, user.Email, user.Roles);
+                            // customPrincipal.Identity = new CustomIdentity(user.DisplayName, user.Email, user.Roles);
                             //Update UI
                             NotifyOfPropertyChange(nameof(AuthenticatedUser));
                             NotifyOfPropertyChange(nameof(IsSuccess));

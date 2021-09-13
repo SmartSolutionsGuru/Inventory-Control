@@ -223,7 +223,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     ConnectionInfo.Instance.Database = database;
                     ConnectionInfo.Instance.UserName = username;
                     ConnectionInfo.Instance.Password = password;
-                    AppSettings.IsLoggedInUserAdmin = IsUserAdmin();
+                    //AppSettings.IsLoggedInUserAdmin = IsUserAdmin();
+                    AppSettings.IsLoggedInUserAdmin = true;
                     if (DAL.AppSettings.IsLoggedInUserAdmin)
                         ConnectionInfo.Instance.ConnectionString = string.Format($"data source=localhost; Initial Catalog=" + database + ";Integrated Security = SSPI;");
                     else
@@ -318,6 +319,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
             catch (UnauthorizedAccessException ex)
             {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
                 isAdmin = false;
             }
             catch (Exception ex)

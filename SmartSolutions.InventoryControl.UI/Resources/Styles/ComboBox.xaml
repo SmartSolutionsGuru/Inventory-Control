@@ -47,12 +47,12 @@
                                 <TextBlock Text="SELECT ALL" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" />
                             </Border>
 
-                            <i:Interaction.Triggers>
+                            <!--<i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
                                     <ei:ChangePropertyAction PropertyName="IsChecked" Value="False" TargetObject="{Binding RelativeSource={RelativeSource TemplatedParent}}"/>
                                     <ei:ChangePropertyAction PropertyName="SelectedIndex" Value="-1" TargetObject="{Binding RelativeSource={RelativeSource TemplatedParent}}"/>
                                 </i:EventTrigger>
-                            </i:Interaction.Triggers>
+                            </i:Interaction.Triggers>-->
                         </Button>
                         <ScrollViewer x:Name="DropDownScrollViewer" Grid.Row="1">
                             <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled" Grid.Row="1">
@@ -639,12 +639,13 @@
                                 </Grid>
                             </Border>
 
-                            <i:Interaction.Triggers>
+                           <!--TODO: Have to Fix these Part-->
+                            <!--<i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
                                     <ei:ChangePropertyAction PropertyName="IsChecked" Value="False" TargetObject="{Binding RelativeSource={RelativeSource TemplatedParent}}"/>
                                     <ei:ChangePropertyAction PropertyName="SelectedIndex" Value="-1" TargetObject="{Binding RelativeSource={RelativeSource TemplatedParent}}"/>
                                 </i:EventTrigger>
-                            </i:Interaction.Triggers>
+                            </i:Interaction.Triggers>-->
                         </Button>
                         <ScrollViewer x:Name="DropDownScrollViewer" Grid.Row="2" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" PanningMode="None">
                             <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
