@@ -31,6 +31,16 @@
                        Height="20" 
                        Width="20" 
                        Stretch="Uniform"/>
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Image,Mode=OneWay,Converter={StaticResource BytesToBitmapImageConverter}}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
                 </Border>
                 <TextBlock Grid.Column="1" 
                            Text="{Binding Name,Mode=OneWay}"

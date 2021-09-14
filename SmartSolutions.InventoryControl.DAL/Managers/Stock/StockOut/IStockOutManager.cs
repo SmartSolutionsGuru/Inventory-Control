@@ -1,4 +1,5 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.Inventory;
+using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.InventoryControl.DAL.Models.Stock;
 using System;
 using System.Collections.Generic;
@@ -33,5 +34,11 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockOut
         /// <param name="models"></param>
         /// <returns></returns>
         Task<bool> RemoveBulkStockOutAsync(List<StockOutModel> models);
+        /// <summary>
+        /// Get the Latest Stock In Hand Product
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        Task<int?> GetStockInHandAsync(int? productId);
     }
 }

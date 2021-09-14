@@ -1,10 +1,13 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.Inventory;
 using SmartSolutions.InventoryControl.DAL.Models.Stock;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
+using SmartSolutions.Util.DictionaryUtils;
 using SmartSolutions.Util.LogUtils;
+using SmartSolutions.Util.NumericUtils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -74,6 +77,29 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockOut
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return retVal;
+        }
+
+        public async Task<int?> GetStockInHandAsync(int? productId)
+        {
+            if (productId == null || productId == 0) return null;
+            int? stockInHand = null;
+            try
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_productId"] = productId;
+                string query = @" SELECT SUM(Total) AS StockInHand FROM StockIn WHERE ProductId = @v_productId - ISNULL((SELECT SUM(Total) FROM StockOut WHERE ProductId = @v_productId),0)";
+                var values = await Repository.QueryAsync(query,parameters:parameters);
+                if(values != null || values?.Count > 0)
+                {
+                    var value = values?.FirstOrDefault();
+                    stockInHand = value?.GetValueFromDictonary("StockInHand")?.ToString()?.ToNullableInt();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return stockInHand;
         }
 
         public async Task<bool> RemoveBulkStockOutAsync(List<StockOutModel> models)

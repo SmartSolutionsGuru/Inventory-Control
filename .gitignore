@@ -950,3 +950,15 @@ sqlite-net-master/tests/SQLite.Tests/UnicodeTest.cs
 sqlite-net-master/tests/SQLite.Tests/UniqueTest.cs
 
 SmartSolutions.Util/obj/Debug/netstandard2.0/
+
+SmartSolutions.SQLServer/obj/Debug/netstandard2.0/SmartSolutions.SQLServer.csproj.AssemblyReference.cache
+
+SmartSolutions.SQLServer/obj/Debug/netstandard2.0/SmartSolutions.SQLServer.pdb
+
+SmartSolutions.SQLServer/obj/Debug/netstandard2.0/SmartSolutions.SQLServer.dll
+
+SmartSolutions.SQLServer/obj/
+
+*.pdb
+
+*.dll

@@ -14,7 +14,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
         /// For Sale Purpose Only Display Product 
         /// Available in Stock
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List of Products</returns>
         Task<IEnumerable<ProductModel>> GetAllProductsAvailableInStockAsync();
         /// <summary>
         /// Get All Products Who are Purchased Or Sell By This Partner
@@ -22,6 +22,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
         /// <param name="partnerId"></param>
         /// <returns></returns>
         Task<IEnumerable<ProductModel>> GetAllProductsPurchasedByPartnerAsync(int? partnerId);
+        Task<IEnumerable<ProductModel>> GetAllProductsWithColorAndSize(string searchText = null);
         Task<ProductModel> GetProductByIdAsync(int? Id);
         Task<ProductModel> GetLastAddedProduct();
     }

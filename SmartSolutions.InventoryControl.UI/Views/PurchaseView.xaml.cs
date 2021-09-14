@@ -85,7 +85,7 @@ namespace SmartSolutions.InventoryControl.UI.Views
             {
                 var control = sender as TextBox;
                 var text = control?.Text;
-                if (string.IsNullOrEmpty(text)) return;
+                //if (string.IsNullOrEmpty(text)) return;
                 ViewModel.FilterProducts(text);
             }
             catch (Exception ex)

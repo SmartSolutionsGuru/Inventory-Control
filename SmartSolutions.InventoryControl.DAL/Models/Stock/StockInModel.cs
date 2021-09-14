@@ -27,14 +27,12 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Stock
         public ProductModel Product { get; set; }
         public int? PurchaseInvoiceId { get; set; }
         private int? _Quantity;
-
         public int? Quantity
         {
             get { return _Quantity; }
             set { _Quantity = value; NotifyOfPropertyChange(nameof(Quantity)); }
         }
         private decimal? _Price;
-
         public decimal? Price
         {
             get { return _Price; }

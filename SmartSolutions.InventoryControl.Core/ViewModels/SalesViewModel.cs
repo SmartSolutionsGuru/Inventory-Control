@@ -33,6 +33,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private readonly DAL.Managers.Transaction.ITransactionManager _transactionManager;
         private readonly DAL.Managers.Payments.IPaymentTypeManager _paymentTypeManager;
         private readonly DAL.Managers.Stock.StockOut.IStockOutManager _stockOutManager;
+        private readonly DAL.Managers.Stock.StockIn.IStockInManager _stockInManager;
         #endregion
 
         #region Constructor
@@ -47,7 +48,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                               , DAL.Managers.Inventory.IInventoryManager inventoryManager
                               , DAL.Managers.Bussiness_Partner.IPartnerLedgerManager partnerLedgerManager
                               , DAL.Managers.Transaction.ITransactionManager transactionManager
-                              , DAL.Managers.Payments.IPaymentTypeManager paymentTypeManager)
+                              , DAL.Managers.Payments.IPaymentTypeManager paymentTypeManager
+                              , DAL.Managers.Stock.StockIn.IStockInManager stockInManager
+                              , DAL.Managers.Stock.StockOut.IStockOutManager stockOutManager)
         {
             _productColorManager = productColorManager;
             _productSizeManager = productSizeManager;
@@ -58,6 +61,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             _partnerLedgerManager = partnerLedgerManager;
             _transactionManager = transactionManager;
             _paymentTypeManager = paymentTypeManager;
+            _stockOutManager = stockOutManager;
+            _stockInManager = stockInManager;
         }
         #endregion
 
@@ -75,9 +80,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             base.OnActivate();
             ProductGrid = new ObservableCollection<StockOutModel>();
             InvoiceTypes = new List<string> { "Sales", "Sales Return" };
-            SelectedInvoiceType = InvoiceTypes.Where(x=>x.Equals("Sales")).FirstOrDefault();
-            Partners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x=>x.Name).ToList();
-            Products = (await _productManager.GetAllProductsAsync()).ToList();
+            SelectedInvoiceType = InvoiceTypes.Where(x => x.Equals("Sales")).FirstOrDefault();
+            Partners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
+            //Products = (await _productManager.GetAllProductsAsync()).ToList();
+            Products = (await _productManager.GetAllProductsWithColorAndSize(string.Empty)).ToList();
             ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
             ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
             SaleInvoice = new SaleInvoiceModel();
@@ -103,16 +109,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             else
                 TotalPrice = 0;
         }
-        public async void GetProductAvailableStock(StockOutModel selectedInvetory)
+        public async void GetProductAvailableStock(int? productId)
         {
             try
             {
-                if (SelectedInventoryProduct != null)
-                {
-                    if (SelectedProduct == null || SelectedProductColor == null || SelectedProductSize == null) return;
-                    var availableStock = await _inventoryManager.GetLastStockInHandAsync(SelectedProduct, SelectedProductColor, SelectedProductSize);
-                    AvailableStock = availableStock.StockInHand.Value;
-                }
+                if (productId == null || productId == 0) return;
+                var availableStock = await _stockOutManager.GetStockInHandAsync(productId);
+                SelectedInventoryProduct.StockInHand = availableStock.Value;
             }
             catch (Exception ex)
             {
@@ -212,7 +215,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     if (invoiceResult)
                         NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Invoice Saved Successfully", Type = Notifications.Wpf.NotificationType.Success });
                     else
-                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success",Message = "Invoice Not Saved",Type = Notifications.Wpf.NotificationType.Error});
+                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Invoice Not Saved", Type = Notifications.Wpf.NotificationType.Error });
                     if (invoiceResult)
                     {
                         var lastRowId = _saleInvoiceManager.GetLastRowId();
@@ -233,7 +236,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                     transaction.PaymentType = SaleInvoice.SelectedPaymentType;
                                     var resultTransaction = await _transactionManager.SaveTransactionAsync(transaction);
                                     if (resultTransaction)
-                                        NotificationManager.Show(new Notifications.Wpf.NotificationContent{Title = "Success",Message = "Transaction Completed Successfully", Type = Notifications.Wpf.NotificationType.Success });
+                                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Transaction Completed Successfully", Type = Notifications.Wpf.NotificationType.Success });
                                     else
                                         NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Transaction Not Completed", Type = Notifications.Wpf.NotificationType.Error });
                                     //If transaction is Successfully Completed
@@ -259,9 +262,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                 {
                                                     partnerLedger.CurrentBalance = result.CurrentBalance + Payment;
                                                     if (partnerLedger.CurrentBalance < 0)
-                                                        partnerLedger.CurrentBalanceType =  DAL.Models.PaymentType.DR;
+                                                        partnerLedger.CurrentBalanceType = DAL.Models.PaymentType.DR;
                                                     else
-                                                        partnerLedger.CurrentBalanceType =  DAL.Models.PaymentType.CR;
+                                                        partnerLedger.CurrentBalanceType = DAL.Models.PaymentType.CR;
                                                 }
                                             }
                                             await _partnerLedgerManager.AddPartnerBalanceAsync(partnerLedger);
@@ -269,7 +272,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                     }
                                     else
                                     {
-                                        NotificationManager.Show(new Notifications.Wpf.NotificationContent {Title = "Error",Message = "Cannot Saved Transaction ", Type= Notifications.Wpf.NotificationType.Error });
+                                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Cannot Saved Transaction ", Type = Notifications.Wpf.NotificationType.Error });
                                     }
                                 }
                                 else
@@ -334,14 +337,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        private void OnProductSelection()
-        {
-            if (SelectedProduct == null)
-            {
-                ProductSuggetion = new ProductSuggestionProvider(Products);
-                return;
-            }
-        }
         private void CalculateInvoiceTotal()
         {
             try
@@ -365,7 +360,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             try
             {
                 if (string.IsNullOrEmpty(invoiceType)) return;
-                if(invoiceType.Equals("Sales Return"))
+                if (invoiceType.Equals("Sales Return"))
                 {
                     SaleInvoice.InvoiceId = _saleInvoiceManager.GenrateInvoiceNumber("SR");
                 }
@@ -375,6 +370,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
+      
         #endregion
 
         #region Properties
@@ -454,7 +450,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public string SelectedInvoiceType
         {
             get { return _SelectedInvoiceType; }
-            set { _SelectedInvoiceType = value; NotifyOfPropertyChange(nameof(SelectedInvoiceType));  OnSelectedInvoiceType(SelectedInvoiceType); }
+            set { _SelectedInvoiceType = value; NotifyOfPropertyChange(nameof(SelectedInvoiceType)); OnSelectedInvoiceType(SelectedInvoiceType); }
         }
 
         private List<BussinessPartnerModel> _Partners;
@@ -517,8 +513,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public ProductModel SelectedProduct
         {
             get { return _SelectedProduct; }
-            set { _SelectedProduct = value; NotifyOfPropertyChange(nameof(SelectedProduct)); OnProductSelection(); }
+            set { _SelectedProduct = value; NotifyOfPropertyChange(nameof(SelectedProduct)); }
         }
+        private decimal? _ProductLastPrice;
+        /// <summary>
+        /// Product Last Price On Which Buyer Purchase
+        /// </summary>
+        public decimal? ProductLastPrice
+        {
+            get { return _ProductLastPrice; }
+            set { _ProductLastPrice = value; NotifyOfPropertyChange(nameof(ProductLastPrice)); }
+        }
+
         private string _SelectedSaleType;
 
         public string SelectedSaleType
@@ -560,7 +566,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public ProductSizeModel SelectedProductSize
         {
             get { return _SelectedProductSize; }
-            set { _SelectedProductSize = value; NotifyOfPropertyChange(nameof(SelectedProductSize)); GetProductAvailableStock(SelectedInventoryProduct); }
+            set { _SelectedProductSize = value; NotifyOfPropertyChange(nameof(SelectedProductSize)); }
         }
         private int _Quantity;
         /// <summary>

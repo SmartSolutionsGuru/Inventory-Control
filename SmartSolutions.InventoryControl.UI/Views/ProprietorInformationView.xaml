@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:controlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:userControl="clr-namespace:SmartSolutions.InventoryControl.UI.CustomControls"
              xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views"
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1366">
@@ -60,7 +61,7 @@
                          controlExtensions:WaterMarkTextExtension.WatermarkText="Propriter Name"
                          ></TextBox>
                 <ComboBox Grid.Column="2"
-                          Style="{StaticResource BaseComboBox}"
+                          Style="{StaticResource ComboBoxWithPath}"
                           Height="50"
                           Width="280"
                           DisplayMemberPath="Name"
@@ -68,7 +69,10 @@
                           Foreground="{StaticResource GrayColorBrush}"
                           FontFamily="{StaticResource MediumFont}"
                           FontSize="{StaticResource MediumSize}"
-                          BorderThickness="1.7"
+                          BorderThickness="0"
+                          controlExtensions:WaterMarkTextExtension.WatermarkIconMargin="3 0 3 0"
+                          controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                          controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Delivery}"
                           BorderBrush="{StaticResource BlueColorBrush}"
                           ItemsSource="{Binding BussinessTypes,Mode=OneWay}"
                           SelectedItem="{Binding SelectedBussinessType,Mode=TwoWay}"
@@ -80,8 +84,25 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+                <!--<userControl:SearchableComboBox Grid.Column="0"
+                                                Height="50"
+                                                Width="280"
+                                                DisplayMemberPath="Name"
+                                                MaxDropDownHeight="200"
+                                                Foreground="{StaticResource GrayColorBrush}"
+                                                FontSize="{StaticResource MediumSize}"
+                                                BorderThickness="1.7"
+                                                IsEditable="False"
+                                                StaysOpenOnEdit="True"
+                                                ItemsSource="{Binding BussinessCategories,Mode=OneWay}"
+                                                SelectedItem="{Binding SelectedBussinessCategory,Mode=TwoWay}"
+                                                BorderBrush="{StaticResource BlueColorBrush}"
+                                                controlExtensions:WaterMarkTextExtension.WatermarkText="Bussiness Category"
+                                                controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                                                controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Company}"
+                                                controlExtensions:WaterMarkTextExtension.WatermarkIconColor="{StaticResource LightGrayColorBrush}"/>-->
                 <ComboBox Grid.Column="0"
-                          Style="{StaticResource BaseComboBox}"
+                          Style="{StaticResource ComboBoxWithPath}"
                           Height="50"
                           Width="280"
                           DisplayMemberPath="Name"
@@ -89,9 +110,13 @@
                           Foreground="{StaticResource GrayColorBrush}"
                           FontFamily="{StaticResource MediumFont}"
                           FontSize="{StaticResource MediumSize}"
-                          BorderThickness="1.7"
+                          BorderThickness="0"
+                          controlExtensions:WaterMarkTextExtension.WatermarkIconMargin="3 0 3 0"
+                          controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
+                          controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Company}"
+                          controlExtensions:WaterMarkTextExtension.WatermarkIconColor="{StaticResource GrayColorBrush}"
                           BorderBrush="{StaticResource BlueColorBrush}"
-                          ItemsSource="{Binding BussinessCwtegories,Mode=OneWay}"
+                          ItemsSource="{Binding BussinessCategories,Mode=OneWay}"
                           SelectedItem="{Binding SelectedBussinessCategory,Mode=TwoWay}"
                           controlExtensions:WaterMarkTextExtension.WatermarkText="Bussiness Category" />
                 <TextBox Height="45" 
@@ -109,7 +134,7 @@
                          BorderThickness="1.7"
                          BorderBrush="{StaticResource BlueColorBrush}"
                          controlExtensions:WaterMarkTextExtension.WatermarkText="LandLine Number"
-                         ></TextBox>
+                         />
                 <TextBox Height="45" 
                          Width="280"
                          Grid.Column="2"
@@ -120,12 +145,12 @@
                          Style="{StaticResource TextBoxVisibilityPathIconStyle}"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
-                           controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Phone}"
+                         controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Phone}"
                          controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
                          BorderThickness="1.7"
                          BorderBrush="{StaticResource BlueColorBrush}"
                          controlExtensions:WaterMarkTextExtension.WatermarkText="LandLine Number2"
-                         ></TextBox>
+                         />
             </Grid>
             <Grid Grid.Row="3">
                 <Grid.ColumnDefinitions>
@@ -134,7 +159,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <ComboBox Grid.Column="0"
-                          Style="{StaticResource BaseComboBox}"
+                          Style="{StaticResource ComboBoxWithPath}"
                           Height="50"
                           Width="280"
                           DisplayMemberPath="Name"
@@ -142,10 +167,11 @@
                           Foreground="{StaticResource GrayColorBrush}"
                           FontFamily="{StaticResource MediumFont}"
                           FontSize="{StaticResource MediumSize}"
-                          BorderThickness="1.7"
+                          BorderThickness="0"
                           BorderBrush="{StaticResource BlueColorBrush}"
                           ItemsSource="{Binding Cities,Mode=OneWay}"
                           SelectedItem="{Binding SelectedCity,Mode=TwoWay}"
+                          controlExtensions:WaterMarkTextExtension.WatermarkIconMargin="3 0 3 0"
                           controlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
                           controlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_City}"
                           controlExtensions:WaterMarkTextExtension.WatermarkText="Select City" />

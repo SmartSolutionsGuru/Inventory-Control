@@ -86,7 +86,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 base.OnActivate();
                 PurchaseTypes = new List<string> { "Purchase", "Purchase Return" };
                 SelectedPurchaseType = PurchaseTypes.Where(x => x.Equals("Purchase")).FirstOrDefault();
-                //TODO: Loading is Slow due to Product Image
                 Products = (await _productManager.GetAllProductsAsync()).ToList();
                 Venders = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
                 ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();

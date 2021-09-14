@@ -21,23 +21,42 @@
         <DataTemplate x:Key="ProductTemplate" DataType="{x:Type productModels:ProductModel}">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Border Height="51" Width="51" CornerRadius="3" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1">
+                <Border Height="25" Width="25" CornerRadius="3" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1">
                     <Image Source="{Binding Image,Mode=OneWay,Converter={StaticResource BytesToBitmapImageConverter}}" 
                            Height="24" 
                            Width="24" 
                            Stretch="UniformToFill"/>
                 </Border>
-                <TextBlock Grid.Column="1" 
-                           Text="{Binding Name,Mode=OneWay}"
-                           Margin="20 0 0 0"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Foreground="{StaticResource GrayColorBrush}"
-                           FontFamily="{StaticResource MediumFont}"
-                           FontSize="{StaticResource MediumSize}"/>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding Name,Mode=OneWay}"
+                                Margin="3 0 0 0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                TextAlignment="Justify"
+                                TextTrimming="CharacterEllipsis"
+                                Foreground="{StaticResource GrayColorBrush}"
+                                FontFamily="{StaticResource MediumFont}"
+                                FontSize="{StaticResource MediumSize}"/>
+                    <TextBlock Text="{Binding ProductColor.Color}"
+                               Margin="3 0 0 0"
+                               Foreground="{StaticResource LightGrayColorBrush}"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               FontFamily="{StaticResource MediumFont}"
+                               FontSize="{StaticResource MediumSize}"
+                               TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding ProductSize.Size}"
+                               Margin="3 0 0 0"
+                               Foreground="{StaticResource LightGrayColorBrush}"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               FontFamily="{StaticResource MediumFont}"
+                               FontSize="{StaticResource MediumSize}"
+                               TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="ProductDisplayTemplate" DataType="{x:Type productModels:ProductColorModel}">
@@ -263,9 +282,9 @@
                             <TextBlock Grid.Row="1" Grid.Column="7" Text="Total" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
 
                             <ScrollViewer Grid.Row="2" Grid.ColumnSpan="9" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                <ListView Grid.Row="1" Grid.ColumnSpan="9" ItemsSource="{Binding ProductGrid,Mode=OneWay}" SelectedItem="{Binding SelectedInventoryProduct,Mode=TwoWay}" Margin="0 0" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                <ListView Grid.Row="1" Grid.ColumnSpan="9" ItemsSource="{Binding ProductGrid,Mode=OneWay}" SelectionChanged="ListView_SelectionChanged" SelectedItem="{Binding SelectedInventoryProduct,Mode=TwoWay}"  Margin="0 0" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                                     <ListView.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type salesModels:InventoryModel}">
+                                        <DataTemplate DataType="{x:Type salesModels:StockOutModel}">
                                             <Grid Margin="0 5">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="0.3*"/>
@@ -289,26 +308,7 @@
                                                 <Border Grid.Column="0" Grid.Row="1" Height="25" Margin="0 7 0 0" Width="25" VerticalAlignment="Top" CornerRadius="20" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="2" Background="{StaticResource BlueColorBrush}" >
                                                     <TextBlock Margin="0 0 0 0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.AutoId,Mode=OneWay}" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource PureWhiteColorBrush}"/>
                                                 </Border>
-                                                <!--<autoComplete:AutoCompleteTextBox Height="40"
-                                                                                  Width="130"
-                                                                                  Grid.Row="1"
-                                                                                  Grid.Column="1"
-                                                                                  Margin="0 0"
-                                                                                  BorderBrush="{StaticResource BlueColorBrush}"
-                                                                                  BorderThickness="1.7"
-                                                                                  DisplayMember="Name"
-                                                                                  Opacity="0.7"
-                                                                                  VerticalAlignment="Top"
-                                                                                  MouseUp="AutoCompleteTextBox_MouseUp"   
-                                                                                  HorizontalAlignment="Left"
-                                                                                  Style="{StaticResource AutoCompleteTextBoxStyle}"
-                                                                                  ItemTemplate="{StaticResource ProductTemplate}"
-                                                                                  Provider="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl},Path=DataContext.ProductSuggetion,Mode=OneWay}"
-                                                                                  SelectedItem="{Binding Product,Mode=TwoWay}"
-                                                                                  Watermark="Product Name"
-                                                                                  FontFamily="{StaticResource MediumFont}"
-                                                                                  FontSize="{StaticResource MediumSize}"/>-->
-                                                 <userControl:SearchableComboBox  Height="40"
+                                                <userControl:SearchableComboBox  Height="40"
                                                                                  Width="130"
                                                                                  Grid.Row="1"
                                                                                  Grid.Column="1"
@@ -318,7 +318,7 @@
                                                                                  Style="{StaticResource BaseSearchableComboBox}"
                                                                                  IsEditable="True"
                                                                                  ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.Products,Mode=OneWay}"
-                                                                                 SelectedItem="{Binding Product,Mode=TwoWay}"
+                                                                                 SelectedItem="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.SelectedInventoryProduct.Product,Mode=TwoWay}"
                                                                                  FontFamily="{StaticResource MediumFont}"
                                                                                  FontSize="{StaticResource MediumSize}"
                                                                                  SearchCharCount="0"
@@ -338,13 +338,13 @@
                                                           Opacity="0.7"
                                                           VerticalAlignment="Top"
                                                           Margin="0 0 0 0"
-                                                          Padding="5 0 0 0"
+                                                          Padding="15 0 0 0"
                                                           HorizontalAlignment="Left"
                                                           FontFamily="{StaticResource MediumFont}"
                                                           FontSize="{StaticResource MediumSize}"
                                                           Foreground="{StaticResource GrayColorBrush}"
-                                                          ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl},Path=DataContext.ProductColors,Mode=TwoWay}"
-                                                          SelectedItem="{Binding ProductColor,Mode=TwoWay}"/>
+                                                          ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=DataContext.ProductColors,Mode=TwoWay}"
+                                                          SelectedItem="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.SelectedInventoryProduct.ProductColor,Mode=TwoWay}"/>
                                                 <ComboBox Height="40"
                                                       Grid.Row="1"
                                                       Grid.Column="5"
@@ -357,15 +357,15 @@
                                                       ControlExtensions:WaterMarkTextExtension.WatermarkText="Product Size"
                                                       Opacity="0.7"
                                                       Margin="0 0 0 0"
-                                                      Padding="5 0 0 0"
+                                                      Padding="15 0 0 0"
                                                       FontFamily="{StaticResource MediumFont}"
                                                       FontSize="{StaticResource MediumSize}"
                                                       Foreground="{StaticResource GrayColorBrush}"
-                                                      ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl},Path=DataContext.ProductSizes,Mode=TwoWay}"
-                                                      SelectedItem="{Binding ProductSize,Mode=TwoWay}"/>
+                                                      ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=DataContext.ProductSizes,Mode=TwoWay}"
+                                                      SelectedItem="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.SelectedInventoryProduct.ProductSize,Mode=TwoWay}"/>
                                                 <TextBox Grid.Row="1" Grid.Column="7" Opacity="0.7" Height="40" Width="130" Foreground="{StaticResource GrayColorBrush}" VerticalAlignment="Top" Text="{Binding Quantity,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Quantity" />
                                                 <TextBox Grid.Row="1" Grid.Column="9" Opacity="0.7" Height="40" Width="130"  VerticalAlignment="Top" Text="{Binding Price,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Price" />
-                                                <TextBox Grid.Row="1" Grid.Column="11" Opacity="0.7" IsReadOnly="True" Height="40" Width="130" VerticalAlignment="Top" Text="{Binding StockInHand,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Total" />
+                                                <TextBox Grid.Row="1" Grid.Column="11" Opacity="0.7" IsReadOnly="True" Height="40" Width="130" VerticalAlignment="Top" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.SelectedInventoryProduct.StockInHand,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Stock" />
                                                 <TextBox Grid.Row="1" Grid.Column="13" Opacity="0.7" IsReadOnly="True" Height="40" Width="130" VerticalAlignment="Top" Text="{Binding Total,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Total" />
                                                 <StackPanel Grid.Row="1" Grid.Column="15" Orientation="Horizontal" VerticalAlignment="Top" Margin="0 5 0 0">
                                                     <Button Grid.Row="1"  cal:Message.Attach="AddProduct($dataContext)" Margin="0 0 10 0" Height="30" Width="30"  Style="{StaticResource ContentButton}" Background="{StaticResource GreenColorBrush}">

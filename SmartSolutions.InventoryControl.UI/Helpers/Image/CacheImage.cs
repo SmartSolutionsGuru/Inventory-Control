@@ -34,6 +34,12 @@ namespace SmartSolutions.InventoryControl.UI.Helpers.Image
         }
         #endregion
 
+        /// <summary>
+        /// save Image to Image Given Path
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="imageName"></param>
+        /// <returns></returns>
         public  string SaveImageToDirectory(byte[] image, string imageName)
         {
             string retVal = string.Empty;
@@ -51,6 +57,11 @@ namespace SmartSolutions.InventoryControl.UI.Helpers.Image
             return retVal;
         }
 
+        /// <summary>
+        /// Get the Image From Image Path
+        /// </summary>
+        /// <param name="imagePath"></param>
+        /// <returns></returns>
         public byte[] GetImageFromPath(string imagePath)
         {
             if(imagePath == null) return null;

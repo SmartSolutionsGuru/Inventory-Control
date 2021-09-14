@@ -1,7 +1,9 @@
 ﻿using Microsoft.Win32;
+using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.InventoryControl.UI.Helpers;
 using SmartSolutions.Util.LogUtils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -80,8 +82,28 @@ namespace SmartSolutions.InventoryControl.UI.Views
             {
                 var control = sender as TextBox;
                 var text = control?.Text;
-                if (string.IsNullOrEmpty(text)) return;
+                //if (string.IsNullOrEmpty(text)) return;
                 ViewModel.FilterProducts(text);
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                var control = sender as ListView;
+                var resultAddItem = e.AddedItems;
+                if(ViewModel.SelectedInventoryProduct.ProductSize != null 
+                    && ViewModel.SelectedInventoryProduct.ProductColor != null 
+                    && ViewModel.SelectedInventoryProduct.Product != null)
+                {
+                    ViewModel.SelectedInventoryProduct.Product.ProductColor = ViewModel.SelectedInventoryProduct.ProductColor;
+                    ViewModel.GetProductAvailableStock(ViewModel.SelectedInventoryProduct?.Product?.Id ?? 0);
+                }  
             }
             catch (Exception ex)
             {

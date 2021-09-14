@@ -47,15 +47,15 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                     parameters["@v_ProductColorId"] = model?.ProductColor?.Id;
                     parameters["@v_ProductSizeId"] = model?.ProductSize?.Id;
                     parameters["@V_ImagePath"] = model?.ImagePath == null ? DBNull.Value : (object)model.ImagePath;
-                    parameters["@v_Image"] = model.Image == null ? DBNull.Value : (object)model.Image;
+                    //parameters["@v_Image"] = model.Image == null ? DBNull.Value : (object)model.Image;
                     parameters["@v_IsActive"] = model.IsActive = true;
                     parameters["@v_CreatedAt"] = model.CreatedAt == null ? DateTime.Now : model.CreatedAt;
                     parameters["@v_CreatedBy"] = model.CreatedBy == null ? DBNull.Value : (object)model.CreatedBy;
                     parameters["@v_UpdatedAt"] = model.UpdatedAt == null ? DBNull.Value : (object)model.UpdatedAt;
                     parameters["@v_UpdatedBy"] = model.UpdatedBy == null ? DBNull.Value : (object)model.UpdatedBy;
                 }
-                query = @"INSERT INTO Product (Name,ProductTypeId,ProductSubTypeId,ProductColorId,ProductSizeId,ImagePath,Image,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
-                                  VALUES(@v_Name,@v_ProductTypeId,@v_ProductSubTypeId,@v_ProductColorId,@v_ProductSizeId,@v_ImagePath,@v_Image,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
+                query = @"INSERT INTO Product (Name,ProductTypeId,ProductSubTypeId,ProductColorId,ProductSizeId,ImagePath,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                  VALUES(@v_Name,@v_ProductTypeId,@v_ProductSubTypeId,@v_ProductColorId,@v_ProductSizeId,@v_ImagePath,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
                 var result = await Repository.NonQueryAsync(query: query, parameters: parameters);
                 retVal = result > 0 ? true : false;
             }
@@ -67,7 +67,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
         }
         public async Task<IEnumerable<ProductModel>> GetAllProductsAsync(string searchText = null)
         {
-            //TODO: Query is Slow due To Image Loading Fix this
             List<ProductModel> Products = new List<ProductModel>();
             try
             {
@@ -89,9 +88,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                         product.ImagePath = value?.GetValueFromDictonary("ImagePath")?.ToString();
                         if (!string.IsNullOrEmpty(product.ImagePath))
                             product.Image = _cacheImage.GetImageFromPath(product.ImagePath);
-                        product.Image = value?.GetValueFromDictonary("Image") as byte[];
+                        //product.Image = value?.GetValueFromDictonary("Image") as byte[];
                         product.IsActive = value?.GetValueFromDictonary("IsActive")?.ToString()?.ToNullableBoolean();
-
                         product.CreatedAt = value?.GetValueFromDictonary("CreatedAt")?.ToString()?.ToNullableDateTime();
                         product.CreatedBy = value?.GetValueFromDictonary("CreatedBy")?.ToString();
                         product.UpdatedAt = value?.GetValueFromDictonary("UpdatedAt")?.ToString()?.ToNullableDateTime();
@@ -106,7 +104,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
             }
             return Products;
         }
-
         public async Task<IEnumerable<ProductModel>> GetAllProductsAvailableInStockAsync()
         {
             var products = new List<ProductModel>();
@@ -120,7 +117,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
             }
             return products;
         }
-
         public async Task<IEnumerable<ProductModel>> GetAllProductsPurchasedByPartnerAsync(int? partnerId)
         {
             if (partnerId == null || partnerId == 0) return null;
@@ -145,6 +141,41 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
                         product.ProductSubType = new ProductSubTypeModel { Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt() };
                         product.ProductColor = new ProductColorModel { Id = value.GetValueFromDictonary("Id")?.ToString()?.ToInt() };
                         product.Image = value?.GetValueFromDictonary("Image") as byte[];
+                        product.IsActive = value?.GetValueFromDictonary("IsActive")?.ToString()?.ToNullableBoolean();
+                        products.Add(product);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return products;
+        }
+
+        public async Task<IEnumerable<ProductModel>> GetAllProductsWithColorAndSize(string searchText = null)
+        {
+            var products = new List<ProductModel>();
+            try
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_productName"] = searchText;
+                string procedure = "spGetAllProductWithColorAndSize";
+                var values = await Repository.QueryAsync(procedure: procedure,parameters:parameters);
+                if(values != null || values?.Count > 0)
+                {
+                    foreach (var value in values)
+                    {
+                        var product = new ProductModel();
+                        product.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                        product.Name = value?.GetValueFromDictonary("Name")?.ToString();
+                        product.ProductType.Id = value?.GetValueFromDictonary("ProductTypeId")?.ToString()?.ToInt();
+                        product.ProductSubType.Id = value?.GetValueFromDictonary("ProductSubTypeId")?.ToString()?.ToInt();
+                        product.ProductColor.Color = value?.GetValueFromDictonary("Color")?.ToString();
+                        product.ProductSize.Size = value?.GetValueFromDictonary("Size")?.ToString();
+                        product.ImagePath = value?.GetValueFromDictonary("ImagePath")?.ToString();
+                        if (!string.IsNullOrEmpty(product.ImagePath))
+                            product.Image = _cacheImage.GetImageFromPath(product.ImagePath);
                         product.IsActive = value?.GetValueFromDictonary("IsActive")?.ToString()?.ToNullableBoolean();
                         products.Add(product);
                     }

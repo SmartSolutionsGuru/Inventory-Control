@@ -224,7 +224,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     ConnectionInfo.Instance.UserName = username;
                     ConnectionInfo.Instance.Password = password;
                     //AppSettings.IsLoggedInUserAdmin = IsUserAdmin();
-                    AppSettings.IsLoggedInUserAdmin = true;
+                    AppSettings.IsLoggedInUserAdmin = false;
                     if (DAL.AppSettings.IsLoggedInUserAdmin)
                         ConnectionInfo.Instance.ConnectionString = string.Format($"data source=localhost; Initial Catalog=" + database + ";Integrated Security = SSPI;");
                     else
