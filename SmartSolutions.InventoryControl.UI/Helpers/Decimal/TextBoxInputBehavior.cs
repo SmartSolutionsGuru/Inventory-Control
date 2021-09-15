@@ -164,11 +164,7 @@ namespace SmartSolutions.InventoryControl.UI.Helpers.Decimal
 
                     var result = decimal.TryParse(input, validNumberStyles, CultureInfo.CurrentCulture, out d);
                     return result;
-
-
-
                 default: throw new ArgumentException("Unknown TextBoxInputMode");
-
             }
             return true;
         }

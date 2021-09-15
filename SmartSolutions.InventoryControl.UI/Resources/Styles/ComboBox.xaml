@@ -112,7 +112,7 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    
+
     <!--ComboBox Style-->
     <Style x:Key="BaseComboBox" TargetType="ComboBox">
         <Setter Property="ControlExtensions:MiscControlExtensions.CornerRadius" Value="5" />
@@ -237,6 +237,124 @@
                             <Setter Property="Canvas.Top" TargetName="opaqueRect" Value="{Binding VerticalOffset, ElementName=DropDownScrollViewer}"/>
                             <Setter Property="Canvas.Left" TargetName="opaqueRect" Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}"/>
                         </Trigger>
+                        
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ComboBoxWithPath" TargetType="ComboBox" BasedOn="{StaticResource BaseComboBox}">
+        <Setter Property="ControlExtensions:MiscControlExtensions.CornerRadius" Value="5" />
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Border x:Name="border" BorderThickness="2" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="5" SnapsToDevicePixels="True" Background="{TemplateBinding Background}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Path x:Name="WaterMarkIcon" Grid.Column="0" Data="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconPath}" 
+                                  Width="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconWidth}" 
+                                  Height="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconHeight}" 
+                                  Fill="{TemplateBinding Foreground}" 
+                                  Margin="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconMargin}"
+                                  Stretch="Uniform" 
+                                  Visibility="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility}" 
+                                  VerticalAlignment="Center" />
+                            <Line Grid.Column="1" 
+                                  Stroke="{TemplateBinding Foreground}" 
+                                  StrokeThickness="{TemplateBinding BorderThickness}" 
+                                  Stretch="Fill"
+                                  Y1="1" 
+                                  Margin="4,10,0,10" 
+                                  Visibility="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility}" 
+                                  VerticalAlignment="Center" />
+                            <Popup x:Name="PART_Popup" MinWidth="{Binding ElementName=templateRoot, Path=ActualWidth}" AllowsTransparency="true" Grid.Column="0" Grid.ColumnSpan="4" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{StaticResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom">
+                                <Border x:Name="dropDownBorder" BorderBrush="{StaticResource LightGrayColorBrush}" CornerRadius="5" BorderThickness="0.7" Background="#FFFFFF">
+                                    <ScrollViewer x:Name="DropDownScrollViewer">
+                                        <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
+                                            <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
+                                                <Rectangle x:Name="opaqueRect" Fill="{Binding Background, ElementName=dropDownBorder}" Height="{Binding ActualHeight, ElementName=dropDownBorder}" Width="{Binding ActualWidth, ElementName=dropDownBorder}"/>
+                                            </Canvas>
+                                            <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                        </Grid>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                            <ToggleButton x:Name="toggleButton" 
+                                      Grid.Column="2" 
+                                      BorderBrush="{TemplateBinding BorderBrush}" 
+                                      BorderThickness="{TemplateBinding BorderThickness}" 
+                                      Background="{TemplateBinding Background}" 
+                                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" 
+                                      Style="{StaticResource ComboBoxToggleButton}"/>
+
+                            <!--Content="{TemplateBinding SelectionBoxItem}" -->
+                            <ContentPresenter x:Name="contentPresenter" 
+                                              Grid.Column="2"
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" 
+                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" 
+                                              Content="{TemplateBinding SelectionBoxItem}" 
+                                              ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" 
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                              IsHitTestVisible="false" 
+                                              Margin="{TemplateBinding Padding}"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+
+                            <TextBlock Visibility="Collapsed" 
+                                   IsHitTestVisible="False" 
+                                   x:Name="placeholder" 
+                                   Grid.Column="2" 
+                                   Text="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkText}"
+                                   VerticalAlignment="Center" 
+                                   Margin="2,0" 
+                                   Padding="{TemplateBinding Padding}" 
+                                   Foreground="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkColor}" 
+                                   Opacity="0.8" 
+                                   FontSize="{TemplateBinding FontSize}" 
+                                   FontFamily="{TemplateBinding FontFamily}"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
+                        </Trigger>
+                        <Trigger Property="HasItems" Value="false">
+                            <Setter Property="Height" TargetName="dropDownBorder" Value="95"/>
+                        </Trigger>
+                        <Trigger Property="Text" Value="">
+                            <Setter Property="Visibility" TargetName="placeholder" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="Text" Value="{x:Null}">
+                            <Setter Property="Visibility" TargetName="placeholder" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="SelectedItem" Value="{x:Null}">
+                            <Setter Property="Visibility" TargetName="placeholder" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="UIElement.IsEnabled" Value="False">
+                            <Setter Property="TextElement.Foreground" Value="{StaticResource LightGrayColorBrush}"/>
+                        </Trigger>
+                        <!--<Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="WatermarkIcon" Property="Fill"  Value="{Binding RelativeSource={RelativeSource TemplatedParent},Path=(ControlExtensions:WaterMarkTextExtension.WatermarkIconFocusedColor)}"/>
+                        </Trigger>
+                        <Trigger Property="ControlExtensions:WaterMarkTextExtension.WatermarkIconFocusedColor" Value="{x:Null}">
+                            <Setter TargetName="WatermarkIcon" Property="Fill"  Value="{Binding RelativeSource={RelativeSource TemplatedParent},Path=(ControlExtensions:WaterMarkTextExtension.WatermarkIconColor)}"/>
+                        </Trigger>-->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsGrouping" Value="true"/>
+                                <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                        </MultiTrigger>
+                        <Trigger Property="ScrollViewer.CanContentScroll" SourceName="DropDownScrollViewer" Value="false">
+                            <Setter Property="Canvas.Top" TargetName="opaqueRect" Value="{Binding VerticalOffset, ElementName=DropDownScrollViewer}"/>
+                            <Setter Property="Canvas.Left" TargetName="opaqueRect" Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}"/>
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -293,7 +411,7 @@
                        Foreground="{TemplateBinding Foreground}" 
                        IsHitTestVisible="False" />
             <Border x:Name="border" Grid.Column="2" Background="{TemplateBinding Background}" Margin="{TemplateBinding BorderThickness}">
-                
+
             </Border>
 
             <!--<TextBlock Opacity="0.8" 
@@ -639,7 +757,7 @@
                                 </Grid>
                             </Border>
 
-                           <!--TODO: Have to Fix these Part-->
+                            <!--TODO: Have to Fix these Part-->
                             <!--<i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
                                     <ei:ChangePropertyAction PropertyName="IsChecked" Value="False" TargetObject="{Binding RelativeSource={RelativeSource TemplatedParent}}"/>
@@ -701,7 +819,7 @@
             <ContentPresenter x:Name="contentPresenter" Content="{TemplateBinding SelectedItem}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" ContentTemplate="{TemplateBinding AltSelectionBoxItemTemplate}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Grid.Column="2" IsHitTestVisible="False"/>
         </Grid>
         <ControlTemplate.Triggers>
-            
+
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Opacity" TargetName="templateRoot" Value="0.75"/>
             </Trigger>
@@ -742,7 +860,7 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    
+
     <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource BaseComboBox}" />
     <Style x:Key="BaseSearchableComboBox" TargetType="{x:Type control:SearchableComboBox}" BasedOn="{StaticResource BaseComboBox}">
         <Setter Property="IsSynchronizedWithCurrentItem" Value="False" />
