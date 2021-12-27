@@ -22,6 +22,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
             Repository = GetRepository<BankAccountModel>();
         }
         #endregion
+
+        #region Methods
         public async Task<bool> AddBankAccountAsync(BankAccountModel bankAccount)
         {
             if (bankAccount == null) return false;
@@ -66,5 +68,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
             }
             return retVal;
         }
+        #endregion
     }
 }

@@ -22,9 +22,12 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Payments
         public PaymentType PaymentType { get; set; }
         public BussinessPartnerModel PaymentRefrencePartner { get; set; }
         public byte[] PaymentImage { get; set; }
+        public string  ImagePath { get; set; }
         public decimal PaymentAmount { get; set; }
         public bool IsPaymentReceived { get; set; }
         public string Description { get; set; }
+        public string DR { get; set; }
+        public string CR { get; set; }
         #endregion
     }
   

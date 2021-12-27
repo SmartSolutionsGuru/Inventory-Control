@@ -39,6 +39,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Payments
                         paymentType.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                         paymentType.Name = value?.GetValueFromDictonary("Name")?.ToString();
                         paymentType.PaymentType = value?.GetValueFromDictonary("PaymentType")?.ToString();
+                        paymentType.Description = value?.GetValueFromDictonary("Description")?.ToString();
                         paymentTypes.Add(paymentType);
                     }
                 }

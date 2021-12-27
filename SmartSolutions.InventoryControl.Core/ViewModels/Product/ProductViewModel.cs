@@ -29,7 +29,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
         private readonly DAL.Managers.Inventory.IInventoryManager _inventoryManager;
         private readonly DAL.Managers.Warehouse.IWarehouseManager _warehouseManager;
         private readonly DAL.Managers.Stock.OpeningStock.IOpeningStockManager _openingStockManager;
-        private readonly ICacheImage _cacheImage; 
+        private readonly ICacheImage _cacheImage;
         #endregion
 
         #region Constructor
@@ -326,31 +326,39 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                     model.ProductSize = ProductSelectedSize;
                     model.CreatedBy = AppSettings.LoggedInUser.DisplayName;
                     model.Image = ProductImage;
-                    model.ImagePath = _cacheImage.SaveImageToDirectory(ProductImage,ImageName);
+                    model.ImagePath = _cacheImage.SaveImageToDirectory(ProductImage, ImageName);
                     bool result = await _productManager.AddProductAsync(model);
                     if (result)
                     {
-                        InitialStock = new OpeningStockModel();
-                        InitialStock.Product = await _productManager.GetLastAddedProduct();
-                        InitialStock.Warehouse = SelectedWarehouse;
-                        InitialStock.Quantity = InitialQuantity;
-                        InitialStock.Price = EstimatedPrice;
-                        InitialStock.Warehouse = SelectedWarehouse;
-                        InitialStock.Total = InitialQuantity * EstimatedPrice;
-                        InitialStock.Description = "Initial Stock Of Product";
-                        InitialStock.CreatedBy = AppSettings.LoggedInUser.DisplayName;
-                        var initialStockResult = await _openingStockManager.AddOpeningStockAsync(InitialStock);
-
-                        if (initialStockResult)
+                        if (InitialQuantity > 0)
                         {
-                            ClearProductDetails();
-                            NotificationManager.Show(new NotificationContent { Title = "Success", Message = "Successfully Added Product", Type = NotificationType.Success }, areaName: "WindowArea");
-                            ClearProductDetails();
+                            InitialStock = new OpeningStockModel();
+                            InitialStock.Product = await _productManager.GetLastAddedProduct();
+                            InitialStock.Warehouse = SelectedWarehouse;
+                            InitialStock.Quantity = InitialQuantity;
+                            InitialStock.Price = EstimatedPrice;
+                            InitialStock.Warehouse = SelectedWarehouse;
+                            InitialStock.Total = InitialQuantity * EstimatedPrice;
+                            InitialStock.Description = "Initial Stock Of Product";
+                            InitialStock.CreatedBy = AppSettings.LoggedInUser.DisplayName;
+                            var initialStockResult = await _openingStockManager.AddOpeningStockAsync(InitialStock);
+
+                            if (initialStockResult)
+                            {
+                                //ClearProductDetails();
+                                NotificationManager.Show(new NotificationContent { Title = "Success", Message = "Successfully Added Product", Type = NotificationType.Success }, areaName: "WindowArea");
+                                ClearProductDetails();
+                            }
+                            else
+                            {
+                                await _purcahaseInvoiceManager.RemoveLastPurchaseInvoiceAsync(ProductInitialQuantityInvoice.InvoiceGuid);
+                                NotificationManager.Show(new NotificationContent { Title = "Error", Message = "Quantity Of Product Not Added", Type = NotificationType.Error }, areaName: "WindowArea");
+                            }
                         }
                         else
                         {
-                            await _purcahaseInvoiceManager.RemoveLastPurchaseInvoiceAsync(ProductInitialQuantityInvoice.InvoiceGuid);
-                            NotificationManager.Show(new NotificationContent { Title = "Error", Message = "Quantity Of Product Not Added", Type = NotificationType.Error }, areaName: "WindowArea");
+                            NotificationManager.Show(new NotificationContent { Title = "Success", Message = "Successfully Added Product", Type = NotificationType.Success }, areaName: "WindowArea");
+                            ClearProductDetails();
                         }
                         IsLoading = false;
                     }
@@ -358,6 +366,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                     {
                         //Friendly Message Product is Not save Try Again
                         await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Sorry Product is Not Saved Please Try Again", options: Dialogs.MessageBoxOptions.Ok);
+                        IsLoading = false;
                     }
                 }
                 else
@@ -417,7 +426,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                 }
                 else if (SelectedWarehouse == null)
                 {
-                    IsWarehouseNotSelected = true;
+                    if (InitialQuantity > 0)
+                        IsWarehouseNotSelected = true;
                     return IsWarehouseNotSelected;
                 }
 

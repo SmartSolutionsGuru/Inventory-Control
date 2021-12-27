@@ -9,6 +9,9 @@ namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
     public class PurchaseInvoiceModel : BaseModel
     {
         #region Constructor
+        /// <summary>
+        ///  Default Constructor
+        /// </summary>
         public PurchaseInvoiceModel()
         {
             InvoiceGuid = Guid.NewGuid();
@@ -25,7 +28,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
         public string InvoiceId
         {
             get { return _InvoiceId; }
-            set { _InvoiceId = value; NotifyOfPropertyChange(nameof(InvoiceId)); }
+            set { _InvoiceId = value; NotifyOfPropertyChange(nameof(InvoiceId));}
         }
         /// <summary>
         /// Create new Guid For Each Transaction For Unique Record Keeping
@@ -69,6 +72,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
         /// Image Of Payment
         /// </summary>
         public byte[] PaymentImage { get; set; }
+        public string ImagePath { get; set; }
         /// <summary>
         /// Amount Of Payment which is Paid Or Recived
         /// </summary>

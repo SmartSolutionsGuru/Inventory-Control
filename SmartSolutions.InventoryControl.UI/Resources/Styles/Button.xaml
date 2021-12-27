@@ -3,13 +3,15 @@
                     xmlns:helpers="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers"
                     xmlns:customControls="clr-namespace:SmartSolutions.InventoryControl.UI.CustomControls"
                     xmlns:ControlExtension="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
+                    xmlns:converter="clr-namespace:SmartSolutions.InventoryControl.UI.Converters"
                     xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Resources.Styles">
-
+    
     <ResourceDictionary.MergedDictionaries>
         <!--<ResourceDictionary Source="Resources\Colors.xaml"/>-->
         <!--<ResourceDictionary Source="Resources\FontSize.xaml"/>-->
         <!--<ResourceDictionary Source="Resources\Styles\Text.xaml"/>-->
     </ResourceDictionary.MergedDictionaries>
+    <converter:BorderCircularClipConverter x:Key="BorderCircularClipConverter"/>
     <SineEase x:Key="SineEaseOut" EasingMode="EaseOut" />
     <Style x:Key="TextBlockBaseStyle" TargetType="{x:Type TextBlock}">
         <Setter Property="TextWrapping" Value="WrapWithOverflow" />
@@ -29,14 +31,14 @@
         </Border>
         <ControlTemplate.Triggers>
             <Trigger Property="IsEnabled" Value="False">
-                    
+
                 <Setter Property="Opacity" TargetName="border" Value="0.5" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
 
-    
+
     <Style x:Key="ContentButton" TargetType="Button">
         <Style.Resources>
             <Storyboard x:Key="OnClick">
@@ -52,7 +54,12 @@
         </Style.Resources>
         <Style.Triggers>
             <EventTrigger RoutedEvent="ButtonBase.Click">
-                <BeginStoryboard Storyboard="{StaticResource OnClick}"/>
+                <BeginStoryboard>
+                    <!-- "{StaticResource OnClick}"-->
+                    <Storyboard>
+
+                    </Storyboard>
+                </BeginStoryboard>
             </EventTrigger>
         </Style.Triggers>
         <Setter Property="ClickMode" Value="Release"/>
@@ -83,7 +90,7 @@
         </Setter>-->
     </Style>
 
-   
+
 
     <!--ComboBox Toggle Button-->
     <SolidColorBrush x:Key="ComboBox.Pressed.Editable.Button.Border" Color="#FF569DE5"/>
@@ -150,7 +157,7 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-        
+
     <Style x:Key="CustomContentToggleButtonStyle"  TargetType="ToggleButton">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
@@ -468,7 +475,7 @@
     </ControlTemplate>
     <Style x:Key="NotificationButtonBaseStyle" TargetType="customControls:NotificationButton">
         <Setter Property="Focusable" Value="False" />
-        <Setter Property="Background" Value="{DynamicResource SecondaryRegionBrush}" />
+        <Setter Property="Background" Value="{DynamicResource SecondaryRegionColorBrush}" />
         <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="BorderBrush" Value="{StaticResource  PureWhiteColorBrush}" />
@@ -480,12 +487,12 @@
         <Style.Triggers>
             <Trigger Property="Status" Value="Dot">
                 <Setter Property="Template" Value="{StaticResource BadgeDotTemplate}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+                <!--<Setter Property="BorderBrush" Value="{StaticResource BorderColorBrush}" />-->
                 <Setter Property="BadgeMargin" Value="0,-5,-5,0" />
             </Trigger>
             <Trigger Property="Status" Value="Processing">
                 <Setter Property="Template" Value="{StaticResource NotificationButtonProcessingTemplate}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+                <!--<Setter Property="BorderBrush" Value="{StaticResource BorderColorBrush}" />-->
                 <Setter Property="BadgeMargin" Value="0,-5,-5,0" />
             </Trigger>
         </Style.Triggers>
@@ -494,16 +501,16 @@
         <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}" />
     </Style>
     <Style x:Key="BadgePrimary" BasedOn="{StaticResource NotificationButtonBaseStyle}" TargetType="customControls:NotificationButton">
-        <Setter Property="Background" Value="{DynamicResource PrimaryBrush}" />
+        <Setter Property="Background" Value="{DynamicResource PrimaryTextBrush}" />
     </Style>
     <Style x:Key="BadgeSuccess" BasedOn="{StaticResource NotificationButtonBaseStyle}" TargetType="customControls:NotificationButton">
-        <Setter Property="Background" Value="{DynamicResource SuccessBrush}" />
+        <Setter Property="Background" Value="{StaticResource GreenColorBrush}" />
     </Style>
     <Style x:Key="BadgeInfo" BasedOn="{StaticResource NotificationButtonBaseStyle}" TargetType="customControls:NotificationButton">
-        <Setter Property="Background" Value="{DynamicResource InfoBrush}" />
+        <Setter Property="Background" Value="{StaticResource BlueColorBrush}" />
     </Style>
     <Style x:Key="BadgeWarning" BasedOn="{StaticResource NotificationButtonBaseStyle}" TargetType="customControls:NotificationButton">
-        <Setter Property="Background" Value="{DynamicResource WarningBrush}" />
+        <Setter Property="Background" Value="{StaticResource YellowColorBrush}" />
     </Style>
     <Style x:Key="BadgeDanger" BasedOn="{StaticResource NotificationButtonBaseStyle}" TargetType="customControls:NotificationButton">
         <Setter Property="Background" Value="{StaticResource RedColorBrush}" />

@@ -1,4 +1,5 @@
-﻿using SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner;
+﻿using Caliburn.Micro;
+using SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.BussinessPartn
         protected async override void OnActivate()
         {
             base.OnActivate();
-            BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
+            BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x=>x.Name).ToList();
+            if(BussinessPartners.Count == 0)
+            {
+                IoC.Get<IDialogManager>().ShowMessageBox("There is No Bussiness Partner Available At this Time",options: Dialogs.MessageBoxOptions.Ok);
+            }
         }
         #endregion
 

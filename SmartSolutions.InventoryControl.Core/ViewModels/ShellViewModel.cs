@@ -179,9 +179,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     string password = "Pakistan@123";
                     //string password = "";
 
-
-
-
                     var args = Environment.GetCommandLineArgs();
                     LogMessage.Write("Arguments: " + Newtonsoft.Json.JsonConvert.SerializeObject(args));
                     if (args != null)
@@ -223,9 +220,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     ConnectionInfo.Instance.Database = database;
                     ConnectionInfo.Instance.UserName = username;
                     ConnectionInfo.Instance.Password = password;
+                    ConnectionInfo.Instance.Type = DBTypes.SQLServer;
                     //AppSettings.IsLoggedInUserAdmin = IsUserAdmin();
-                    AppSettings.IsLoggedInUserAdmin = false;
-                    if (DAL.AppSettings.IsLoggedInUserAdmin)
+                    AppSettings.IsLoggedInUserAdmin = true;
+                    if (AppSettings.IsLoggedInUserAdmin)
                         ConnectionInfo.Instance.ConnectionString = string.Format($"data source=localhost; Initial Catalog=" + database + ";Integrated Security = SSPI;");
                     else
                         ConnectionInfo.Instance.ConnectionString = string.Format($"data source=localhost; Initial Catalog=" + database + ";User id=" + username + ";Password=" + password);

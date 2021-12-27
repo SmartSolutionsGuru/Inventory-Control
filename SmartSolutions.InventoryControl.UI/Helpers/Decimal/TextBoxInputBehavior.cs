@@ -74,13 +74,13 @@ namespace SmartSolutions.InventoryControl.UI.Helpers.Decimal
 
                 if (!this.IsValidInput(this.GetText(pastedText)))
                 {
-                    System.Media.SystemSounds.Beep.Play();
+                    //System.Media.SystemSounds.Beep.Play();
                     e.CancelCommand();
                 }
             }
             else
             {
-                System.Media.SystemSounds.Beep.Play();
+                //System.Media.SystemSounds.Beep.Play();
                 e.CancelCommand();
             }
         }

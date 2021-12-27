@@ -141,6 +141,7 @@
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -161,6 +162,7 @@
     </ApplicationDefinition>
     <Compile Include="Converters\BorderCircularClipConverter.cs" />
     <Compile Include="Converters\BorderCircularConverter.cs" />
+    <Compile Include="Converters\StringToDecimalConverter.cs" />
     <Compile Include="CustomControls\FunctionEventArgs.cs" />
     <Compile Include="CustomControls\NotificationButton.cs" />
     <Compile Include="CustomControls\SimplePanel.cs" />
@@ -434,12 +436,16 @@
     <Content Include="Scripts\ChartOfAccounts.sql" />
     <Content Include="Scripts\CityCodes.sql" />
     <Content Include="Scripts\Country.sql" />
+    <Content Include="Scripts\InitialCredentials.sql" />
     <Content Include="Scripts\InventoryControl.sql" />
     <Content Include="Scripts\MasterDb.sql" />
     <Content Include="Scripts\PartnerCategory.sql" />
     <Content Include="Scripts\PartnerType .sql" />
+    <Content Include="Scripts\PaymentType.sql" />
     <Content Include="Scripts\Province.sql" />
-    <Content Include="Scripts\script.sql" />
+    <Content Include="Scripts\script_2021_09_02.sql" />
+    <Content Include="Scripts\script_2021_09_08.sql" />
+    <Content Include="Scripts\script_2021_09_15.sql" />
     <Resource Include="Assets\login page4.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

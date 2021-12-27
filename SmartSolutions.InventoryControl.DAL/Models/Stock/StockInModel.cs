@@ -38,7 +38,12 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Stock
             get { return _Price; }
             set { _Price = value; NotifyOfPropertyChange(nameof(Price)); OnPriceChange(); }
         }
-
+        //private string _testPrice;
+        //public string TestPrice
+        //{
+        //    get { return _testPrice; }
+        //    set { _testPrice = value; NotifyOfPropertyChange(nameof(TestPrice)); }
+        //}
         private decimal? _Total;
         public decimal? Total
         {

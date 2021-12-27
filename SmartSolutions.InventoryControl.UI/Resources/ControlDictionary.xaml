@@ -15,6 +15,7 @@
     <converter:BorderCircularClipConverter x:Key="BorderCircularClipConverter"/>
     <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <converter:StringToBrushConverter x:Key="StringToBrushConverter" />
+    <converter:StringToDecimalConverter x:Key="StringToDecimalConverter"/>
     <!-- design for scroll Viewer-->
     <Style x:Key="ScrollBarThumb" TargetType="{x:Type Thumb}">
         <Setter Property="OverridesDefaultStyle" Value="true"/>

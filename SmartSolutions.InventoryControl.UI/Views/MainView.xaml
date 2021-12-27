@@ -22,6 +22,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" MaxHeight="310" />
+                        <!--<RowDefinition Height="*"/>-->
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -44,8 +45,8 @@
                     </TextBlock>
 
                     <customControls:CustomCalender Grid.Row="1" Width="250" Height="300" />
-
-                    <Button Name="Product" 
+                    
+                        <Button Name="Product" 
                             Grid.Row="2" 
                             Margin="5 0 5 5" 
                             Padding="10" 
@@ -53,52 +54,52 @@
                             HorizontalContentAlignment="Center" 
                             FontFamily="{StaticResource MediumFont}" 
                             BorderBrush="#FFb14b4b">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Margin="0,0,10,0" 
+                            <StackPanel Orientation="Horizontal">
+                                <Path Margin="0,0,10,0" 
                               Height="24"  
                               Data="{StaticResource Shape_Product}" 
                               Stretch="Uniform" >
-                                <Path.Style>
-                                    <Style TargetType="Path">
-                                        <Setter Property="Fill" Value="{StaticResource PureWhiteColorBrush}"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsProductProceeded,Mode=OneWay}" Value="True">
-                                                <Setter Property="Fill" Value="#FFb14b4b"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Path.Style>
-                            </Path>
-                            <TextBlock  x:Name="tBox" TextAlignment="Center" Text="PRODUCT" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="0,5" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Foreground" Value="White"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsProductProceeded,Mode=OneWay}" Value="True">
-                                                <Setter Property="Foreground" Value="#FFb14b4b"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </StackPanel>
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
-                                <Setter Property="Background" Value="#FFb14b4b"/>
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsProductProceeded,Mode=OneWay}" Value="True">
-                                        <Setter Property="Background" Value="{StaticResource PureWhiteColorBrush}"/>
-                                        <Setter Property="BorderThickness" Value="1.5"/>
-                                        <Setter Property="Foreground" Value="#FFb14b4b"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                                    <Path.Style>
+                                        <Style TargetType="Path">
+                                            <Setter Property="Fill" Value="{StaticResource PureWhiteColorBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsProductProceeded,Mode=OneWay}" Value="True">
+                                                    <Setter Property="Fill" Value="#FFb14b4b"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Path.Style>
+                                </Path>
+                                <TextBlock  x:Name="tBox" TextAlignment="Center" Text="PRODUCT" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="0,5" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsProductProceeded,Mode=OneWay}" Value="True">
+                                                    <Setter Property="Foreground" Value="#FFb14b4b"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
+                                    <Setter Property="Background" Value="#FFb14b4b"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsProductProceeded,Mode=OneWay}" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource PureWhiteColorBrush}"/>
+                                            <Setter Property="BorderThickness" Value="1.5"/>
+                                            <Setter Property="Foreground" Value="#FFb14b4b"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
 
-                    <Button Name="BussinessPartner" 
+                        <Button Name="BussinessPartner" 
                             Grid.Row="3" 
                             Margin="5 0 5 5" 
                             Padding="10" 
@@ -107,52 +108,52 @@
                             FontFamily="{StaticResource MediumFont}" 
                             BorderThickness="1" 
                             BorderBrush="{StaticResource BlueColorBrush}">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Margin="0,0,10,0" 
+                            <StackPanel Orientation="Horizontal">
+                                <Path Margin="0,0,10,0" 
                               Height="24"  
                               Data="{StaticResource Shape_Partner}" 
                               Stretch="Uniform" >
-                                <Path.Style>
-                                    <Style TargetType="Path">
-                                        <Setter Property="Fill" Value="White"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsPartnerProceeded,Mode=OneWay}" Value="True">
-                                                <Setter Property="Fill" Value="{StaticResource BlueColorBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Path.Style>
-                            </Path>
-                            <TextBlock  x:Name="bBox" TextAlignment="Center" Text="PARTNERS" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="0,5" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Foreground" Value="White"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsPartnerProceeded}" Value="True">
-                                                <Setter Property="Foreground" Value="{StaticResource BlueColorBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </StackPanel>
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
-                                <Setter Property="Background" Value="{StaticResource BlueColorBrush}"/>
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="Foreground" Value="White"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsPartnerProceeded,Mode=OneWay}" Value="True">
-                                        <Setter Property="Background" Value="White"/>
-                                        <Setter Property="BorderThickness" Value="1.5"/>
-                                        <Setter Property="Foreground" Value="#FFb14b4b"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                                    <Path.Style>
+                                        <Style TargetType="Path">
+                                            <Setter Property="Fill" Value="White"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsPartnerProceeded,Mode=OneWay}" Value="True">
+                                                    <Setter Property="Fill" Value="{StaticResource BlueColorBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Path.Style>
+                                </Path>
+                                <TextBlock  x:Name="bBox" TextAlignment="Center" Text="PARTNERS" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="0,5" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsPartnerProceeded}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource BlueColorBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
+                                    <Setter Property="Background" Value="{StaticResource BlueColorBrush}"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsPartnerProceeded,Mode=OneWay}" Value="True">
+                                            <Setter Property="Background" Value="White"/>
+                                            <Setter Property="BorderThickness" Value="1.5"/>
+                                            <Setter Property="Foreground" Value="#FFb14b4b"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
 
-                    <Button Name="Purchase" 
+                        <Button Name="Purchase" 
                             Grid.Row="4" 
                             Margin="5" 
                             Padding="10" 
@@ -161,23 +162,23 @@
                             FontFamily="{StaticResource MediumFont}" 
                             BorderThickness="1" 
                             BorderBrush="{StaticResource LightBlueColorBrush}" >
-                        <StackPanel Orientation="Horizontal">
-                            <Path Margin="0,0,10,0" 
+                            <StackPanel Orientation="Horizontal">
+                                <Path Margin="0,0,10,0" 
                               Height="24"  
                               Data="{StaticResource Shape_Purchase}" 
                               Stretch="Uniform" >
-                                <Path.Style>
-                                    <Style TargetType="Path">
-                                        <Setter Property="Fill" Value="White"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsPurchaseProceeded,Mode=OneWay}" Value="True">
-                                                <Setter Property="Fill" Value="{StaticResource LightBlueColorBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Path.Style>
-                            </Path>
-                            <TextBlock  x:Name="Box" 
+                                    <Path.Style>
+                                        <Style TargetType="Path">
+                                            <Setter Property="Fill" Value="White"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsPurchaseProceeded,Mode=OneWay}" Value="True">
+                                                    <Setter Property="Fill" Value="{StaticResource LightBlueColorBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Path.Style>
+                                </Path>
+                                <TextBlock  x:Name="Box" 
                                         TextAlignment="Center" 
                                         Text="PURCHASE" 
                                         HorizontalAlignment="Center" 
@@ -185,35 +186,35 @@
                                         Margin="0,5" 
                                         FontSize="{StaticResource NormalSize}"
                                         FontFamily="{StaticResource MediumFont}">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Foreground" Value="White"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsPurchaseProceeded,Mode=OneWay}" Value="True">
-                                                <Setter Property="Foreground" Value="{StaticResource LightBlueColorBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </StackPanel>
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
-                                <Setter Property="Background" Value="{StaticResource LightBlueColorBrush}"/>
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="Foreground" Value="White"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsPurchaseProceeded,Mode=OneWay}" Value="True">
-                                        <Setter Property="Background" Value="White"/>
-                                        <Setter Property="BorderThickness" Value="1.5"/>
-                                        <Setter Property="Foreground" Value="{StaticResource LightBlueColorBrush}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsPurchaseProceeded,Mode=OneWay}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource LightBlueColorBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
+                                    <Setter Property="Background" Value="{StaticResource LightBlueColorBrush}"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsPurchaseProceeded,Mode=OneWay}" Value="True">
+                                            <Setter Property="Background" Value="White"/>
+                                            <Setter Property="BorderThickness" Value="1.5"/>
+                                            <Setter Property="Foreground" Value="{StaticResource LightBlueColorBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
 
-                    <Button Name="Sales" 
+                        <Button Name="Sales" 
                             Grid.Row="5" 
                             Margin="5" 
                             Padding="10" 
@@ -222,53 +223,53 @@
                             FontFamily="{StaticResource MediumFont}" 
                             BorderBrush="{StaticResource GreenColorBrush}"
                             BorderThickness="1">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Margin="0,0,10,0" 
+                            <StackPanel Orientation="Horizontal">
+                                <Path Margin="0,0,10,0" 
                               Height="24"  
                               Data="{StaticResource Shape_Delivery}" 
                               Stretch="Uniform" >
-                                <Path.Style>
-                                    <Style TargetType="Path">
-                                        <Setter Property="Fill" Value="White"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsSalesProceeded,Mode=OneWay}" Value="True">
-                                                <Setter Property="Fill" Value="{StaticResource GreenColorBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Path.Style>
-                            </Path>
-                            <TextBlock TextAlignment="Center" Text="SALES" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="0,5" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Foreground" Value="White"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsSalesProceeded,Mode=OneWay}" Value="True">
-                                                <Setter Property="Foreground" Value="{StaticResource GreenColorBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </StackPanel>
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
-                                <Setter Property="Background" Value="{StaticResource GreenColorBrush}"/>
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="Foreground" Value="White"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSalesProceeded,Mode=OneWay}" Value="True">
-                                        <Setter Property="Background" Value="White"/>
-                                        <Setter Property="BorderThickness" Value="1.5"/>
-                                        <Setter Property="BorderBrush" Value="{StaticResource GreenColorBrush}"/>
-                                        <Setter Property="Foreground" Value="{StaticResource GreenColorBrush}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                                    <Path.Style>
+                                        <Style TargetType="Path">
+                                            <Setter Property="Fill" Value="White"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSalesProceeded,Mode=OneWay}" Value="True">
+                                                    <Setter Property="Fill" Value="{StaticResource GreenColorBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Path.Style>
+                                </Path>
+                                <TextBlock TextAlignment="Center" Text="SALES" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="0,5" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSalesProceeded,Mode=OneWay}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource GreenColorBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
+                                    <Setter Property="Background" Value="{StaticResource GreenColorBrush}"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSalesProceeded,Mode=OneWay}" Value="True">
+                                            <Setter Property="Background" Value="White"/>
+                                            <Setter Property="BorderThickness" Value="1.5"/>
+                                            <Setter Property="BorderBrush" Value="{StaticResource GreenColorBrush}"/>
+                                            <Setter Property="Foreground" Value="{StaticResource GreenColorBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
 
-                    <Button Name="Payments" 
+                        <Button Name="Payments" 
                             Grid.Row="6" 
                             Margin="5" 
                             Padding="10"
@@ -277,49 +278,49 @@
                             FontFamily="{StaticResource MediumFont}"
                             BorderBrush="{StaticResource LightGrayColorBrush}"
                             BorderThickness="1.5">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Margin="0,5,10,5" Height="24" Data="{StaticResource Shape_Payment}" Stretch="Uniform" >
-                                <Path.Style>
-                                    <Style TargetType="Path">
-                                        <Setter Property="Fill" Value="{StaticResource PureWhiteColorBrush}"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsPaymentProceeded,Mode=OneWay}" Value="True">
-                                                <Setter Property="Fill" Value="{StaticResource LightGrayColorBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Path.Style>
-                            </Path>
-                            <TextBlock TextAlignment="Center" Text="PAYMENTS" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="0,5" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" >
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsPaymentProceeded,Mode=OneWay}" Value="True">
-                                                <Setter Property="Foreground" Value="{StaticResource LightGrayColorBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </StackPanel>
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
-                                <Setter Property="Background" Value="{StaticResource LightGrayColorBrush}"/>
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsPaymentProceeded,Mode=OneWay}" Value="True">
-                                        <Setter Property="Background" Value="{StaticResource PureWhiteColorBrush}"/>
-                                        <Setter Property="BorderThickness" Value="1"/>
-                                        <Setter Property="Foreground" Value="{StaticResource LightGrayColorBrush}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                            <StackPanel Orientation="Horizontal">
+                                <Path Margin="0,5,10,5" Height="24" Data="{StaticResource Shape_Payment}" Stretch="Uniform" >
+                                    <Path.Style>
+                                        <Style TargetType="Path">
+                                            <Setter Property="Fill" Value="{StaticResource PureWhiteColorBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsPaymentProceeded,Mode=OneWay}" Value="True">
+                                                    <Setter Property="Fill" Value="{StaticResource LightGrayColorBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Path.Style>
+                                </Path>
+                                <TextBlock TextAlignment="Center" Text="PAYMENTS" HorizontalAlignment="Center" VerticalAlignment="Center"  Margin="0,5" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" >
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsPaymentProceeded,Mode=OneWay}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource LightGrayColorBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
+                                    <Setter Property="Background" Value="{StaticResource LightGrayColorBrush}"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsPaymentProceeded,Mode=OneWay}" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource PureWhiteColorBrush}"/>
+                                            <Setter Property="BorderThickness" Value="1"/>
+                                            <Setter Property="Foreground" Value="{StaticResource LightGrayColorBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
 
-                    <Button Name="Reports" 
+                        <Button Name="Reports" 
                             Grid.Row="7" 
                             Margin="5" Padding="10"
                             HorizontalContentAlignment="Center" 
@@ -327,53 +328,53 @@
                             BorderBrush="{StaticResource OrangeColorBrush}"
                             BorderThickness="1.5"
                             FontFamily="{StaticResource MediumFont}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Path Grid.Column="0" Data="{StaticResource Shape_Report}" Stretch="Uniform" Width="22" Grid.RowSpan="2" Margin="0 0 5 0">
-                                <Path.Style>
-                                    <Style TargetType="Path">
-                                        <Setter Property="Fill" Value="White"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsReportProceeded,Mode=OneWay}" Value="True">
-                                                <Setter Property="Fill" Value="{StaticResource OrangeColorBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Path.Style>
-                            </Path>
-                            <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"  TextWrapping="WrapWithOverflow" Text="REPORTS" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" Margin="0 5 0 0">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsReportProceeded,Mode=OneWay}" Value="True">
-                                                <Setter Property="Foreground" Value="{StaticResource OrangeColorBrush}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Path Grid.Column="0" Data="{StaticResource Shape_Report}" Stretch="Uniform" Width="22" Grid.RowSpan="2" Margin="0 0 5 0">
+                                    <Path.Style>
+                                        <Style TargetType="Path">
+                                            <Setter Property="Fill" Value="White"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsReportProceeded,Mode=OneWay}" Value="True">
+                                                    <Setter Property="Fill" Value="{StaticResource OrangeColorBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Path.Style>
+                                </Path>
+                                <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"  TextWrapping="WrapWithOverflow" Text="REPORTS" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" Margin="0 5 0 0">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsReportProceeded,Mode=OneWay}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource OrangeColorBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
 
-                        </Grid>
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
-                                <Setter Property="Background" Value="{StaticResource OrangeColorBrush}"/>
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsReportProceeded}" Value="True">
-                                        <Setter Property="Background" Value="{StaticResource PureWhiteColorBrush}"/>
-                                        <Setter Property="BorderThickness" Value="1"/>
-                                        <Setter Property="Foreground" Value="{StaticResource OrangeColorBrush}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    
+                            </Grid>
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
+                                    <Setter Property="Background" Value="{StaticResource OrangeColorBrush}"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Foreground" Value="{StaticResource PureWhiteColorBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsReportProceeded}" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource PureWhiteColorBrush}"/>
+                                            <Setter Property="BorderThickness" Value="1"/>
+                                            <Setter Property="Foreground" Value="{StaticResource OrangeColorBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
                     <Button Name="Bank" 
                             Grid.Row="8" 
                             Margin="5" Padding="10"
@@ -427,7 +428,6 @@
                             </Style>
                         </Button.Style>
                     </Button>
-
                 </Grid>
                 <Border Grid.Column="1" BorderThickness="1" BorderBrush="{StaticResource LightGrayColorBrush}">
                     <Grid>
@@ -667,7 +667,7 @@
                                 <TextBlock Text="{Binding CurrentUser.DisplayName[0],FallbackValue='SB',TargetNullValue='SB'}" FontSize="{StaticResource MediumSize}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource PureWhiteColorBrush}"/>
                             </Button>
                         </StackPanel>
-                            <!--Main Content-->
+                        <!--Main Content-->
                         <ContentControl x:Name="ActiveItem" Grid.Row="1" />
                     </Grid>
                 </Border>

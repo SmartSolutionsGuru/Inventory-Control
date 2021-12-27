@@ -2,6 +2,7 @@
 using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.InventoryControl.DAL.Models.Sales;
 using SmartSolutions.InventoryControl.DAL.Models.Warehouse;
+using System;
 
 namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
 {
@@ -38,7 +39,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
             get { return _Price; }
             set { _Price = value; NotifyOfPropertyChange(nameof(Price)); OnPriceChange(); }
         }
-
+       
         private decimal? _Total;
         public decimal? Total
         {

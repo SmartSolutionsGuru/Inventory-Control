@@ -553,4 +553,5 @@ INSERT INTO [dbo].[City]
 
 		   
 GO
-  --SET IDENTITY_INSERT City OFF;
+  SET IDENTITY_INSERT City OFF;
+  UPDATE City SET CountryId = 162

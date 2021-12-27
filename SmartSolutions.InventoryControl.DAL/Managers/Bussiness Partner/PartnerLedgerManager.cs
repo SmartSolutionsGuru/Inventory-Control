@@ -28,7 +28,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
 
         #region Constructor
         [ImportingConstructor]
-        public PartnerLedgerManager(IPaymentManager paymentManager,IPaymentTypeManager paymentTypeManager)
+        public PartnerLedgerManager(IPaymentManager paymentManager, IPaymentTypeManager paymentTypeManager)
         {
             Repository = GetRepository<BussinessPartnerLedgerModel>();
             _paymentManager = paymentManager;
@@ -90,7 +90,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                     foreach (var value in values)
                     {
                         var partnerLedger = new BussinessPartnerLedgerModel();
-                        partnerLedger.Id = value.GetValueFromDictonary("Id")?.ToString()?.ToInt();;
+                        partnerLedger.Id = value.GetValueFromDictonary("Id")?.ToString()?.ToInt(); ;
                         var paymentId = value?.GetValueFromDictonary("PaymentId")?.ToString()?.ToInt();
                         partnerLedger.Payment = await _paymentManager.GetPaymentByIdAsync(paymentId);
                         partnerLedger.Description = value?.GetValueFromDictonary("Description")?.ToString();
@@ -121,7 +121,12 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 if (Repository.Type == DBTypes.SQLITE)
                     query = @"SELECT * FROM PartnerLedgerAccounts WHERE PartnerId = @v_PartnerId Order By 1 DESC LIMIT 1";
                 else if (Repository.Type == DBTypes.SQLServer)
-                    query = @"SELECT * FROM PartnerLedgerAccounts WHERE PartnerId = @v_PartnerId Order By 1 DESC";
+                {
+                    //query = @"SELECT * FROM PartnerLedgerAccounts WHERE PartnerId = @v_PartnerId Order By 1 DESC";
+                    query = @"SELECT 
+                            (SELECT SUM(CR)  FROM PartnerLedgerAccounts WHERE PartnerId = @v_PartnerId)-(SELECT SUM(DR) FROM PartnerLedgerAccounts WHERE PartnerId = @v_PartnerId)
+                             AS CurrentBalance  Order By 1 DESC";
+                }
                 var values = await Repository.QueryAsync(query: query, parameters: parameters);
 
                 if (values != null || values?.Count > 0)
@@ -131,7 +136,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                     partnerLedger.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                     partnerLedger.Payment = new Models.Payments.PaymentModel { Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt() };
                     partnerLedger.CurrentBalance = value?.GetValueFromDictonary("CurrentBalance")?.ToString()?.ToDecimal() ?? 0;
-                    partnerLedger.CurrentBalanceType = value?.GetValueFromDictonary("CurrentBalanceType")?.ToString().ToEnum<PaymentType>() ?? PaymentType.None;
+                    partnerLedger.CurrentBalanceType = partnerLedger?.CurrentBalance > 0 ? PaymentType.CR : PaymentType.DR;
+                    //partnerLedger.CurrentBalanceType = value?.GetValueFromDictonary("CurrentBalanceType")?.ToString().ToEnum<PaymentType>() ?? PaymentType.None;
                     retVal = partnerLedger;
                 }
             }

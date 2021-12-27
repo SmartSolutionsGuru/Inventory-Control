@@ -46,6 +46,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
                 "Bussiness Partner By DR Balance",
                 "Bussiness Partner By CR Balance"
             };
+            ProductReports = new List<string> 
+            {
+                "All Products",
+                "Product By Name",
+                "Produt By Size",
+                "Product By Color"
+            };
         }
 
         public void Handle(Screen screen)
@@ -72,9 +79,17 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
                         ReportsSubCategory = PurchaseReports;
                         break;
                     case "Products":
-                        ReportsSubCategory = ProductReports;
+                        ReportsSubCategory = ProductReports;                       
                         break;
                     default:
+                    case "Sales":
+                        ReportsSubCategory = BissinessPartnerReports;
+                        break;
+                    case "Payments":
+                        ReportsSubCategory = PurchaseReports;
+                        break;
+                    case "Bank Accounts":
+                        ReportsSubCategory = ProductReports;
                         break;
                 }
             }
@@ -84,9 +99,52 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
         {
             switch (selectedReportSubCategory)
             {
+                #region Bussiness Partner
                 case "All Bussiness Partners":
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
+                case "Bussiness Partner By Vender":
+                    Handle(IoC.Get<DisplayAllPartnersViewModel>());
+                    break;
+                case "Bussiness Partner By Seller":
+                    Handle(IoC.Get<DisplayAllPartnersViewModel>());
+                    break;
+                case "Bussiness Partner By City":
+                    Handle(IoC.Get<DisplayAllPartnersViewModel>());
+                    break;
+                case "Bussiness Partner By DR Balance":
+                    Handle(IoC.Get<DisplayAllPartnersViewModel>());
+                    break;
+                case "Bussiness Partner By CR Balance":
+                    Handle(IoC.Get<DisplayAllPartnersViewModel>());
+                    break;
+                #endregion
+                #region Products
+                case "All Products":
+                    Handle(IoC.Get<DisplayAllPartnersViewModel>());
+                    break;
+                case "Product By Name":
+                    Handle(IoC.Get<DisplayAllPartnersViewModel>());
+                    break;
+                case "Produt By Size":
+                    Handle(IoC.Get<DisplayAllPartnersViewModel>());
+                    break;
+                case "Product By Color":
+                    Handle(IoC.Get<DisplayAllPartnersViewModel>());
+                    break;
+                #endregion
+                #region Purchase
+
+                #endregion
+                #region Sales
+
+                #endregion
+                #region Payments
+
+                #endregion
+                #region Bnk Accounts
+
+                #endregion
                 default:
                     break;
             }

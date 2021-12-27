@@ -106,7 +106,7 @@
                           Height="50"
                           Width="280"
                           DisplayMemberPath="Name"
-                          MaxDropDownHeight="200"
+                          MaxDropDownHeight="100"
                           Foreground="{StaticResource GrayColorBrush}"
                           FontFamily="{StaticResource MediumFont}"
                           FontSize="{StaticResource MediumSize}"

@@ -224,7 +224,7 @@
                                            VerticalAlignment="Center"
                                            HorizontalAlignment="Left"
                                            Focusable="False"
-                                           FontSize="{StaticResource NormalSize}"
+                                           FontSize="{StaticResource MediumSize}"
                                            FontFamily="{StaticResource MediumFont}"
                                            Foreground="{StaticResource LightGrayColorBrush}"
                                            Margin="20 0 0 0" />
@@ -233,6 +233,8 @@
                                          Height="{TemplateBinding Height}"
                                          Width="{TemplateBinding Width}"
                                          HorizontalAlignment="Stretch"
+                                         FontSize="{TemplateBinding FontSize}"
+                                         FontFamily="{TemplateBinding FontFamily}"
                                          VerticalAlignment="Center"
                                          BorderThickness="{TemplateBinding BorderThickness}"
                                          BorderBrush="{TemplateBinding BorderBrush}"

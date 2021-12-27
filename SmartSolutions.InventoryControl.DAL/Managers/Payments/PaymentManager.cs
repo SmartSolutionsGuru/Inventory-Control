@@ -43,16 +43,20 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Payments
                 parameters["@v_PartnerId"] = payment?.Partner?.Id;
                 parameters["@v_PaymentType"] = payment?.PaymentType.ToString();
                 parameters["@v_PaymentMethodId"] = payment?.PaymentMethod?.Id;
-                parameters["@v_PaymentRefrencePartnerId"] = payment?.PaymentRefrencePartner?.Id == null ? DBNull.Value : (object)payment.PaymentRefrencePartner;
-                parameters["@v_PaymentImage"] = payment?.PaymentImage == null ? DBNull.Value : (object)payment.PaymentImage;
+                parameters["@v_PaymentRefrenceId"] = payment?.PaymentRefrencePartner?.Id == null ? DBNull.Value : (object)payment.PaymentRefrencePartner?.Id;
+                //parameters["@v_PaymentImage"] = payment?.PaymentImage == null ? DBNull.Value : (object)payment.PaymentImage;
+                parameters["@V_ImagePath"] = payment?.ImagePath == null ? DBNull.Value : (object)payment?.ImagePath;
                 parameters["@v_PaymentAmount"] = payment?.PaymentAmount;
                 parameters["@v_IsActive"] = payment.IsActive = true;
                 parameters["@v_CreatedAt"] = payment.CreatedAt == null ? DateTime.Now : payment.CreatedAt;
                 parameters["@v_CreatedBy"] = payment.CreatedBy == null ? AppSettings.LoggedInUser.DisplayName : (object)payment.CreatedBy;
                 parameters["@v_UpdatedAt"] = payment.UpdatedAt == null ? DBNull.Value : (object)payment.UpdatedAt;
                 parameters["@v_UpdatedBy"] = payment.UpdatedBy == null ? DBNull.Value : (object)payment.UpdatedBy;
-                string query = @"INSERT INTO Payment (PartnerId,PaymentType,PaymentMethodId,PaymentRefrencePartnerId,PaymentAmount,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
-                                                 VALUES(@v_PartnerId,@v_PaymentType,@v_PaymentMethodId,@v_PaymentRefrencePartnerId,@v_PaymentAmount,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
+                parameters["@v_Description"] = payment.Description == null ? DBNull.Value : (object)payment.Description;
+                parameters["@v_DR"] = payment.DR == null ? DBNull.Value : (object)payment.DR;
+                parameters["@v_CR"] = payment.CR == null ? DBNull.Value : (object)payment.CR;
+                string query = @"INSERT INTO Payment(PartnerId,PaymentRefrenceId,PaymentAmount,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy,PaymentMethodId,Description,DR,CR)
+                                                 VALUES(@v_PartnerId,@v_PaymentRefrenceId,@v_PaymentAmount,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy,@v_PaymentMethodId,@v_Description,@v_DR,@v_CR)";
                 var result = await Repository.NonQueryAsync(query: query, parameters: parameters);
                 retVal = result > 0 ? true : false;
             }
@@ -70,7 +74,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Payments
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_Id"] = Id;
-                string query = @"SELECT * FROM Payment WHERE PartnerId = @v_Id ORDER BY 1 DESC";
+                string query = @"SELECT TOP 1 * FROM Payment WHERE PartnerId = @v_Id ORDER By PaymentAmount DESC";
                 var values = await Repository.QueryAsync(query, parameters: parameters);
                 if (values != null || values?.Count > 0)
                 {
@@ -81,7 +85,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Payments
                         lastPayment.PaymentType = value?.GetValueFromDictonary("PaymentType")?.ToString()?.ToEnum<PaymentType>() ?? PaymentType.None;
                         lastPayment.PaymentMethod = new PaymentTypeModel { Id = value?.GetValueFromDictonary("PaymentMethodId")?.ToString()?.ToInt() ?? 0 };
                         lastPayment.PaymentAmount = value?.GetValueFromDictonary("PaymentAmount")?.ToString()?.ToDecimal() ?? 0;
-                        lastPayment.IsPaymentReceived = value?.GetValueFromDictonary("IsPaymentReceived")?.ToString()?.ToNullableBoolean() ?? false;
+                        lastPayment.DR = value?.GetValueFromDictonary("DR").ToString();
+                        lastPayment.CR = value?.GetValueFromDictonary("CR").ToString();
                     }
                 }
             }

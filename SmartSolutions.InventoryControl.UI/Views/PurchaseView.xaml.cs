@@ -61,7 +61,7 @@ namespace SmartSolutions.InventoryControl.UI.Views
                 var value = Convert.ToInt32(text);
                 if (value < 0)
                     value = 0;
-                ViewModel.CalculateDiscountPrice(value, 0);
+                //ViewModel.CalculateDiscountPrice(value, 0);
             }
         }
 

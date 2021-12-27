@@ -274,7 +274,7 @@
                                   Visibility="{TemplateBinding ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility}" 
                                   VerticalAlignment="Center" />
                             <Popup x:Name="PART_Popup" MinWidth="{Binding ElementName=templateRoot, Path=ActualWidth}" AllowsTransparency="true" Grid.Column="0" Grid.ColumnSpan="4" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{StaticResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom">
-                                <Border x:Name="dropDownBorder" BorderBrush="{StaticResource LightGrayColorBrush}" CornerRadius="5" BorderThickness="0.7" Background="#FFFFFF">
+                                <Border x:Name="dropDownBorder" BorderBrush="{StaticResource LightGrayColorBrush}" MaxHeight="{TemplateBinding MaxDropDownHeight}" Width="{TemplateBinding Width}" CornerRadius="5" BorderThickness="1" Margin="10 0 0 0" Padding="8 0 0 0" Background="#FFFFFF">
                                     <ScrollViewer x:Name="DropDownScrollViewer">
                                         <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
                                             <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">

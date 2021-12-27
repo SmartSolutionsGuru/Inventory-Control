@@ -17,7 +17,7 @@
         WindowState="Normal"
         WindowStartupLocation="CenterScreen"
         AllowsTransparency="True" 
-        WindowStyle="None">
+        WindowStyle="None" d:DesignHeight="768" d:DesignWidth="1366">
     <Window.Resources>
         <converter:BooleanToBorderThicknessConverter x:Key="BooleanToBorderThicknessConverter"/>
         <!--Design for Main Window-->

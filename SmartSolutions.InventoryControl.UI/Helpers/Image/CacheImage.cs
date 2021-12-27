@@ -34,13 +34,14 @@ namespace SmartSolutions.InventoryControl.UI.Helpers.Image
         }
         #endregion
 
+        #region Methods
         /// <summary>
         /// save Image to Image Given Path
         /// </summary>
         /// <param name="image"></param>
         /// <param name="imageName"></param>
         /// <returns></returns>
-        public  string SaveImageToDirectory(byte[] image, string imageName)
+        public string SaveImageToDirectory(byte[] image, string imageName)
         {
             string retVal = string.Empty;
             try
@@ -77,5 +78,6 @@ namespace SmartSolutions.InventoryControl.UI.Helpers.Image
             }
             return image;
         }
+        #endregion
     }
 }
