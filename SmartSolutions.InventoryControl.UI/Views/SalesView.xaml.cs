@@ -97,13 +97,22 @@ namespace SmartSolutions.InventoryControl.UI.Views
             {
                 var control = sender as ListView;
                 var resultAddItem = e.AddedItems;
-                if(ViewModel.SelectedInventoryProduct.ProductSize != null 
-                    && ViewModel.SelectedInventoryProduct.ProductColor != null 
-                    && ViewModel.SelectedInventoryProduct.Product != null)
+                if(resultAddItem[0] is SmartSolutions.InventoryControl.DAL.Models.Product.ProductModel == true)
                 {
-                    ViewModel.SelectedInventoryProduct.Product.ProductColor = ViewModel.SelectedInventoryProduct.ProductColor;
-                    ViewModel.GetProductAvailableStock(ViewModel.SelectedInventoryProduct?.Product?.Id ?? 0);
-                }  
+                    ViewModel.SelectedInventoryProduct.Product = resultAddItem[0] as ProductModel;
+                }
+                if(ViewModel?.SelectedInventoryProduct.Product.Id != null)
+                {
+                    ViewModel.GetProductAvailableStock(ViewModel?.SelectedInventoryProduct?.Product?.Id ?? 0);
+                }
+                //if(ViewModel.SelectedInventoryProduct.ProductSize != null 
+                //    && ViewModel.SelectedInventoryProduct.ProductColor != null 
+                //    && ViewModel.SelectedInventoryProduct.Product != null)
+                //{
+                //    ViewModel.SelectedInventoryProduct.Product.ProductColor = ViewModel?.SelectedInventoryProduct?.ProductColor;
+                //    ViewModel.SelectedInventoryProduct.Product.ProductSize = ViewModel?.SelectedInventoryProduct?.ProductSize;
+                //    ViewModel.GetProductAvailableStock(ViewModel.SelectedInventoryProduct?.Product?.Id ?? 0);
+                //}  
             }
             catch (Exception ex)
             {

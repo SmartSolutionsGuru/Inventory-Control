@@ -66,9 +66,9 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
             int? lastRowId = 0;
             try
             {
-                string query = "SELECT last_insert_rowid()";
+                string query = "SELECT IDENT_CURRENT('SaleInvoice') AS Id";
                 var result = Repository.Query(query);
-                lastRowId = result?.FirstOrDefault().GetValueFromDictonary("last_insert_rowid()")?.ToString()?.ToNullableInt();
+                lastRowId = result?.FirstOrDefault().GetValueFromDictonary("Id")?.ToString()?.ToNullableInt();
             }
             catch (Exception ex)
             {
@@ -93,7 +93,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
                     lastInvoice.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                     lastInvoice.InvoiceId = value?.GetValueFromDictonary("InvoiceId")?.ToString();
                     lastInvoice.InvoiceGuid = Guid.Parse(value?.GetValueFromDictonary("InvoiceGuid")?.ToString());
-                    lastInvoice.Payment = value?.GetValueFromDictonary("Payment")?.ToString()?.ToNullableInt() ?? 0;
+                    lastInvoice.Payment = new Models.Payments.PaymentModel { Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToNullableInt() ?? 0, PaymentAmount = Convert.ToDecimal(value?.GetValueFromDictonary("PaymentAmount")?.ToString())};
                 }
             }
             catch (Exception ex)
@@ -130,24 +130,22 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
                 string query = string.Empty;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_InvoiceId"] = invoice.InvoiceId;
-                parameters["@v_InvoiceGuid"] = invoice.InvoiceGuid;
-                parameters["@v_SelectedPartnerId"] = invoice.SelectedPartner?.Id;
-                parameters["@v_SelectedPaymentType"] = invoice.SelectedPaymentType;
-                parameters["@v_PercentDiscount"] = invoice.PercentDiscount;
-                parameters["@v_DiscountAmount"] = invoice.Discount == 0 ? DBNull.Value : (object)invoice.Discount;
+                parameters["@v_InvoiceGuid"] = invoice.InvoiceGuid.ToString();
+                parameters["@v_PartnerId"] = invoice.SelectedPartner?.Id;
+                parameters["@v_PaymentTypeId"] = invoice.SelectedPaymentType?.Id == null ? DBNull.Value : (object)invoice.SelectedPaymentType?.Id;              
+                parameters["@v_Discount"] = invoice.Discount == 0 ? DBNull.Value : (object)invoice.Discount;
                 parameters["@v_Description"] = invoice.Description == null ? DBNull.Value : (object)invoice.Description;
-                parameters["@v_AmountImage"] = invoice.PaymentImage == null ? DBNull.Value : (object)invoice.PaymentImage;
-                parameters["@v_Payment"] = invoice.Payment;
+                parameters["@v_ImagePath"] = invoice.PaymentImage == null ? DBNull.Value : (object)invoice.ImagePath;
+                parameters["@v_Payment"] = invoice.Payment?.PaymentAmount;
                 parameters["@v_InvoiceTotal"] = invoice.InvoiceTotal;
-                parameters["@v_IsActive"] = invoice.IsActive = true;
-                parameters["@v_IsDeleted"] = invoice.IsDeleted = false;
+                parameters["@v_IsActive"] = invoice.IsActive = true;               
                 parameters["@v_CreatedAt"] = invoice.CreatedAt == null ? DateTime.Now : invoice.CreatedAt;
                 parameters["@v_CreatedBy"] = invoice.CreatedBy == null ? DBNull.Value : (object)invoice.CreatedBy;
                 parameters["@v_UpdatedAt"] = invoice.UpdatedAt == null ? DBNull.Value : (object)invoice.UpdatedAt;
                 parameters["@v_UpdatedBy"] = invoice.UpdatedBy == null ? DBNull.Value : (object)invoice.UpdatedBy;
 
-                query = @"INSERT INTO SaleInvoice (InvoiceId,InvoiceGuid,SelectedPartnerId,SelectedPaymentType,PercentDiscount,DiscountAmount,Description,AmountImage,Payment,InvoiceTotal,IsActive,IsDeleted,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
-                                            VALUES(@v_InvoiceId,@v_InvoiceGuid,@v_SelectedPartnerId,@v_SelectedPaymentType,@v_PercentDiscount,@v_DiscountAmount,@v_Description,@v_AmountImage,@v_Payment,@v_InviceTotal,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
+                query = @"INSERT INTO SaleInvoice (InvoiceId,InvoiceGuid,PartnerId,PaymentTypeId,Discount,Description,ImagePath,Payment,InvoiceTotal,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                            VALUES(@v_InvoiceId,@v_InvoiceGuid,@v_PartnerId,@v_PaymentTypeId,@v_Discount,@v_Description,@v_ImagePath,@v_Payment,@v_InvoiceTotal,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
 
                 var result = await Repository.NonQueryAsync(query, parameters: parameters);
                 retVal = result > 0 ? true : false;

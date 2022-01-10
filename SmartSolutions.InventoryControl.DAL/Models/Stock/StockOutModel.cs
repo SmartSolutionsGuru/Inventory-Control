@@ -1,7 +1,9 @@
-﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
+﻿using SmartSolutions.InventoryControl.DAL.Managers.Stock.StockOut;
+using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.InventoryControl.DAL.Models.Sales;
 using SmartSolutions.InventoryControl.DAL.Models.Warehouse;
+using SmartSolutions.Util.LogUtils;
 using System;
 
 namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
@@ -11,6 +13,11 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
     /// </summary>
     public class StockOutModel : BaseModel
     {
+
+        #region Private Members
+        private readonly DAL.Managers.Stock.StockOut.IStockOutManager _stockOutManager;
+        #endregion
+
         #region Constructor
         public StockOutModel()
         {
@@ -19,14 +26,22 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
             SaleOrderDetail = new SaleOrderDetailModel();
             Product = new ProductModel();
             Warehouse = new WarehouseModel();
-        }
+            _stockOutManager = new StockOutManager();
+    }
         #endregion
 
         #region Properties
         public BussinessPartnerModel Partner { get; set; }
         public SaleOrderModel SaleOrder { get; set; }
         public SaleOrderDetailModel SaleOrderDetail { get; set; }
-        public ProductModel Product { get; set; }
+        //public ProductModel Product { get; set; }
+        private ProductModel _Product;
+        public ProductModel Product
+        {
+            get { return _Product; }
+            set { _Product = value; GetProductAvailableStock(Product?.Id); }
+        }
+        public int? SaleInvoiceId { get; set; }
         private int? _Quantity;
         public int? Quantity
         {
@@ -39,7 +54,6 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
             get { return _Price; }
             set { _Price = value; NotifyOfPropertyChange(nameof(Price)); OnPriceChange(); }
         }
-       
         private decimal? _Total;
         public decimal? Total
         {
@@ -53,12 +67,13 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         /// <summary>
         /// Calculated Property That Will Get the Stock In Hand only
         /// </summary>
-        private int _StockInHand;
-        public int StockInHand
-        {
-            get { return _StockInHand; }
-            set { _StockInHand = value; NotifyOfPropertyChange(nameof(StockInHand)); }
-        }
+        //private int? _StockInHand;
+        //public int? StockInHand
+        //{
+        //    get { return _StockInHand; }
+        //    set { _StockInHand = value; NotifyOfPropertyChange(nameof(StockInHand));  }
+        //}
+        public int? StockInHand { get; set; }
         private ProductColorModel _ProductColor;
 
         public ProductColorModel ProductColor
@@ -84,6 +99,21 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
             if (Quantity == 0 || Price == 0) return;
             Total = Quantity * (decimal)Price;
 
+        }
+
+        public async void GetProductAvailableStock(int? productId)
+        {
+            try
+            {
+                if (productId == null || productId == 0) return;
+                var availableStock = await _stockOutManager.GetStockInHandAsync(productId);
+                StockInHand = availableStock.Value;
+                NotifyOfPropertyChange(nameof(StockInHand));
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
         }
         #endregion
 

@@ -16,11 +16,38 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Sales
         #region Properties
         public BussinessPartnerModel SalePartner { get; set; }
         public string Description { get; set; }
-        public string Status { get; set; }
+        public OrderStatus Status { get; set; }
         public ShippingModel Shipping { get; set; }
-        public double SubTotal { get; set; }
-        public double Discount { get; set; }
-        public double GrandTotal { get; set; }
+        public decimal SubTotal { get; set; }
+        public decimal Discount { get; set; }
+        public decimal GrandTotal { get; set; }
+        #endregion
+
+        #region Enum
+        public enum OrderStatus
+        {
+            None = 0,
+            /// <summary>
+            /// Order is Created
+            /// </summary>
+            New = 1,
+            /// <summary>
+            /// Sent To Vender/Supplier
+            /// </summary>
+            Relesed = 2,
+            /// <summary>
+            /// Completed or No Item Remaining
+            /// </summary>
+            Received = 3,
+            /// <summary>
+            ///  purchase order will not be processed any more. 
+            /// </summary>
+            Canceled = 4,
+            /// <summary>
+            /// Completed Successfully and Closed
+            /// </summary>
+            Closed = 5
+        }
         #endregion
     }
 }

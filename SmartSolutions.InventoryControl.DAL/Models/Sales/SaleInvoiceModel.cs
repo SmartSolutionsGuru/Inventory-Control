@@ -16,6 +16,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Sales
             InvoiceGuid = Guid.NewGuid();
             PaymentTypes = new List<PaymentTypeModel>();
             Products = new List<StockModel>();
+            Payment = new PaymentModel();
         }
         #endregion
 
@@ -61,7 +62,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Sales
         /// <summary>
         /// Discount Amiunt Exactly
         /// </summary>
-        public double Discount { get; set; }
+        public decimal Discount { get; set; }
         /// <summary>
         /// List Of Products on Which Opreation is Performed
         /// </summary>
@@ -77,11 +78,12 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Sales
         /// <summary>
         /// Amount Of Payment which is Paid Or Recived
         /// </summary>
-        public decimal Payment { get; set; }
+        public PaymentModel Payment { get; set; }
         /// <summary>
         /// Grand Total Of transaction
         /// </summary>
         public decimal InvoiceTotal { get; set; }
+        public string ImagePath { get; set; }
 
         #endregion
     }

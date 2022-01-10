@@ -68,7 +68,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockOut
                 parameters["@v_UpdatedBy"] = model.UpdatedBy == null ? DBNull.Value : (object)model.UpdatedBy;
                 parameters["@v_WarehouseId"] = model.Warehouse?.Id == null ? DBNull.Value : (object)model.Warehouse?.Id;
                 string query = @"INSERT INTO StockOut (PartnerId,SaleOrderId,SaleOrderDetailId,ProductId,Quantity,Price,Description,IsActive,CreatedAt,createdBy,UpdatedAt,UpdatedBy,WarehouseId)
-                                                VALUES(@v_PartnerId,@v_SaleOrderId,@v_SaleOrderDetailId,@v_ProductId,@v_Quantity,@v_Price,v_Description,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy,@v_WarehouseId)";
+                                                VALUES(@v_PartnerId,@v_SaleOrderId,@v_SaleOrderDetailId,@v_ProductId,@v_Quantity,@v_Price,@v_Description,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy,@v_WarehouseId)";
                 var result = await Repository.NonQueryAsync(query, parameters: parameters);
                 retVal = result > 0 ? true : false;
             }
@@ -87,7 +87,13 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockOut
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_productId"] = productId;
-                string query = @" SELECT SUM(Total) AS StockInHand FROM StockIn WHERE ProductId = @v_productId - ISNULL((SELECT SUM(Total) FROM StockOut WHERE ProductId = @v_productId),0)";
+                //string query = @" SELECT SUM(Total) AS StockInHand FROM StockIn WHERE ProductId = @v_productId - ISNULL((SELECT SUM(Total) FROM StockOut WHERE ProductId = @v_productId),0)";
+                string query = @"SELECT(Select ISNULL(SUM(quantity),0)
+                                From StockIn
+                                Where quantity is not null AND StockIn.ProductId = @v_productId)-
+                                (Select ISNULL(SUM(quantity),0)
+                                From StockOut
+                                Where quantity is not null AND StockOut.ProductId = @v_productId) as StockInHand";
                 var values = await Repository.QueryAsync(query,parameters:parameters);
                 if(values != null || values?.Count > 0)
                 {

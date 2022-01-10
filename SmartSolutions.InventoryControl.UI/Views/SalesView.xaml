@@ -169,7 +169,7 @@
                     <Border Grid.Column="2" Height="50" CornerRadius="5" Background="{StaticResource BlueColorBrush}" Margin="10 17 15 0">
                         <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
                             <TextBlock  FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource NormalSize}" Margin="10 0 0 0"  Foreground="{StaticResource PureWhiteColorBrush}" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Previous Balance"/>
-                            <TextBlock FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource PureWhiteColorBrush}" Margin="25 5 0 0" FontSize="{StaticResource HeadingSize}" FontWeight="DemiBold" Text="{Binding PreviousBalance,Mode=OneWay}"/>
+                            <TextBlock FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource PureWhiteColorBrush}" Margin="10 5 0 0" FontSize="{StaticResource HeadingSize}" FontWeight="DemiBold" Text="{Binding PreviousBalance,Mode=OneWay,FallbackValue='0',TargetNullValue='0',StringFormat='{}{0:#,0}'}"/>
                             <TextBlock FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource PureWhiteColorBrush}"  FontSize="{StaticResource NormalSize}" Margin="10 0 0 0" VerticalAlignment="Center" Text="{Binding BalanceType,Mode=OneWay}"/>
                         </StackPanel>
 
@@ -259,7 +259,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
+                                <!--<ColumnDefinition Width="*"/>-->
                                 <ColumnDefinition Width="0.5*"/>
                             </Grid.ColumnDefinitions>
                             <Border Grid.Row="0" Grid.ColumnSpan="17"  Background="{StaticResource LightBlueColorBrush}" CornerRadius="3" Margin="3,4">
@@ -277,15 +277,17 @@
                             </Border>
                             <TextBlock Grid.Row="1" Grid.Column="0" Text="Item #" Margin="5 0 0 0" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Center"/>
                             <TextBlock Grid.Row="1" Grid.Column="1" Text="Product" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="10 0 0 0"/>
-                            <TextBlock Grid.Row="1" Grid.Column="2" Text="Product Color" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
-                            <TextBlock Grid.Row="1" Grid.Column="3" Text="Product Size" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
-                            <TextBlock Grid.Row="1" Grid.Column="4" Text="Quantity" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
-                            <TextBlock Grid.Row="1" Grid.Column="5" Text="Price" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
-                            <TextBlock Grid.Row="1" Grid.Column="6" Text="Available Stock" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
-                            <TextBlock Grid.Row="1" Grid.Column="7" Text="Total" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
+                            <!--<TextBlock Grid.Row="1" Grid.Column="2" Text="Product Color" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="3" Text="Product Size" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>-->
+                            <TextBlock Grid.Row="1" Grid.Column="2" Text="Quantity" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="10 0 0 0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="3" Text="Price" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="4" Text="Available Stock" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="5" Text="Total" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="6" Text="Warehouse" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
 
+                            <!--SelectionChanged="ListView_SelectionChanged"-->
                             <ScrollViewer Grid.Row="2" Grid.ColumnSpan="9" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                <ListView Grid.Row="1" Grid.ColumnSpan="9" ItemsSource="{Binding ProductGrid,Mode=OneWay}" SelectionChanged="ListView_SelectionChanged" SelectedItem="{Binding SelectedInventoryProduct,Mode=TwoWay}"  Margin="0 0" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                <ListView Grid.Row="1" Grid.ColumnSpan="9" ItemsSource="{Binding ProductGrid,Mode=OneWay}"  SelectedItem="{Binding SelectedInventoryProduct,Mode=TwoWay}"   Margin="0 0" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                                     <ListView.ItemTemplate>
                                         <DataTemplate DataType="{x:Type salesModels:StockOutModel}">
                                             <Grid Margin="0 5">
@@ -303,8 +305,8 @@
                                                     <ColumnDefinition Width="8"/>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="8"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="8"/>
+                                                    <!--<ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="8"/>-->
                                                     <ColumnDefinition Width="0.6*"/>
                                                 </Grid.ColumnDefinitions>
 
@@ -348,7 +350,7 @@
                                                                                  ItemTemplate="{StaticResource ProductTemplate}"
                                                                                  AltSelectionBoxItemTemplate="{StaticResource ProductDisplayTemplate}"
                                                                                  ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Product"/>-->
-                                                <ComboBox Height="40"
+                                                <!--<ComboBox Height="40"
                                                           Grid.Row="1"
                                                           Grid.Column="3"
                                                           Width="130"
@@ -384,10 +386,10 @@
                                                       FontSize="{StaticResource MediumSize}"
                                                       Foreground="{StaticResource GrayColorBrush}"
                                                       ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=DataContext.ProductSizes,Mode=TwoWay}"
-                                                      SelectedItem="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.SelectedInventoryProduct.ProductSize,Mode=TwoWay}"/>
-                                                <TextBox Grid.Row="1" Grid.Column="7" Opacity="0.7" Height="40" Width="130" Foreground="{StaticResource GrayColorBrush}" VerticalAlignment="Top" Text="{Binding Quantity,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Quantity" />
+                                                      SelectedItem="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.SelectedInventoryProduct.ProductSize,Mode=TwoWay}"/>-->
+                                                <TextBox Grid.Row="1" Grid.Column="3" Opacity="0.7" Height="40" Width="130" Foreground="{StaticResource GrayColorBrush}" VerticalAlignment="Top" Text="{Binding Quantity,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Quantity" />
                                                 <TextBox Grid.Row="1" 
-                                                         Grid.Column="9" 
+                                                         Grid.Column="5" 
                                                          Opacity="0.7" 
                                                          Height="40" 
                                                          Width="130" 
@@ -399,9 +401,38 @@
                                                          ControlExtensions:WaterMarkTextExtension.WatermarkText="Price" >
                                                    
                                                 </TextBox>
-                                                <TextBox Grid.Row="1" Grid.Column="11" Opacity="0.7" IsReadOnly="True" Height="40" Width="130" VerticalAlignment="Top" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.SelectedInventoryProduct.StockInHand,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Stock" />
-                                                <TextBox Grid.Row="1" Grid.Column="13" Opacity="0.7" IsReadOnly="True" Height="40" Width="130" VerticalAlignment="Top" Text="{Binding Total,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Total" />
-                                                <StackPanel Grid.Row="1" Grid.Column="15" Orientation="Horizontal" VerticalAlignment="Top" Margin="0 5 0 0">
+                                                <TextBox Grid.Row="1" 
+                                                         Grid.Column="7" 
+                                                         Opacity="0.7" 
+                                                         IsReadOnly="False" 
+                                                         Height="40" 
+                                                         Width="130" 
+                                                         VerticalAlignment="Top" 
+                                                         Text="{Binding StockInHand,Mode=TwoWay}" 
+                                                         Style="{StaticResource TextBoxVisibilityPathIconStyle}" 
+                                                         BorderBrush="{StaticResource BlueColorBrush}" 
+                                                         BorderThickness="1.7" 
+                                                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Stock" />
+                                                <TextBox Grid.Row="1" Grid.Column="9" Opacity="0.7" IsReadOnly="True" Height="40" Width="130" VerticalAlignment="Top" Text="{Binding Total,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Total" />
+                                                <ComboBox Height="40"
+                                                      Grid.Row="1"
+                                                      Grid.Column="11"
+                                                      Width="130"
+                                                      VerticalAlignment="Top"
+                                                      Style="{StaticResource BaseComboBox}"
+                                                      BorderBrush="{StaticResource BlueColorBrush}"
+                                                      BorderThickness="1.7"
+                                                      DisplayMemberPath="Size"
+                                                      ControlExtensions:WaterMarkTextExtension.WatermarkText="Warehouse"
+                                                      Opacity="0.7"
+                                                      Margin="0 0 0 0"
+                                                      Padding="15 0 0 0"
+                                                      FontFamily="{StaticResource MediumFont}"
+                                                      FontSize="{StaticResource MediumSize}"
+                                                      Foreground="{StaticResource GrayColorBrush}"
+                                                      ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=DataContext.Warehouses,Mode=TwoWay}"
+                                                      SelectedItem="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.SelectedInventoryProduct.Warehouse,Mode=TwoWay}"/>
+                                                <StackPanel Grid.Row="1" Grid.Column="13" Orientation="Horizontal" VerticalAlignment="Top" Margin="0 5 0 0">
                                                     <Button Grid.Row="1"  cal:Message.Attach="AddProduct($dataContext)" Margin="0 0 10 0" Height="30" Width="30"  Style="{StaticResource ContentButton}" Background="{StaticResource GreenColorBrush}">
                                                         <Path Height="20" Width="20" Fill="{StaticResource PureWhiteColorBrush}"  Stretch="UniformToFill" Data="{StaticResource Shape_Plus1}"></Path>
                                                     </Button>
@@ -496,13 +527,13 @@
                                           BorderThickness="1.7"
                                           Opacity="0.7"/>
                             </StackPanel>
-                            <StackPanel Grid.Column="1">
+                            <!--<StackPanel Grid.Column="1">
                                 <TextBlock Text="Discount %" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" HorizontalAlignment="Left" Margin="20 0 0 0" FontSize="{StaticResource MediumSize}"/>
                                 <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150" IsReadOnly="True" Margin="0 5 0 0"  VerticalAlignment="Top" Text="{Binding DiscountPrice,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Discount Price" />
-                            </StackPanel>
+                            </StackPanel>-->
                             <StackPanel Grid.Column="2">
                                 <TextBlock Text="Discount Amount" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" HorizontalAlignment="Left" Margin="20 0 0 0" FontSize="{StaticResource MediumSize}"/>
-                                <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150" IsReadOnly="True" Margin="0 5 0 0"  VerticalAlignment="Top" Text="{Binding DiscountPrice,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Discount Price" />
+                                <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150"  Margin="0 5 0 0"  VerticalAlignment="Top" Text="{Binding SaleInvoice.Discount,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Discount Price" />
                             </StackPanel>
 
                             <StackPanel Grid.Column="4">
@@ -545,7 +576,18 @@
                                         FontSize="{StaticResource NormalSize}"
                                         Padding="8 0 0 0"/>
                             </StackPanel>
-                            <TextBox Grid.Row="2" Grid.Column="1" Background="{StaticResource GreenColorBrush}" Margin="10 5" Style="{StaticResource TextBoxVisibilityPathIconStyle}" Text="{Binding GrandTotal,Mode=OneWay}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource HeadingSize}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="DemiBold" Foreground="{StaticResource PureWhiteColorBrush}"/>
+                            <TextBox Grid.Row="2"
+                                     Grid.Column="1" 
+                                     Background="{StaticResource GreenColorBrush}" 
+                                     Margin="10 5" 
+                                     Style="{StaticResource TextBoxVisibilityPathIconStyle}" 
+                                     Text="{Binding GrandTotal,Mode=OneWay,FallbackValue='0',TargetNullValue='0',StringFormat='{}{0:#,0}'}" 
+                                     FontFamily="{StaticResource MediumFont}" 
+                                     FontSize="{StaticResource HeadingSize}" 
+                                     HorizontalContentAlignment="Center" 
+                                     VerticalContentAlignment="Center" 
+                                     FontWeight="DemiBold" 
+                                     Foreground="{StaticResource PureWhiteColorBrush}"/>
                             <Grid Grid.Row="2"  Grid.Column="1"  HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20 0 0 0">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
