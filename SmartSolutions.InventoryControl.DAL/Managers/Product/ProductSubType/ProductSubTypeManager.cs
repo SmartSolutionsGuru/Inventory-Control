@@ -63,7 +63,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductSubType
             return ProductSubTypeList;
         }
 
-        public async Task<ProductSubTypeModel> GetProductSubTypeById(int? Id)
+        public async Task<ProductSubTypeModel> GetProductSubTypeByIdAsync(int? Id)
         {
             var model = new ProductSubTypeModel();
             try

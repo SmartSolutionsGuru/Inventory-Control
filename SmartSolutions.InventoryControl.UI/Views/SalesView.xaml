@@ -287,7 +287,7 @@
 
                             <!--SelectionChanged="ListView_SelectionChanged"-->
                             <ScrollViewer Grid.Row="2" Grid.ColumnSpan="9" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                <ListView Grid.Row="1" Grid.ColumnSpan="9" ItemsSource="{Binding ProductGrid,Mode=OneWay}"  SelectedItem="{Binding SelectedInventoryProduct,Mode=TwoWay}"   Margin="0 0" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                <ListView Grid.Row="1" Grid.ColumnSpan="9" ItemsSource="{Binding ProductGrid,Mode=OneWay}"  SelectedItem="{Binding SelectedInventoryProduct,Mode=TwoWay}"   Margin="0 0" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" d:ItemsSource="{d:SampleData ItemCount=5}">
                                     <ListView.ItemTemplate>
                                         <DataTemplate DataType="{x:Type salesModels:StockOutModel}">
                                             <Grid Margin="0 5">
@@ -415,23 +415,23 @@
                                                          ControlExtensions:WaterMarkTextExtension.WatermarkText="Stock" />
                                                 <TextBox Grid.Row="1" Grid.Column="9" Opacity="0.7" IsReadOnly="True" Height="40" Width="130" VerticalAlignment="Top" Text="{Binding Total,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Total" />
                                                 <ComboBox Height="40"
-                                                      Grid.Row="1"
-                                                      Grid.Column="11"
-                                                      Width="130"
-                                                      VerticalAlignment="Top"
-                                                      Style="{StaticResource BaseComboBox}"
-                                                      BorderBrush="{StaticResource BlueColorBrush}"
-                                                      BorderThickness="1.7"
-                                                      DisplayMemberPath="Size"
-                                                      ControlExtensions:WaterMarkTextExtension.WatermarkText="Warehouse"
-                                                      Opacity="0.7"
-                                                      Margin="0 0 0 0"
-                                                      Padding="15 0 0 0"
-                                                      FontFamily="{StaticResource MediumFont}"
-                                                      FontSize="{StaticResource MediumSize}"
-                                                      Foreground="{StaticResource GrayColorBrush}"
-                                                      ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=DataContext.Warehouses,Mode=TwoWay}"
-                                                      SelectedItem="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.SelectedInventoryProduct.Warehouse,Mode=TwoWay}"/>
+                                                          Grid.Row="1"
+                                                          Grid.Column="11"
+                                                          Width="130"                                                 
+                                                          VerticalAlignment="Top"
+                                                          Style="{StaticResource BaseComboBox}"
+                                                          BorderBrush="{StaticResource BlueColorBrush}"
+                                                          BorderThickness="1.7"
+                                                          DisplayMemberPath="Name"
+                                                          ControlExtensions:WaterMarkTextExtension.WatermarkText="Warehouse"
+                                                          Opacity="0.7"
+                                                          Margin="0 0 0 0"
+                                                          Padding="15 0 0 0"
+                                                          FontFamily="{StaticResource MediumFont}"
+                                                          FontSize="{StaticResource MediumSize}"
+                                                          Foreground="{StaticResource GrayColorBrush}"
+                                                          ItemsSource="{Binding Warehouses,Mode=OneWay}"
+                                                          SelectedItem="{Binding SelectedWarehouse,Mode=TwoWay}"/>
                                                 <StackPanel Grid.Row="1" Grid.Column="13" Orientation="Horizontal" VerticalAlignment="Top" Margin="0 5 0 0">
                                                     <Button Grid.Row="1"  cal:Message.Attach="AddProduct($dataContext)" Margin="0 0 10 0" Height="30" Width="30"  Style="{StaticResource ContentButton}" Background="{StaticResource GreenColorBrush}">
                                                         <Path Height="20" Width="20" Fill="{StaticResource PureWhiteColorBrush}"  Stretch="UniformToFill" Data="{StaticResource Shape_Plus1}"></Path>

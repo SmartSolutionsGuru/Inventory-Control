@@ -28,7 +28,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.BussinessPartn
         protected async override void OnActivate()
         {
             base.OnActivate();
-            BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x=>x.Name).ToList();
+            BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersWithBalanceAsync()).OrderBy(x=>x.Name).ToList();
             if(BussinessPartners.Count == 0)
             {
                 IoC.Get<IDialogManager>().ShowMessageBox("There is No Bussiness Partner Available At this Time",options: Dialogs.MessageBoxOptions.Ok);
@@ -37,16 +37,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.BussinessPartn
         #endregion
 
         #region Properties
-        private List<BussinessPartnerModel> _BussinessPartners;
+        private List<BussinessPartnerLedgerModel> _BussinessPartners;
 
-        public List<BussinessPartnerModel> BussinessPartners
+        public List<BussinessPartnerLedgerModel> BussinessPartners
         {
             get { return _BussinessPartners; }
             set { _BussinessPartners = value;  NotifyOfPropertyChange(nameof(BussinessPartners)); }
         }
-        private BussinessPartnerModel _SelectedPartner;
+        private BussinessPartnerLedgerModel _SelectedPartner;
 
-        public BussinessPartnerModel SelectedPartner
+        public BussinessPartnerLedgerModel SelectedPartner
         {
             get { return _SelectedPartner; }
             set { _SelectedPartner = value; NotifyOfPropertyChange(nameof(SelectedPartner)); }

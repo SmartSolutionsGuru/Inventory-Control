@@ -320,7 +320,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Login
                         }
                         else
                         {
-                            await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Enter the Same Password", options: Dialogs.MessageBoxOptions.Ok); ;
+                            await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Enter the Valid Password", options: Dialogs.MessageBoxOptions.Ok); ;
                         }
                     }
                     AppSettings.LoggedInUser = User;

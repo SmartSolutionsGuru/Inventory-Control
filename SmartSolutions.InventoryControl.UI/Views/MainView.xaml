@@ -530,7 +530,7 @@
                             </Button>
                             <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" />
                             <!--TODO have to Implement it Numbers-->
-                            <customControls:NotificationButton Value="{Binding TransactionCounter,Mode=OneWay}" BadgeMargin="0,-5,10,0" Height="30" Margin="0,0,0,0" Style="{StaticResource BadgeDanger}">
+                            <customControls:NotificationButton Value="{Binding TransactionCounter,Mode=OneWay}" BadgeMargin="0,-5,10,0" Height="30" Margin="0,0,0,0" Style="{StaticResource BadgeInfo}">
                                 <Button x:Name="UpdateDbBackup" ToolTip="Backup" Background="Transparent" Margin="{StaticResource HeaderLogoMargin}" Style="{StaticResource ContentButton}">
                                     <Path Stretch="Uniform" Data="{StaticResource Shape_Database}" Margin="{StaticResource HeaderLogoMargin}" ToolTip="{Binding PrinterName}">
                                         <Path.Style>

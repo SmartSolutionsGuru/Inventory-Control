@@ -37,6 +37,8 @@ namespace SmartSolutions.InventoryControl.DAL
         /// Path For Cached Images
         /// </summary>
         public static string ImageCachedFolderPath { get; set; }
+       
+        
 
     }
 }

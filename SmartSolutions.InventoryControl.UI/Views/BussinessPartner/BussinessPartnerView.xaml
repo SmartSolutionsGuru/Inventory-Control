@@ -194,7 +194,7 @@
                                  Width="250"
                                  FontFamily="{StaticResource MediumFont}"
                                  FontSize="{StaticResource MediumSize}"
-                                 Text="{Binding NewBussinessPartner.BussinessName,Mode=TwoWay}"
+                                 Text="{Binding BussinessName,Mode=TwoWay}"
                                  ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_User_ID}"
                                  ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
                                  ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Bussiness Name"
@@ -221,7 +221,7 @@
                                  Width="250"
                                  FontFamily="{StaticResource MediumFont}"
                                  FontSize="{StaticResource MediumSize}"
-                                 Text="{Binding NewBussinessPartner.Name,Mode=TwoWay}"
+                                 Text="{Binding FullName,Mode=TwoWay}"
                                   ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_User_Identity}"
                                  ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
                                  ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Full Name"
@@ -370,12 +370,25 @@
                     </Grid>
                     <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top">
 
-                        <TextBlock Text="Address" 
-                               Foreground="{StaticResource GrayColorBrush}"
-                               FontSize="{StaticResource NormalSize}"
-                               HorizontalAlignment="Center"
-                               Margin="0 10 0 0"
-                               FontFamily="{StaticResource MediumFont}"/>
+                        <TextBlock 
+                                   FontSize="{StaticResource NormalSize}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0 10 0 0"
+                            Padding="10 10 0 0"
+                                   FontFamily="{StaticResource MediumFont}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="Mailing Address"/>
+                                    <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding AddressError}" Value="True">
+                                            <Setter Property="Text" Value="Please Enter Address"/>
+                                            <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                         <TextBox Grid.Column="2" 
                              Height="150" 
                              Width="350"

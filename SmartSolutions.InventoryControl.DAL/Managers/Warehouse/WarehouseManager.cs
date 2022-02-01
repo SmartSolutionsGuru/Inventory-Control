@@ -58,6 +58,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Warehouse
         public async Task<IEnumerable<WarehouseModel>> GetAllWarehouseByProductId(int Id)
         {
             var warehouses = new List<WarehouseModel>();
+            List<string> warehouseIds = new List<string>();
             try
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
@@ -71,17 +72,37 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Warehouse
                     {
                         foreach (var value in values)
                         {
-                            var warehouse = new WarehouseModel();
-                            warehouse.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
-                            warehouse.Name = value?.GetValueFromDictonary("Name")?.ToString();
-                            warehouse.PhoneNumber = value?.GetValueFromDictonary("PhoneNumber")?.ToString();
-                            warehouse.MobileNumber = value?.GetValueFromDictonary("MobileNumber")?.ToString();
-                            warehouse.City = new Models.Region.CityModel
+                            
+                            var id = value?.GetValueFromDictonary("WarehouseId")?.ToString();
+                            if (!string.IsNullOrEmpty(id))
+                                warehouseIds.Add(id);   
+                        }
+                    }
+                    if (warehouseIds != null && warehouseIds?.Count > 0)
+                    {
+                        
+                        string query_1 = @"SELECT * FROM Warehouses WHERE Id = @v_Id";
+                        foreach (var warehouse in warehouseIds)
+                        {
+                            parameters["@v_Id"] = warehouse.ToInt();
+                            var resultValues = await Repository.QueryAsync(query_1, parameters: parameters);
+                            if(resultValues != null && resultValues?.Count > 0)
                             {
-                                Id = value?.GetValueFromDictonary("CityId")?.ToString()?.ToInt(),
-                            };
-                            if (warehouse.Id != null)
-                                warehouses.Add(warehouse);
+                                
+                                foreach (var item in resultValues)
+                                {
+                                    var resultwarehouse = new WarehouseModel();
+                                    resultwarehouse.Id = item?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                                    resultwarehouse.Name = item?.GetValueFromDictonary("Name")?.ToString();
+                                    resultwarehouse.PhoneNumber = item?.GetValueFromDictonary("PhoneNumber")?.ToString();
+                                    resultwarehouse.MobileNumber = item?.GetValueFromDictonary("MobileNumber")?.ToString();
+                                    resultwarehouse.City = new Models.Region.CityModel
+                                    {
+                                        Id = item?.GetValueFromDictonary("CityId")?.ToString()?.ToInt(),
+                                    };
+                                    warehouses.Add(resultwarehouse);
+                                }
+                            }
                         }
                     }
                 }

@@ -90,7 +90,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductColor
             return ProductColors;
         }
 
-        public async Task<ProductColorModel> GetProductColor(int Id)
+        public async Task<ProductColorModel> GetProductColorByIdAsync(int Id)
         {
             var model = new ProductColorModel();
             try
@@ -98,8 +98,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductColor
                 string query = string.Empty;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_Id"] = Id;
-                query = @"SELECT * FROM ProductColor WHERE Id = @v_Id IsActive = 1";
-                var values = await Repository.QueryAsync(query: query);
+                query = @"SELECT * FROM ProductColor WHERE Id = @v_Id AND IsActive = 1";
+                var values = await Repository.QueryAsync(query: query,parameters:parameters);
                 if (values != null)
                 {
                     foreach (var value in values)

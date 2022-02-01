@@ -69,7 +69,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductType
             }
             return retVal;
         }
-        public async Task<ProductTypeModel> GetProductTypeById(int? Id)
+        public async Task<ProductTypeModel> GetProductTypeByIdAsync(int? Id)
         {
             ProductTypeModel model = new ProductTypeModel();
             Dictionary<string, object> parameters = new Dictionary<string, object>();

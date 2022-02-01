@@ -19,6 +19,9 @@
     <Color x:Key="PureBlackColor">#000000</Color>
     <SolidColorBrush x:Key="PureBlackColorBrush" Color="{StaticResource PureBlackColor}" />
 
+    <Color x:Key="LightBlackColor">#353935</Color>
+    <SolidColorBrush x:Key="LightBlackColorBrush" Color="{StaticResource LightBlackColor}" />
+
     <Color x:Key="PureWhiteColor">#ffffff</Color>
     <SolidColorBrush x:Key="PureWhiteColorBrush" Color="{StaticResource PureWhiteColor}" />
 

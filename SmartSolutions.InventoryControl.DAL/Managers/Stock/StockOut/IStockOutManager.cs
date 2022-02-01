@@ -29,7 +29,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockOut
         /// <returns></returns>
         Task<bool> RemoveStockOutAsync(int? Id);
         /// <summary>
-        /// Update Invoice According To Invoice
+        /// Update Stock In hand Level According To Sale Invoice
         /// </summary>
         /// <param name="models"></param>
         /// <returns></returns>

@@ -1,5 +1,6 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.Inventory;
 using SmartSolutions.InventoryControl.DAL.Models.Stock;
+using SmartSolutions.InventoryControl.DAL.Models.Warehouse;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.DictionaryUtils;
 using SmartSolutions.Util.LogUtils;
@@ -37,7 +38,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockOut
                 {
                     foreach (var model in models)
                     {
-                       retVal =  await AddStockOutAsync(model);
+                        retVal = await AddStockOutAsync(model);
                     }
                 }
             }
@@ -66,7 +67,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockOut
                 parameters["@v_CreatedBy"] = model.CreatedBy == null ? DBNull.Value : (object)model.CreatedBy;
                 parameters["@v_UpdatedAt"] = model.UpdatedAt == null ? DBNull.Value : (object)model.UpdatedAt;
                 parameters["@v_UpdatedBy"] = model.UpdatedBy == null ? DBNull.Value : (object)model.UpdatedBy;
-                parameters["@v_WarehouseId"] = model.Warehouse?.Id == null ? DBNull.Value : (object)model.Warehouse?.Id;
+                //TODO: have to Insert All the Id,s of Warehouse
+                parameters["@v_WarehouseId"] = model.Warehouses?.FirstOrDefault()?.Id == null ? DBNull.Value : (object)ConvertWarehouseIds(model?.Warehouses);//(object)model.Warehouse?.FirstOrDefault()?.Id;
                 string query = @"INSERT INTO StockOut (PartnerId,SaleOrderId,SaleOrderDetailId,ProductId,Quantity,Price,Description,IsActive,CreatedAt,createdBy,UpdatedAt,UpdatedBy,WarehouseId)
                                                 VALUES(@v_PartnerId,@v_SaleOrderId,@v_SaleOrderDetailId,@v_ProductId,@v_Quantity,@v_Price,@v_Description,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy,@v_WarehouseId)";
                 var result = await Repository.NonQueryAsync(query, parameters: parameters);
@@ -87,15 +89,22 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockOut
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_productId"] = productId;
-                //string query = @" SELECT SUM(Total) AS StockInHand FROM StockIn WHERE ProductId = @v_productId - ISNULL((SELECT SUM(Total) FROM StockOut WHERE ProductId = @v_productId),0)";
-                string query = @"SELECT(Select ISNULL(SUM(quantity),0)
+                string query = @"SELECT (SELECT COALESCE(SUM(Quantity),0)FROM dbo.OpeningStock 
+                                WHERE ProductId = @v_productId)+ (Select ISNULL(SUM(quantity),0)
                                 From StockIn
                                 Where quantity is not null AND StockIn.ProductId = @v_productId)-
                                 (Select ISNULL(SUM(quantity),0)
                                 From StockOut
                                 Where quantity is not null AND StockOut.ProductId = @v_productId) as StockInHand";
-                var values = await Repository.QueryAsync(query,parameters:parameters);
-                if(values != null || values?.Count > 0)
+                //string query = @" SELECT SUM(Total) AS StockInHand FROM StockIn WHERE ProductId = @v_productId - ISNULL((SELECT SUM(Total) FROM StockOut WHERE ProductId = @v_productId),0)";
+                //string query = @"SELECT(Select ISNULL(SUM(quantity),0)
+                //                From StockIn
+                //                Where quantity is not null AND StockIn.ProductId = @v_productId)-
+                //                (Select ISNULL(SUM(quantity),0)
+                //                From StockOut
+                //                Where quantity is not null AND StockOut.ProductId = @v_productId) as StockInHand";
+                var values = await Repository.QueryAsync(query, parameters: parameters);
+                if (values != null || values?.Count > 0)
                 {
                     var value = values?.FirstOrDefault();
                     stockInHand = value?.GetValueFromDictonary("StockInHand")?.ToString()?.ToNullableInt();
@@ -113,6 +122,11 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockOut
             bool retVal = false;
             try
             {
+                if (models == null || models.Count == 0) return false;
+                foreach (var item in models)
+                {
+                    //item.Prod
+                }
                 await Repository.NonQueryAsync();
             }
             catch (Exception ex)
@@ -121,7 +135,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockOut
             }
             return retVal;
         }
-      
+
 
         public async Task<bool> RemoveStockOutAsync(int? Id)
         {
@@ -135,6 +149,18 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Stock.StockOut
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return retVal;
+        }
+        private string ConvertWarehouseIds(List<WarehouseModel> list)
+        {
+            string result = string.Empty;
+            List<string> ids = new List<string>();
+            if (list == null || list?.Count == 0) return string.Empty;
+            foreach (var item in list)
+            {
+                ids.Add(item.Id.ToString());
+            }
+            result = string.Format(",", ids);
+            return result;
         }
         #endregion
     }

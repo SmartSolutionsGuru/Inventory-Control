@@ -35,6 +35,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             _databaseBackupManager = databaseBackupManager;
              notificationManager = new NotificationManager();
             ProprietorInfo = AppSettings.Proprietor;
+            NotifyOfPropertyChange(nameof(ProprietorInfo.BussinessName));
         }
         #endregion
 
@@ -194,7 +195,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     }
                     else
                     {
-                        await _databaseBackupManager.CreateBackupAsync(ConnectionInfo.Instance.Database, resultSetting.Description);
+                       var result =  await _databaseBackupManager.CreateBackupAsync(ConnectionInfo.Instance.Database, resultSetting.Description);
+                        if(result)
+                            NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "BackUp Successfully", Type = Notifications.Wpf.NotificationType.Success });
                     }
                 }
             }
@@ -214,9 +217,26 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
+
         #endregion
 
         #region Properties
+        //public static int Counter { get; set; }
+        private static int _Counter;
+
+        public static int Counter
+        {
+            get
+            {
+                return _Counter;
+            }
+            set
+            {
+                _Counter = value;
+                
+            }
+        }
+
         private bool _IsBankProceeded;
 
         public bool IsBankProceeded
@@ -327,11 +347,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _CurrentUser; }
             set { _CurrentUser = value; NotifyOfPropertyChange(nameof(CurrentUser)); }
         }
-        private int _TransactionCounter;
+        private  int _TransactionCounter;
         /// <summary>
-        /// Counter for Logging Transaction
+        /// Counter for Keeping Record of Logging Transaction
         /// </summary>
-        public int TransactionCounter
+        public  int TransactionCounter
         {
             get { return _TransactionCounter; }
             set { _TransactionCounter = value; NotifyOfPropertyChange(nameof(TransactionCounter)); }

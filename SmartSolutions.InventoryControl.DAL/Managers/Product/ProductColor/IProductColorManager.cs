@@ -8,7 +8,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductColor
     {
         Task<bool> AddProductColorAsync(ProductColorModel model);
         Task<IEnumerable<ProductColorModel>> GetProductAllColorsAsync();
-        Task<ProductColorModel> GetProductColor(int Id);
+        Task<ProductColorModel> GetProductColorByIdAsync(int Id);
         Task<ProductColorModel> UpdateProductColorAsync(ProductColorModel model);
         Task<bool> RemoveProductColorAsync(int? Id);
     }

@@ -1,9 +1,12 @@
 ﻿using Caliburn.Micro;
 using SmartSolutions.InventoryControl.Core.ViewModels.Reports.BussinessPartner;
+using SmartSolutions.InventoryControl.Core.ViewModels.Reports.Product;
 using SmartSolutions.InventoryControl.DAL.Managers.Product;
+using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Text;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
@@ -13,14 +16,20 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
     {
 
         #region Private Members
+        private readonly IEventAggregator _eventAggregator;
         private readonly IProductManager _productManager;
+        private readonly DAL.Managers.Bussiness_Partner.IBussinessPartnerManager _bussinessPartnerManager;
         #endregion
 
         #region Costructor
         [ImportingConstructor]
-        public ReportsViewModel(IProductManager productManager)
+        public ReportsViewModel(IEventAggregator eventAggregator
+                                , IProductManager productManager
+                                , DAL.Managers.Bussiness_Partner.IBussinessPartnerManager bussinessPartnerManager)
         {
+            _eventAggregator = eventAggregator; 
             _productManager = productManager;
+            _bussinessPartnerManager = bussinessPartnerManager;
         }
         #endregion
 
@@ -44,9 +53,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
                 "Bussiness Partner By Seller",
                 "Bussiness Partner By City",
                 "Bussiness Partner By DR Balance",
-                "Bussiness Partner By CR Balance"
+                "Bussiness Partner By CR Balance",
+                "Bussiness Partner Balancesheet"
             };
-            ProductReports = new List<string> 
+            ProductReports = new List<string>
             {
                 "All Products",
                 "Product By Name",
@@ -57,8 +67,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
 
         public void Handle(Screen screen)
         {
-            if (screen is DisplayAllPartnersViewModel)
+            if (screen is DisplayAllPartnersViewModel 
+                || screen is AllProductReportViewModel 
+                || screen is DisplaySelectedPartnerReportViewModel)
             {
+                if (screen is DisplaySelectedPartnerReportViewModel)
+                    _eventAggregator.PublishOnBackgroundThread(this.SelectedPartner);
                 ActiveItem = screen;
                 ActivateItem(screen);
             }
@@ -79,7 +93,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
                         ReportsSubCategory = PurchaseReports;
                         break;
                     case "Products":
-                        ReportsSubCategory = ProductReports;                       
+                        ReportsSubCategory = ProductReports;
                         break;
                     default:
                     case "Sales":
@@ -118,10 +132,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
                 case "Bussiness Partner By CR Balance":
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
+                case "Bussiness Partner Balancesheet":
+                    IsDisplayCombo = true;
+                    OnSelectingBalanceSheet();
+                    
+                    break;
                 #endregion
+
                 #region Products
                 case "All Products":
-                    Handle(IoC.Get<DisplayAllPartnersViewModel>());
+                    Handle(IoC.Get<AllProductReportViewModel>());
                     break;
                 case "Product By Name":
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
@@ -133,15 +153,19 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 #endregion
+
                 #region Purchase
 
                 #endregion
+
                 #region Sales
 
                 #endregion
+
                 #region Payments
 
                 #endregion
+
                 #region Bnk Accounts
 
                 #endregion
@@ -149,9 +173,33 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
                     break;
             }
         }
+
+        private async void OnSelectingBalanceSheet()
+        {
+            Partners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
+            
+        }
+        private void OnSelectingPartner()
+        {
+            if (SelectedPartner == null) return;
+            //var dlg = IoC.Get<DisplaySelectedPartnerReportViewModel>();
+            //dlg.Partner = SelectedPartner;
+            Handle(IoC.Get<DisplaySelectedPartnerReportViewModel>());
+
+        }
         #endregion
 
         #region Properties
+        private bool _IsDisplayCombo;
+        /// <summary>
+        /// Used For Displaying Third Combo Box
+        /// </summary>
+        public bool IsDisplayCombo
+        {
+            get { return _IsDisplayCombo; }
+            set { _IsDisplayCombo = value; NotifyOfPropertyChange(nameof(IsDisplayCombo)); }
+        }
+
         private List<string> _ReportsCategory;
         /// <summary>
         /// Reports List For Displaying Report
@@ -223,6 +271,26 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
             get { return _SearchText; }
             set { _SearchText = value; NotifyOfPropertyChange(nameof(SearchText)); }
         }
+        private List<BussinessPartnerModel>  _Partners;
+        /// <summary>
+        /// List Of Partners
+        /// </summary>
+        public List<BussinessPartnerModel> Partners
+        {
+            get { return _Partners; }
+            set { _Partners = value; NotifyOfPropertyChange(nameof(Partners)); }
+        }
+        private BussinessPartnerModel _SelectedPartner;
+        /// <summary>
+        /// Selected Partner From List
+        /// </summary>
+        public BussinessPartnerModel SelectedPartner
+        {
+            get { return _SelectedPartner; }
+            set { _SelectedPartner = value; NotifyOfPropertyChange(nameof(SelectedPartner)); OnSelectingPartner(); }
+        }
+
+        
 
 
         #endregion

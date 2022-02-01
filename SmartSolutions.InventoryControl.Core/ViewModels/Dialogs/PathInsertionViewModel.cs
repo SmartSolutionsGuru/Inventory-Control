@@ -68,11 +68,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
                     setting.SettingKey = "Is_DbPath_Inserted";
                     setting.SettingValue = 1;
                     setting.DefaultValue = false;
-                    setting.Value = FileNameWithPath;
-                    setting.Description = "Is Path Created Or Not";
+                    setting.Value = BackupPath;
+                    //setting.Value = string.IsNullOrEmpty(FileNameWithPath) ? string.Join("\\", BackupPath, _databaseName) : FileNameWithPath;
+                    //setting.Description = "Is Path Created Or Not";
+                    setting.Description = string.IsNullOrEmpty(FileNameWithPath) ? setting.Value : FileNameWithPath;
                     var result = await _systemSettingManager.SaveSettingAsync(setting);
                     if (result)
-                        await BackUpDataBase(_databaseName);
+                    {
+                        Close();
+                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "BackUp Path Successfully Enter", Type = Notifications.Wpf.NotificationType.Success });
+                    }
                 }
                 else
                 {
@@ -87,7 +92,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
 
         public async Task BackUpDataBase(string databaseName)
         {
-             FileNameWithPath = BuildBackUpWithFileName(_databaseName);
+            FileNameWithPath = BuildBackUpWithFileName(_databaseName);
             await _databaseBackupManager.CreateBackupAsync(_databaseName, FileNameWithPath);
         }
         private string BuildBackUpWithFileName(string databaseName)
@@ -95,7 +100,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
             string fileName = string.Format($"{0}--{1}.bak", databaseName, DateTime.Now.ToString("yyyy-MM-dd"));
             return Path.Combine(BackupPath, fileName);
         }
-        
+
         #endregion
 
         #region Public Properties

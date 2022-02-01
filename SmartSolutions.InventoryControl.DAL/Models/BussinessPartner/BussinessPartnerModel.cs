@@ -13,6 +13,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.BussinessPartner
         {
             PartnerType = new BussinessPartnerTypeModel();
             PartnerCategory = new BussinessPartnerCategoryModel();
+            MobileNumbers = new List<string>();
             City = new CityModel();
         }
         #endregion

@@ -398,6 +398,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 if (selectedPartnerLedger != null)
                 {
                     PreviousBalance = selectedPartnerLedger.CurrentBalance;
+                    if (PreviousBalance < 0)
+                        IsValueCredit = true;
+                    else
+                        IsValueCredit = false;  
                     BalanceType = selectedPartnerLedger.CurrentBalanceType;
                     GrandTotal = PreviousBalance + InvoiceTotal;
                 }
@@ -528,6 +532,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Properties
+        private bool _IsValueCredit;
+        /// <summary>
+        /// Property That is Used for chaning Color On basis of DR and CR
+        /// </summary>
+        public bool IsValueCredit
+        {
+            get { return _IsValueCredit; }
+            set { _IsValueCredit = value; NotifyOfPropertyChange(nameof(IsValueCredit)); }
+        }
+
         private ProductSuggestionProvider _ProductSuggetion;
         /// <summary> 
         /// List of Product Suggetions 

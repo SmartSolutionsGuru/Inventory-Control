@@ -41,13 +41,24 @@
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   ScrollViewer.VerticalScrollBarVisibility="Auto">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Partner" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Name,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
-                <DataGridTextColumn Header="Bussiness Name" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding BussinessName,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
-                <DataGridTextColumn Header="PartnerType" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding PartnerType.Name,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
-                <DataGridTextColumn Header="Phone No" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding PhoneNumber,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
-                <DataGridTextColumn Header="Mobile No" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding MobileNumbers[0],Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
-                <DataGridTextColumn Header="City" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding City.Name,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
-                <DataGridTextColumn Header="Address" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Address,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
+                <DataGridTextColumn Header="Partner" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Partner.Name,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
+                <DataGridTextColumn Header="Bussiness Name" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Partner.BussinessName,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
+                <DataGridTextColumn Header="PartnerType" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Partner.PartnerType.Name,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
+                <DataGridTextColumn Header="Phone No" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Partner.PhoneNumber,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
+                <DataGridTextColumn Header="Mobile No" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Partner.MobileNumbers[0],Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
+                <DataGridTextColumn Header="City" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Partner.City.Name,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
+                <DataGridTextColumn Header="Current Balance" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" FontWeight="DemiBold" Binding="{Binding CurrentBalance,Mode=OneWay}">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell" BasedOn="{StaticResource DataGridCellStyle}">
+                            <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentBalanceType,Mode=OneWay}" Value="CR">
+                                    <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Border>

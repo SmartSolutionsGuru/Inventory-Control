@@ -68,7 +68,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Settings
                 var values = await Repository.QueryAsync(query: query, parameters: parameters);
                 if(values != null || values?.Count > 0)
                 {
-                    var value = values?.FirstOrDefault();
+                    var value = values?.LastOrDefault();
                     setting.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                     setting.Name = value?.GetValueFromDictonary("Name")?.ToString();
                     setting.SettingKey = value?.GetValueFromDictonary("SettingKey")?.ToString();

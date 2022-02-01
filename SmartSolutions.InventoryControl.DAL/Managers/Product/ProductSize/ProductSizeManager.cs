@@ -84,7 +84,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product.ProductSize
             return productSizes;
         }
 
-        public async Task<ProductSizeModel> GetProductSizeAsync(int? Id)
+        public async Task<ProductSizeModel> GetProductSizeByIdAsync(int? Id)
         {
             var model = new ProductSizeModel();
             try

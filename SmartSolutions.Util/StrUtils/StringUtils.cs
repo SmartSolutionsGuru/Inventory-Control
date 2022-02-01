@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace SmartSolutions.Util.StrUtils
@@ -17,5 +18,20 @@ namespace SmartSolutions.Util.StrUtils
         //    //return string.IsNullOrEmpty(value) ? value : DBNull.Value;
         //    return value.HasValue ? (object)value.Value : DBNull.Value;
         //}
+
+
+        /// <summary>
+        /// Method For Capitalizing First Letter Of Name
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string CapitalizeFirstLetter(this String input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(input);
+        }
     }
 }

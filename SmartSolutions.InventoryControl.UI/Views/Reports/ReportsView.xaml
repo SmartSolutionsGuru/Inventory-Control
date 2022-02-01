@@ -26,6 +26,18 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.8*"/>
                     <ColumnDefinition Width="0.8*"/>
+                    <ColumnDefinition>
+                        <ColumnDefinition.Style>
+                            <Style TargetType="ColumnDefinition">
+                                <Setter Property="Width" Value="0"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsDisplayCombo}" Value="True">
+                                        <Setter Property="Width" Value="0.5*"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ColumnDefinition.Style>
+                    </ColumnDefinition>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <ComboBox Height="45"
@@ -49,9 +61,19 @@
                           HorizontalAlignment="Center"
                           ItemsSource="{Binding ReportsSubCategory,Mode=OneWay}"
                           SelectedItem="{Binding SelectedReportSubCategory,Mode=TwoWay}"/>
+                <ComboBox Grid.Column="2"
+                          Height="45"
+                          DisplayMemberPath="FullName"
+                          Style="{StaticResource BaseComboBox}"
+                          Foreground="{StaticResource GrayColorBrush}"
+                          BorderThickness="1.7"
+                          controlExtension:WaterMarkTextExtension.WatermarkText="Select Partner"
+                          BorderBrush="{StaticResource BlueColorBrush}"
+                          ItemsSource="{Binding Partners,Mode=OneWay}"
+                          SelectedItem="{Binding SelectedPartner,Mode=TwoWay}"/>
                 <TextBox Height="45"
                          Width="350"
-                         Grid.Column="2"
+                         Grid.Column="3"
                          Text="{Binding SearchText,Mode=TwoWay}"
                          BorderThickness="1.7"
                          controlExtension:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Search}"

@@ -10,6 +10,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
     {
         Task<bool> AddBussinesPartnerAsync(BussinessPartnerModel partner);
         Task<IEnumerable<BussinessPartnerModel>> GetAllBussinessPartnersAsync(string search = null);
+        Task<IEnumerable<BussinessPartnerLedgerModel>> GetAllBussinessPartnersWithBalanceAsync();
         /// <summary>
         /// Get All the Bussiness Partner By their Type Id 
         /// Like Vender,Seller etc...

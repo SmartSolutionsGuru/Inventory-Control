@@ -10,6 +10,7 @@ using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
 using SmartSolutions.InventoryControl.DAL.Models.Region;
 using SmartSolutions.InventoryControl.DAL.Models.Sales;
 using SmartSolutions.Util.LogUtils;
+using SmartSolutions.Util.StrUtils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -152,28 +153,40 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 {
                     NewBussinessPartner?.MobileNumbers.Add(PartnerMobileNumber);
                 }
-                if (string.IsNullOrEmpty(NewBussinessPartner?.BussinessName))
+                if (string.IsNullOrEmpty(BussinessName))
                 {
                     BussinessNameError = true;
+                    IsLoading = false;
                     return;
                 }
-                else if (string.IsNullOrEmpty(NewBussinessPartner?.FullName))
+                else if (string.IsNullOrEmpty(FullName))
                 {
                     FullNameError = true;
+                    IsLoading = false;
                     return;
                 }
                 else if (NewBussinessPartner?.MobileNumbers.Count == 0)
                 {
                     MobileNoError = true;
+                    IsLoading = false;
                     return;
                 }
                  else if(SelectedCity == null)
                 {
                     CityNotSelected = true;
-                        return;
+                    IsLoading = false;
+                    return;
+                }
+                else if(NewBussinessPartner != null && string.IsNullOrEmpty(NewBussinessPartner.Address))
+                {
+                    AddressError = true;
+                    IsLoading = false;
+                    return;
                 }
                 if (NewBussinessPartner != null)
                 {
+                    NewBussinessPartner.Name = FullName;
+                    NewBussinessPartner.BussinessName = BussinessName;
                     NewBussinessPartner.PartnerCategory = SelectedPartnerCategory;
                     NewBussinessPartner.PartnerType = SelectedPartnerType;
                     NewBussinessPartner.City = SelectedCity;
@@ -207,6 +220,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                             var payment = new PaymentModel();
                             payment.Partner = await _bussinessPartnerManager.GetLastAddedPartner();
                             payment.PaymentType = SelectedAmountType.Equals("DR (Receivable)") == true ? DAL.Models.PaymentType.DR : DAL.Models.PaymentType.CR;
+                            if (payment.PaymentType == DAL.Models.PaymentType.DR)
+                                payment.DR = InitialAmount.ToString();
+                            else
+                                payment.CR = InitialAmount.ToString();
                             payment.PaymentAmount = InitialAmount;
                             payment.IsPaymentReceived = SelectedAmountType.Equals("DR (Receivable)") ? true : false;
                             payment.CreatedBy = AppSettings.LoggedInUser.DisplayName;
@@ -220,6 +237,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                                 partnerLedger.Partner = payment.Partner ?? await _bussinessPartnerManager.GetLastAddedPartner();
                                 partnerLedger.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(payment?.Partner.Id);
                                 partnerLedger.CurrentBalance = payment.PaymentAmount;
+                                partnerLedger.CR = !string.IsNullOrEmpty(payment.CR) ?  Convert.ToDecimal(payment.CR) : 0;
+                                partnerLedger.DR = !string.IsNullOrEmpty(payment.DR) ?  Convert.ToDecimal(payment.DR) : 0;
                                 partnerLedger.CurrentBalanceType = payment.PaymentType;
                                 partnerLedger.Description = "Initial Deposit / Balance";
                                 partnerLedger.CreatedBy = AppSettings.LoggedInUser.DisplayName;
@@ -227,6 +246,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                                 //Display user Friendly Toast
                                 if (partnerResult)
                                 {
+                                    MainViewModel.Counter++;
                                     NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Partner Ledger Updated Successfully", Type = Notifications.Wpf.NotificationType.Success });
                                     ClearPartnerDetails();
                                 }
@@ -253,11 +273,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         private void ClearPartnerDetails()
         {
             PartnerMobileNumber = string.Empty;
+            BussinessName = string.Empty;
+            FullName = string.Empty;
             InitialAmount = 0;
             NewBussinessPartner = new BussinessPartnerModel();
             SelectedAmountType = string.Empty;
             SelectedPartnerCategory = new BussinessPartnerCategoryModel();
             SelectedPartnerType = new BussinessPartnerTypeModel();
+            AddressError = false;
+            BussinessNameError = false;
+            FullNameError = false;
+            MobileNoError = false;
+            CityNotSelected = false;
 
         }
         public async void UpdatePartnerProfile()
@@ -317,6 +344,51 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         #endregion
 
         #region Properties
+        private string _BussinessName;
+        /// <summary>
+        /// Bussiness Name
+        /// </summary>
+        public string BussinessName
+        {
+            get { return _BussinessName; }
+            set
+            {
+                if(!string.IsNullOrEmpty(value))
+                {
+                    _BussinessName = value;
+                    _BussinessName = _BussinessName.CapitalizeFirstLetter();
+                }
+                NotifyOfPropertyChange(nameof(BussinessName));
+            }
+        }
+
+
+        private string _FullName;
+        /// <summary>
+        /// Full Name Of Properiter Or Owner etc..
+        /// </summary>
+        public string FullName
+        {
+            get { return _FullName; }
+            set 
+            { 
+                if(!string.IsNullOrEmpty(value))
+                {
+                    _FullName = value;
+                    _FullName = _FullName.CapitalizeFirstLetter();
+                }
+               
+                NotifyOfPropertyChange(nameof(FullName)); }
+        }
+
+        private bool _AddressError;
+
+        public bool AddressError
+        {
+            get { return _AddressError; }
+            set { _AddressError = value; NotifyOfPropertyChange(nameof(AddressError)); }
+        }
+
         private bool _CityNotSelected;
          /// <summary>
          /// Flag for Vierification City is Selected Or Not

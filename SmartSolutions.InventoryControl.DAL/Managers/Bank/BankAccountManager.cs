@@ -60,7 +60,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
             var retVal = new List<BankAccountModel>();
             try
             {
-
+                string query = string.Empty;
+                await Repository.QueryAsync(query); 
             }
             catch (Exception ex)
             {

@@ -5,6 +5,8 @@ using SmartSolutions.InventoryControl.DAL.Models.Sales;
 using SmartSolutions.InventoryControl.DAL.Models.Warehouse;
 using SmartSolutions.Util.LogUtils;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
 {
@@ -16,6 +18,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
 
         #region Private Members
         private readonly DAL.Managers.Stock.StockOut.IStockOutManager _stockOutManager;
+        private readonly DAL.Managers.Warehouse.IWarehouseManager _warehouseManager;
         #endregion
 
         #region Constructor
@@ -25,9 +28,11 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
             SaleOrder = new SaleOrderModel();
             SaleOrderDetail = new SaleOrderDetailModel();
             Product = new ProductModel();
-            Warehouse = new WarehouseModel();
+            Warehouses = new List<WarehouseModel>();
+            SelectedWarehouse = new WarehouseModel();
             _stockOutManager = new StockOutManager();
-    }
+            _warehouseManager = new DAL.Managers.Warehouse.WarehouseManager();
+        }
         #endregion
 
         #region Properties
@@ -61,18 +66,32 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
             set { _Total = value; NotifyOfPropertyChange(nameof(Total)); }
         }
         public string Description { get; set; }
-        public WarehouseModel Warehouse { get; set; }
+        //public List<WarehouseModel> Warehouse { get; set; }
+        private List<WarehouseModel> _Warehouses;
+        /// <summary>
+        /// List Of Warehouse in Which Stock Is Available
+        /// </summary>
+        public List<WarehouseModel> Warehouses
+        {
+            get { return _Warehouses; }
+            set { _Warehouses = value; NotifyOfPropertyChange(nameof(Warehouses)); }
+        }
+
+        private WarehouseModel _SelectedWarehouse;
+        /// <summary>
+        /// Selected Warehouse from which Stock Is Selected
+        /// </summary>
+        public WarehouseModel SelectedWarehouse
+        {
+            get { return _SelectedWarehouse; }
+            set { _SelectedWarehouse = value; NotifyOfPropertyChange(nameof(SelectedWarehouse)); }
+        }
 
         #region Calculated Properties
+
         /// <summary>
         /// Calculated Property That Will Get the Stock In Hand only
         /// </summary>
-        //private int? _StockInHand;
-        //public int? StockInHand
-        //{
-        //    get { return _StockInHand; }
-        //    set { _StockInHand = value; NotifyOfPropertyChange(nameof(StockInHand));  }
-        //}
         public int? StockInHand { get; set; }
         private ProductColorModel _ProductColor;
 
@@ -101,6 +120,10 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
 
         }
 
+        /// <summary>
+        /// TODO: Calculate the Warehouse Which Has the Quantity So Select That
+        /// </summary>
+        /// <param name="productId"></param>
         public async void GetProductAvailableStock(int? productId)
         {
             try
@@ -108,7 +131,11 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
                 if (productId == null || productId == 0) return;
                 var availableStock = await _stockOutManager.GetStockInHandAsync(productId);
                 StockInHand = availableStock.Value;
+                Warehouses = (await _warehouseManager.GetAllWarehouseByProductId(productId ?? 0)).ToList();
+                SelectedWarehouse = Warehouses.FirstOrDefault();
                 NotifyOfPropertyChange(nameof(StockInHand));
+                NotifyOfPropertyChange(nameof(Warehouses));
+                NotifyOfPropertyChange(nameof(SelectedWarehouse));
             }
             catch (Exception ex)
             {

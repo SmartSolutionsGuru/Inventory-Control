@@ -1,13 +1,17 @@
 ﻿using Caliburn.Micro;
 using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;
+using SmartSolutions.InventoryControl.DAL;
 using SmartSolutions.InventoryControl.DAL.Managers.Product;
 using SmartSolutions.InventoryControl.DAL.Managers.Product.ProductColor;
 using SmartSolutions.InventoryControl.DAL.Managers.Product.ProductSize;
+using SmartSolutions.InventoryControl.DAL.Models;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.DAL.Models.Inventory;
+using SmartSolutions.InventoryControl.DAL.Models.Payments;
 using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.InventoryControl.DAL.Models.Sales;
 using SmartSolutions.InventoryControl.DAL.Models.Stock;
+using SmartSolutions.InventoryControl.DAL.Models.Warehouse;
 using SmartSolutions.Util.DecimalsUtils;
 using SmartSolutions.Util.LogUtils;
 using SmartSolutions.Util.NumericUtils;
@@ -34,6 +38,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private readonly DAL.Managers.Payments.IPaymentTypeManager _paymentTypeManager;
         private readonly DAL.Managers.Stock.StockOut.IStockOutManager _stockOutManager;
         private readonly DAL.Managers.Stock.StockIn.IStockInManager _stockInManager;
+        private readonly DAL.Managers.Warehouse.IWarehouseManager _warehouseManager;
+        private readonly DAL.Managers.Sale.ISaleOrderManager _saleOrderManager;
+        private readonly DAL.Managers.Sale.ISaleOrderDetailManager _saleOrderDetailManager;
+        private readonly DAL.Managers.Payments.IPaymentManager _paymentManager;
         #endregion
 
         #region Constructor
@@ -50,7 +58,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                               , DAL.Managers.Transaction.ITransactionManager transactionManager
                               , DAL.Managers.Payments.IPaymentTypeManager paymentTypeManager
                               , DAL.Managers.Stock.StockIn.IStockInManager stockInManager
-                              , DAL.Managers.Stock.StockOut.IStockOutManager stockOutManager)
+                              , DAL.Managers.Stock.StockOut.IStockOutManager stockOutManager
+                              , DAL.Managers.Warehouse.IWarehouseManager warehouseManager
+                              , DAL.Managers.Sale.ISaleOrderManager saleOrderManager
+                              , DAL.Managers.Sale.ISaleOrderDetailManager saleOrderDetailManager
+                              , DAL.Managers.Payments.IPaymentManager paymentManager)
         {
             _productColorManager = productColorManager;
             _productSizeManager = productSizeManager;
@@ -63,6 +75,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             _paymentTypeManager = paymentTypeManager;
             _stockOutManager = stockOutManager;
             _stockInManager = stockInManager;
+            _warehouseManager = warehouseManager;
+            _saleOrderManager = saleOrderManager;
+            _saleOrderDetailManager = saleOrderDetailManager;
+            _paymentManager = paymentManager;
         }
         #endregion
 
@@ -78,14 +94,17 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             IsLoading = true;
             LoadingMessage = "Loading...";
             base.OnActivate();
+
             ProductGrid = new ObservableCollection<StockOutModel>();
             InvoiceTypes = new List<string> { "Sales", "Sales Return" };
             SelectedInvoiceType = InvoiceTypes.Where(x => x.Equals("Sales")).FirstOrDefault();
             Partners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
             //Products = (await _productManager.GetAllProductsAsync()).ToList();
+            //Warehouses = (await _warehouseManager.GetAllWarehousesAsync()).ToList();
             Products = (await _productManager.GetAllProductsWithColorAndSize(string.Empty)).ToList();
             ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
             ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
+            SaleOrderDetail = new List<SaleOrderDetailModel>();
             SaleInvoice = new SaleInvoiceModel();
             SaleInvoice.PaymentTypes = (await _paymentTypeManager.GetAllPaymentMethodsAsync()).ToList();
             SaleInvoice.InvoiceId = _saleInvoiceManager.GenrateInvoiceNumber("S");
@@ -116,6 +135,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 if (productId == null || productId == 0) return;
                 var availableStock = await _stockOutManager.GetStockInHandAsync(productId);
                 SelectedInventoryProduct.StockInHand = availableStock.Value;
+                var resultStockIn = _stockInManager.GetStockInProduct(productId);
+                Warehouses = (await _warehouseManager.GetAllWarehouseByProductId(productId ?? 0)).ToList();
             }
             catch (Exception ex)
             {
@@ -156,7 +177,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     ProductGrid.Remove(product);
                 }
                 CalculateInvoiceTotal();
-                GrandTotal = InvoiceTotal + PreviousBalance;
+                GrandTotal = InvoiceTotal.Value + PreviousBalance;
             }
             catch (Exception ex)
             {
@@ -172,17 +193,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LoadingMessage = "Saving...";
 
                 #region Error Checking
-                if (!string.IsNullOrEmpty(SelectedSaleType))
+                if (string.IsNullOrEmpty(SelectedInvoiceType))
                 {
-                    //SaleInvoice.TransactionType = SelectedSaleType;
+                    SelectedInvoiceType = InvoiceTypes.FirstOrDefault();
                 }
-                else
-                {
-                    SaleTypeError = true;
-                    IsLoading = false;
-                    return;
-                }
-
                 if (SelectedPartner != null)
                     SaleInvoice.SelectedPartner = SelectedPartner;
                 else
@@ -198,92 +212,203 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     var productList = new List<StockOutModel>();
                     foreach (var product in ProductGrid)
                     {
-                        if (!string.IsNullOrEmpty(product.Product.Name))
+                        if (!string.IsNullOrEmpty(product?.Product?.Name))
                         {
                             //product.IsStockIn = true;
                             productList.Add(product);
                         }
                     }
 
-                    SaleInvoice.SelectedPartner = SelectedPartner;
-                    SaleInvoice.PaymentImage = PaymentImage;
-                    SaleInvoice.PercentDiscount = PercentDiscount;
-                    SaleInvoice.Discount = DiscountPrice;
-                    SaleInvoice.InvoiceTotal = InvoiceTotal;
-                    SaleInvoice.Payment = Payment;
-                    bool invoiceResult = await _saleInvoiceManager.SaveSaleInoiceAsync(SaleInvoice);
-                    if (invoiceResult)
-                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Invoice Saved Successfully", Type = Notifications.Wpf.NotificationType.Success });
-                    else
-                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Invoice Not Saved", Type = Notifications.Wpf.NotificationType.Error });
-                    if (invoiceResult)
+                    #region Sale Order And Sale Detail Order Genration                    
+                    SaleOrder = new SaleOrderModel();
+                    SaleOrder.SalePartner.Id = SelectedPartner?.Id;
+                    SaleOrder.Status = SaleOrderModel.OrderStatus.New;
+                    SaleOrder.Description = " Sale Order Placed";
+                    SaleOrder.SubTotal = SaleInvoice.InvoiceTotal;
+                    SaleOrder.Discount = SaleInvoice.Discount;
+                    SaleOrder.GrandTotal = SaleInvoice.InvoiceTotal;
+                    SaleOrder.IsActive = true;
+                    SaleOrder.CreatedAt = DateTime.Now;
+                    SaleOrder.CreatedBy = AppSettings.LoggedInUser.DisplayName;
+                    var saleOrderResult = await _saleOrderManager.CreateSaleOrderAsync(SaleOrder);
+                    //Sale Order is Created
+                    if (saleOrderResult)
                     {
-                        var lastRowId = _saleInvoiceManager.GetLastRowId();
-                        if (lastRowId != null)
+                        int? saleOrderId = await _saleOrderManager.GetLastSaleOrderIdAsync();
+                        if (saleOrderId > 0)
                         {
-                            if (lastRowId > 0)
+                            if (SaleOrderDetail != null || SaleOrderDetail?.Count > 0)
                             {
-                                var resultStock = await _stockOutManager.RemoveBulkStockOutAsync(productList);
-                                //var resultInventory = await _inventoryManager.RemoveBulkInventoryAsync(productList);
-                                if (resultStock)
+                                foreach (var product in ProductGrid)
                                 {
-                                    // Now we Create Transaction Object  for saving Transaction
-                                    var transaction = new DAL.Models.Transaction.TransactionModel();
-                                    transaction.BussinessPartner = SelectedPartner;
-                                    //transaction.PartnerLastInvoice = SaleInvoice;
-                                    transaction.PaymentImage = SaleInvoice.PaymentImage;
-                                    transaction.PaymentMode = "Receivable";
-                                    transaction.PaymentType = SaleInvoice.SelectedPaymentType;
-                                    var resultTransaction = await _transactionManager.SaveTransactionAsync(transaction);
-                                    if (resultTransaction)
-                                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Transaction Completed Successfully", Type = Notifications.Wpf.NotificationType.Success });
-                                    else
-                                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Transaction Not Completed", Type = Notifications.Wpf.NotificationType.Error });
-                                    //If transaction is Successfully Completed
-                                    if (resultTransaction)
+                                    if (product.Product != null && !string.IsNullOrEmpty(product?.Product?.Name))
                                     {
-                                        var partnerLedger = new BussinessPartnerLedgerModel();
-                                        if (Payment > 0)
-                                        {
-                                            var result = await _partnerLedgerManager.GetPartnerLedgerLastBalanceAsync(SelectedPartner?.Id ?? 0);
-                                            if (result != null)
-                                            {
-                                                //We decicde on this flag either payment is Debit Or credit
-                                                if (result.CurrentBalanceType == DAL.Models.PaymentType.DR)
-                                                {
-                                                    partnerLedger.CurrentBalance = result.CurrentBalance - Payment;
-                                                    if (partnerLedger.CurrentBalance < 0)
-                                                        partnerLedger.CurrentBalanceType = DAL.Models.PaymentType.CR;
-                                                    else
-                                                        partnerLedger.CurrentBalanceType = DAL.Models.PaymentType.DR;
-
-                                                }
-                                                else
-                                                {
-                                                    partnerLedger.CurrentBalance = result.CurrentBalance + Payment;
-                                                    if (partnerLedger.CurrentBalance < 0)
-                                                        partnerLedger.CurrentBalanceType = DAL.Models.PaymentType.DR;
-                                                    else
-                                                        partnerLedger.CurrentBalanceType = DAL.Models.PaymentType.CR;
-                                                }
-                                            }
-                                            await _partnerLedgerManager.AddPartnerBalanceAsync(partnerLedger);
-                                        }
+                                        // Here we Only Update the the PO Id
+                                        var saleOrderDetail = new SaleOrderDetailModel();
+                                        saleOrderDetail.SaleOrder.Id = saleOrderId;
+                                        SaleOrder.Id = saleOrderId;
+                                        saleOrderDetail.SaleOrder = SaleOrder;
+                                        saleOrderDetail.Product = product?.Product;
+                                        saleOrderDetail.Product.ProductColor = product?.Product?.ProductColor;
+                                        saleOrderDetail.Product.ProductSize = product?.Product?.ProductSize;
+                                        saleOrderDetail.Total = product?.Total.Value;
+                                        saleOrderDetail.Price = product?.Price.Value;
+                                        saleOrderDetail.Quantity = product?.Quantity.Value;
+                                        saleOrderDetail.Warehouse = product?.SelectedWarehouse;
+                                        saleOrderDetail.IsActive = true;
+                                        saleOrderDetail.Discount = SaleInvoice?.Discount ?? 0;
+                                        saleOrderDetail.CreatedAt = DateTime.Now;
+                                        saleOrderDetail.CreatedBy = AppSettings.LoggedInUser?.DisplayName;
+                                        SaleOrderDetail.Add(saleOrderDetail);
                                     }
-                                    else
+                                }
+                                //Fetching Order Detail Id,s
+                                var resultOrderDetail = await _saleOrderDetailManager.AddSaleOrderBulkDetailAsync(SaleOrderDetail);
+                                if (resultOrderDetail)
+                                {
+                                    var orderdetailIds = await _saleOrderDetailManager.GetOrderDetailIdByOrderIdAsync(saleOrderId);
+                                    for (int i = 0; i < orderdetailIds.Count; i++)
                                     {
-                                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Cannot Saved Transaction ", Type = Notifications.Wpf.NotificationType.Error });
+                                        //Assigning Id,s of OrderDetails To Order details Object
+                                        SaleOrderDetail.ElementAtOrDefault(i).Id = Convert.ToInt32(orderdetailIds.ElementAtOrDefault(i));
                                     }
                                 }
                                 else
                                 {
-                                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Cannot Saved Invoice ", Type = Notifications.Wpf.NotificationType.Error });
+                                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Cannot Create Sale Order Details", Type = Notifications.Wpf.NotificationType.Error });
                                 }
+                                #endregion
+
+                                #region Creating Sale Invoice
+                                //  Here we assume that Payment is not Added
+                                var stockOutProductList = new List<StockOutModel>();
+                                if (ProductGrid != null || ProductGrid?.Count > 0)
+                                {
+                                    foreach (var item in ProductGrid)
+                                    {
+                                        var itemNo = ProductGrid.IndexOf(item);
+                                        var selectedOrderDetail = SaleOrderDetail.ElementAtOrDefault(itemNo);
+
+                                        if (selectedOrderDetail != null)
+                                        {
+                                            item.Partner = SelectedPartner;
+                                            item.SaleOrder = SaleOrder;
+                                            item.Product = selectedOrderDetail?.Product;
+                                            item.SaleOrderDetail.Id = selectedOrderDetail.Id;
+                                            item.Description = $"Sale Product {selectedOrderDetail?.Product?.Name} From {SelectedPartner?.Name} In Price {selectedOrderDetail?.Price} Quantity {selectedOrderDetail?.Quantity} At {selectedOrderDetail?.CreatedAt}";
+                                            item.SelectedWarehouse = selectedOrderDetail.Warehouse;
+                                            if (!string.IsNullOrEmpty(item?.Product?.Name))
+                                            {
+                                                stockOutProductList.Add(item);
+                                            }
+                                        }
+                                    }
+                                    SaleInvoice.SelectedPartner = SelectedPartner;
+                                    SaleInvoice.PaymentImage = PaymentImage;
+                                    SaleInvoice.PercentDiscount = PercentDiscount;
+                                    SaleInvoice.Discount = DiscountPrice;
+                                    SaleInvoice.InvoiceTotal = InvoiceTotal.Value;
+                                    SaleInvoice.Payment = new PaymentModel { Id = 0, PaymentAmount = Payment ?? 0 };
+                                    bool invoiceResult = await _saleInvoiceManager.SaveSaleInoiceAsync(SaleInvoice);
+                                    if (invoiceResult)
+                                    {
+                                        var lastRowId = _saleInvoiceManager.GetLastRowId();
+                                        if (lastRowId != null)
+                                        {
+                                            if (lastRowId > 0)
+                                            {
+                                                foreach (var item in stockOutProductList)
+                                                {
+                                                    item.SaleInvoiceId = lastRowId;
+                                                }
+                                                var resultStockOut = await _stockOutManager.AddBulkStockOutAsync(stockOutProductList);
+                                                if (resultStockOut)
+                                                {
+                                                    if (Payment != null || Payment > 0)
+                                                    {
+                                                        // Here Payment is made
+                                                        var payment = new PaymentModel();
+                                                        payment.Partner = SelectedPartner;
+                                                        payment.PaymentMethod = SaleInvoice?.SelectedPaymentType;
+                                                        payment.PaymentType = DAL.Models.PaymentType.CR;
+                                                        payment.PaymentImage = PaymentImage;
+                                                        payment.PaymentAmount = Payment ?? 0;
+                                                        payment.IsPaymentReceived = false;
+                                                        if (payment.PaymentType == DAL.Models.PaymentType.CR)
+                                                            payment.CR = Payment.ToString();
+                                                        else
+                                                            payment.DR = Payment.ToString();
+                                                        payment.Description = $"Payment is Made To {SelectedPartner?.Name} against {productList?.FirstOrDefault()?.SaleInvoiceId} at {DateTime.Now}";
+                                                        var resultPayment = await _paymentManager.AddPaymentAsync(payment);
+                                                    }
+                                                    // here we Update the Partner Ledger Account
+                                                    BussinessPartnerLedgerModel partnerLedger = new BussinessPartnerLedgerModel();
+                                                    partnerLedger.Partner = SelectedPartner;
+                                                    var selectedPartnerBalance = await _partnerLedgerManager.GetPartnerLedgerLastBalanceAsync(SelectedPartner?.Id ?? 0);
+                                                    partnerLedger.DR = InvoiceTotal.Value;
+                                                    partnerLedger.InvoiceId = productList?.FirstOrDefault()?.SaleInvoiceId;
+                                                    if (Payment != null || Payment > 0)
+                                                    {
+                                                        partnerLedger.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(SelectedPartner?.Id);
+                                                        partnerLedger.CurrentBalance = selectedPartnerBalance.CurrentBalance + InvoiceTotal.Value - partnerLedger.Payment.PaymentAmount;
+                                                        partnerLedger.DR = partnerLedger.Payment.PaymentAmount;
+                                                    }
+                                                    else
+                                                    {
+                                                        partnerLedger.CurrentBalance = selectedPartnerBalance.CurrentBalance + InvoiceTotal.Value;
+                                                    }
+                                                    partnerLedger.CurrentBalanceType = partnerLedger?.CurrentBalance > 0 ? DAL.Models.PaymentType.CR : DAL.Models.PaymentType.DR;
+                                                    partnerLedger.Description = $"{SelectedPartner.Name} Sells Stock Amount Of {InvoiceTotal.Value} Invoice Of{SaleInvoice.InvoiceId} At {SaleInvoice.CreatedAt}";
+                                                    var result = await _partnerLedgerManager.UpdatePartnerCurrentBalanceAsync(partnerLedger);
+                                                    if (result)
+                                                    {
+                                                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Successfully Stock Added", Type = Notifications.Wpf.NotificationType.Success });
+                                                        SaleInvoice.InvoiceId = _saleInvoiceManager.GenrateInvoiceNumber("S");
+
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Clear();
+                                    IsLoading = false;
+                                }
+                                #endregion
                             }
                         }
                     }
-                    IsLoading = false;
+                    else
+                    {
+                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Cannot Create Sale Order", Type = Notifications.Wpf.NotificationType.Error });
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+
+        private async void Clear()
+        {
+            try
+            {
+                SelectedSaleType = string.Empty;
+                Partners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
+                SelectedPartner = new BussinessPartnerModel();
+                ProductGrid = new ObservableCollection<StockOutModel>();
+                var newProduct = new StockOutModel();
+                AutoId = 0;
+                AddProduct(newProduct);
+                InvoiceTotal = 0;
+                PercentDiscount = 0;
+                DiscountPrice = 0;
+                Payment = 0;
+                PaymentImage = null;
+                PreviousBalance = 0;
+                GrandTotal = 0;
+
+
             }
             catch (Exception ex)
             {
@@ -305,7 +430,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-
         public async void FilterProducts(string search)
         {
             try
@@ -330,7 +454,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 var resultPartner = await _partnerLedgerManager.GetPartnerLedgerLastBalanceAsync(SelectedPartner.Id.Value);
                 if (resultPartner != null)
                     PreviousBalance = resultPartner.CurrentBalance.ToString()?.ToDecimal() ?? 0;
-                GrandTotal = PreviousBalance + InvoiceTotal;
+                if (PreviousBalance < 0)
+                {
+                    Math.Abs(PreviousBalance);
+                    BalanceType = PaymentType.DR.ToString();
+                }
+                else
+                    BalanceType = PaymentType.CR.ToString();
+
+                GrandTotal = PreviousBalance + InvoiceTotal.Value;
             }
             catch (Exception ex)
             {
@@ -343,12 +475,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             {
                 if (ProductGrid != null || ProductGrid?.Count > 0)
                 {
+                    if (InvoiceTotal == null)
+                        InvoiceTotal = 0;
                     foreach (var product in ProductGrid)
                     {
+
                         InvoiceTotal += product.Total ?? 0;
                     }
                 }
-                GrandTotal = (InvoiceTotal + PreviousBalance);
+                if (PreviousBalance > 0)
+                    GrandTotal = (InvoiceTotal.Value + PreviousBalance);
+                else
+                    GrandTotal = (InvoiceTotal.Value - PreviousBalance);
             }
             catch (Exception ex)
             {
@@ -370,25 +508,47 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-      
+
         #endregion
 
         #region Properties
-        private decimal _Payment;
+        public SaleOrderModel SaleOrder { get; set; }
+        public List<SaleOrderDetailModel> SaleOrderDetail { get; set; }
+        private WarehouseModel _SelectedWarehouse;
+        /// <summary>
+        /// Selected Warehouse For Product
+        /// </summary>
+        public WarehouseModel SelectedWarehouse
+        {
+            get { return _SelectedWarehouse; }
+            set { _SelectedWarehouse = value; }
+        }
+
+        private List<WarehouseModel> _Warehouses;
+        /// <summary>
+        /// List Of Warehouse
+        /// </summary>
+        public List<WarehouseModel> Warehouses
+        {
+            get { return _Warehouses; }
+            set { _Warehouses = value; NotifyOfPropertyChange(nameof(_Warehouses)); }
+        }
+
+        private decimal? _Payment;
         /// <summary>
         /// Payment Amount recived By Customer
         /// </summary>
-        public decimal Payment
+        public decimal? Payment
         {
             get { return _Payment; }
             set { _Payment = value; NotifyOfPropertyChange(nameof(Payment)); }
         }
 
-        private decimal _InvoiceTotal;
+        private decimal? _InvoiceTotal;
         /// <summary>
         /// Current Invoice Total Amount
         /// </summary>
-        public decimal InvoiceTotal
+        public decimal? InvoiceTotal
         {
             get { return _InvoiceTotal; }
             set { _InvoiceTotal = value; NotifyOfPropertyChange(nameof(InvoiceTotal)); }
@@ -621,11 +781,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _PaymentImage; }
             set { _PaymentImage = value; NotifyOfPropertyChange(nameof(PaymentImage)); }
         }
-        private double _DiscountPrice;
+        private decimal _DiscountPrice;
         /// <summary>
         /// Price After Calculating Discount
         /// </summary>
-        public double DiscountPrice
+        public decimal DiscountPrice
         {
             get { return _DiscountPrice; }
             set { _DiscountPrice = value; NotifyOfPropertyChange(nameof(DiscountPrice)); }
@@ -662,7 +822,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public StockOutModel SelectedInventoryProduct
         {
             get { return _SelectedInventoryProduct; }
-            set { _SelectedInventoryProduct = value; NotifyOfPropertyChange(nameof(SelectedInventoryProduct)); }
+            set { _SelectedInventoryProduct = value; NotifyOfPropertyChange(nameof(SelectedInventoryProduct)); OnSelectedProduct(); }
+        }
+
+        private void OnSelectedProduct()
+        {
+            if (SelectedInventoryProduct != null && !string.IsNullOrEmpty(SelectedInventoryProduct?.Product?.Name))
+            {
+
+            }
         }
 
 

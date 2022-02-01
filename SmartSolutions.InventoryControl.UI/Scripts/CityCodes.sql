@@ -1,10 +1,10 @@
-USE [SmartBooksRetailDB]
+USE [SmartSolutions.InventoryControl]
 GO
   SET IDENTITY_INSERT City ON;
 INSERT INTO [dbo].[City]
            ([Id]
 		   ,[Name]
-           ,[Province_Id]
+           ,[ProvinceId]
            ,[PhoneCode]
            ,[Description]
            ,[IsActive]

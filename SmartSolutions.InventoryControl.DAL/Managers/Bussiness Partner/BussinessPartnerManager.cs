@@ -129,6 +129,46 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             }
             return partners;
         }
+
+        public async Task<IEnumerable<BussinessPartnerLedgerModel>> GetAllBussinessPartnersWithBalanceAsync()
+        {
+            var bussinessPartners = new List<BussinessPartnerLedgerModel>();
+            try
+            {
+                string query = @"SELECT Name,BussinessName,PartnerTypeId,PhoneNumber,MobileNumber,CityId,CurrentBalance,CurrentBalanceType FROM dbo.BussinessPartner bp
+                                INNER JOIN PartnerLedgerAccounts pl ON bp.Id = pl.PartnerId";
+                var values = await Repository.QueryAsync(query);
+                if(values != null || values?.Count > 0)
+                {
+                    foreach (var value in values)
+                    {
+                        var partnerLedger = new BussinessPartnerLedgerModel();
+                        partnerLedger.Partner = new BussinessPartnerModel();
+
+                        partnerLedger.Partner.Name = value?.GetValueFromDictonary("Name").ToString();
+                        partnerLedger.Partner.BussinessName = value?.GetValueFromDictonary("BussinessName")?.ToString();
+                        partnerLedger.Partner.PhoneNumber = value?.GetValueFromDictonary("PhoneNumber").ToString();
+                        partnerLedger.CurrentBalance = Convert.ToDecimal(value?.GetValueFromDictonary("CurrentBalance").ToString());
+                        partnerLedger.CurrentBalanceType = value?.GetValueFromDictonary("CurrentBalanceType").ToString().ToEnum<PaymentType>() ?? PaymentType.None;
+                        var mobileNumber = value?.GetValueFromDictonary("MobileNumber")?.ToString();
+                        if (!string.IsNullOrEmpty(mobileNumber))
+                            partnerLedger.Partner.MobileNumbers = new List<string>(mobileNumber.Split(','));
+                        partnerLedger.Partner.PartnerType = new BussinessPartnerTypeModel
+                        {
+                            Id = value?.GetValueFromDictonary("PartnerTypeId")?.ToString()?.ToInt()
+                        };
+                        partnerLedger.Partner.City = new Models.Region.CityModel { Id = value?.GetValueFromDictonary("CityId").ToString()?.ToInt() };
+                        bussinessPartners.Add(partnerLedger);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return bussinessPartners;
+        }
+
         public async Task<BussinessPartnerModel> GetBussinessPartnerByIdAsync(int? Id)
         {
             if (Id == null || Id == 0) return null;
