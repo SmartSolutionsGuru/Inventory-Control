@@ -53,6 +53,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             base.OnActivate();
             NowTime = DateTime.Now;
             CurrentUser = AppSettings.LoggedInUser;
+            TransactionCounter = Counter;
         }
         public void LogOut()
         {
@@ -65,6 +66,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Fatal);
             }
         }
+        /// <summary>
+        /// Get the Product Form
+        /// </summary>
         public void Product()
         {
             IsBankProceeded = false;
@@ -76,6 +80,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             IsPaymentProceeded = false;
             Handle(IoC.Get<Product.ProductViewModel>());
         }
+        /// <summary>
+        /// Get the BusinessPartner Form
+        /// </summary>
         public void BussinessPartner()
         {
             IsBankProceeded = false;
@@ -232,8 +239,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
             set
             {
-                _Counter = value;
-                
+                _Counter = value;               
             }
         }
 
@@ -292,7 +298,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         private bool _IsPrinterAvailable;
         /// <summary>
-        /// Priner Available Or Not
+        /// Printer Available Or Not
         /// </summary>
         public bool IsPrinterAvailable
         {
@@ -358,7 +364,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         private ProprietorInformationModel _ProprietorInfo;
         /// <summary>
-        /// Basic Info Of Properitor
+        /// Basic Info Of Proprietor
         /// </summary>
         public ProprietorInformationModel ProprietorInfo
         {

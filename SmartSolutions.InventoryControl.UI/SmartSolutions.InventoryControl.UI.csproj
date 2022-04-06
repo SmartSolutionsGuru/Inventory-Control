@@ -39,6 +39,9 @@
   <PropertyGroup>
     <ApplicationIcon>SmartBook.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>SmartSolutions.InventoryControl.UI.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoCompleteTextBox">
       <HintPath>..\AutoCompleteTextBox\bin\Debug\net452\AutoCompleteTextBox.dll</HintPath>
@@ -92,10 +95,10 @@
       <HintPath>..\packages\itext7.7.1.16\lib\net45\itext.svg.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.2.4.7\lib\net47\MahApps.Metro.dll</HintPath>
+      <HintPath>..\packages\MahApps.Metro.2.4.9\lib\net47\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.39\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -183,6 +186,9 @@
     <Compile Include="Views\BussinessPartner\PartnerBalanceView.xaml.cs">
       <DependentUpon>PartnerBalanceView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialogs\BankPaymentDialogView.xaml.cs">
+      <DependentUpon>BankPaymentDialogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\PathInsertionView.xaml.cs">
       <DependentUpon>PathInsertionView.xaml</DependentUpon>
     </Compile>
@@ -191,6 +197,12 @@
     </Compile>
     <Compile Include="Views\Reports\BussinessPartner\DisplayAllPartnersView.xaml.cs">
       <DependentUpon>DisplayAllPartnersView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Reports\BussinessPartner\DisplaySelectedPartnerReportView.xaml.cs">
+      <DependentUpon>DisplaySelectedPartnerReportView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Reports\Product\AllProductReportView.xaml.cs">
+      <DependentUpon>AllProductReportView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Reports\ReportsView.xaml.cs">
       <DependentUpon>ReportsView.xaml</DependentUpon>
@@ -277,6 +289,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Dialogs\BankPaymentDialogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Dialogs\DialogBaseView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -322,6 +338,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Reports\BussinessPartner\DisplayAllPartnersView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Reports\BussinessPartner\DisplaySelectedPartnerReportView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Reports\Product\AllProductReportView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -464,7 +488,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Resources\Notifications.Wpf-master\Notifications.Wpf-master\Notifications.Wpf\Notifications.Wpf.csproj">
+    <ProjectReference Include="..\Notifications.Wpf\Notifications.Wpf.csproj">
       <Project>{5c9a4f46-263d-4c23-b361-f09e14bb109e}</Project>
       <Name>Notifications.Wpf</Name>
     </ProjectReference>

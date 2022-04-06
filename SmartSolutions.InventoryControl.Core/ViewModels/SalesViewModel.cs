@@ -219,7 +219,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                         }
                     }
 
-                    #region Sale Order And Sale Detail Order Genration                    
+                    #region Sale Order And Sale Detail Order Generation                    
                     SaleOrder = new SaleOrderModel();
                     SaleOrder.SalePartner.Id = SelectedPartner?.Id;
                     SaleOrder.Status = SaleOrderModel.OrderStatus.New;
@@ -243,7 +243,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                 {
                                     if (product.Product != null && !string.IsNullOrEmpty(product?.Product?.Name))
                                     {
-                                        // Here we Only Update the the PO Id
+                                        // Here we Only Update the PO Id
                                         var saleOrderDetail = new SaleOrderDetailModel();
                                         saleOrderDetail.SaleOrder.Id = saleOrderId;
                                         SaleOrder.Id = saleOrderId;
@@ -335,9 +335,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                         payment.PaymentAmount = Payment ?? 0;
                                                         payment.IsPaymentReceived = false;
                                                         if (payment.PaymentType == DAL.Models.PaymentType.CR)
-                                                            payment.CR = Payment.ToString();
+                                                            payment.CR = Payment.Value;
                                                         else
-                                                            payment.DR = Payment.ToString();
+                                                            payment.DR = Payment.Value;
                                                         payment.Description = $"Payment is Made To {SelectedPartner?.Name} against {productList?.FirstOrDefault()?.SaleInvoiceId} at {DateTime.Now}";
                                                         var resultPayment = await _paymentManager.AddPaymentAsync(payment);
                                                     }
@@ -456,11 +456,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     PreviousBalance = resultPartner.CurrentBalance.ToString()?.ToDecimal() ?? 0;
                 if (PreviousBalance < 0)
                 {
+                    IsValueCredit = true;
                     Math.Abs(PreviousBalance);
                     BalanceType = PaymentType.DR.ToString();
                 }
                 else
+                {
+                    IsValueCredit = false;
                     BalanceType = PaymentType.CR.ToString();
+                }
 
                 GrandTotal = PreviousBalance + InvoiceTotal.Value;
             }
@@ -512,6 +516,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Properties
+        private bool _IsValueCredit;
+        /// <summary>
+        /// Property That is Used for changing Color On basis of DR and CR
+        /// </summary>
+        public bool IsValueCredit
+        {
+            get { return _IsValueCredit; }
+            set { _IsValueCredit = value; NotifyOfPropertyChange(nameof(IsValueCredit)); }
+        }
+
         public SaleOrderModel SaleOrder { get; set; }
         public List<SaleOrderDetailModel> SaleOrderDetail { get; set; }
         private WarehouseModel _SelectedWarehouse;
@@ -536,7 +550,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
 
         private decimal? _Payment;
         /// <summary>
-        /// Payment Amount recived By Customer
+        /// Payment Amount received By Customer
         /// </summary>
         public decimal? Payment
         {
@@ -631,7 +645,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
 
         private BussinessPartnerModel _SelectedPartner;
         /// <summary>
-        /// Selected bussiness Partner
+        /// Selected business Partner
         /// </summary>
         public BussinessPartnerModel SelectedPartner
         {
@@ -650,7 +664,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         private ProductSuggestionProvider _ProductSuggetion;
         /// <summary>
-        /// List of Product Suggetions
+        /// List of Product Suggestions
         /// </summary>
         public ProductSuggestionProvider ProductSuggetion
         {
@@ -792,7 +806,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         private decimal _PreviousBalance;
         /// <summary>
-        /// Privous Balance of that Partner 
+        /// Perievous Balance of that Partner 
         /// </summary>
         public decimal PreviousBalance
         {
@@ -801,7 +815,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         private string _BalanceType;
         /// <summary>
-        /// Balance Type of like Payable or Reciveable
+        /// Balance Type of like Payable or Receivable
         /// </summary>
         public string BalanceType
         {
@@ -817,7 +831,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         private StockOutModel _SelectedInventoryProduct;
         /// <summary>
-        /// Selected Incentory from Invoice List
+        /// Selected Inventory from Invoice List
         /// </summary>
         public StockOutModel SelectedInventoryProduct
         {

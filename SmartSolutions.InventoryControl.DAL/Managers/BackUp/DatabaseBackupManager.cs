@@ -31,7 +31,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.BackUp
             try
             {
                 //var FileNameWithPath = BuildBackUpWithFileName(, databaseName);
-                //await CreateBackupAsync(databaseName, FileNameWithPath);
+                //await CreateBackupAsync(databaseName);
             }
             catch (Exception ex)
             {

@@ -9,7 +9,7 @@ using System.Text;
 namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.BussinessPartner
 {
     [Export(typeof(DisplaySelectedPartnerReportViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class DisplaySelectedPartnerReportViewModel : BaseViewModel,IHandle<object>
+    public class DisplaySelectedPartnerReportViewModel : BaseViewModel, IHandle<object>
     {
         #region [Private Members]
         private readonly IEventAggregator _eventAggregator;
@@ -38,41 +38,48 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.BussinessPartn
         protected async override void OnActivate()
         {
             base.OnActivate();
-            //Handle(Partner);
             _eventAggregator.Subscribe(this);
-            Partners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
-            if(Partners != null)
+            Handle(Partner);
+            if (Partner == null) return;
+            else
+                PartnerLedgers = (await _partnerLedgerManager.GetPartnerBalanceSheetAsync(Partner.Id ?? 0)).ToList();
+            if(PartnerLedgers != null || PartnerLedgers?.Count > 0)
             {
-                if (Partner == null)
-                    Partner = Partners.FirstOrDefault();
-                PartnerLedger = (await _partnerLedgerManager.GetPartnerBalanceSheetAsync(Partner.Id ?? 0)).ToList();
+                foreach (var ledger in PartnerLedgers)
+                {
+                    ledger.Partner = Partner;
+                }
             }
-            //if (Partner == null) return;
-            //PartnerLedger = (await _partnerLedgerManager.GetPartnerBalanceSheetAsync(Partner.Id ?? 0)).ToList();
+        }
+        protected override void OnViewLoaded(object view)
+        {
+            base.OnViewLoaded(view);
+            _eventAggregator.Subscribe(this);
+            if (Partner == null) return;
         }
         private async void OnSelectedPartner()
         {
             if (Partner == null) return;
-            PartnerLedger = (await _partnerLedgerManager.GetPartnerBalanceSheetAsync(Partner.Id ?? 0)).ToList();
+            PartnerLedgers = (await _partnerLedgerManager.GetPartnerBalanceSheetAsync(Partner.Id ?? 0)).ToList();
         }
 
         public void Handle(object message)
         {
-            if(message == null) return;
-            if(message is BussinessPartnerModel)
+            if (message == null) return;
+            if (message is BussinessPartnerModel)
                 Partner = message as BussinessPartnerModel;
         }
         #endregion
 
         #region [Properties]
-        private List<BussinessPartnerLedgerModel> _PartnerLedger;
+        private List<BussinessPartnerLedgerModel> _PartnerLedgers;
         /// <summary>
         /// Balance sheet Of Selected Partner
         /// </summary>
-        public List<BussinessPartnerLedgerModel> PartnerLedger
+        public List<BussinessPartnerLedgerModel> PartnerLedgers
         {
-            get { return _PartnerLedger; }
-            set { _PartnerLedger = value; NotifyOfPropertyChange(nameof(PartnerLedger)); }
+            get { return _PartnerLedgers; }
+            set { _PartnerLedgers = value; NotifyOfPropertyChange(nameof(PartnerLedgers)); }
         }
 
         private BussinessPartnerLedgerModel _SelectedTransaction;

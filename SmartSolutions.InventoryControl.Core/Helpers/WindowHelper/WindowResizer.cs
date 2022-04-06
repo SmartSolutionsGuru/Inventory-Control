@@ -349,6 +349,7 @@ namespace SmartSolutions.InventoryControl.Core.Helpers.WindowHelper
             // NOTE: Always update it
             // If this has changed from the last one, update the transform
             //if (lCurrentScreen != mLastScreen || mMonitorDpi == null)
+            //mMonitorDpi = VisualTreeHelper.GetDpi(mWindow);
             mMonitorDpi = VisualTreeHelper.GetDpi(mWindow);
 
             // Store last know screen

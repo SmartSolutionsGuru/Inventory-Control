@@ -24,6 +24,12 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Region
         /// <param name="cityId"> </param>
         /// <returns> List Of City Models</returns>
         Task<CityModel> GetCityFromIdAsync(int? cityId);
+        /// <summary>
+        /// Get All Matching Cities According To Search Text
+        /// </summary>
+        /// <param name="searchText"></param>
+        /// <returns></returns>
+        Task<IEnumerable<CityModel>> GetCitiesAsync(string searchText);
         
     }
 }

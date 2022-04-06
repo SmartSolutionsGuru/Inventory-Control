@@ -83,7 +83,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Bank
         {
             try
             {
-                //TODO: Here we have to Perform verification
+
                 var bankAccount = new BankAccountModel();
                 bankAccount.Branch = SelectedBranch;
                 bankAccount.AccountStatus = SelectedAccountStatus;
@@ -93,22 +93,27 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Bank
                 bankAccount.OpeningBalance = InitialBalance;
                 bankAccount.Description = Description;
                 bankAccount.CreatedBy = AppSettings.LoggedInUser.DisplayName;
-                var result = await _bankAccountManager.AddBankAccountAsync(bankAccount);
-                if (result)
+                var verificationResult = await _bankAccountManager.IsAccountAlreadyExist(SelectedBranch?.Id, BankAccountNumber);
+                if (verificationResult == false)
                 {
-                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Successfully Added Bank Account", Type = Notifications.Wpf.NotificationType.Success });
-                    SelectedAccountStatus = string.Empty;
-                    SelectedAccountStatus = string.Empty;
-                    BankAccountNumber = string.Empty;
-                    InitialBalance = null;
+                    var result = await _bankAccountManager.AddBankAccountAsync(bankAccount);
+                    if (result)
+                    {
+                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Successfully Added Bank Account", Type = Notifications.Wpf.NotificationType.Success });
+                        SelectedAccountStatus = string.Empty;
+                        SelectedAccountStatus = string.Empty;
+                        BankAccountNumber = string.Empty;
+                        InitialBalance = null;
+                        Description = string.Empty;
+                    }
+                    else
+                    {
+                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "SorryCannot Add Bank Account", Type = Notifications.Wpf.NotificationType.Error });
+                    }
 
-                    Description = string.Empty;
-                    //TryClose();
                 }
                 else
-                {
-                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "SorryCannot Add Bank Account", Type = Notifications.Wpf.NotificationType.Error });
-                }
+                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Sorry Bank Account Already Exist", Type = Notifications.Wpf.NotificationType.Error });
             }
             catch (Exception ex)
             {
@@ -119,6 +124,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Bank
         {
             TryClose();
         }
+
         #endregion
 
         #region Properties

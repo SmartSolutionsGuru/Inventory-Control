@@ -92,13 +92,15 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                     foreach (var value in values)
                     {
                         var partnerLedger = new BussinessPartnerLedgerModel();
-                        partnerLedger.Id = value.GetValueFromDictonary("Id")?.ToString()?.ToInt(); ;
+                        partnerLedger.Id = value.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                         var paymentId = value?.GetValueFromDictonary("PaymentId")?.ToString()?.ToInt();
                         partnerLedger.Payment = await _paymentManager.GetPaymentByIdAsync(paymentId);
                         partnerLedger.Description = value?.GetValueFromDictonary("Description")?.ToString();
                         partnerLedger.CurrentBalance = value?.GetValueFromDictonary("CurrentBalance")?.ToString()?.ToDecimal() ?? 0;
                         partnerLedger.CreatedAt = Convert.ToDateTime(value?.GetValueFromDictonary("CreatedAt")?.ToString());
                         partnerLedger.CurrentBalanceType = (PaymentType)value?.GetValueFromDictonary("CurrentBalanceType")?.ToString().ToEnum<PaymentType>();
+                        //var result = await _bussinessPartnerManager.GetBussinessPartnerByIdAsync(partnerId);
+
                         partnerBalanceSheet.Add(partnerLedger);
                     }
                 }

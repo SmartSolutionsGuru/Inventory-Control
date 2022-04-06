@@ -107,9 +107,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         public async void RemovePartner()
         {
             //null guard
-            if(SelectedBussinessPartner == null)
+            if (SelectedBussinessPartner == null)
             {
-                NotificationManager.Show(new Notifications.Wpf.NotificationContent {Title = "Error",Message = "Please Select Partner", Type = Notifications.Wpf.NotificationType.Error });
+                NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Please Select Partner", Type = Notifications.Wpf.NotificationType.Error });
             }
             try
             {
@@ -138,6 +138,19 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         public void RemoveMobileNo(BussinessPartnerModel model)
         {
 
+        }
+        public async void FilterCity(string searchText)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(searchText)) return;
+                Cities = (await _cityManager.GetCitiesAsync(searchText)).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
         }
         public void Cancel()
         {
@@ -171,13 +184,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     IsLoading = false;
                     return;
                 }
-                 else if(SelectedCity == null)
+                else if (SelectedCity == null)
                 {
                     CityNotSelected = true;
                     IsLoading = false;
                     return;
                 }
-                else if(NewBussinessPartner != null && string.IsNullOrEmpty(NewBussinessPartner.Address))
+                else if (NewBussinessPartner != null && string.IsNullOrEmpty(NewBussinessPartner.Address))
                 {
                     AddressError = true;
                     IsLoading = false;
@@ -185,6 +198,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 }
                 if (NewBussinessPartner != null)
                 {
+                    GetParsedPhoneNumber();
                     NewBussinessPartner.Name = FullName;
                     NewBussinessPartner.BussinessName = BussinessName;
                     NewBussinessPartner.PartnerCategory = SelectedPartnerCategory;
@@ -196,8 +210,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     {
                         NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Partner Added Successfully", Type = Notifications.Wpf.NotificationType.Success }, areaName: "WindowArea");
                         var newAddedPartner = await _bussinessPartnerManager.GetLastAddedPartner();
-                       var accountList =  await _partnerSetupAccountManager.GenratePartnerAccountCodeAsync(SelectedPartnerType.Name, newAddedPartner?.Id.Value ?? 0);
-                        if(accountList != null || accountList?.Count > 0)
+                        var accountList = await _partnerSetupAccountManager.GenratePartnerAccountCodeAsync(SelectedPartnerType.Name, newAddedPartner?.Id.Value ?? 0);
+                        if (accountList != null || accountList?.Count > 0)
                         {
                             foreach (var item in accountList)
                             {
@@ -209,6 +223,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                                 await _partnerSetupAccountManager.SavePartnerSetAccountAsync(partnersetupAccount);
                             }
                         }
+                        ClearPartnerDetails();
                     }
                     else
                         NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Sorry Partner Not Added", Type = Notifications.Wpf.NotificationType.Error });
@@ -221,9 +236,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                             payment.Partner = await _bussinessPartnerManager.GetLastAddedPartner();
                             payment.PaymentType = SelectedAmountType.Equals("DR (Receivable)") == true ? DAL.Models.PaymentType.DR : DAL.Models.PaymentType.CR;
                             if (payment.PaymentType == DAL.Models.PaymentType.DR)
-                                payment.DR = InitialAmount.ToString();
+                                payment.DR = InitialAmount;
                             else
-                                payment.CR = InitialAmount.ToString();
+                                payment.CR = InitialAmount;
                             payment.PaymentAmount = InitialAmount;
                             payment.IsPaymentReceived = SelectedAmountType.Equals("DR (Receivable)") ? true : false;
                             payment.CreatedBy = AppSettings.LoggedInUser.DisplayName;
@@ -237,8 +252,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                                 partnerLedger.Partner = payment.Partner ?? await _bussinessPartnerManager.GetLastAddedPartner();
                                 partnerLedger.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(payment?.Partner.Id);
                                 partnerLedger.CurrentBalance = payment.PaymentAmount;
-                                partnerLedger.CR = !string.IsNullOrEmpty(payment.CR) ?  Convert.ToDecimal(payment.CR) : 0;
-                                partnerLedger.DR = !string.IsNullOrEmpty(payment.DR) ?  Convert.ToDecimal(payment.DR) : 0;
+                                partnerLedger.CR = payment.CR;
+                                partnerLedger.DR = payment.DR;
                                 partnerLedger.CurrentBalanceType = payment.PaymentType;
                                 partnerLedger.Description = "Initial Deposit / Balance";
                                 partnerLedger.CreatedBy = AppSettings.LoggedInUser.DisplayName;
@@ -270,7 +285,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        private void ClearPartnerDetails()
+        private void GetParsedPhoneNumber()
+        {
+            var phoneNumberUtil = PhoneNumbers.PhoneNumberUtil.GetInstance();
+            var nationalPhoneNumber = NewBussinessPartner.PhoneNumber;
+            var phoneNumber = phoneNumberUtil.Parse(nationalPhoneNumber, "US");
+        }
+        private  async void ClearPartnerDetails()
         {
             PartnerMobileNumber = string.Empty;
             BussinessName = string.Empty;
@@ -278,6 +299,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             InitialAmount = 0;
             NewBussinessPartner = new BussinessPartnerModel();
             SelectedAmountType = string.Empty;
+            PartnerCategories = (await _partnerCategoryManager.GetPartnerCategoriesAsync()).ToList();
+            PartnerTypes = (await _partnerTypeManager.GetPartnerTypesAsync()).ToList();
             SelectedPartnerCategory = new BussinessPartnerCategoryModel();
             SelectedPartnerType = new BussinessPartnerTypeModel();
             AddressError = false;
@@ -305,7 +328,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         #endregion
 
         #region Private Methods
-      
+
         #endregion
 
         #region Protected Methods
@@ -346,18 +369,19 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         #region Properties
         private string _BussinessName;
         /// <summary>
-        /// Bussiness Name
+        /// Business Name
         /// </summary>
         public string BussinessName
         {
             get { return _BussinessName; }
             set
             {
-                if(!string.IsNullOrEmpty(value))
+                if (!string.IsNullOrEmpty(value))
                 {
                     _BussinessName = value;
                     _BussinessName = _BussinessName.CapitalizeFirstLetter();
                 }
+                else { _BussinessName = value; }
                 NotifyOfPropertyChange(nameof(BussinessName));
             }
         }
@@ -370,15 +394,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         public string FullName
         {
             get { return _FullName; }
-            set 
-            { 
-                if(!string.IsNullOrEmpty(value))
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
                 {
                     _FullName = value;
                     _FullName = _FullName.CapitalizeFirstLetter();
                 }
-               
-                NotifyOfPropertyChange(nameof(FullName)); }
+                else
+                { _FullName = value;}
+
+                NotifyOfPropertyChange(nameof(FullName));
+            }
         }
 
         private bool _AddressError;
@@ -390,13 +417,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         }
 
         private bool _CityNotSelected;
-         /// <summary>
-         /// Flag for Vierification City is Selected Or Not
-         /// </summary>
+        /// <summary>
+        /// Flag for Verification City is Selected Or Not
+        /// </summary>
         public bool CityNotSelected
         {
             get { return _CityNotSelected; }
-            set { _CityNotSelected = value;  NotifyOfPropertyChange(nameof(CityNotSelected)); }
+            set { _CityNotSelected = value; NotifyOfPropertyChange(nameof(CityNotSelected)); }
         }
 
         private List<PaymentTypeModel> _PaymentMethods;
@@ -421,7 +448,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
 
         private List<BussinessPartnerTypeModel> _PartnerTypes;
         /// <summary>
-        /// List Of Partner Types Like Vender Customer etc...
+        /// List Of Partner Types Like Vendor Customer etc...
         /// </summary>
         public List<BussinessPartnerTypeModel> PartnerTypes
         {
@@ -430,7 +457,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         }
         private BussinessPartnerTypeModel _SelectedPartnerType;
         /// <summary>
-        /// Selected Partner Type Like Vender Customer etc...
+        /// Selected Partner Type Like Vendor Customer etc...
         /// </summary>
         public BussinessPartnerTypeModel SelectedPartnerType
         {
@@ -461,7 +488,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         public BussinessPartnerLedgerModel PartnerLedger { get; set; }
         private List<string> _AmountType;
         /// <summary>
-        /// Amount Type for Initial Amount Like Payable Or Receviable
+        /// Amount Type for Initial Amount Like Payable Or Receivable
         /// </summary>
         public List<string> AmountType
         {
@@ -577,7 +604,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
 
         private List<BussinessPartnerModel> _BussinessPartners;
         /// <summary>
-        /// List Of Bussiness Partner
+        /// List Of Business Partner
         /// </summary>
         public List<BussinessPartnerModel> BussinessPartners
         {
@@ -587,7 +614,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
 
         private BussinessPartnerModel _SelectedBussinessPartner;
         /// <summary>
-        /// Selected Bussiness Partner
+        /// Selected Business Partner
         /// </summary>
         public BussinessPartnerModel SelectedBussinessPartner
         {

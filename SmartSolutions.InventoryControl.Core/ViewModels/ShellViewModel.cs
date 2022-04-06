@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.SqlServer.Management.Smo;
 using SmartSolutions.InventoryControl.DAL;
+using System.Collections.Generic;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels
 {
@@ -28,6 +29,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private static string dbFile = null;
         private readonly DAL.Managers.Proprietor.IProprietorInformationManager _proprietorInformationManager;
         private readonly DAL.Managers.Settings.ISystemSettingManager _systemSettingManager;
+        private readonly IRepository repository;
         #endregion
 
         #region Constructor
@@ -49,6 +51,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             _dialog = dialogManager;
             _proprietorInformationManager = proprietorInformationManager;
             _systemSettingManager = systemSettingManager;
+            
         }
         #endregion
 
@@ -75,6 +78,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             base.OnInitialize();
             dbFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName, "InventoryControl.db");
             var result = InitializeDatabaseConnection();
+            InitializeDatabaseScripts();
             var settingResult = await _systemSettingManager.GetsystemSettingByKeyAsync("IsProprietorAvailable");
             if (settingResult != null)
             {
@@ -251,6 +255,28 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
+            return retVal;
+        }
+        private async Task<bool> InitializeDatabaseScripts()
+        {
+            bool retVal = false;
+            try
+            {
+                var resultDir = Environment.CurrentDirectory;
+                string[] appPath = resultDir.Split(new string[] { "bin" }, StringSplitOptions.None);
+                var scriptArray = Directory.GetFiles(string.Concat(appPath[0], "Scripts"));
+                foreach (var script in scriptArray)
+                {
+                    FileInfo file = new FileInfo(script);
+                    await repository.QueryAsync(script);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+
             return retVal;
         }
         #endregion

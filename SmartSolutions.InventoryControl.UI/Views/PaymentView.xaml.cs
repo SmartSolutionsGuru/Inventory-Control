@@ -54,5 +54,21 @@ namespace SmartSolutions.InventoryControl.UI.Views
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
+
+        private void SearchableComboBox_SearchCounter(object sender, EventArgs e)
+        {
+            try
+            {
+                var control = sender as TextBox;
+                if (string.IsNullOrEmpty(control?.Text)) return;
+                ViewModel.SearchPartner(control?.Text);
+                //ViewModel?.SearchPartner(searchText);
+            }
+            catch (Exception ex)
+            {
+
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
     }
 }

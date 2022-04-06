@@ -85,8 +85,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Payments
                         lastPayment.PaymentType = value?.GetValueFromDictonary("PaymentType")?.ToString()?.ToEnum<PaymentType>() ?? PaymentType.None;
                         lastPayment.PaymentMethod = new PaymentTypeModel { Id = value?.GetValueFromDictonary("PaymentMethodId")?.ToString()?.ToInt() ?? 0 };
                         lastPayment.PaymentAmount = value?.GetValueFromDictonary("PaymentAmount")?.ToString()?.ToDecimal() ?? 0;
-                        lastPayment.DR = value?.GetValueFromDictonary("DR").ToString();
-                        lastPayment.CR = value?.GetValueFromDictonary("CR").ToString();
+                        lastPayment.DR = Convert.ToDecimal(value?.GetValueFromDictonary("DR").ToString());
+                        lastPayment.CR = Convert.ToDecimal(value?.GetValueFromDictonary("CR").ToString());
                     }
                 }
             }

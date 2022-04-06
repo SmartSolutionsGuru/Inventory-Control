@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:autoComplete="http://wpfcontrols.com/"
              xmlns:cal="http://www.caliburnproject.org"
+             xmlns:userControl="clr-namespace:SmartSolutions.InventoryControl.UI.CustomControls"
              xmlns:viewModel="clr-namespace:SmartSolutions.InventoryControl.Core.ViewModels;assembly=SmartSolutions.InventoryControl.Core"
              xmlns:ControlExtensions="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
              xmlns:models="clr-namespace:SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;assembly=SmartSolutions.InventoryControl.DAL"
@@ -37,6 +38,15 @@
                             FontFamily="{StaticResource MediumFont}"/>
             </Grid>
         </DataTemplate>
+        <DataTemplate x:Key="DisplayNameTemplate" 
+                      DataType="{x:Type models:BussinessPartnerModel}">
+            <Grid>
+                <TextBlock Text="{Binding Path=Name}"
+                           Foreground="{StaticResource GrayColorBrush}"
+                           FontFamily="{StaticResource MediumFont}"
+                           FontSize="{StaticResource MediumSize}"/>
+            </Grid>
+        </DataTemplate>
     </UserControl.Resources>
     <Border Background="{StaticResource PureWhiteColorBrush}">
         <Grid>
@@ -59,13 +69,13 @@
                     Grid.Row="1" 
                     Height="70" 
                     Width="350" 
-                    Background="{StaticResource BlueColorBrush}" 
                     HorizontalContentAlignment="Center" 
                     FontFamily="{StaticResource MediumFont}" 
                     FontSize="{StaticResource SubHeadingSize}" 
                     VerticalContentAlignment="Center">
                 <Button.Style>
                     <Style TargetType="Button" BasedOn="{StaticResource ContentButton}">
+                        <Setter Property="Background" Value="{StaticResource BlueColorBrush}"/>
                         <Setter Property="Content">
                             <Setter.Value>
                                 <TextBlock FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource SubHeadingSize}" Foreground="{StaticResource PureWhiteColorBrush}"><Run Text="Amount is "/><Run Text="{Binding CurrentPartnerBalance,Mode=OneWay}"/><Run Text=" "/> <Run Text="{Binding AmountType,Mode=OneWay}"></Run></TextBlock>
@@ -74,6 +84,9 @@
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding SelectedPartner,Mode=TwoWay}" Value="{x:Null}">
                                 <Setter Property="Content" Value="Amount is  0"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsValueCredit,Mode=OneWay}" Value="True">
+                                <Setter Property="Background" Value="{StaticResource RedColorBrush}"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -88,21 +101,26 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel>
                     <TextBlock Text="Select Partner" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Center" Margin="0 0 0 5"  Foreground="{StaticResource GrayColorBrush}"></TextBlock>
-                    <autoComplete:AutoCompleteTextBox Grid.Column="0" 
-                                                      Height="50"
-                                                      Width="250"
-                                                      Padding="8 0 0 0"
-                                                      Opacity="0.7"
-                                                      Watermark="Enter Vender Name"
-                                                      DisplayMember="Name"
-                                                      Margin="0 5 0 0"
-                                                      FontFamily="{StaticResource MediumFont}"
-                                                      Provider="{Binding PartnerSuggetion,Mode=TwoWay}"
-                                                      SelectedItem="{Binding SelectedPartner,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                                      ItemTemplate="{StaticResource NameTemplate}"
-                                                      FontSize="{StaticResource MediumSize}"
-                                                      Foreground="{StaticResource GrayColorBrush}"
-                                                      Style="{StaticResource AutoCompleteTextBoxStyle}"/>
+                   
+                    <userControl:SearchableComboBox Grid.Column="0" 
+                                                    Height="50"
+                                                    Width="250"
+                                                    BorderThickness="1.7"
+                                                    Foreground="{StaticResource GrayColorBrush}"
+                                                    MaxDropDownHeight="250"
+                                                    ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Collapsed"
+                                                    ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Vender"
+                                                    FontFamily="{StaticResource MediumFont}"
+                                                    FontSize="{StaticResource MediumSize}"
+                                                    ItemsSource="{Binding BussinessPartners,Mode=OneWay}"
+                                                    IsEditable="True"
+                                                    SearchCharCount="0"
+                                                    SearchCounter="SearchableComboBox_SearchCounter"
+                                                    SelectedItem="{Binding SelectedPartner,Mode=TwoWay}"
+                                                    Style="{StaticResource BaseSearchableComboBox}"
+                                                    BorderBrush="{StaticResource BlueColorBrush}"
+                                                    AltSelectionBoxItemTemplate="{StaticResource DisplayNameTemplate}"
+                                                    ItemTemplate="{StaticResource NameTemplate}" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" >
                     <TextBlock Text="Payment Mode" Margin="0 0 0 5" Foreground="{StaticResource GrayColorBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}"/>

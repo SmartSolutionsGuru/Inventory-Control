@@ -19,8 +19,19 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Bank
         public string AccountStatus { get; set; }
         public DateTime? OpeningDate { get; set; }
         public string AccountNumber { get; set; }
+        /// <summary>
+        /// Opening Balance Of that Account
+        /// </summary>
         public decimal? OpeningBalance { get; set; }
         public string  Description { get; set; }
+        /// <summary>
+        /// DR is Amount Is Recived in Transaction
+        /// </summary>
+        public decimal DR { get; set; }
+        /// <summary>
+        /// Amount is Paid in Transaction
+        /// </summary>
+        public decimal CR { get; set; }
         #endregion
     }
 }

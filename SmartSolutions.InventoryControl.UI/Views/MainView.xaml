@@ -529,8 +529,18 @@
                                 </Button.Content>
                             </Button>
                             <Path Stretch="Fill" Data="{StaticResource Shape_Divider}" Fill="{StaticResource GrayColorBrush}" />
-                            <!--TODO have to Implement it Numbers-->
-                            <customControls:NotificationButton Value="{Binding TransactionCounter,Mode=OneWay}" BadgeMargin="0,-5,10,0" Height="30" Margin="0,0,0,0" Style="{StaticResource BadgeInfo}">
+                            
+                            <customControls:NotificationButton Value="{Binding TransactionCounter,Mode=OneWay}" BadgeMargin="0,-5,10,0" Height="30" Margin="0,0,0,0" >
+                                <customControls:NotificationButton.Style>
+                                    <Style TargetType="customControls:NotificationButton" BasedOn="{StaticResource BadgeInfo}">
+                                        <Setter Property="Background" Value="{StaticResource RedColorBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding TransactionCounter,Mode=TwoWay}" Value="0">
+                                                <Setter Property="Background" Value="{StaticResource BlueColorBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </customControls:NotificationButton.Style>
                                 <Button x:Name="UpdateDbBackup" ToolTip="Backup" Background="Transparent" Margin="{StaticResource HeaderLogoMargin}" Style="{StaticResource ContentButton}">
                                     <Path Stretch="Uniform" Data="{StaticResource Shape_Database}" Margin="{StaticResource HeaderLogoMargin}" ToolTip="{Binding PrinterName}">
                                         <Path.Style>
@@ -663,8 +673,9 @@
                                     </Style>
                                 </Path.Style>
                             </Path>
-                            <Button x:Name="LogOut" ToolTip="LogOut" Height="25" Width="25"   Style="{StaticResource ContentButton}" Background="{StaticResource BlueColorBrush}" controlExtensions:MiscControlExtensions.CornerRadius="30" Margin="{StaticResource HeaderLogoMargin}">
-                                <TextBlock Text="{Binding CurrentUser.DisplayName[0],FallbackValue='SB',TargetNullValue='SB'}" FontSize="{StaticResource MediumSize}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource PureWhiteColorBrush}"/>
+                            <Button x:Name="LogOut" ToolTip="LogOut" Height="28" Width="28"   Style="{StaticResource ContentButton}" Background="{StaticResource BlueColorBrush}" controlExtensions:MiscControlExtensions.CornerRadius="30" Margin="{StaticResource HeaderLogoMargin}">
+                                <!--<TextBlock Text="{Binding CurrentUser.DisplayName[0],FallbackValue='SB',TargetNullValue='SB'}" FontSize="{StaticResource MediumSize}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource PureWhiteColorBrush}"/>-->
+                                <TextBlock Text="{Binding CurrentUser.Initials,FallbackValue='SB',TargetNullValue='SB'}" FontSize="{StaticResource SmallSize}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{StaticResource PureWhiteColorBrush}"/>
                             </Button>
                         </StackPanel>
                         <!--Main Content-->

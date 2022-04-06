@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider
 {
@@ -12,12 +11,14 @@ namespace SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider
     {
         #region Properties
         public List<DAL.Models.Product.ProductModel> SuggestedProducts { get; set; }
+        private static List<DAL.Models.Product.ProductModel> myProducts;
         #endregion
 
-        #region Costructor
+        #region [Constructor]
         public ProductSuggestionProvider(List<DAL.Models.Product.ProductModel> products)
         {
             SuggestedProducts = products;
+            myProducts = products;
         }
         #endregion
         public IEnumerable GetSuggestions(string filter)
@@ -25,6 +26,11 @@ namespace SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider
             try
             {
                 if(string.IsNullOrEmpty(filter)) return null;
+                if(SuggestedProducts.Count < myProducts.Count)
+                {
+                    SuggestedProducts.Clear();
+                    SuggestedProducts.AddRange(myProducts);
+                }
                 SuggestedProducts = SuggestedProducts.Where(p => p.Name.ToLower().StartsWith(filter)).ToList();
             }
             catch (Exception ex)

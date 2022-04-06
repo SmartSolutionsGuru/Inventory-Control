@@ -198,7 +198,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 else
                 {
                     //Purchase Section
-                    #region Gerating PO And Filling Details
+                    #region Generating PO And Filling Details
                     PurchaseOrder.Partner.Id = SelectedPartner?.Id;
                     PurchaseOrder.Status = PurchaseOrderModel.OrderStatus.New;
                     PurchaseOrder.Description = "Order Placed";
@@ -305,9 +305,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                             payment.PaymentAmount = Payment ?? 0;
                                                             payment.IsPaymentReceived = false;
                                                             if (payment.PaymentType == DAL.Models.PaymentType.DR)
-                                                                payment.DR = Payment.ToString();
+                                                                payment.DR = Payment.Value;
                                                             else
-                                                                payment.CR = Payment.ToString();
+                                                                payment.CR = Payment.Value;
                                                             payment.Description = $"Payment is Made To {SelectedPartner?.Name} against {productList?.FirstOrDefault()?.PurchaseInvoiceId} at {DateTime.Now}";
                                                             var resultPayment = await _paymentManager.AddPaymentAsync(payment);
                                                         }
@@ -529,12 +529,19 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
+        private void OnGettingSuggetions()
+        {
+            if(ProductSuggetion == null || ProductSuggetion.SuggestedProducts.Count == 0)
+            {
+                ProductSuggetion = new ProductSuggestionProvider(Products);
+            }
+        }
         #endregion
 
         #region Properties
         private bool _IsValueCredit;
         /// <summary>
-        /// Property That is Used for chaning Color On basis of DR and CR
+        /// Property That is Used for changing Color On basis of DR and CR
         /// </summary>
         public bool IsValueCredit
         {
@@ -544,12 +551,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
 
         private ProductSuggestionProvider _ProductSuggetion;
         /// <summary> 
-        /// List of Product Suggetions 
+        /// List of Product Suggestions 
         /// </summary> 
         public ProductSuggestionProvider ProductSuggetion
         {
-            get { return _ProductSuggetion; }
-            set { _ProductSuggetion = value; NotifyOfPropertyChange(nameof(ProductSuggetion)); }
+            get
+            {
+                return _ProductSuggetion;
+            }
+            set { _ProductSuggetion = value; NotifyOfPropertyChange(nameof(ProductSuggetion));  OnGettingSuggetions(); }
         }
         private bool _PaymentModeError;
         public bool PaymentModeError
@@ -563,7 +573,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public StockInModel StockIn { get; set; }
         private List<WarehouseModel> _Warehouses;
         /// <summary>
-        /// List Of Warehouses whicha are avaiable
+        /// List Of Warehouses which are available
         /// </summary>
         public List<WarehouseModel> Warehouses
         {

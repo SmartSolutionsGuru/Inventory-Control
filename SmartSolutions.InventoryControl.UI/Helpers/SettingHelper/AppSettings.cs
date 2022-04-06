@@ -6,7 +6,7 @@ namespace SmartSolutions.InventoryControl.UI.Helpers.SettingHelper
     public class AppSettings
     {
         /// <summary>
-        /// The directory where the app is runing
+        /// The directory where the app is running
         /// </summary>
         public static string AppDirectory => AppDomain.CurrentDomain?.BaseDirectory;
 
@@ -20,7 +20,7 @@ namespace SmartSolutions.InventoryControl.UI.Helpers.SettingHelper
         /// </summary>
         public static Dictionary<string, string> Configurations { get; set; }
         /// <summary>
-        /// The Property which Decide either databackup Path is Set or Not
+        /// The Property which Decide either data backup Path is Set or Not
         /// </summary>
         public static bool Backup { get; set; }
         /// <summary>

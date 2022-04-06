@@ -68,6 +68,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.Product
                         ProductSubType = product.ProductSubType.Name
                     };
                     var resultQuantity = await _stockOutManager.GetStockInHandAsync(product.Id ?? 0);
+                    if(resultQuantity < 0)
+                        displayProduct.IsQuantityNegitive = true;
                     displayProduct.Quantity = resultQuantity ?? 0;
                     Products.Add(displayProduct);
                 }
@@ -105,6 +107,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.Product
         public string ProductSubType { get; set; }
         public string ProductColor { get; set; }
         public string ProductSize { get; set; }
+        public bool IsQuantityNegitive { get; set; }
         public int Quantity { get; set; }
     }
 }

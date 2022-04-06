@@ -9,11 +9,11 @@ using System.Text;
 
 namespace SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider
 {
-    [Export(typeof(ISuggestionProvider)),PartCreationPolicy(CreationPolicy.NonShared)]
+    [Export(typeof(ISuggestionProvider)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class PartnerSuggestionProvider : ISuggestionProvider
     {
         #region Private Members
-      
+        private static List<DAL.Models.BussinessPartner.BussinessPartnerModel> myPartners;
         #endregion
 
         #region Properties
@@ -25,6 +25,7 @@ namespace SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider
         public PartnerSuggestionProvider(List<DAL.Models.BussinessPartner.BussinessPartnerModel> partners)
         {
             BussinessPartners = partners;
+            myPartners = partners;
         }
         #endregion
         public IEnumerable GetSuggestions(string filter)
@@ -32,6 +33,11 @@ namespace SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider
             try
             {
                 if (string.IsNullOrEmpty(filter)) return null;
+                if (BussinessPartners.Count < myPartners.Count)
+                {
+                    BussinessPartners.Clear();
+                    BussinessPartners = myPartners;
+                }
                 BussinessPartners = BussinessPartners?.Where(p => p.FullName.ToLower().StartsWith(filter.ToLower())).ToList();
             }
             catch (Exception ex)

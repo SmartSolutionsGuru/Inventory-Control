@@ -136,11 +136,10 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Authentication
         #region GET USERS
         public async Task<IEnumerable<IdentityUserModel>> GetAllUserAsync()
         {
-            string query = string.Empty;
             List<IdentityUserModel> _users = new List<IdentityUserModel>();
             try
             {
-                query = @"SELECT * From IdentityUser WHERE IsActive = 1";
+                string query = @"SELECT * From IdentityUser WHERE IsActive = 1";
                 var values = await Repository.QueryAsync(query: query);
 
                 if (values != null)

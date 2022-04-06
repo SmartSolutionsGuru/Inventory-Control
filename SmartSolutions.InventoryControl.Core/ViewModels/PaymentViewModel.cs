@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner;
+using SmartSolutions.InventoryControl.DAL.Models.Bank;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.DAL.Models.Payments;
 using SmartSolutions.Util.LogUtils;
@@ -11,28 +12,33 @@ using System.Linq;
 namespace SmartSolutions.InventoryControl.Core.ViewModels
 {
     [Export(typeof(PaymentViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
-    public class PaymentViewModel : BaseViewModel
+    public class PaymentViewModel : BaseViewModel, IHandle<BankAccountModel>
     {
         #region Private Members
+        private readonly IEventAggregator _eventAggregator;
         private readonly IBussinessPartnerManager _bussinessPartnerManager;
         private readonly IPartnerLedgerManager _partnerLedgerManager;
         private readonly DAL.Managers.Payments.IPaymentManager _paymentManager;
         private readonly DAL.Managers.Payments.IPaymentTypeManager _paymentTypeManager;
+        private readonly DAL.Managers.Bank.IBankAccountManager _bankAccountManager;
         #endregion
 
         #region Constructor
         public PaymentViewModel() { }
 
         [ImportingConstructor]
-        public PaymentViewModel(IBussinessPartnerManager bussinessPartnerManager
+        public PaymentViewModel(IEventAggregator eventAggregator
+                                , IBussinessPartnerManager bussinessPartnerManager
                                 , DAL.Managers.Payments.IPaymentTypeManager paymentTypeManager
                                 , DAL.Managers.Payments.IPaymentManager paymentManager
-                                , IPartnerLedgerManager partnerLedgerManager)
+                                , IPartnerLedgerManager partnerLedgerManager, DAL.Managers.Bank.IBankAccountManager bankAccountManager)
         {
+            _eventAggregator = eventAggregator;
             _bussinessPartnerManager = bussinessPartnerManager;
             _paymentTypeManager = paymentTypeManager;
             _paymentManager = paymentManager;
             _partnerLedgerManager = partnerLedgerManager;
+            _bankAccountManager = bankAccountManager;
         }
         #endregion
 
@@ -45,6 +51,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
             PartnerSuggetion = new Helpers.SuggestionProvider.PartnerSuggestionProvider(BussinessPartners);
             IsReceiveAmount = true;
+            _eventAggregator.Subscribe(this);
+        }
+        public async void SearchPartner(string searchText)
+        {
+            try
+            {
+                BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync(searchText)).ToList();
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
         }
         public async void Save()
         {
@@ -55,7 +73,25 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 Payment.PaymentMethod = SelectedPaymentType;
                 PaymentImage = PaymentImage;
                 Payment.Partner = SelectedPartner;
+
                 Payment.PaymentType = IsReceiveAmount == true ? DAL.Models.PaymentType.DR : DAL.Models.PaymentType.CR;
+                if (Payment.PaymentType == DAL.Models.PaymentType.DR)
+                    Payment.DR = Amount;
+                else
+                    Payment.CR = Amount;
+                //If Bank is Selected the Enter Amount into Bank
+                if (SelectedPaymentType != null && SelectedPaymentType.Id == 6)
+                {
+                    if (Amount == 0 || Amount < 0)
+                        await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Enter Amount Of Payment",options: Dialogs.MessageBoxOptions.Ok);
+                    if (BankAccount != null)
+                    {
+                        BankAccount.DR = Payment.DR;
+                        BankAccount.CR = Payment.CR;
+                        BankAccount.Description = $"{SelectedPartner?.Name} Payment is {Payment.PaymentType} At {DateTime.Now} Throught {BankAccount?.Branch?.Name} in {BankAccount.AccountNumber}";
+                        await _bankAccountManager.AddBankTransactionAsync(BankAccount); 
+                    }
+                }
                 Payment.Description = Description;
                 var paymentResult = await _paymentManager.AddPaymentAsync(payment: Payment);
                 if (paymentResult)
@@ -66,6 +102,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     partnerLedger.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(SelectedPartner?.Id ?? 0);
                     var partnerCurrentStatus = new BussinessPartnerLedgerModel();
                     partnerCurrentStatus = CalculateCurrentBalanceAndBalnceType(partnerLedger);
+                    partnerLedger.DR = Payment.DR;
+                    partnerLedger.CR = Payment.CR;
+                    partnerLedger.Description = $"{SelectedPartner.BussinessName} Made Payment {Payment.PaymentType} Amount Of {Amount} through {Payment.PaymentMethod.PaymentType}";
                     partnerLedger.CurrentBalance = partnerCurrentStatus.CurrentBalance;//partnerLedger?.Payment?.PaymentType == DAL.Models.PaymentType.DR ? partnerLedger.CurrentBalance - partnerLedger.Payment.PaymentAmount : partnerLedger.CurrentBalance + partnerLedger.Payment.PaymentAmount;
                     partnerLedger.CurrentBalanceType = partnerCurrentStatus.CurrentBalanceType;//partnerLedger.Payment.PaymentType;
                     var ledgerResult = await _partnerLedgerManager.UpdatePartnerCurrentBalanceAsync(partnerLedger);
@@ -141,6 +180,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             Payment = new PaymentModel();
             CurrentPartnerBalance = 0;
             PaymentImage = null;
+            IsValueCredit = false;
         }
 
         public void Cancel()
@@ -154,6 +194,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             var partnerLedger = await _partnerLedgerManager.GetPartnerLedgerLastBalanceAsync(SelectedPartner?.Id.Value ?? 0);
             if (partnerLedger != null)
             {
+                if (partnerLedger.CurrentBalanceType == DAL.Models.PaymentType.DR)
+                    IsValueCredit = true;
+                else
+                    IsValueCredit = false;
                 CurrentPartnerBalance = partnerLedger.CurrentBalance;
                 AmountType = partnerLedger?.CurrentBalanceType.ToString();
                 IsAmountAvailable = true;
@@ -174,7 +218,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 }
                 else
                 {
-                    NotificationManager.Show(new Notifications.Wpf.NotificationContent {Title = "Information",Message = "Please Select Partner First",Type = Notifications.Wpf.NotificationType.Information });
+                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Information", Message = "Please Select Partner First", Type = Notifications.Wpf.NotificationType.Information });
                 }
             }
             catch (Exception ex)
@@ -182,9 +226,62 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
+        private async void OnPaymentSelectedType(PaymentTypeModel selectedPaymentType)
+        {
+            try
+            {
+                // Null guard
+                if (selectedPaymentType == null) return;
+                if (SelectedPartner != null)
+                {
+                    if (selectedPaymentType.PaymentType.Equals("Bank"))
+                    {
+                        _eventAggregator.Subscribe(this);
+                        var dlg = IoC.Get<Dialogs.BankPaymentDialogViewModel>();
+                        await IoC.Get<IDialogManager>().ShowDialogAsync(dlg);
+                        Handle(dlg.SelectedBankAccount);
+                    }
+
+                }
+                else
+                {
+                    await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Select Partner First", options: Dialogs.MessageBoxOptions.Ok);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+
+        public void Handle(BankAccountModel message)
+        {
+            BankAccount = message;
+        }
         #endregion
 
         #region Properties
+        private BankAccountModel _BankAccount;
+        /// <summary>
+        /// Get the Account Number If Bank is Selected
+        /// </summary>
+        public BankAccountModel BankAccount
+        {
+            get { return _BankAccount; }
+            set { _BankAccount = value; }
+        }
+
+        private bool _IsValueCredit;
+        /// <summary>
+        /// Change background on Value if Credit Or Not
+        /// </summary>
+        public bool IsValueCredit
+        {
+            get { return _IsValueCredit; }
+            set { _IsValueCredit = value; NotifyOfPropertyChange(nameof(IsValueCredit)); }
+        }
+
         private string _AmountType;
         /// <summary>
         /// Last Balance Of Partner is Payable or Reciveable
@@ -298,8 +395,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public PaymentTypeModel SelectedPaymentType
         {
             get { return _SelectedPaymentType; }
-            set { _SelectedPaymentType = value; NotifyOfPropertyChange(nameof(SelectedPaymentType)); }
+            set { _SelectedPaymentType = value; NotifyOfPropertyChange(nameof(SelectedPaymentType)); OnPaymentSelectedType(SelectedPaymentType); }
         }
+
         private string _Description;
         /// <summary>
         /// DEscription Of Payment Type

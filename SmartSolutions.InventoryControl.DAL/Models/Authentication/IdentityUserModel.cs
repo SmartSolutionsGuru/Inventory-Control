@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SmartSolutions.InventoryControl.DAL.Models.Authentication
 {
-   public class IdentityUserModel :BaseModel
+    public class IdentityUserModel : BaseModel
     {
         #region  Constructor
 
@@ -42,10 +42,31 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Authentication
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string FullName { get; set; }
-        public string Initials { get; set; }
+        // public string Initials { get; set; }
         public string Email { get; private set; }
         public string SecretKey { get; set; }
         public IdentityUserModel User { get; set; }
+
+        private string _Initials;
+        /// <summary>
+        /// Create the Initials For User
+        /// </summary>
+        public string Initials
+        {
+            get { return _Initials; }
+            set
+            {
+                if (!string.IsNullOrEmpty(FirstName) && !string.IsNullOrEmpty(LastName))
+                {
+                    _Initials = $"{FirstName.ToUpper().Substring(0, 1)} {LastName.ToUpper().Substring(0, 1)}";
+                }
+                else if (!string.IsNullOrEmpty(FirstName) && string.IsNullOrWhiteSpace(LastName))
+                {
+                    _Initials = $"{FirstName.ToUpper().Substring(0,2)}";
+                }
+                //_Initials = value;
+            }
+        }
 
         /// <summary>
         /// string that defines authentication Type

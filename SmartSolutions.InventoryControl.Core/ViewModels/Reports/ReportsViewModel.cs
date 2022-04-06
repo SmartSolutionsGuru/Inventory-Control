@@ -21,7 +21,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
         private readonly DAL.Managers.Bussiness_Partner.IBussinessPartnerManager _bussinessPartnerManager;
         #endregion
 
-        #region Costructor
+        #region Constructor
         [ImportingConstructor]
         public ReportsViewModel(IEventAggregator eventAggregator
                                 , IProductManager productManager
@@ -39,7 +39,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
             base.OnActivate();
             ReportsCategory = new List<string>
             {
-                "Bussiness Partners",
+                "Business Partners",
                 "Purchase",
                 "Products",
                 "Sales",
@@ -48,19 +48,19 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
             };
             BissinessPartnerReports = new List<string>
             {
-                "All Bussiness Partners",
-                "Bussiness Partner By Vender",
-                "Bussiness Partner By Seller",
-                "Bussiness Partner By City",
-                "Bussiness Partner By DR Balance",
-                "Bussiness Partner By CR Balance",
-                "Bussiness Partner Balancesheet"
+                "All Business Partners",
+                "Business Partner By Vendor",
+                "Business Partner By Seller",
+                "Business Partner By City",
+                "Business Partner By DR Balance",
+                "Business Partner By CR Balance",
+                "Business Partner Balance sheet"
             };
             ProductReports = new List<string>
             {
                 "All Products",
                 "Product By Name",
-                "Produt By Size",
+                "Product By Size",
                 "Product By Color"
             };
         }
@@ -86,7 +86,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
             {
                 switch (selectedReportCategory)
                 {
-                    case "Bussiness Partners":
+                    case "Business Partners":
                         ReportsSubCategory = BissinessPartnerReports;
                         break;
                     case "Purchase":
@@ -113,26 +113,26 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
         {
             switch (selectedReportSubCategory)
             {
-                #region Bussiness Partner
-                case "All Bussiness Partners":
+                #region Business Partner
+                case "All Business Partners":
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
-                case "Bussiness Partner By Vender":
+                case "Business Partner By Vendor":
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
-                case "Bussiness Partner By Seller":
+                case "Business Partner By Seller":
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
-                case "Bussiness Partner By City":
+                case "Business Partner By City":
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
-                case "Bussiness Partner By DR Balance":
+                case "Business Partner By DR Balance":
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
-                case "Bussiness Partner By CR Balance":
+                case "Business Partner By CR Balance":
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
-                case "Bussiness Partner Balancesheet":
+                case "Business Partner Balance sheet":
                     IsDisplayCombo = true;
                     OnSelectingBalanceSheet();
                     
@@ -146,7 +146,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
                 case "Product By Name":
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
-                case "Produt By Size":
+                case "Product By Size":
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Product By Color":
@@ -166,7 +166,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
 
                 #endregion
 
-                #region Bnk Accounts
+                #region Bank Accounts
 
                 #endregion
                 default:
@@ -182,8 +182,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
         private void OnSelectingPartner()
         {
             if (SelectedPartner == null) return;
-            //var dlg = IoC.Get<DisplaySelectedPartnerReportViewModel>();
-            //dlg.Partner = SelectedPartner;
             Handle(IoC.Get<DisplaySelectedPartnerReportViewModel>());
 
         }
@@ -222,7 +220,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
 
         private List<string> _ReportsSubCategory;
         /// <summary>
-        /// Selected Reports By Sub Category Like Vender Partners, Sale Partners etc...
+        /// Selected Reports By Sub Category Like Vendor Partners, Sale Partners etc...
         /// </summary>
         public List<string> ReportsSubCategory
         {
@@ -231,7 +229,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
         }
         private string _SelectedReportSubCategory;
         /// <summary>
-        /// Selected Report By Sub Category Like Vender Partners, Sale Partners etc...
+        /// Selected Report By Sub Category Like Vendor Partners, Sale Partners etc...
         /// </summary>
         public string SelectedReportSubCategory
         {

@@ -46,7 +46,18 @@
                 <DataGridTextColumn Header="Name" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding ProductName,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
                 <DataGridTextColumn Header="Color" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding ProductColor,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
                 <DataGridTextColumn Header="Size" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding ProductSize,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
-                <DataGridTextColumn Header="Quantity" FontWeight="DemiBold" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Quantity,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
+                <DataGridTextColumn Header="Quantity" FontWeight="DemiBold" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Quantity,Mode=OneWay}" >
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell" BasedOn="{StaticResource DataGridCellStyle}">
+                            <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsQuantityNegitive,Mode=OneWay}" Value="true">
+                                    <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
                 <!--<DataGridTextColumn Header="Address" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Address,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>-->
             </DataGrid.Columns>
         </DataGrid>

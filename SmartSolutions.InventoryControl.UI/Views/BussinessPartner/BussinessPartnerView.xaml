@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:userControl="clr-namespace:SmartSolutions.InventoryControl.UI.CustomControls"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:autoComplete="http://wpfcontrols.com/"
              xmlns:models="clr-namespace:SmartSolutions.InventoryControl.DAL.Models.Region;assembly=SmartSolutions.InventoryControl.DAL"
@@ -14,7 +15,18 @@
              d:DesignHeight="768" d:DesignWidth="1366">
     <UserControl.Resources>
         <DataTemplate x:Key="CityNameTemplate" DataType="{x:Type models:CityModel}">
-            <TextBlock Text="{Binding Name,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}"/>
+            <TextBlock Text="{Binding Name,Mode=OneWay}" 
+                       Foreground="{StaticResource GrayColorBrush}" 
+                       FontSize="{StaticResource MediumSize}" 
+                       FontFamily="{StaticResource MediumFont}"/>
+        </DataTemplate>
+        <DataTemplate x:Key="DisplayNameTemplate" DataType="{x:Type models:CityModel}">
+            <Grid>
+                <TextBlock Text="{Binding Path=Name}"
+                           Foreground="{StaticResource GrayColorBrush}"
+                           FontFamily="{StaticResource MediumFont}"
+                           FontSize="{StaticResource MediumSize}"/>
+            </Grid>
         </DataTemplate>
     </UserControl.Resources>
     <Border>
@@ -23,7 +35,7 @@
                 <RowDefinition Height="70"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <!--Add Remove Update Button for Bussiness Partner-->
+            <!--Add Remove Update Button for Business Partner-->
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -115,7 +127,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0">
-                        <TextBlock Text="Bussiness Partner Type" 
+                        <TextBlock Text="Business Partner Type" 
                                    Foreground="{StaticResource GrayColorBrush}" 
                                    FontSize="{StaticResource NormalSize}"
                                    FontFamily="{StaticResource MediumFont}"
@@ -142,7 +154,7 @@
                                   Style="{StaticResource  ComboBoxWithPath}"/>
                     </StackPanel>
                     <StackPanel Grid.Column="1">
-                        <TextBlock Text="Bussiness Partner Category" 
+                        <TextBlock Text="Business Partner Category" 
                                    Foreground="{StaticResource GrayColorBrush}" 
                                    FontSize="{StaticResource NormalSize}"
                                    FontFamily="{StaticResource MediumFont}"
@@ -174,7 +186,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 40 0">
-                        <TextBlock Text="Enter Bussiness Name" 
+                        <TextBlock Text="Enter Business Name" 
                                FontSize="{StaticResource NormalSize}"
                                Margin="0 0 0 10"
                                FontFamily="{StaticResource MediumFont}">
@@ -341,27 +353,31 @@
                                             <DataTrigger Binding="{Binding CityNotSelected,Mode=OneWay}" Value="True">
                                                 <Setter Property="Text" Value=" Please Enter City Name"/>
                                                 <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
-                                            </DataTrigger> 
+                                            </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
+                            <userControl:SearchableComboBox Grid.Column="1" 
+                                                            Height="50"
+                                                            Width="250"
+                                                            BorderThickness="1.7"
+                                                            Foreground="{StaticResource GrayColorBrush}"
+                                                            MaxDropDownHeight="250"
+                                                            ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Collapsed"
+                                                            ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Vender"
+                                                            FontFamily="{StaticResource MediumFont}"
+                                                            FontSize="{StaticResource MediumSize}"
+                                                            ItemsSource="{Binding Cities,Mode=OneWay}"
+                                                            IsEditable="True"
+                                                            SearchCharCount="0"
+                                                            SearchCounter="SearchableComboBox_SearchCounter"
+                                                            SelectedItem="{Binding SelectedCity,Mode=TwoWay}"
+                                                            Style="{StaticResource BaseSearchableComboBox}"
+                                                            BorderBrush="{StaticResource BlueColorBrush}"
+                                                            AltSelectionBoxItemTemplate="{StaticResource DisplayNameTemplate}"
+                                                            ItemTemplate="{StaticResource CityNameTemplate}" />
 
-                            <autoComplete:AutoCompleteTextBox Grid.Column="1" 
-                                                      Height="50"
-                                                      Width="250"
-                                                      Padding="8 0 0 0"
-                                                      Opacity="0.7"
-                                                      Watermark="Enter Vender Name"
-                                                      DisplayMember="Name"
-                                                      FontFamily="{StaticResource MediumFont}"
-                                                      Provider="{Binding CitySuggetion,Mode=TwoWay}"
-                                                      SelectedItem="{Binding SelectedCity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                                      ItemTemplate="{StaticResource CityNameTemplate}"
-                                                      FontSize="{StaticResource MediumSize}"
-                                                              
-                                                      Foreground="{StaticResource GrayColorBrush}"
-                                                      Style="{StaticResource AutoCompleteTextBoxStyle}"/>
                         </StackPanel>
                         <StackPanel Grid.Row="1" Margin="0 0 30 0">
                             <TextBlock Text="Select Amount Type" Margin="40 0 0 5" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}"/>
@@ -452,7 +468,7 @@
                 </Grid.RowDefinitions>
                 <StackPanel>
                     <TextBlock Foreground="{StaticResource GrayColorBrush}"
-                               Text=" Please Select Bussiness Partner"
+                               Text=" Please Select Business Partner"
                                Margin="40 5 0 0"
                                FontFamily="{StaticResource MediumFont}"
                                FontSize="{StaticResource NormalSize}"/>
@@ -466,6 +482,7 @@
                               Margin="40 0 0 5"
                               BorderBrush="{StaticResource BlueColorBrush}"
                               BorderThickness="1.5"
+                              ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Partner"
                               ItemsSource="{Binding BussinessPartners,Mode=TwoWay}"
                               SelectedItem="{Binding SelectedBussinessPartner,Mode=TwoWay}"
                               Style="{StaticResource BaseComboBox}"/>
@@ -484,7 +501,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 40 0">
-                            <TextBlock Text="Enter Bussiness Name" 
+                            <TextBlock Text="Enter Business Name" 
                                        FontSize="{StaticResource NormalSize}"
                                        Foreground="{StaticResource GrayColorBrush}"
                                        Margin="0 0 0 10"
@@ -505,7 +522,7 @@
                             <TextBox Grid.Column="1" 
                                      Height="45" 
                                      Width="250"
-                                     Text="{Binding SelectedBussinessPartner.FullName,Mode=TwoWay}"
+                                     Text="{Binding SelectedBussinessPartner.Name,Mode=TwoWay}"
                                      ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Full Name"
                                      Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
                         </StackPanel>
@@ -552,6 +569,7 @@
                                       BorderBrush="{StaticResource BlueColorBrush}"
                                       Opacity="0.7"
                                       ItemsSource="{Binding SelectedBussinessPartner.MobileNumbers,Mode=TwoWay}"
+                                      SelectedItem="{Binding SelectedBussinessPartner.MobileNumbers[0],Mode=TwoWay}"
                                       IsEditable="False"/>
                         </Grid>
                         <StackPanel Grid.Column="1" Margin="0 0 30 0">
@@ -563,7 +581,7 @@
                                        FontFamily="{StaticResource MediumFont}"/>
                             <TextBox Height="50" 
                                      Width="250"
-                                     Text="{Binding SelectedBussinessPartner.City,Mode=TwoWay}"
+                                     Text="{Binding SelectedBussinessPartner.City.CityName,Mode=TwoWay}"
                                      Margin="0 10 0 0"
                                      Style="{StaticResource TextBoxVisibilityPathIconStyle}"
                                      ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter City Name"/>

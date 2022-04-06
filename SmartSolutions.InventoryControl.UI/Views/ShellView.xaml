@@ -282,7 +282,7 @@
         </Setter>
     </Style>
     </Window.Resources>
-    <!--Style For Window Transerancey-->
+    <!--Style For Window Transperancey-->
     <WindowChrome.WindowChrome>
         <WindowChrome
             ResizeBorderThickness="{Binding ResizeBorderThickness}"

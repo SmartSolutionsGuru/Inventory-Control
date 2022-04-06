@@ -115,8 +115,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Region
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_Id"] = cityId;
                 string query = @"SELECT * FROM City WHERE Id = @v_Id";
-                var values = await Repository.QueryAsync(query:query,parameters: parameters);
-                if(values != null || values.Count > 0)
+                var values = await Repository.QueryAsync(query: query, parameters: parameters);
+                if (values != null || values.Count > 0)
                 {
                     var resultCity = values.FirstOrDefault();
                     city.Id = resultCity.GetValueFromDictonary("Id")?.ToString()?.ToInt() ?? 0;
@@ -130,7 +130,35 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Region
             }
             return city;
         }
-
+        public async Task<IEnumerable<CityModel>> GetCitiesAsync(string searchText)
+        {
+            List<CityModel> cities = new List<CityModel>();
+            try
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_searchText"] = searchText;
+                string query = @"SELECT * FROM dbo.City WHERE Name LIKE @v_searchText + '%' AND IsActive = 1;";
+                var values = await Repository.QueryAsync(query: query, parameters: parameters);
+                if(values != null && values?.Count > 0)
+                {
+                    foreach (var value in values)
+                    {
+                        var city = new CityModel();
+                        city.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                        city.Name = value?.GetValueFromDictonary("Name")?.ToString();
+                        city.PhoneCode = value?.GetValueFromDictonary("CityCode")?.ToString().ToInt() ?? 0;
+                        city.Province.Id = value?.GetValueFromDictonary("ProvinceId")?.ToString()?.ToNullableInt() ?? 0;
+                        city.Country.Id = value?.GetValueFromDictonary("CountrId")?.ToString()?.ToNullableInt() ?? 0;
+                        cities.Add(city);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return cities;
+        }
         #endregion
     }
 }

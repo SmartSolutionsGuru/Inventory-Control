@@ -166,13 +166,22 @@
                                   HorizontalAlignment="Left" 
                                   Margin="0 5 0 0"/>
                     </StackPanel>
-                    <Border Grid.Column="2" Height="50" CornerRadius="5" Background="{StaticResource BlueColorBrush}" Margin="10 17 15 0">
+                    <Border Grid.Column="2" Height="50" CornerRadius="5"  Margin="10 17 15 0">
                         <StackPanel Orientation="Horizontal" Margin="0 5 0 0">
                             <TextBlock  FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource NormalSize}" Margin="10 0 0 0"  Foreground="{StaticResource PureWhiteColorBrush}" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Previous Balance"/>
                             <TextBlock FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource PureWhiteColorBrush}" Margin="10 5 0 0" FontSize="{StaticResource HeadingSize}" FontWeight="DemiBold" Text="{Binding PreviousBalance,Mode=OneWay,FallbackValue='0',TargetNullValue='0',StringFormat='{}{0:#,0}'}"/>
                             <TextBlock FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource PureWhiteColorBrush}"  FontSize="{StaticResource NormalSize}" Margin="10 0 0 0" VerticalAlignment="Center" Text="{Binding BalanceType,Mode=OneWay}"/>
                         </StackPanel>
-
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="{StaticResource BlueColorBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsValueCredit,Mode=OneWay}" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource RedColorBrush}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                     </Border>
                     <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <TextBlock Text="Please Select Customer" 
