@@ -1,10 +1,8 @@
 ﻿using Caliburn.Micro;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.BussinessPartner
 {
@@ -15,7 +13,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.BussinessPartn
         private readonly IEventAggregator _eventAggregator;
         private readonly DAL.Managers.Bussiness_Partner.IBussinessPartnerManager _bussinessPartnerManager;
         private readonly DAL.Managers.Bussiness_Partner.IPartnerLedgerManager _partnerLedgerManager;
-
         #endregion
 
         #region [Constructor]
@@ -39,20 +36,23 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.BussinessPartn
         {
             base.OnActivate();
             _eventAggregator.Subscribe(this);
-            Handle(Partner);
+            Handle(this?.Parent);
             if (Partner == null) return;
             else
                 PartnerLedgers = (await _partnerLedgerManager.GetPartnerBalanceSheetAsync(Partner.Id ?? 0)).ToList();
-            if(PartnerLedgers != null || PartnerLedgers?.Count > 0)
+            if (PartnerLedgers.FirstOrDefault().Partner == null)
             {
-                foreach (var ledger in PartnerLedgers)
+                if (PartnerLedgers != null || PartnerLedgers?.Count > 0)
                 {
-                    ledger.Partner = Partner;
+                    foreach (var ledger in PartnerLedgers)
+                    {
+                        ledger.Partner = Partner;
+                    }
                 }
             }
         }
         protected override void OnViewLoaded(object view)
-        {
+            {
             base.OnViewLoaded(view);
             _eventAggregator.Subscribe(this);
             if (Partner == null) return;
@@ -62,11 +62,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.BussinessPartn
             if (Partner == null) return;
             PartnerLedgers = (await _partnerLedgerManager.GetPartnerBalanceSheetAsync(Partner.Id ?? 0)).ToList();
         }
-
         public void Handle(object message)
         {
             if (message == null) return;
-            if (message is BussinessPartnerModel)
+            if (message is ReportsViewModel)
+            {
+                var reportsViewModel = (ReportsViewModel)message;
+                Partner = reportsViewModel.SelectedPartner;
+            }
+            else if (message is BussinessPartnerModel)
                 Partner = message as BussinessPartnerModel;
         }
         #endregion

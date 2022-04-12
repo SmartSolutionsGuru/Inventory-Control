@@ -111,7 +111,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Payments
                 {
                     var value = values.FirstOrDefault();
                     payment.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
-                    payment.PaymentType = (PaymentType)value?.GetValueFromDictonary("PaymentType")?.ToString()?.ToEnum<PaymentType>();
+                    //payment.PaymentType = (PaymentType)value?.GetValueFromDictonary("PaymentType")?.ToString()?.ToEnum<PaymentType>();
                     payment.PaymentMethod = new PaymentTypeModel { Id = value?.GetValueFromDictonary("PaymentMethodId")?.ToString()?.ToInt() ?? 0 };
                     payment.PaymentMethod = await _paymentTypeManager.GetPaymentMethodByIdAsync(payment?.PaymentMethod?.Id ?? 0);
                     payment.PaymentAmount = value?.GetValueFromDictonary("PaymentAmount")?.ToString()?.ToDecimal() ?? 0;

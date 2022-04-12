@@ -10,11 +10,9 @@ using SmartSolutions.InventoryControl.DAL.Models.Inventory;
 using SmartSolutions.InventoryControl.DAL.Models.Payments;
 using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.InventoryControl.DAL.Models.Sales;
-using SmartSolutions.InventoryControl.DAL.Models.Stock;
 using SmartSolutions.InventoryControl.DAL.Models.Warehouse;
 using SmartSolutions.Util.DecimalsUtils;
 using SmartSolutions.Util.LogUtils;
-using SmartSolutions.Util.NumericUtils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -98,7 +96,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             ProductGrid = new ObservableCollection<StockOutModel>();
             InvoiceTypes = new List<string> { "Sales", "Sales Return" };
             SelectedInvoiceType = InvoiceTypes.Where(x => x.Equals("Sales")).FirstOrDefault();
-            Partners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
+            var partnerType = new List<int?>() { 2, 3 };
+            Partners = (await _bussinessPartnerManager.GetBussinessPartnersByTypeAsync(partnerType)).OrderBy(x => x.Name).ToList();
+            //Partners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
             //Products = (await _productManager.GetAllProductsAsync()).ToList();
             //Warehouses = (await _warehouseManager.GetAllWarehousesAsync()).ToList();
             Products = (await _productManager.GetAllProductsWithColorAndSize(string.Empty)).ToList();
@@ -457,7 +457,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 if (PreviousBalance < 0)
                 {
                     IsValueCredit = true;
-                    Math.Abs(PreviousBalance);
+                    PreviousBalance = Math.Abs(PreviousBalance);
                     BalanceType = PaymentType.DR.ToString();
                 }
                 else

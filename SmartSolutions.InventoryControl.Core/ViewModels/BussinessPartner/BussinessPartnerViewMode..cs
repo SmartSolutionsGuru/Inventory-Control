@@ -184,6 +184,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     IsLoading = false;
                     return;
                 }
+                else if(string.IsNullOrEmpty(WhatsAppNumber))
+                {
+                    WhatsAppNumberError = true;
+                    IsLoading = false;
+                    return;
+                }
                 else if (SelectedCity == null)
                 {
                     CityNotSelected = true;
@@ -205,6 +211,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     NewBussinessPartner.PartnerType = SelectedPartnerType;
                     NewBussinessPartner.City = SelectedCity;
                     NewBussinessPartner.CreatedBy = AppSettings.LoggedInUser.DisplayName;
+                    NewBussinessPartner.WhatsAppNumber = WhatsAppNumber;
                     var resultPartner = await _bussinessPartnerManager.AddBussinesPartnerAsync(NewBussinessPartner);
                     if (resultPartner)
                     {
@@ -563,6 +570,24 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         {
             get { return _PartnerMobileNumber; }
             set { _PartnerMobileNumber = value; NotifyOfPropertyChange(nameof(PartnerMobileNumber)); }
+        }
+        private string whatsAppNumber;
+        /// <summary>
+        /// WhatsApp Number of Partner 
+        /// </summary>
+        public string WhatsAppNumber
+        {
+            get { return whatsAppNumber; }
+            set { whatsAppNumber = value; NotifyOfPropertyChange(nameof(WhatsAppNumber)); }
+        }
+        private bool whatsAppNumberError;
+        /// <summary>
+        /// WhatsApp Number Error if not Passed
+        /// </summary>
+        public bool WhatsAppNumberError
+        {
+            get { return whatsAppNumberError; }
+            set { whatsAppNumberError = value; NotifyOfPropertyChange(nameof(WhatsAppNumberError)); }
         }
 
         private bool _IsAddPartner;

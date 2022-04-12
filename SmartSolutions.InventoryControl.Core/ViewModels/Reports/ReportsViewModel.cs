@@ -12,7 +12,7 @@ using System.Text;
 namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
 {
     [Export(typeof(ReportsViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
-    public class ReportsViewModel : BaseViewModel, IHandle<Screen>
+    public class ReportsViewModel : BaseViewModel, IHandle<Screen>, IHandle<string>
     {
 
         #region Private Members
@@ -27,7 +27,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
                                 , IProductManager productManager
                                 , DAL.Managers.Bussiness_Partner.IBussinessPartnerManager bussinessPartnerManager)
         {
-            _eventAggregator = eventAggregator; 
+            _eventAggregator = eventAggregator;
             _productManager = productManager;
             _bussinessPartnerManager = bussinessPartnerManager;
         }
@@ -67,14 +67,23 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
 
         public void Handle(Screen screen)
         {
-            if (screen is DisplayAllPartnersViewModel 
-                || screen is AllProductReportViewModel 
+            if (screen is DisplayAllPartnersViewModel
+                || screen is AllProductReportViewModel
                 || screen is DisplaySelectedPartnerReportViewModel)
             {
+                if (screen is DisplayAllPartnersViewModel)
+                    _eventAggregator.PublishOnCurrentThread(SelectedReportSubCategory);
                 if (screen is DisplaySelectedPartnerReportViewModel)
                     _eventAggregator.PublishOnBackgroundThread(this.SelectedPartner);
                 ActiveItem = screen;
                 ActivateItem(screen);
+            }
+        }
+        public void Handle(string message)
+        {
+            if (!string.IsNullOrEmpty(message))
+            {
+                _eventAggregator.PublishOnUIThread(message);
             }
         }
         #endregion
@@ -115,27 +124,33 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
             {
                 #region Business Partner
                 case "All Business Partners":
+                    Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner By Vendor":
+                    Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner By Seller":
+                    Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner By City":
+                    Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner By DR Balance":
+                    Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner By CR Balance":
+                    Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner Balance sheet":
                     IsDisplayCombo = true;
                     OnSelectingBalanceSheet();
-                    
+
                     break;
                 #endregion
 
@@ -177,7 +192,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
         private async void OnSelectingBalanceSheet()
         {
             Partners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
-            
+
         }
         private void OnSelectingPartner()
         {
@@ -185,6 +200,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
             Handle(IoC.Get<DisplaySelectedPartnerReportViewModel>());
 
         }
+
+
         #endregion
 
         #region Properties
@@ -269,7 +286,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
             get { return _SearchText; }
             set { _SearchText = value; NotifyOfPropertyChange(nameof(SearchText)); }
         }
-        private List<BussinessPartnerModel>  _Partners;
+        private List<BussinessPartnerModel> _Partners;
         /// <summary>
         /// List Of Partners
         /// </summary>
@@ -288,7 +305,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
             set { _SelectedPartner = value; NotifyOfPropertyChange(nameof(SelectedPartner)); OnSelectingPartner(); }
         }
 
-        
+
 
 
         #endregion

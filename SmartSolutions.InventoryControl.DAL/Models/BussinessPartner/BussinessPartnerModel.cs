@@ -22,11 +22,11 @@ namespace SmartSolutions.InventoryControl.DAL.Models.BussinessPartner
         public BussinessPartnerTypeModel PartnerType { get; set; }
         public BussinessPartnerCategoryModel PartnerCategory { get; set; }
         /// <summary>
-        /// Offical Bussiness Name
+        /// Official Business Name
         /// </summary>
         public string BussinessName { get; set; }
         /// <summary>
-        /// Full Name of Bussiness Man
+        /// Full Name of Business Man
         /// </summary>
         public string FullName
         {
@@ -53,7 +53,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.BussinessPartner
         /// </summary>
         public string PhoneNumber { get; set; }
         /// <summary>
-        /// City of Bussiness
+        /// City of Business
         /// </summary>
         public CityModel City { get; set; }
         /// <summary>
@@ -61,9 +61,13 @@ namespace SmartSolutions.InventoryControl.DAL.Models.BussinessPartner
         /// </summary>
         public List<string> MobileNumbers { get; set; }
         /// <summary>
-        /// Phisical Address
+        /// Physical Address
         /// </summary>
         public string Address { get; set; }
+        /// <summary>
+        /// WhatsApp Number of Partner
+        /// </summary>
+        public string WhatsAppNumber { get; set; }
 
         #endregion
     }

@@ -78,7 +78,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             base.OnInitialize();
             dbFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DirectoryName, "InventoryControl.db");
             var result = InitializeDatabaseConnection();
-            InitializeDatabaseScripts();
+            //await InitializeDatabaseScripts();
             var settingResult = await _systemSettingManager.GetsystemSettingByKeyAsync("IsProprietorAvailable");
             if (settingResult != null)
             {

@@ -90,7 +90,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 PurchaseTypes = new List<string> { "Purchase", "Purchase Return" };
                 SelectedPurchaseType = PurchaseTypes.Where(x => x.Equals("Purchase")).FirstOrDefault();
                 Products = (await _productManager.GetAllProductsAsync()).ToList();
-                Venders = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
+                //Venders = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
+                var partnerType = new List<int?>{ 1,3};
+                Venders = (await _bussinessPartnerManager.GetBussinessPartnersByTypeAsync(partnerType)).OrderBy(x => x.Name).ToList();
                 ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
                 ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
                 Warehouses = (await _warehouseManager.GetAllWarehousesAsync()).ToList();
@@ -399,9 +401,17 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 {
                     PreviousBalance = selectedPartnerLedger.CurrentBalance;
                     if (PreviousBalance < 0)
+                    {
                         IsValueCredit = true;
+                        PreviousBalance = Math.Abs(PreviousBalance);
+                        BalanceType = DAL.Models.PaymentType.DR;
+                    }
                     else
-                        IsValueCredit = false;  
+                    {
+                        IsValueCredit = false;
+                        BalanceType = DAL.Models.PaymentType.CR;
+                    }
+                    //BalanceType = selectedPartnerLedger.CurrentBalanceType;
                     BalanceType = selectedPartnerLedger.CurrentBalanceType;
                     GrandTotal = PreviousBalance + InvoiceTotal;
                 }
