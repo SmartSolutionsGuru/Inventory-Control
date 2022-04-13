@@ -1,5 +1,6 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
+using SmartSolutions.Util.DateAndTimeUtils;
 using SmartSolutions.Util.DictionaryUtils;
 using SmartSolutions.Util.LogUtils;
 using SmartSolutions.Util.NumericUtils;
@@ -16,19 +17,21 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
     {
         #region Private Members
         private readonly IRepository Repository;
+        private readonly DAL.Managers.Bussiness_Partner.IBussinessPartnerManager _bussinessPartnerManager;
         #endregion
 
         #region Constructor
         [ImportingConstructor]
-        public PurchaseInvoiceManager()
+        public PurchaseInvoiceManager(Bussiness_Partner.IBussinessPartnerManager bussinessPartnerManager)
         {
             Repository = GetRepository<PurchaseInvoiceModel>();
+            _bussinessPartnerManager = bussinessPartnerManager;
         }
         #endregion
 
         #region Methods
         /// <summary>
-        /// Gnrate the New Invoice Number
+        /// Generate the New Invoice Number
         /// </summary>
         /// <param name="Initials"></param>
         /// <returns></returns>
@@ -64,6 +67,35 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return InvoiceNumber;
+        }
+
+        public async Task<IEnumerable<PurchaseInvoiceModel>> GetAllPurchaseInvoicesAsync()
+        {
+            List<PurchaseInvoiceModel> purchases = new List<PurchaseInvoiceModel>();
+            try
+            {
+                string query = $"SELECT * FROM PurchaseInvoice WHERE ISActive = 1";
+                var values = await Repository.QueryAsync(query);
+                if (values != null && values?.Count > 0)
+                {
+                    foreach (var value in values)
+                    {
+                        var model = new PurchaseInvoiceModel();
+                        model.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                        model.InvoiceId = value?.GetValueFromDictonary("InvoiceId")?.ToString();
+                        model.InvoiceTotal = value?.GetValueFromDictonary("InvoiceTotal")?.ToString()?.ToNullableInt() ?? 0;
+                        model.CreatedAt = Convert.ToDateTime(value?.GetValueFromDictonary("CreatedAt")?.ToString());
+                        var partnerId = value.GetValueFromDictonary("PartnerId")?.ToString()?.ToInt();
+                        model.SelectedPartner = await _bussinessPartnerManager.GetBussinessPartnerByIdAsync(partnerId);                        
+                        purchases.Add(model);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return purchases;
         }
 
         public int? GetLastRowId()

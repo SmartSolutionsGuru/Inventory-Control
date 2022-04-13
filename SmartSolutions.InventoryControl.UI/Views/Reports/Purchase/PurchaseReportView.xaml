@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="SmartSolutions.InventoryControl.UI.Views.Reports.Purchase.PurchaseReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SmartSolutions.InventoryControl.UI.Views.Reports.Purchase"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Border Background="Transparent" BorderThickness="0">
+        <Grid>
+            <DataGrid x:Name="Purchases"
+                  Grid.Row="1"
+                  Margin="10"
+                  ColumnWidth="*"
+                  ItemsSource="{Binding Purchases,Mode=OneWay}"
+                  SelectedItem="{Binding SelectedPurchase,Mode=TwoWay}"
+                  Background="{StaticResource PureWhiteColorBrush}"
+                  Foreground="{StaticResource GrayColorBrush}"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
+                  AutoGenerateColumns="False"
+                  IsTabStop="False"
+                  BorderThickness="0"
+                  CanUserSortColumns="True"
+                  CanUserResizeColumns="True"
+                  CanUserReorderColumns="False"
+                  ClipboardCopyMode="None"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  GridLinesVisibility="None"
+                  HeadersVisibility="Column"
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Visible"
+                  ScrollViewer.PanningMode="VerticalOnly"
+                  ScrollViewer.CanContentScroll="True"
+                  AlternatingRowBackground="#add8e6"
+                  RowBackground="#ace5ee"
+                  ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle}"
+                  RowStyle="{StaticResource DataGridRowStyle}"
+                  CellStyle="{StaticResource DataGridCellStyle}"
+                  Padding="0,0"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Invoice Id" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding InvoiceId,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
+                    <DataGridTextColumn Header="Invoice Amount" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding InvoiceTotal,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
+                    <DataGridTextColumn Header="Partner Name" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding PartnerName,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
+                    <DataGridTextColumn Header="Date" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding CreatedDate,StringFormat={}{0:dd MM yyyy},Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
+                    <DataGridTextColumn Header="Discount" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Discount,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
+                    <DataGridTextColumn Header="Total" FontWeight="DemiBold" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Total,Mode=OneWay}" >
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell" BasedOn="{StaticResource DataGridCellStyle}">
+                                <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsQuantityNegitive,Mode=OneWay}" Value="true">
+                                        <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Border>
+</UserControl>

@@ -14,8 +14,8 @@
                   ColumnWidth="*"
                   ItemsSource="{Binding PartnerLedgers,Mode=OneWay}"
                   SelectedItem="{Binding SelectedTransaction,Mode=TwoWay}"
-                  Background="#6A6E79"
-                  Foreground="{StaticResource PureWhiteColorBrush}"
+                  Background="#FFD4F9D9"
+                  Foreground="{StaticResource GrayColorBrush}"
                   SelectionMode="Single"
                   SelectionUnit="FullRow"
                   AutoGenerateColumns="False"
@@ -33,8 +33,8 @@
                   VerticalScrollBarVisibility="Visible"
                   ScrollViewer.PanningMode="VerticalOnly"
                   ScrollViewer.CanContentScroll="True"
-                  AlternatingRowBackground="#63666E" 
-                  RowBackground="#6A6E79"
+                  AlternatingRowBackground="#FFD4F9D9" 
+                  RowBackground="#FFAEE8B5"
                   ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle}"
                   RowStyle="{StaticResource DataGridRowStyle}"
                   CellStyle="{StaticResource DataGridCellStyle}"
@@ -42,13 +42,13 @@
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   ScrollViewer.VerticalScrollBarVisibility="Auto">
             <DataGrid.Columns>
-                <!--<DataGridTextColumn Header="Partner" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Partner.Name,Mode=OneWay}" Foreground="{StaticResource LightGrayColorBrush}"/>-->
-                <!--<DataGridTextColumn Header="Business Name" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Partner.BussinessName,Mode=OneWay}" Foreground="{StaticResource PureWhiteColorBrush}"/>-->
-                <DataGridTextColumn Header="Description" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Description,Mode=OneWay}" Foreground="{StaticResource PureWhiteColorBrush}"/>
-                <DataGridTextColumn Header="Transaction Time" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding CreatedAt,Mode=OneWay}" Foreground="{StaticResource PureWhiteColorBrush}"/>
-                <DataGridTextColumn Header="Payment" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Payment.PaymentAmount,Mode=OneWay}" Foreground="{StaticResource PureWhiteColorBrush}"/>
-                <DataGridTextColumn Header="Balance Type" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding CurrentBalanceType,Mode=OneWay}" Foreground="{StaticResource PureWhiteColorBrush}"/>
-                <DataGridTextColumn Header="Current Balance" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding CurrentBalance,Mode=OneWay}" Foreground="{StaticResource PureWhiteColorBrush}"/>
+                <DataGridTextColumn Header="Invoice Number" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding InvoiceId,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
+                <!--<DataGridTextColumn Header="Payment" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding Payment.PaymentAmount,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>-->
+                <DataGridTextColumn Header="DR" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding DR,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
+                <DataGridTextColumn Header="CR" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding CR,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
+                <DataGridTextColumn Header="Transaction Time" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding CreatedAt,StringFormat={}{0:dd MM yyyy}}" Foreground="{StaticResource GrayColorBrush}"/>
+                <!--<DataGridTextColumn Header="Balance Type" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding CurrentBalanceType,Mode=OneWay}" Foreground="{StaticResource PureWhiteColorBrush}"/>-->
+                <DataGridTextColumn Header="Current Balance" FontSize="{StaticResource MediumSize}" FontFamily="{StaticResource MediumFont}" Binding="{Binding CurrentBalance,Mode=OneWay}" Foreground="{StaticResource GrayColorBrush}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Border>

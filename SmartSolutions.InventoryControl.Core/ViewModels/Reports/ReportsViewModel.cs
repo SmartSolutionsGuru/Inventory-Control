@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using SmartSolutions.InventoryControl.Core.ViewModels.Reports.BussinessPartner;
 using SmartSolutions.InventoryControl.Core.ViewModels.Reports.Product;
+using SmartSolutions.InventoryControl.Core.ViewModels.Reports.Purchase;
 using SmartSolutions.InventoryControl.DAL.Managers.Product;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using System;
@@ -63,13 +64,31 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
                 "Product By Size",
                 "Product By Color"
             };
+            PurchaseReports = new List<string>
+            {
+                "All Purchase",
+                "Purchase Of Current Month",
+                "Purchase By Starting Date",
+                "Purchase Of Specific Date",
+                "Purchase By Specific Vendor"
+            };
+            SaleReport = new List<string>
+            {
+                "All Sales",
+                "Sale Of Current Month",
+                "Sales By Starting Date",
+                "Sale By Ending Date",
+                "Sale of Specific Partner"
+            };
+            
         }
 
         public void Handle(Screen screen)
         {
             if (screen is DisplayAllPartnersViewModel
                 || screen is AllProductReportViewModel
-                || screen is DisplaySelectedPartnerReportViewModel)
+                || screen is DisplaySelectedPartnerReportViewModel
+                || screen is PurchaseReportViewModel)
             {
                 if (screen is DisplayAllPartnersViewModel)
                     _eventAggregator.PublishOnCurrentThread(SelectedReportSubCategory);
@@ -104,15 +123,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
                     case "Products":
                         ReportsSubCategory = ProductReports;
                         break;
-                    default:
                     case "Sales":
-                        ReportsSubCategory = BissinessPartnerReports;
+                        ReportsSubCategory = SaleReport;
                         break;
                     case "Payments":
-                        ReportsSubCategory = PurchaseReports;
+                        ReportsSubCategory = PaymentReport;
                         break;
                     case "Bank Accounts":
-                        ReportsSubCategory = ProductReports;
+                        ReportsSubCategory = BankAccount;
                         break;
                 }
             }
@@ -124,33 +142,46 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
             {
                 #region Business Partner
                 case "All Business Partners":
+                    IsDisplayCombo = false;
+                    IsDatePickerVisible = false;
+                    IsComboBoxVisible = false;
                     Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner By Vendor":
+                    IsDisplayCombo = false;
+                    IsComboBoxVisible = false;
                     Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner By Seller":
+                    IsDisplayCombo = false;
+                    IsComboBoxVisible = false;
                     Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner By City":
+                    IsDisplayCombo = false;
+                    IsComboBoxVisible = false;
                     Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner By DR Balance":
+                    IsDisplayCombo = false;
+                    IsComboBoxVisible = false;
                     Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner By CR Balance":
+                    IsDisplayCombo = false;
+                    IsComboBoxVisible = false;
                     Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner Balance sheet":
                     IsDisplayCombo = true;
+                    IsComboBoxVisible = true;
                     OnSelectingBalanceSheet();
-
                     break;
                 #endregion
 
@@ -159,26 +190,75 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
                     Handle(IoC.Get<AllProductReportViewModel>());
                     break;
                 case "Product By Name":
-                    Handle(IoC.Get<DisplayAllPartnersViewModel>());
+                    Handle(IoC.Get<AllProductReportViewModel>());
                     break;
                 case "Product By Size":
-                    Handle(IoC.Get<DisplayAllPartnersViewModel>());
+                    Handle(IoC.Get<AllProductReportViewModel>());
                     break;
                 case "Product By Color":
-                    Handle(IoC.Get<DisplayAllPartnersViewModel>());
+                    Handle(IoC.Get<AllProductReportViewModel>());
                     break;
                 #endregion
 
                 #region Purchase
-
+                //Includes All Vendors and  from start date
+                case "All Purchase":
+                    IsDatePickerVisible = false;
+                    Handle(selectedReportSubCategory);
+                    Handle(IoC.Get<PurchaseReportViewModel>());
+                    break;
+                case "Purchase Of Current Month":
+                    IsDatePickerVisible = false;
+                    Handle(selectedReportSubCategory);
+                    Handle(IoC.Get<PurchaseReportViewModel>());
+                    break;
+                case "Purchase By Starting Date":
+                    IsDisplayCombo = true;
+                    IsDatePickerVisible = true;
+                    Handle(selectedReportSubCategory);
+                    Handle(IoC.Get<PurchaseReportViewModel>());
+                    break;
+                case "Purchase By Ending Date":
+                    IsDatePickerVisible = false;
+                    Handle(selectedReportSubCategory);
+                    Handle(IoC.Get<PurchaseReportViewModel>());
+                    break;
+                case "Purchase Of Specific Date":
+                    IsDatePickerVisible = false;
+                    Handle(selectedReportSubCategory);
+                    Handle(IoC.Get<PurchaseReportViewModel>());
+                    break;
+                case "Purchase By Specific Vendor":
+                    IsDatePickerVisible = false;
+                    Handle(selectedReportSubCategory);
+                    Handle(IoC.Get<PurchaseReportViewModel>());
+                    break;
                 #endregion
 
                 #region Sales
-
+                case "All Sales":
+                    break;
+                case "Sale Of Current Month":
+                    break;
+                case "Sales By Starting Date":
+                    break;
+                case "Sale By Ending Date":
+                    break;
+                case "Sale of Specific Partner":
+                    break;
                 #endregion
 
                 #region Payments
-
+                case "All Payments":
+                    break;
+                case "Payment Of Partner":
+                    break;
+                case "Payment Of Partner By Starting Date":
+                    break;
+                case "Payment Of Partner By Ending Date":
+                    break;
+                case "Payment Of Partner By Start End Date":
+                    break;
                 #endregion
 
                 #region Bank Accounts
@@ -205,6 +285,46 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
         #endregion
 
         #region Properties
+        private bool _IsComboBoxVisible;
+
+        public bool IsComboBoxVisible
+        {
+            get { return _IsComboBoxVisible; }
+            set { _IsComboBoxVisible = value; NotifyOfPropertyChange(nameof(IsComboBoxVisible)); }
+        }
+        private bool _IsDatePickerVisible;
+
+        public bool IsDatePickerVisible
+        {
+            get { return _IsDatePickerVisible; }
+            set { _IsDatePickerVisible = value; NotifyOfPropertyChange(nameof(IsDatePickerVisible)); }
+        }
+        private DateTime _StartDate;
+
+        public DateTime StartDate
+        {
+            get { return _StartDate; }
+            set { _StartDate = value; NotifyOfPropertyChange(nameof(StartDate)); }
+        }
+
+        private DateTime _EndDate;
+
+        public DateTime EndDate
+        {
+            get { return _EndDate; }
+            set { _EndDate = value; NotifyOfPropertyChange(nameof(EndDate)); }
+        }
+        private DateTime _SelectedStartDate;
+        /// <summary>
+        /// Selected Start Date For 
+        /// Purchase By Starting Date
+        /// </summary>
+        public DateTime SelectedStartDate
+        {
+            get { return _SelectedStartDate; }
+            set { _SelectedStartDate = value; NotifyOfPropertyChange(nameof(SelectedStartDate)); }
+        }
+
         private bool _IsDisplayCombo;
         /// <summary>
         /// Used For Displaying Third Combo Box
@@ -277,6 +397,29 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
         {
             get { return _ProductReports; }
             set { _ProductReports = value; NotifyOfPropertyChange(nameof(ProductReports)); }
+        }
+
+        private List<string> _SaleReport;
+
+        public List<string> SaleReport
+        {
+            get { return _SaleReport; }
+            set { _SaleReport = value; NotifyOfPropertyChange(nameof(SaleReport)); }
+        }
+        private List<string> _PaymentReport;
+
+        public List<string> PaymentReport
+        {
+            get { return _PaymentReport; }
+            set { _PaymentReport = value; NotifyOfPropertyChange(nameof(PaymentReport)); }
+        }
+
+        private List<string> _BankAccount;
+
+        public List<string> BankAccount
+        {
+            get { return _BankAccount; }
+            set { _BankAccount = value; NotifyOfPropertyChange(nameof(BankAccount)); }
         }
 
         private string _SearchText;

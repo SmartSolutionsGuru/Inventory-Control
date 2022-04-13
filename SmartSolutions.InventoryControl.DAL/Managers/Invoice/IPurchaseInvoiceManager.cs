@@ -1,11 +1,17 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
 {
     public interface IPurchaseInvoiceManager
     {
+        /// <summary>
+        /// Get All Purchase Invoices
+        /// </summary>
+        /// <returns></returns>
+        Task<IEnumerable<PurchaseInvoiceModel>> GetAllPurchaseInvoicesAsync();
         /// <summary>
         /// Get the Last Purchase Invoice Of Selected Partner
         /// </summary>
@@ -14,7 +20,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
         Task<PurchaseInvoiceModel> GetPartnerLastPurchaseInvoiceAsync(int? Id);
 
         /// <summary>
-        /// Genrate Or Create Unique Invoice Number
+        /// Generate Or Create Unique Invoice Number
         /// </summary>
         /// <param name="Initials"></param>
         /// <returns></returns>

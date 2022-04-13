@@ -39,7 +39,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
 
         #region Public Methods
         /// <summary>
-        /// Add Balance Amount in The Bussiness Partner Account
+        /// Add Balance Amount in The Business Partner Account
         /// </summary>
         /// <param name="partnerLedger"></param>
         /// <returns></returns>
@@ -94,7 +94,10 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                         var partnerLedger = new BussinessPartnerLedgerModel();
                         partnerLedger.Id = value.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                         var paymentId = value?.GetValueFromDictonary("PaymentId")?.ToString()?.ToInt();
+                        partnerLedger.InvoiceId = value.GetValueFromDictonary("InvoiceId")?.ToString()?.ToNullableInt();
                         partnerLedger.Payment = await _paymentManager.GetPaymentByIdAsync(paymentId);
+                        partnerLedger.DR = value.GetValueFromDictonary("DR")?.ToString()?.ToDecimal() ?? 0;
+                        partnerLedger.CR = value.GetValueFromDictonary("CR")?.ToString()?.ToDecimal() ?? 0;
                         partnerLedger.Description = value?.GetValueFromDictonary("Description")?.ToString();
                         partnerLedger.CurrentBalance = value?.GetValueFromDictonary("CurrentBalance")?.ToString()?.ToDecimal() ?? 0;
                         partnerLedger.CreatedAt = Convert.ToDateTime(value?.GetValueFromDictonary("CreatedAt")?.ToString());

@@ -204,6 +204,9 @@
     <Compile Include="Views\Reports\Product\AllProductReportView.xaml.cs">
       <DependentUpon>AllProductReportView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Reports\Purchase\PurchaseReportView.xaml.cs">
+      <DependentUpon>PurchaseReportView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Reports\ReportsView.xaml.cs">
       <DependentUpon>ReportsView.xaml</DependentUpon>
     </Compile>
@@ -349,6 +352,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Reports\Purchase\PurchaseReportView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Reports\ReportsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -457,19 +464,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Content Include="Scripts\ChartOfAccounts.sql" />
-    <Content Include="Scripts\CityCodes.sql" />
-    <Content Include="Scripts\Country.sql" />
-    <Content Include="Scripts\InitialCredentials.sql" />
-    <Content Include="Scripts\InventoryControl.sql" />
-    <Content Include="Scripts\MasterDb.sql" />
-    <Content Include="Scripts\PartnerCategory.sql" />
-    <Content Include="Scripts\PartnerType .sql" />
-    <Content Include="Scripts\PaymentType.sql" />
-    <Content Include="Scripts\Province.sql" />
-    <Content Include="Scripts\script_2021_09_02.sql" />
-    <Content Include="Scripts\script_2021_09_08.sql" />
-    <Content Include="Scripts\script_2021_09_15.sql" />
+    <Content Include="Scripts\01.sql" />
+    <Content Include="Scripts\02.sql" />
+    <Content Include="Scripts\03.sql" />
+    <Content Include="Scripts\04.sql" />
+    <Content Include="Scripts\05.sql" />
+    <Content Include="Scripts\06.sql" />
+    <Content Include="Scripts\07.sql" />
+    <Content Include="Scripts\08.sql" />
     <Resource Include="Assets\login page4.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -529,6 +531,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="References\" />
+    <Folder Include="Views\Reports\Sales\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlcipher.2.0.4\build\net461\SQLitePCLRaw.lib.e_sqlcipher.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlcipher.2.0.4\build\net461\SQLitePCLRaw.lib.e_sqlcipher.targets')" />
