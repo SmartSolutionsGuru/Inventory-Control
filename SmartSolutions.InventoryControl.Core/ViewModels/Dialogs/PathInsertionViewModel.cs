@@ -1,8 +1,10 @@
 ﻿using Caliburn.Micro;
+using Microsoft.SqlServer.Management.Smo;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.LogUtils;
 using System;
 using System.ComponentModel.Composition;
+using System.Data;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -63,20 +65,39 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
             {
                 if (!string.IsNullOrEmpty(BackupPath))
                 {
+                    
+
                     DAL.Models.SystemSettingModel setting = new DAL.Models.SystemSettingModel();
                     setting.Name = "IsDbPathInserted";
                     setting.SettingKey = "Is_DbPath_Inserted";
                     setting.SettingValue = 1;
                     setting.DefaultValue = false;
                     setting.Value = BackupPath;
-                    //setting.Value = string.IsNullOrEmpty(FileNameWithPath) ? string.Join("\\", BackupPath, _databaseName) : FileNameWithPath;
-                    //setting.Description = "Is Path Created Or Not";
                     setting.Description = string.IsNullOrEmpty(FileNameWithPath) ? setting.Value : FileNameWithPath;
                     var result = await _systemSettingManager.SaveSettingAsync(setting);
                     if (result)
                     {
-                        Close();
-                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "BackUp Path Successfully Enter", Type = Notifications.Wpf.NotificationType.Success });
+                        //This Code is Used For Diffrential Backup and Using SMO
+                        // we are using Traditonal Backup Style Now and use it after Testing
+
+                        //Server myServer = new Server();
+                        ////Using windows authentication
+                        //myServer.ConnectionContext.LoginSecure = true;
+                        //myServer.ConnectionContext.Connect();
+                        //Database myDatabase = myServer.Databases[$"{_databaseName}"];
+                        //var backupResult = await _databaseBackupManager.CreateFullBackupAsync(myServer, myDatabase, BackupPath);
+
+                        var backupResult = await _databaseBackupManager.CreateBackupAsync(_databaseName, BackupPath);
+                        if (backupResult)
+                        {
+                            Close();
+                            NotificationManager.Show(new Notifications.Wpf.NotificationContent
+                            {
+                                Title = "Success",
+                                Message = "BackUp Path Successfully Enter",
+                                Type = Notifications.Wpf.NotificationType.Success
+                            });
+                        }
                     }
                 }
                 else
@@ -103,7 +124,26 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
 
         #endregion
 
+        #region [Private Helpers]
+        private string GetDbServer()
+        {
+            string resultServerName = string.Empty;
+            DataTable table = SmoApplication.EnumAvailableSqlServers(true);
+            string ServerName = Environment.MachineName;
+            if (table != null && table?.Rows.Count > 0)
+            {
+                foreach (DataRow row in table.Rows)
+                {
+                    //resultServerName = ServerName + "\\" + row["InstanceName"].ToString();
+                    resultServerName = ServerName + "\\" + row[$"{_databaseName}"].ToString();
+                }
+            }
+            return resultServerName;
+        }
+        #endregion
+
         #region Public Properties
+        public string DbServerName { get; set; }
         private string m_BackupPath;
 
         public string BackupPath

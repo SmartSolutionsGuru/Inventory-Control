@@ -1,6 +1,8 @@
 ﻿<UserControl x:Class="SmartSolutions.InventoryControl.UI.Views.Reports.ReportsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:controlExtension="clr-namespace:SmartSolutions.InventoryControl.UI.Helpers.ControlExtensions"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
@@ -64,13 +66,47 @@
                 <ComboBox Grid.Column="2"
                           Height="45"
                           DisplayMemberPath="FullName"
-                          Style="{StaticResource BaseComboBox}"
                           Foreground="{StaticResource GrayColorBrush}"
                           BorderThickness="1.7"
                           controlExtension:WaterMarkTextExtension.WatermarkText="Select Partner"
                           BorderBrush="{StaticResource BlueColorBrush}"
                           ItemsSource="{Binding Partners,Mode=OneWay}"
-                          SelectedItem="{Binding SelectedPartner,Mode=TwoWay}"/>
+                          SelectedItem="{Binding SelectedPartner,Mode=TwoWay}">
+                    <ComboBox.Style>
+                        <Style TargetType="ComboBox" BasedOn="{StaticResource BaseComboBox}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsComboBoxVisible}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ComboBox.Style>
+                </ComboBox>
+                <hc:DatePicker Grid.Column="2"                               
+                               ShowClearButton="True" 
+                               BorderThickness="1.7"
+                               IsEnabled="True"
+                               SelectedDate="{x:Static system:DateTime.Now}"/>
+                <!--<DatePicker Grid.Column="2"
+                            Height="45"
+                            BorderBrush="{StaticResource BlueColorBrush}"
+                            controlExtension:MiscControlExtensions.CornerRadius="5"
+                            BorderThickness="1.7"
+                            DisplayDateStart="{Binding StartDate,Mode=TwoWay}"
+                            DisplayDateEnd="{Binding EndDate,Mode=TwoWay}"
+                            SelectedDate="{Binding SelectedStartDate,Mode=TwoWay}">
+                    <DatePicker.Style>
+                        <Style TargetType="DatePicker" BasedOn="{StaticResource DatePickerStyle1}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsDatePickerVisible}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DatePicker.Style>
+                </DatePicker>-->
                 <TextBox Height="45"
                          Width="350"
                          Grid.Column="3"
