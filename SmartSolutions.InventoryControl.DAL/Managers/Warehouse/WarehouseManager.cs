@@ -147,8 +147,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Warehouse
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_Name"] = warehouse.Name;
                 parameters["@v_CityId"] = warehouse.City?.Id;
-                parameters["@v_PhoneNumber"] = warehouse.PhoneNumber;
-                parameters["@v_MobileNumber"] = warehouse.MobileNumber;
+                parameters["@v_PhoneNumber"] = warehouse.PhoneNumber == null ? DBNull.Value : (object)warehouse.PhoneNumber;
+                parameters["@v_MobileNumber"] = warehouse.MobileNumber == null ? DBNull.Value : (object)warehouse.MobileNumber;
                 parameters["@v_Address"] = warehouse.Address == null ? DBNull.Value : (object)warehouse.Address;
                 parameters["@v_Description"] = warehouse.Description == null ? DBNull.Value : (object)warehouse.Description;
                 parameters["@v_IsActive"] = true;
@@ -163,7 +163,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Warehouse
             }
             catch (Exception ex)
             {
-
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return retVal;

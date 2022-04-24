@@ -41,12 +41,33 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Warehouse
                 Warehouse = new WarehouseModel();
                 if (!string.IsNullOrEmpty(WarehouseName))
                     Warehouse.Name = WarehouseName;
-                if (ValidationUtil.IsValidPhoneNumber(PhoneNumber))
-                    Warehouse.PhoneNumber = PhoneNumber;
-                if (ValidationUtil.IsValidMobileNumber(MobileNumber))
-                    Warehouse.MobileNumber = MobileNumber;
-                Warehouse.Address = Address;
+                if (!string.IsNullOrEmpty(PhoneNumber))
+                {
+                    if (ValidationUtil.IsValidPhoneNumber(PhoneNumber))
+                        Warehouse.PhoneNumber = PhoneNumber;
+                }
+                if (!string.IsNullOrEmpty(MobileNumber))
+                {
+                    if (ValidationUtil.IsValidMobileNumber(MobileNumber))
+                        Warehouse.MobileNumber = MobileNumber;
+                }
+                if (!string.IsNullOrEmpty(Address))
+                {
+                    Warehouse.Address = Address;
+                }
+                if (SelectedCountry == null || string.IsNullOrEmpty(SelectedCountry?.Name))
+                {
+                    SelectedCountry = Countries?.Where(x => x.Id == 162).FirstOrDefault();
+                }
                 Warehouse.Country = SelectedCountry;
+                if (SelectedCity == null || string.IsNullOrEmpty(SelectedCity?.Name))
+                {
+                    if (Cities == null || Cities?.Count() == 0)
+                    {
+                        Cities = (await _cityManager.GetCitiesByCountryIdAsync(SelectedCountry?.Id)).ToList();
+                    }
+                    SelectedCity = Cities?.FirstOrDefault(x => x.Id == 274);
+                }
                 Warehouse.City = SelectedCity;
                 var result = await _warehouseManager.SaveWarehouseAsync(Warehouse);
                 if (result)
@@ -57,7 +78,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Warehouse
                 else
                 {
                     // User Friendly Message for Not Saving warehouse
-                    await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Sorry Cannot Save Warehouse Try Again",options: Dialogs.MessageBoxOptions.Ok);
+                    await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Sorry Cannot Save Warehouse Try Again", options: Dialogs.MessageBoxOptions.Ok);
                 }
             }
             catch (Exception ex)
@@ -92,6 +113,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Warehouse
         {
             base.OnActivate();
             IsAddWarehouse = true;
+            Cities = new List<CityModel>();
             Countries = (await _countryManager.GetCountriesAsync()).ToList();
         }
         #endregion
