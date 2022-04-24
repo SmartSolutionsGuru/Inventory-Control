@@ -28,7 +28,7 @@
                 <TextBlock x:Name="DisplayName" Grid.Column="1" FontFamily="{StaticResource MediumFont}" FontSize="24" Margin="10,5" Foreground="White" VerticalAlignment="Center" />
                 <Button cal:Message.Attach="[Event Click]=[Action Cancel()]" Grid.Column="2" Height="40" Padding="10" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" VerticalAlignment="Center" Style="{StaticResource ContentButton}">
                     <Border Background="White" CornerRadius="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" >
-                        <Path Data="{StaticResource Shape_Close}" Stretch="Uniform" Fill="{StaticResource BlueColorBrush}" Margin="5" />
+                        <Path Data="{StaticResource Shape_Close1}" Stretch="Uniform" Fill="{StaticResource BlueColorBrush}" Margin="5" />
                     </Border>
                 </Button>
             </Grid>

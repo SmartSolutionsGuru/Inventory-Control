@@ -86,12 +86,12 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.BackUp
                     /* You can take backup on several media type (disk or tape), here I am using
                      * File type and storing backup on the file system */
                     //bkpDBFull.Devices.AddDevice(@"D:\AdventureWorksFull.bak", DeviceType.File);
-                    bkpDBFull.Devices.AddDevice($"{folderPath}\\{myDatabase.Name}.bak", DeviceType.File);
+                    bkpDBFull.Devices.AddDevice($"{folderPath}\\{myDatabase.Name}{DateTime.Now.ToString("yyyy-MM-dd")}.bak", DeviceType.File);
                     bkpDBFull.BackupSetName = $"{myDatabase.Name} database Backup";
-                    bkpDBFull.BackupSetDescription = $"{myDatabase.Name} database - Full Backup";
+                    bkpDBFull.BackupSetDescription = $"{myDatabase.Name} database - Full Backup At {DateTime.Now}";
                     /* You can specify the expiration date for your backup data
                      * after that date backup data would not be relevant */
-                    bkpDBFull.ExpirationDate = DateTime.Today.AddDays(10);
+                    bkpDBFull.ExpirationDate = DateTime.Today.AddDays(30);
                     /* You can specify Initialize = false (default) to create a new 
                      * backup set which will be appended as last backup set on the media. You can
                      * specify Initialize = true to make the backup as first set on the mediuam and
@@ -134,12 +134,12 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.BackUp
                     bkpDBDifferential.Database = myDatabase.Name;
                     /* You can take backup on several media type (disk or tape), here I am using
                      * File type and storing backup on the file system */
-                    bkpDBDifferential.Devices.AddDevice($"{folderPath}\\{myDatabase.Name}.bak", DeviceType.File);
+                    bkpDBDifferential.Devices.AddDevice($"{folderPath}\\{myDatabase.Name}{DateTime.Now.ToString("yyyy-MM-dd")}.bak", DeviceType.File);
                     bkpDBDifferential.BackupSetName = $"{myDatabase.Name} database Backup";
-                    bkpDBDifferential.BackupSetDescription = $"{myDatabase.Name} database - Differential Backup";
+                    bkpDBDifferential.BackupSetDescription = $"{myDatabase.Name} database - Differential Backup At {DateTime.Now}";
                     /* You can specify the expiration date for your backup data
                      * after that date backup data would not be relevant */
-                    bkpDBDifferential.ExpirationDate = DateTime.Today.AddDays(10);
+                    bkpDBDifferential.ExpirationDate = DateTime.Today.AddDays(30);
                     /* You can specify Initialize = false (default) to create a new 
                      * backup set which will be appended as last backup set on the media. You can
                      * specify Initialize = true to make the backup as first set on the mediuam and
@@ -183,7 +183,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.BackUp
                     restoreDB.Database = myDatabase.Name;
                     /* Specify whether you want to restore database or files or log etc */
                     restoreDB.Action = RestoreActionType.Database;
-                    restoreDB.Devices.AddDevice($"{folderPath}\\{myDatabase.Name}.bak", DeviceType.File);
+                    restoreDB.Devices.AddDevice($"{folderPath}\\{myDatabase.Name}{DateTime.Now.ToString("yyyy-MM-dd")}.bak", DeviceType.File);
                     /* You can specify ReplaceDatabase = false (default) to not create a new image
                      * of the database, the specified database must exist on SQL Server instance.
                      * If you can specify ReplaceDatabase = true to create new database image 
@@ -223,8 +223,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.BackUp
 
         private static void CompletionStatusInPercent(object sender, PercentCompleteEventArgs args)
         {
-            Console.Clear();
-            Console.WriteLine("Percent completed: {0}%.", args.Percent);
+            //Console.Clear();
+            //Console.WriteLine("Percent completed: {0}%.", args.Percent);
         }
         private static void Backup_Completed(object sender, ServerMessageEventArgs args)
         {

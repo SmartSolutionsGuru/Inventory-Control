@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Microsoft.SqlServer.Management.Smo;
 using Notifications.Wpf;
 using SmartSolutions.InventoryControl.Core.ViewModels.Dialogs;
 using SmartSolutions.InventoryControl.Core.ViewModels.Login;
@@ -202,7 +203,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     }
                     else
                     {
-                       var result =  await _databaseBackupManager.CreateBackupAsync(ConnectionInfo.Instance.Database, resultSetting.Description);
+                        Server myServer = new Server();
+                        Database myDatabase = myServer.Databases[ConnectionInfo.Instance.Database];
+                        var result = await _databaseBackupManager.CreateDifferentialBackupAsync(myServer, myDatabase, resultSetting.Description);
+                       //var result =  await _databaseBackupManager.CreateBackupAsync(ConnectionInfo.Instance.Database, resultSetting.Description);
                         if(result)
                             NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "BackUp Successfully", Type = Notifications.Wpf.NotificationType.Success });
                     }

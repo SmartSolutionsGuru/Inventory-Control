@@ -718,6 +718,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
+                        <!--IsReadOnly="False"-->
                         <TextBox Grid.Row="0" x:Name="PART_SearchTextBox" 
                                  AcceptsReturn="False" 
                                  Focusable="True" 

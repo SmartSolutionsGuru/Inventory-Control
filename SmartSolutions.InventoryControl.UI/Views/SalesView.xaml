@@ -123,7 +123,7 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Bill #" VerticalAlignment="Center" Margin="20 0 0 0" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource MediumSize}" FontFamily='{StaticResource MediumFont}'/>
                         <Border BorderBrush="{StaticResource LightGrayColorBrush}" BorderThickness="0 0 0 1" Width="120" Height="30">
-                            <TextBlock Text="{Binding SaleInvoice.InvoiceId,Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10 0 0 0" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}"/>
+                            <TextBlock Text="{Binding SaleInvoice.InvoiceId,Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="7 0 0 0" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}"/>
                         </Border>
                     </StackPanel>
 

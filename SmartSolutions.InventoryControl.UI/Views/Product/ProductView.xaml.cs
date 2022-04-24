@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using SmartSolutions.InventoryControl.UI.Helpers;
 using SmartSolutions.InventoryControl.UI.Helpers.Image;
+using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,21 +39,28 @@ namespace SmartSolutions.InventoryControl.UI.Views.Product
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Multiselect = false;
-            openFileDialog.Filter = "Image files (*.bmp, *.jpg,*.png)|*.bmp;*.jpg|All files (*.*)|*.*";
-            if (openFileDialog.ShowDialog() == true)
+            try
             {
-                string fileName = openFileDialog.FileNames.FirstOrDefault();
-                var encoder = new PngBitmapEncoder();
-                var Image = new BitmapImage(new Uri(fileName,UriKind.Relative));
-                encoder.Frames.Add(BitmapFrame.Create(Image));
-                using (var stram = new FileStream("Testing",FileMode.Create,FileAccess.Write))
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Multiselect = false;
+                openFileDialog.Filter = "Image files (*.bmp, *.jpg,*.png)|*.bmp;*.jpg|All files (*.*)|*.*";
+                if (openFileDialog.ShowDialog() == true)
                 {
-                    encoder.Save(stram);
+                    string fileName = openFileDialog.FileNames.FirstOrDefault();
+                    var encoder = new PngBitmapEncoder();
+                    var Image = new BitmapImage(new Uri(fileName, UriKind.Relative));
+                    encoder.Frames.Add(BitmapFrame.Create(Image));
+                    using (var stram = new FileStream("Testing", FileMode.Create, FileAccess.Write))
+                    {
+                        encoder.Save(stram);
+                    }
+                    ViewModel.ProductImage = Image?.ToByteArray();
+                    ViewModel.ImageName = System.IO.Path.GetFileName(fileName);
                 }
-                ViewModel.ProductImage = Image?.ToByteArray();
-                ViewModel.ImageName = System.IO.Path.GetFileName(fileName);
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
     }

@@ -113,7 +113,7 @@
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Bill #" VerticalAlignment="Center" Margin="20 0 0 0" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource MediumSize}" FontFamily='{StaticResource MediumFont}'/>
                         <Border BorderBrush="{StaticResource LightGrayColorBrush}" BorderThickness="0 0 0 1" Width="130" Height="30">
-                            <TextBlock Text="{Binding PurchaseInvoice.InvoiceId,Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10 0 0 0" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}"/>
+                            <TextBlock Text="{Binding PurchaseInvoice.InvoiceId,Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="7 0 0 0" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}"/>
                         </Border>
                     </StackPanel>
 
@@ -213,12 +213,12 @@
                     </StackPanel>
 
                 </Grid>
-                <Grid Grid.Row="2">
+                <Grid Grid.Row="2" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="3*"/>
                         <RowDefinition Height="1.8*" />
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Grid.ColumnSpan="3">
+                    <Border Grid.Row="0" Grid.ColumnSpan="3" Visibility="{Binding IsPurchaseSelected,Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="30"/>

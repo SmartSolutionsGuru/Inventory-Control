@@ -91,7 +91,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 SelectedPurchaseType = PurchaseTypes.Where(x => x.Equals("Purchase")).FirstOrDefault();
                 Products = (await _productManager.GetAllProductsAsync()).ToList();
                 //Venders = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
-                var partnerType = new List<int?>{ 1,3};
+                var partnerType = new List<int?> { 1, 3 };
                 Venders = (await _bussinessPartnerManager.GetBussinessPartnersByTypeAsync(partnerType)).OrderBy(x => x.Name).ToList();
                 ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
                 ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
@@ -113,14 +113,20 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        public void AddProduct(StockInModel product)
+        public async void AddProduct(StockInModel product)
         {
             try
             {
                 ++AutoId;
                 var newProduct = new StockInModel();
                 CalculateInvoiceTotal();
-                ProductSuggetion = new ProductSuggestionProvider(Products);
+                if (Products != null && Products?.Count > 0)
+                    ProductSuggetion = new ProductSuggestionProvider(Products);
+                else
+                {
+                   await IoC.Get<IDialogManager>().ShowMessageBoxAsync($"There are No Products {Environment.NewLine}Please add Products To Proceed");
+                }
+
                 ProductGrid.Add(newProduct);
                 SelectedProduct = new ProductModel();
                 SelectedWarehouse = new WarehouseModel();
@@ -322,7 +328,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                         if (Payment != null || Payment > 0)
                                                         {
                                                             partnerLedger.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(SelectedPartner?.Id);
-                                                            partnerLedger.CurrentBalance = selectedPartnerBalance.CurrentBalance + InvoiceTotal.Value-partnerLedger.Payment.PaymentAmount;
+                                                            partnerLedger.CurrentBalance = selectedPartnerBalance.CurrentBalance + InvoiceTotal.Value - partnerLedger.Payment.PaymentAmount;
                                                             partnerLedger.DR = partnerLedger.Payment.PaymentAmount;
                                                         }
                                                         else
@@ -516,6 +522,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 if (purchaseType.Equals("Purchase Return"))
                 {
                     PurchaseInvoice.InvoiceId = _purchaseInvoiceManager.GenrateInvoiceNumber("PR");
+                    IsPurchaseSelected = false;
+                }
+                else
+                {
+                    IsPurchaseSelected = true;
                 }
             }
             catch (Exception ex)
@@ -541,7 +552,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         private void OnGettingSuggetions()
         {
-            if(ProductSuggetion == null || ProductSuggetion.SuggestedProducts.Count == 0)
+            if (ProductSuggetion == null || ProductSuggetion.SuggestedProducts.Count == 0)
             {
                 ProductSuggetion = new ProductSuggestionProvider(Products);
             }
@@ -549,6 +560,24 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Properties
+        private bool _IsPurchaseSelected = true;
+        /// <summary>
+        /// Purchase Selected Or Purchase Return Selected
+        /// </summary>
+        public bool IsPurchaseSelected
+        {
+            get { return _IsPurchaseSelected; }
+            set { _IsPurchaseSelected = value; NotifyOfPropertyChange(nameof(IsPurchaseSelected)); }
+        }
+
+        private string _ToolTip;
+
+        public string ToolTip
+        {
+            get { return _ToolTip; }
+            set { _ToolTip = value; NotifyOfPropertyChange(nameof(ToolTip)); }
+        }
+
         private bool _IsValueCredit;
         /// <summary>
         /// Property That is Used for changing Color On basis of DR and CR
@@ -569,7 +598,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             {
                 return _ProductSuggetion;
             }
-            set { _ProductSuggetion = value; NotifyOfPropertyChange(nameof(ProductSuggetion));  OnGettingSuggetions(); }
+            set { _ProductSuggetion = value; NotifyOfPropertyChange(nameof(ProductSuggetion)); OnGettingSuggetions(); }
         }
         private bool _PaymentModeError;
         public bool PaymentModeError

@@ -80,14 +80,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
                         //This Code is Used For Diffrential Backup and Using SMO
                         // we are using Traditonal Backup Style Now and use it after Testing
 
-                        //Server myServer = new Server();
-                        ////Using windows authentication
-                        //myServer.ConnectionContext.LoginSecure = true;
-                        //myServer.ConnectionContext.Connect();
-                        //Database myDatabase = myServer.Databases[$"{_databaseName}"];
-                        //var backupResult = await _databaseBackupManager.CreateFullBackupAsync(myServer, myDatabase, BackupPath);
+                        Server myServer = new Server();
+                        //Using windows authentication
+                        myServer.ConnectionContext.LoginSecure = true;
+                        myServer.ConnectionContext.Connect();
+                        Database myDatabase = myServer.Databases[$"{_databaseName}"];
+                        var backupResult = await _databaseBackupManager.CreateFullBackupAsync(myServer, myDatabase, BackupPath);
 
-                        var backupResult = await _databaseBackupManager.CreateBackupAsync(_databaseName, BackupPath);
+                        //var backupResult = await _databaseBackupManager.CreateBackupAsync(_databaseName, BackupPath);
                         if (backupResult)
                         {
                             Close();
@@ -125,25 +125,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         #endregion
 
         #region [Private Helpers]
-        private string GetDbServer()
-        {
-            string resultServerName = string.Empty;
-            DataTable table = SmoApplication.EnumAvailableSqlServers(true);
-            string ServerName = Environment.MachineName;
-            if (table != null && table?.Rows.Count > 0)
-            {
-                foreach (DataRow row in table.Rows)
-                {
-                    //resultServerName = ServerName + "\\" + row["InstanceName"].ToString();
-                    resultServerName = ServerName + "\\" + row[$"{_databaseName}"].ToString();
-                }
-            }
-            return resultServerName;
-        }
+       
         #endregion
 
         #region Public Properties
-        public string DbServerName { get; set; }
         private string m_BackupPath;
 
         public string BackupPath

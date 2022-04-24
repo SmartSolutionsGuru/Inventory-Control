@@ -184,7 +184,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     IsLoading = false;
                     return;
                 }
-                else if(string.IsNullOrEmpty(WhatsAppNumber))
+                else if (string.IsNullOrEmpty(WhatsAppNumber))
                 {
                     WhatsAppNumberError = true;
                     IsLoading = false;
@@ -204,7 +204,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 }
                 if (NewBussinessPartner != null)
                 {
-                    GetParsedPhoneNumber();
+                    //GetParsedPhoneNumber();
                     NewBussinessPartner.Name = FullName;
                     NewBussinessPartner.BussinessName = BussinessName;
                     NewBussinessPartner.PartnerCategory = SelectedPartnerCategory;
@@ -212,6 +212,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     NewBussinessPartner.City = SelectedCity;
                     NewBussinessPartner.CreatedBy = AppSettings.LoggedInUser.DisplayName;
                     NewBussinessPartner.WhatsAppNumber = WhatsAppNumber;
+                    //NewBussinessPartner.MobileNumbers.Add(PartnerMobileNumber);
                     var resultPartner = await _bussinessPartnerManager.AddBussinesPartnerAsync(NewBussinessPartner);
                     if (resultPartner)
                     {
@@ -230,55 +231,64 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                                 await _partnerSetupAccountManager.SavePartnerSetAccountAsync(partnersetupAccount);
                             }
                         }
-                        ClearPartnerDetails();
+                        //ClearPartnerDetails();
                     }
                     else
                         NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Sorry Partner Not Added", Type = Notifications.Wpf.NotificationType.Error });
-                    if (InitialAmount > 0)
+                    //if (InitialAmount > 0)
+                    //{
+                    if (resultPartner)
                     {
-                        if (resultPartner)
+                        // here we Create and Fill the Payment Object
+                        var payment = new PaymentModel();
+                        payment.Partner = await _bussinessPartnerManager.GetLastAddedPartner();
+                        if (string.IsNullOrEmpty(SelectedAmountType))
                         {
-                            // here we Create and Fill the Payment Object
-                            var payment = new PaymentModel();
-                            payment.Partner = await _bussinessPartnerManager.GetLastAddedPartner();
+                            SelectedAmountType = "DR (Receivable)";
+                            payment.PaymentType = DAL.Models.PaymentType.DR;
+                        }
+                        else
+                        {
                             payment.PaymentType = SelectedAmountType.Equals("DR (Receivable)") == true ? DAL.Models.PaymentType.DR : DAL.Models.PaymentType.CR;
-                            if (payment.PaymentType == DAL.Models.PaymentType.DR)
-                                payment.DR = InitialAmount;
-                            else
-                                payment.CR = InitialAmount;
-                            payment.PaymentAmount = InitialAmount;
-                            payment.IsPaymentReceived = SelectedAmountType.Equals("DR (Receivable)") ? true : false;
-                            payment.CreatedBy = AppSettings.LoggedInUser.DisplayName;
-                            payment.PaymentMethod = await _paymentTypeManager.GetPaymentMethodByIdAsync(1);
-                            var paymentResult = await _paymentManager.AddPaymentAsync(payment);
-                            if (paymentResult)
+                        }
+
+                        if (payment.PaymentType == DAL.Models.PaymentType.DR)
+                            payment.DR = InitialAmount;
+                        else
+                            payment.CR = InitialAmount;
+                        payment.PaymentAmount = InitialAmount;
+                        payment.IsPaymentReceived = SelectedAmountType.Equals("DR (Receivable)") ? true : false;
+                        payment.CreatedBy = AppSettings.LoggedInUser.DisplayName;
+                        payment.PaymentMethod = await _paymentTypeManager.GetPaymentMethodByIdAsync(1);
+                        var paymentResult = await _paymentManager.AddPaymentAsync(payment);
+                        if (paymentResult)
+                        {
+                            NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Inital Amount Added Successfully", Type = Notifications.Wpf.NotificationType.Success });
+                            //Here we Update the Partner Ledger Account
+                            var partnerLedger = new BussinessPartnerLedgerModel();
+                            partnerLedger.Partner = payment.Partner ?? await _bussinessPartnerManager.GetLastAddedPartner();
+                            partnerLedger.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(payment?.Partner.Id);
+                            partnerLedger.CurrentBalance = payment.PaymentAmount;
+                            partnerLedger.CR = payment.CR;
+                            partnerLedger.DR = payment.DR;
+                            partnerLedger.CurrentBalanceType = payment.PaymentType;
+                            partnerLedger.Description = "Initial Deposit / Balance";
+                            partnerLedger.CreatedBy = AppSettings.LoggedInUser.DisplayName;
+                            var partnerResult = await _partnerLedgerManager.AddPartnerBalanceAsync(partnerLedger);
+                            //Display user Friendly Toast
+                            if (partnerResult)
                             {
-                                NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Inital Amount Added Successfully", Type = Notifications.Wpf.NotificationType.Success });
-                                //Here we Update the Partner Ledger Account
-                                var partnerLedger = new BussinessPartnerLedgerModel();
-                                partnerLedger.Partner = payment.Partner ?? await _bussinessPartnerManager.GetLastAddedPartner();
-                                partnerLedger.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(payment?.Partner.Id);
-                                partnerLedger.CurrentBalance = payment.PaymentAmount;
-                                partnerLedger.CR = payment.CR;
-                                partnerLedger.DR = payment.DR;
-                                partnerLedger.CurrentBalanceType = payment.PaymentType;
-                                partnerLedger.Description = "Initial Deposit / Balance";
-                                partnerLedger.CreatedBy = AppSettings.LoggedInUser.DisplayName;
-                                var partnerResult = await _partnerLedgerManager.AddPartnerBalanceAsync(partnerLedger);
-                                //Display user Friendly Toast
-                                if (partnerResult)
-                                {
-                                    MainViewModel.Counter++;
-                                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Partner Ledger Updated Successfully", Type = Notifications.Wpf.NotificationType.Success });
-                                    ClearPartnerDetails();
-                                }
-                                else
-                                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Partner Ledger Not Updated", Type = Notifications.Wpf.NotificationType.Error });
+                                MainViewModel.Counter++;
+                                NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Partner Ledger Updated Successfully", Type = Notifications.Wpf.NotificationType.Success });
+                                ClearPartnerDetails();
                             }
                             else
-                                NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Inital Amount Not Added ", Type = Notifications.Wpf.NotificationType.Error });
+                                NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Partner Ledger Not Updated", Type = Notifications.Wpf.NotificationType.Error });
                         }
+                        else
+                            NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Inital Amount Not Added ", Type = Notifications.Wpf.NotificationType.Error });
                     }
+                    //}
                     else
                     {
                         ClearPartnerDetails();
@@ -298,7 +308,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             var nationalPhoneNumber = NewBussinessPartner.PhoneNumber;
             var phoneNumber = phoneNumberUtil.Parse(nationalPhoneNumber, "US");
         }
-        private  async void ClearPartnerDetails()
+        private async void ClearPartnerDetails()
         {
             PartnerMobileNumber = string.Empty;
             BussinessName = string.Empty;
@@ -315,7 +325,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             FullNameError = false;
             MobileNoError = false;
             CityNotSelected = false;
-
+            whatsAppNumber = string.Empty;
         }
         public async void UpdatePartnerProfile()
         {
@@ -409,7 +419,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     _FullName = _FullName.CapitalizeFirstLetter();
                 }
                 else
-                { _FullName = value;}
+                { _FullName = value; }
 
                 NotifyOfPropertyChange(nameof(FullName));
             }

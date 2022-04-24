@@ -342,7 +342,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                             InitialStock.Price = EstimatedPrice;
                             InitialStock.Warehouse = SelectedWarehouse;
                             InitialStock.Total = InitialQuantity * EstimatedPrice;
-                            InitialStock.Description = $"Initial Stock Of Product {Product.Name} At {Product.CreatedAt}";
+                            InitialStock.Description = $"Initial Stock Of Product {model.Name} At {model.CreatedAt}";
                             InitialStock.CreatedBy = AppSettings.LoggedInUser.DisplayName;
                             var initialStockResult = await _openingStockManager.AddOpeningStockAsync(InitialStock);
 
@@ -393,6 +393,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
             InitialQuantity = 0;
             EstimatedPrice = 0;
             ProductName = string.Empty;
+            ProductNameError = false;
+            ProductTypeError = false;
+            ProductSubTyprError = false;
+            ProductColorError = false;
+            ProductSizeError = false;
         }
         #endregion
 

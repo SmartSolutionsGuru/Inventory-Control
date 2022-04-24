@@ -34,12 +34,15 @@ namespace SmartSolutions.InventoryControl.UI.Views.Dialogs
             try
             {
 
-               var dialog = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
-                if(dialog.ShowDialog().GetValueOrDefault())
+                var dialog = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
+                if (dialog.ShowDialog().GetValueOrDefault())
                 {
                     FolderPathTextBox.Text = dialog.SelectedPath;
                     if (!string.IsNullOrEmpty(FolderPathTextBox.Text))
+                    {
                         ViewModel.BackupPath = FolderPathTextBox.Text;
+                       
+                    }
                 }
             }
             catch (Exception ex)
