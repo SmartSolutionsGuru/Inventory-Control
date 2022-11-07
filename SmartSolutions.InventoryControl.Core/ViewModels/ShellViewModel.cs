@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
-using Notifications.Wpf;
+using Microsoft.SqlServer.Management.Smo;
 using SmartSolutions.InventoryControl.Core.ViewModels.Commands;
+using SmartSolutions.InventoryControl.DAL;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.LogUtils;
 using System;
@@ -10,11 +11,6 @@ using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using Microsoft.SqlServer.Management.Smo;
-using SmartSolutions.InventoryControl.DAL;
-using System.Collections.Generic;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels
 {
@@ -51,7 +47,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             _dialog = dialogManager;
             _proprietorInformationManager = proprietorInformationManager;
             _systemSettingManager = systemSettingManager;
-            
+
         }
         #endregion
 
@@ -270,7 +266,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     FileInfo file = new FileInfo(script);
                     await repository.QueryAsync(script);
                 }
-                
+
             }
             catch (Exception ex)
             {

@@ -3,6 +3,7 @@ using SmartSolutions.InventoryControl.DAL.Models;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.DAL.Models.Region;
 using SmartSolutions.Util.LogUtils;
+using SmartSolutions.Util.StrUtils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -108,7 +109,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public string CompanyName
         {
             get { return _CompanyName; }
-            set { _CompanyName = value; NotifyOfPropertyChange(nameof(CompanyName)); }
+            set
+            {
+                if(!string.IsNullOrEmpty(value))
+                {
+                    _CompanyName = value;
+                    _CompanyName = _CompanyName.CapitalizeFirstLetter();
+                }
+               
+                NotifyOfPropertyChange(nameof(CompanyName)); 
+            }
         }
         private string _ProprietorName;
         /// <summary>
@@ -117,7 +127,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public string ProprietorName
         {
             get { return _ProprietorName; }
-            set { _ProprietorName = value; NotifyOfPropertyChange(nameof(ProprietorName)); }
+            set 
+            {
+                _ProprietorName = value;
+                _ProprietorName = _ProprietorName.CapitalizeFirstLetter();
+                NotifyOfPropertyChange(nameof(ProprietorName));
+            }
         }
 
         private ProprietorInformationModel _ProprietorInformation;

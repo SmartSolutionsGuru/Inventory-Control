@@ -204,7 +204,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 }
                 if (NewBussinessPartner != null)
                 {
-                    //GetParsedPhoneNumber();
+                    //GetParsedPhoneNumber(); 
                     NewBussinessPartner.Name = FullName;
                     NewBussinessPartner.BussinessName = BussinessName;
                     NewBussinessPartner.PartnerCategory = SelectedPartnerCategory;
@@ -230,13 +230,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                                 partnersetupAccount.PartnerAccountType = SelectedPartnerType;
                                 await _partnerSetupAccountManager.SavePartnerSetAccountAsync(partnersetupAccount);
                             }
-                        }
-                        //ClearPartnerDetails();
+                        }                       
                     }
                     else
                         NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Sorry Partner Not Added", Type = Notifications.Wpf.NotificationType.Error });
-                    //if (InitialAmount > 0)
-                    //{
                     if (resultPartner)
                     {
                         // here we Create and Fill the Payment Object
@@ -304,9 +301,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         }
         private void GetParsedPhoneNumber()
         {
-            var phoneNumberUtil = PhoneNumbers.PhoneNumberUtil.GetInstance();
+            //var phoneNumberUtil = PhoneNumbers.PhoneNumberUtil.GetInstance();
             var nationalPhoneNumber = NewBussinessPartner.PhoneNumber;
-            var phoneNumber = phoneNumberUtil.Parse(nationalPhoneNumber, "US");
+           // var phoneNumber = phoneNumberUtil.Parse(nationalPhoneNumber, "US");
         }
         private async void ClearPartnerDetails()
         {
@@ -575,7 +572,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         }
 
         private string _PartnerMobileNumber;
-
         public string PartnerMobileNumber
         {
             get { return _PartnerMobileNumber; }

@@ -9,14 +9,28 @@ using System.Threading.Tasks;
 
 namespace SmartSolutions.Util.LogUtils
 {
+    /// <summary>
+    /// Logger Class for writing Logs
+    /// </summary>
     public static class LogMessage
     {
+        #region [Private Members]
         private static ILogger log;
+        #endregion
+
+        #region [Constructor]
         static LogMessage()
         {
             log = InventoryControl.Plugins.IoC.IoCContanier.IoC?.GetInstance(typeof(ILogger)) as ILogger;
             //WriteLogInFile($"Logger Plugin {(log == null ? "Not Found" : $"({log.Name}) Found")}");
         }
+        #endregion
+
+        #region [Public Methods]  
+        /// <summary>
+        /// Method for Setting up Log File Name
+        /// </summary>
+        /// <param name="filename_prefix"></param>
         public static void Setup(string filename_prefix)
         {
             log?.Setup(filename_prefix);
@@ -29,6 +43,12 @@ namespace SmartSolutions.Util.LogUtils
         //        WriteLogInFile(text);
         //}
 
+        /// <summary>
+        /// Method For Writing Log 
+        /// </summary>
+        /// <param name="textAction"></param>
+        /// <param name="level"> Level Of Severity</param>
+        /// <param name="isHourLogFile"> is Hour file logging or Not</param>
         public static void Write(Func<string> textAction, Levels level = Levels.Info, bool isHourLogFile = false)
         {
             if (log != null)
@@ -66,7 +86,9 @@ namespace SmartSolutions.Util.LogUtils
         {
             return (Levels)(int)(log?.GetCurrentLevel() ?? LogLevels.Error);
         }
+        #endregion
 
+        #region [Private Methods]      
         private static void WriteLogInFile(string msg, bool isHrLogFile = false)
         {
             try
@@ -106,7 +128,9 @@ namespace SmartSolutions.Util.LogUtils
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
             }
         }
-       
+        #endregion
+
+        #region [Enum]      
         public enum Levels
         {
             [Description("FATAL")]
@@ -124,6 +148,7 @@ namespace SmartSolutions.Util.LogUtils
             [Description("OFF")]
             Off = 6
         }
-      
+        #endregion
+
     }
 }
