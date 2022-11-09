@@ -9,7 +9,6 @@ using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
 using SmartSolutions.InventoryControl.DAL.Models.Stock;
 using SmartSolutions.InventoryControl.DAL.Models.Warehouse;
 using SmartSolutions.Util.LogUtils;
-using SmartSolutions.Util.NumericUtils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,7 +20,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
     [Export(typeof(PurchaseViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class PurchaseViewModel : BaseViewModel
     {
-        #region Private Members
+        #region [Private Members]
         private readonly DAL.Managers.Stock.StockIn.IStockInManager _stockInManager;
         private readonly DAL.Managers.Inventory.IInventoryManager _inventoryManager;
         private readonly DAL.Managers.Product.IProductManager _productManager;
@@ -37,7 +36,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private readonly DAL.Managers.Payments.IPaymentManager _paymentManager;
         #endregion
 
-        #region Constructor
+        #region [Constructor]
         public PurchaseViewModel() { }
 
         [ImportingConstructor]
@@ -374,7 +373,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 SelectedPartner = new BussinessPartnerModel();
                 ProductGrid = new ObservableCollection<StockInModel>();
                 var newProduct = new StockInModel();
-                //ProductGrid.Add(newProduct);
                 AutoId = 0;
                 AddProduct(newProduct);
                 InvoiceTotal = 0;
@@ -384,8 +382,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 PaymentImage = null;
                 PreviousBalance = 0;
                 GrandTotal = 0;
-
-
             }
             catch (Exception ex)
             {
@@ -542,7 +538,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             {
                 if (SelectedPurchaseType.Equals("Purchase Return"))
                 {
-
+                    //TODO: Here we Move the Purchase Return Form
                 }
             }
             catch (Exception ex)

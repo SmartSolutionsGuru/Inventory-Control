@@ -63,6 +63,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             _paymentManager = paymentManager;
             _chartOfAccountManager = chartOfAccountManager;
             _partnerSetupAccountManager = partnerSePartnetupAccountManager;
+            _paymentManager = paymentManager;
+            _saleInvoiceManager = saleInvoiceManager;
+            NewBussinessPartner = new BussinessPartnerModel();
 
         }
         #endregion
@@ -190,13 +193,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     IsLoading = false;
                     return;
                 }
-                else if (SelectedCity == null)
+                else if (SelectedCity != null && string.IsNullOrEmpty(SelectedCity?.CityName))
                 {
                     CityNotSelected = true;
                     IsLoading = false;
                     return;
                 }
-                else if (NewBussinessPartner != null && string.IsNullOrEmpty(NewBussinessPartner.Address))
+                else if (NewBussinessPartner != null && string.IsNullOrEmpty(NewBussinessPartner?.Address))
                 {
                     AddressError = true;
                     IsLoading = false;
@@ -322,7 +325,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             FullNameError = false;
             MobileNoError = false;
             CityNotSelected = false;
-            whatsAppNumber = string.Empty;
+            WhatsAppNumber = string.Empty;
         }
         public async void UpdatePartnerProfile()
         {

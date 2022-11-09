@@ -1,6 +1,5 @@
-﻿using Caliburn.Micro;
+using Caliburn.Micro;
 using Microsoft.SqlServer.Management.Smo;
-using Notifications.Wpf;
 using SmartSolutions.InventoryControl.Core.ViewModels.Dialogs;
 using SmartSolutions.InventoryControl.Core.ViewModels.Login;
 using SmartSolutions.InventoryControl.Core.ViewModels.Settings;
@@ -16,14 +15,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
     [Export(typeof(MainViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class MainViewModel : BaseViewModel, IHandle<Screen>
     {
-        #region Private Members
+        #region [Private Members]
         private readonly IEventAggregator _eventAggregator;
         private readonly DAL.Managers.BackUp.IDatabaseBackupManager _databaseBackupManager;
         private readonly DAL.Managers.Settings.ISystemSettingManager _systemSettingManager;
-        private readonly NotificationManager notificationManager;
         #endregion
 
-        #region Constructor
+        #region [Constructor]
         public MainViewModel() { }
 
         [ImportingConstructor]
@@ -34,9 +32,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             _eventAggregator = eventAggregator;
             _systemSettingManager = systemSettingManager;
             _databaseBackupManager = databaseBackupManager;
-             notificationManager = new NotificationManager();
             ProprietorInfo = AppSettings.Proprietor;
-            NotifyOfPropertyChange(nameof(ProprietorInfo.BussinessName));
+            NotifyOfPropertyChange(nameof(ProprietorInfo));
+           
+            
         }
         #endregion
 
@@ -199,14 +198,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     {
                         var dlg = IoC.Get<PathInsertionViewModel>();
                         await IoC.Get<IDialogManager>().ShowDialogAsync(dlg);
-
                     }
                     else
                     {
                         Server myServer = new Server();
                         Database myDatabase = myServer.Databases[ConnectionInfo.Instance.Database];
                         var result = await _databaseBackupManager.CreateDifferentialBackupAsync(myServer, myDatabase, resultSetting.Description);
-                       //var result =  await _databaseBackupManager.CreateBackupAsync(ConnectionInfo.Instance.Database, resultSetting.Description);
                         if(result)
                             NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "BackUp Successfully", Type = Notifications.Wpf.NotificationType.Success });
                     }
@@ -232,15 +229,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Properties
-        //public static int Counter { get; set; }
         private static int _Counter;
-
+        /// <summary>
+        /// gets or sets information about Counter
+        /// </summary>
         public static int Counter
         {
-            get
-            {
-                return _Counter;
-            }
+            get => _Counter;
             set
             {
                 _Counter = value;               
@@ -248,10 +243,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
 
         private bool _IsBankProceeded;
-
+        /// <summary>
+        /// get or sets flag for Bank Proceed
+        /// </summary>
         public bool IsBankProceeded
         {
-            get { return _IsBankProceeded; }
+            get => _IsBankProceeded; 
             set { _IsBankProceeded = value; NotifyOfPropertyChange(nameof(IsBankProceeded)); }
         }
 
@@ -351,7 +348,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             set { _IsPaymentProceeded = value; NotifyOfPropertyChange(nameof(IsPaymentProceeded)); }
         }
         private DAL.Models.Authentication.IdentityUserModel _CurrentUser;
-
+        /// <summary>
+        /// Get or sets Current User
+        /// </summary>
         public DAL.Models.Authentication.IdentityUserModel CurrentUser
         {
             get { return _CurrentUser; }
