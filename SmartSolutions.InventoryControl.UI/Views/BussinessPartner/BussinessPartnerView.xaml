@@ -24,7 +24,7 @@
             <Grid>
                 <TextBlock Text="{Binding Path=Name}"
                            Foreground="{StaticResource GrayColorBrush}"
-                           FontFamily="{StaticResource MediumFont}"
+                           FontFamily="{StaticResource MediumFont}" 
                            FontSize="{StaticResource MediumSize}"/>
             </Grid>
         </DataTemplate>
@@ -75,8 +75,7 @@
                              Margin="30,10"
                              GroupName="PartnerGroup"
                              IsChecked="{Binding IsUpdatePartner,Mode=TwoWay}"
-                             ControlExtensions:MiscControlExtensions.UncheckedForeground="{StaticResource RedColorBrush}"
-                            
+                             ControlExtensions:MiscControlExtensions.UncheckedForeground="{StaticResource RedColorBrush}"                           
                              Background="{StaticResource OrangeColorBrush}" >
                     <RadioButton.Style>
                         <Style TargetType="RadioButton" BasedOn="{StaticResource ButtonLikeRadioStyleTransparent}">
@@ -98,7 +97,7 @@
                              FontSize="{StaticResource NormalSize}"
                              BorderThickness="1"
                              GroupName="PartnerGroup"
-                             IsChecked="{Binding IsRemoveParnter,Mode=TwoWay}"
+                             IsChecked="{Binding IsRemovePartner,Mode=TwoWay}"
                              BorderBrush="{StaticResource RedColorBrush}"
                              Background="{StaticResource RedColorBrush}">
                     <RadioButton.Style>
@@ -637,7 +636,7 @@
                                      Padding="8 8 0 0"/>
                         </StackPanel>
                     </Grid>
-                    <Grid Grid.Row="2">
+                    <Grid Grid.Row="2" Margin="0 0 0 20">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
@@ -646,7 +645,7 @@
                         <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
                             <Button x:Name="CancelUpdatePartner"
                                     Height="45" 
-                                    Width="100"
+                                    Width="150"
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
                                     Margin="0 0 5 0"
@@ -655,11 +654,11 @@
                                     Content="Cancel"/>
                             <Button  x:Name="UpdatePartnerProfile"
                                      Height="45" 
-                                     Width="100"
+                                     Width="150"
                                      HorizontalContentAlignment="Center"
                                      VerticalContentAlignment="Center"
                                      Margin="5 0 0 0"
-                                     Background="{StaticResource GreenColorBrush}" 
+                                     Background="{StaticResource OrangeColorBrush}" 
                                      Style="{StaticResource ContentButton}" 
                                      Content="Update"/>
                         </StackPanel>
@@ -670,6 +669,196 @@
                         <Setter Property="Visibility" Value="Collapsed"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsUpdatePartner,Mode=OneWay}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+            </Grid>
+            <!--Grid For Removing Partner-->
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel>
+                    <TextBlock Foreground="{StaticResource GrayColorBrush}"
+                               Text=" Please Select Business Partner"
+                               Margin="40 5 0 0"
+                               FontFamily="{StaticResource MediumFont}"
+                               FontSize="{StaticResource NormalSize}"/>
+                    <ComboBox Height="50" 
+                              Width="250"
+                              Foreground="{StaticResource GrayColorBrush}"
+                              FontFamily="{StaticResource MediumFont}"
+                              FontSize="{StaticResource MediumSize}"
+                              DisplayMemberPath="FullName"
+                              HorizontalAlignment="Left"
+                              Margin="40 0 0 5"
+                              BorderBrush="{StaticResource BlueColorBrush}"
+                              BorderThickness="1.5"
+                              ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Partner"
+                              ItemsSource="{Binding BussinessPartners,Mode=TwoWay}"
+                              SelectedItem="{Binding SelectedBussinessPartner,Mode=TwoWay}"
+                              Style="{StaticResource BaseComboBox}"/>
+                </StackPanel>
+
+                <Grid Grid.Row="1" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="70"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 40 0">
+                            <TextBlock Text="Enter Business Name" 
+                                       FontSize="{StaticResource NormalSize}"
+                                       Foreground="{StaticResource GrayColorBrush}"
+                                       Margin="0 0 0 10"
+                                       FontFamily="{StaticResource MediumFont}"/>
+                            <TextBox Grid.Column="0" 
+                                     Height="45" 
+                                     Width="250"
+                                     Text="{Binding SelectedBussinessPartner.BussinessName,Mode=TwoWay}"
+                                     ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Bussiness Name"
+                                     Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center" Margin="0 0 40 0" VerticalAlignment="Center">
+                            <TextBlock Text="Please Enter Full Name"
+                               Margin="0 0 0 10" 
+                               FontFamily="{StaticResource MediumFont}" 
+                               Foreground="{StaticResource GrayColorBrush}" 
+                               FontSize="{StaticResource NormalSize}"/>
+                            <TextBox Grid.Column="1" 
+                                     Height="45" 
+                                     Width="250"
+                                     Text="{Binding SelectedBussinessPartner.Name,Mode=TwoWay}"
+                                     ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Full Name"
+                                     Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Margin="0 0 40 0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="Enter Phone Number" Margin="0 0 0 10" FontSize="{StaticResource NormalSize}" FontFamily="{StaticResource MediumFont}" Foreground="{StaticResource GrayColorBrush}"/>
+                            <TextBox Grid.Column="2" 
+                                     Height="45" 
+                                     Width="250"
+                                     Text="{Binding SelectedBussinessPartner.PhoneNumber,Mode=TwoWay}"
+                                     ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter Phone Number"
+                                     Style="{StaticResource TextBoxVisibilityPathIconStyle}"/>
+
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{Binding MobileMessage,Mode=OneWay}" 
+                               FontSize="{StaticResource NormalSize}" 
+                               FontFamily="{StaticResource MediumFont}" 
+                               HorizontalAlignment="Left" 
+                               VerticalAlignment="Center" 
+                               Margin="40 0 0 0"
+                               Foreground="{StaticResource GrayColorBrush}"/>
+                            <ComboBox Grid.Row="1" 
+                                      Height="50" 
+                                      Width="250"
+                                      VerticalAlignment="Top"
+                                      HorizontalAlignment="Left"
+                                      Margin="40 10 0 0"
+                                      Foreground="{StaticResource GrayColorBrush}"
+                                      FontFamily="{StaticResource MediumFont}"
+                                      FontSize="{StaticResource NormalSize}"
+                                      Style="{StaticResource BaseComboBox}"
+                                      BorderThickness="1.7"
+                                      BorderBrush="{StaticResource BlueColorBrush}"
+                                      Opacity="0.7"
+                                      ItemsSource="{Binding SelectedBussinessPartner.MobileNumbers,Mode=TwoWay}"
+                                      SelectedItem="{Binding SelectedBussinessPartner.MobileNumbers[0],Mode=TwoWay}"
+                                      IsEditable="False"/>
+                        </Grid>
+                        <StackPanel Grid.Column="1" Margin="0 0 30 0">
+                            <TextBlock Text="Enter City Name" 
+                                       Foreground="{StaticResource GrayColorBrush}" 
+                                       FontSize="{StaticResource NormalSize}" 
+                                       HorizontalAlignment="Center"
+                                       Margin="0 0 130 0"
+                                       FontFamily="{StaticResource MediumFont}"/>
+                            <TextBox Height="50" 
+                                     Width="250"
+                                     Text="{Binding SelectedBussinessPartner.City.CityName,Mode=TwoWay}"
+                                     Margin="0 10 0 0"
+                                     Style="{StaticResource TextBoxVisibilityPathIconStyle}"
+                                     ControlExtensions:WaterMarkTextExtension.WatermarkText="Enter City Name"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top">
+                            <TextBlock Text="Enter Address" 
+                                       Foreground="{StaticResource GrayColorBrush}"
+                                       FontSize="{StaticResource NormalSize}"
+                                       HorizontalAlignment="Center"
+                                       Margin="0 10 0 0"
+                                       FontFamily="{StaticResource MediumFont}"/>
+                            <TextBox Grid.Column="2" 
+                                     Height="150" 
+                                     Width="330"
+                                     Margin="0 0 20 0"
+                                     Text="{Binding SelectedBussinessPartner.Address,Mode=TwoWay}"
+                                     BorderThickness="1.7"
+                                     ControlExtensions:MiscControlExtensions.CornerRadius="10"
+                                     BorderBrush="{StaticResource BlueColorBrush}"
+                                     TextWrapping="Wrap" 
+                                     AcceptsReturn="True"
+                                     Foreground="{StaticResource GrayColorBrush}"
+                                     FontFamily="{StaticResource MediumFont}"
+                                     FontSize="{StaticResource NormalSize}"
+                                     Padding="8 8 0 0"/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Row="2" Margin="0 0 0 20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
+                            <Button x:Name="CancelRemovePartner"
+                                    Height="45" 
+                                    Width="150"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    Margin="0 0 5 0"
+                                    Background="{StaticResource LightGrayColorBrush}" 
+                                    Style="{StaticResource ContentButton}" 
+                                    Content="Cancel"/>
+                            <Button  x:Name="RemovePartnerProfile"
+                                     Height="45" 
+                                     Width="150"
+                                     HorizontalContentAlignment="Center"
+                                     VerticalContentAlignment="Center"
+                                     Margin="5 0 0 0"
+                                     Background="{StaticResource RedColorBrush}" 
+                                     Style="{StaticResource ContentButton}" 
+                                     Content="Remove"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsRemovePartner,Mode=TwoWay}" Value="True">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
                         </Style.Triggers>

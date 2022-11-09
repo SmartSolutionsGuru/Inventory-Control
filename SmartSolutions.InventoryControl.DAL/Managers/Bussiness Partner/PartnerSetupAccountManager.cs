@@ -73,7 +73,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 {
                     case "Vender":
                          charAccount = await _chartOfAccountManager.GetChartOfAccountByHeadingAsync(AccountHeading.AccountsPayable.ToDescription());
-                        if(charAccount != null && !string.IsNullOrEmpty(charAccount.AccountHeading.ToString()))
+                        if(charAccount != null && !string.IsNullOrEmpty(charAccount.Description))
                         {
                             Dictionary<string, string> account = new Dictionary<string, string>();
                             account["Code"] = $"{charAccount.AccountNumber}-{partnerId}";
@@ -84,7 +84,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                         break;
                     case "Customer":
                         charAccount = await _chartOfAccountManager.GetChartOfAccountByHeadingAsync(AccountHeading.AccountsReceivable.ToDescription());
-                        if (charAccount != null && !string.IsNullOrEmpty(charAccount.AccountHeading.ToString()))
+                        if (charAccount != null && !string.IsNullOrEmpty(charAccount.Description))
                         {
                             Dictionary<string, string> account = new Dictionary<string, string>();
                             account["Code"] = $"{charAccount.AccountNumber}-{partnerId}";
@@ -95,7 +95,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                         break;
                     case "Both":
                         charAccount = await _chartOfAccountManager.GetChartOfAccountByHeadingAsync(AccountHeading.AccountsPayable.ToDescription());
-                        if (charAccount != null && !string.IsNullOrEmpty(charAccount.AccountHeading.ToString()))
+                        if (charAccount != null && !string.IsNullOrEmpty(charAccount.Description))
                         {
                             Dictionary<string, string> account = new Dictionary<string, string>();
                             account["Code"] = $"{charAccount.AccountNumber}-{partnerId}";
@@ -104,7 +104,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                             //accountCode.Add($"{charAccount.AccountNumber}-{partnerId}");
                         }
                         charAccount = await _chartOfAccountManager.GetChartOfAccountByHeadingAsync(AccountHeading.AccountsReceivable.ToDescription());
-                        if (charAccount != null && !string.IsNullOrEmpty(charAccount.AccountHeading.ToString()))
+                        if (charAccount != null && !string.IsNullOrEmpty(charAccount.Description))
                         {
                             Dictionary<string, string> account = new Dictionary<string, string>();
                             account["Code"] = $"{charAccount.AccountNumber}-{partnerId}";
@@ -115,7 +115,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                         break;
                     case "broker":
                         charAccount = await _chartOfAccountManager.GetChartOfAccountByHeadingAsync(AccountHeading.PurchaseCommisions.ToDescription());
-                        if (charAccount != null && !string.IsNullOrEmpty(charAccount.AccountHeading.ToString()))
+                        if (charAccount != null && !string.IsNullOrEmpty(charAccount.Description))
                         {
                             Dictionary<string, string> account = new Dictionary<string, string>();
                             account["Code"] = $"{charAccount.AccountNumber}-{partnerId}";
@@ -124,7 +124,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                             //accountCode.Add($"{charAccount.AccountNumber}-{partnerId}");
                         }
                         charAccount = await _chartOfAccountManager.GetChartOfAccountByHeadingAsync(AccountHeading.SaleCommisions.ToDescription());
-                        if (charAccount != null && !string.IsNullOrEmpty(charAccount.AccountHeading.ToString()))
+                        if (charAccount != null && !string.IsNullOrEmpty(charAccount.Description))
                         {
                             Dictionary<string, string> account = new Dictionary<string, string>();
                             account["Code"] = $"{charAccount.AccountNumber}-{partnerId}";
@@ -136,7 +136,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                     case "Shiper":
                         //TODO: REplace it With Poper Account
                         charAccount = await _chartOfAccountManager.GetChartOfAccountByHeadingAsync(AccountHeading.MotorVehicle.ToDescription());
-                        if (charAccount != null && !string.IsNullOrEmpty(charAccount.AccountHeading.ToString()))
+                        if (charAccount != null && !string.IsNullOrEmpty(charAccount.Description))
                         {
                             Dictionary<string, string> account = new Dictionary<string, string>();
                             account["Code"] = $"{charAccount.AccountNumber}-{partnerId}";

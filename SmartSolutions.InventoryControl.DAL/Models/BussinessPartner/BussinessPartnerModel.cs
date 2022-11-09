@@ -32,7 +32,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.BussinessPartner
         {
             get
             {
-                if (!string.IsNullOrEmpty(BussinessName))
+                if (!string.IsNullOrEmpty(BussinessName) && !BussinessName.Equals(Name,StringComparison.InvariantCultureIgnoreCase))
                 {
                    return  $"{BussinessName} , {Name}".Trim();
                 }

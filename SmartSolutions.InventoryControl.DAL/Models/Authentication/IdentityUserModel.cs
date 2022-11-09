@@ -4,9 +4,12 @@ using System.Text;
 
 namespace SmartSolutions.InventoryControl.DAL.Models.Authentication
 {
+    /// <summary>
+    /// Class For Identity User
+    /// </summary>
     public class IdentityUserModel : BaseModel
     {
-        #region  Constructor
+        #region  [Constructor]
 
         public IdentityUserModel() { }
 
@@ -39,6 +42,9 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Authentication
         #endregion
 
         #region Public Properties
+        /// <summary>
+        /// get or sets Firstv Name Of User 
+        /// </summary>
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string FullName { get; set; }

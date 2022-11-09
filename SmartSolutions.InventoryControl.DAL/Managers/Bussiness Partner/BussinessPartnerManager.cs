@@ -120,7 +120,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                         if (!string.IsNullOrEmpty(mobileNumber))
                             partner.MobileNumbers = new List<string>(mobileNumber.Split(','));
                         //partner.CreatedAt = value?.GetValueFromDictonary("CreatedAt")?.ToString()?.ToNullableDateTime();
-                        //partner.CreatedBy = value?.GetValueFromDictonary("CreatedBy")?.ToString();
+                        partner.CreatedBy = value?.GetValueFromDictonary("CreatedBy")?.ToString();
                         partners.Add(partner);
                     }
                 }
@@ -348,11 +348,11 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 parameters["@v_BussinessName"] = partner?.BussinessName;
                 parameters["@v_PhoneNumber"] = partner?.PhoneNumber;
                 parameters["@v_Address"] = partner?.Address;
-                parameters["@v_City"] = partner?.City;
+                parameters["@v_CityId"] = partner?.City?.Id;
                 parameters["@v_IsActive"] = partner.IsActive = true;
                 parameters["@v_CreatedBy"] = partner.CreatedBy == null ? DBNull.Value : (object)partner.CreatedBy;
-                parameters["@v_UpdatedAt"] = partner.UpdatedAt == null ? DateTime.Now : partner.UpdatedAt;
-                parameters["@v_UpdatedBy"] = partner.UpdatedBy == null ? DBNull.Value : (object)partner.UpdatedBy;
+                parameters["@v_UpdatedAt"] = partner.UpdatedAt = DateTime.Now;
+                parameters["@v_UpdatedBy"] = partner.UpdatedBy == null ? partner.CreatedBy : partner.UpdatedBy;
                 if (partner?.MobileNumbers?.Count > 0)
                 {
                     foreach (var item in partner?.MobileNumbers)
@@ -363,7 +363,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 }
                 parameters["@v_MobileNumber"] = mobilenumbers;
                 query = @"UPDATE BussinessPartner SET Name = @v_Name, BussinessName = @v_BussinessName,PhoneNumber = @v_PhoneNumber
-                        ,City = @v_City,Address = @v_Address,MobileNumber = @MobileNumber,IsActive = @v_IsActive
+                        ,CityID = @v_CityId,Address = @v_Address,MobileNumber = @v_MobileNumber,IsActive = @v_IsActive
                         ,CreatedBy = @v_CreatedBy,UpdatedAt = @v_UpdatedAt
                         ,UpdatedBy = @v_UpdatedBy Where Id = @v_Id";
                 var result = await Repository.NonQueryAsync(query, parameters: parameters);

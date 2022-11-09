@@ -76,7 +76,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             try
             {
                 IsUpdatePartner = false;
-                IsRemoveParnter = false;
+                IsRemovePartner = false;
                 IsAddPartner = true;
             }
             catch (Exception ex)
@@ -84,45 +84,101 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
+        /// <summary>
+        /// Get Partners for Updating 
+        /// </summary>
         public async void UpdatePartner()
         {
-            //null guard
-            if (SelectedBussinessPartner == null)
-            {
-                NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Please Select Partner", Type = Notifications.Wpf.NotificationType.Error });
-            }
+
             try
             {
                 NewBussinessPartner = null;
                 IsUpdatePartner = true;
                 IsAddPartner = false;
-                IsRemoveParnter = false;
-                if (SelectedBussinessPartner == null)
-                {
-                    BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
-                }
+                IsRemovePartner = false;
+                BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
             }
             catch (Exception ex)
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
+        /// <summary>
+        /// Update  existing Partner
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> UpdatePartnerProfile()
+        {
+            if(SelectedBussinessPartner != null)
+            {
+                SelectedBussinessPartner.UpdatedBy = AppSettings.LoggedInUser.DisplayName;
+                SelectedBussinessPartner.UpdatedAt = DateTime.Now;
+                var result = await _bussinessPartnerManager.UpdateBussinessPartnerAsync(SelectedBussinessPartner);
+                if (result)
+                {
+                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Successfully Updated Partner", Type = Notifications.Wpf.NotificationType.Success });
+                    ClearPartnerDetails();
+                    BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
+                    
+                    return result;
+                }
+                else
+                {
+                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Partner not Updated", Type = Notifications.Wpf.NotificationType.Error });
+                    return result;
+                }
+            }
+            else
+            {
+                NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Please Select Partner", Type = Notifications.Wpf.NotificationType.Error });
+                return false;
+            }
+          
+        }
         public async void RemovePartner()
         {
-            //null guard
-            if (SelectedBussinessPartner == null)
-            {
-                NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Please Select Partner", Type = Notifications.Wpf.NotificationType.Error });
-            }
+            IsUpdatePartner = false;
+            IsAddPartner = false;
+            IsRemovePartner = true;
             try
             {
                 NewBussinessPartner = null;
-                await _bussinessPartnerManager.RemoveBussinessPartnerAsync(SelectedBussinessPartner?.Id);
+                BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
+
             }
             catch (Exception ex)
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
+        }
+        /// <summary>
+        /// Remove Partner from Application
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> RemovePartnerProfile()
+        {
+            if (SelectedBussinessPartner != null)
+            {
+                var result = await _bussinessPartnerManager.RemoveBussinessPartnerAsync(SelectedBussinessPartner?.Id);
+                if (result)
+                {
+                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Successfully Removed Partner", Type = Notifications.Wpf.NotificationType.Success });
+                    BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
+                    SelectedBussinessPartner = null;
+                    return result;
+                }
+                else
+                {
+                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Partner not Removed", Type = Notifications.Wpf.NotificationType.Error });
+                    return result;
+                }
+            }
+            else
+            {
+                NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Please Select Partner", Type = Notifications.Wpf.NotificationType.Error });
+                return false;
+            }
+           
         }
         public void AddMobileNo(BussinessPartnerModel model)
         {
@@ -233,7 +289,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                                 partnersetupAccount.PartnerAccountType = SelectedPartnerType;
                                 await _partnerSetupAccountManager.SavePartnerSetAccountAsync(partnersetupAccount);
                             }
-                        }                       
+                        }
                     }
                     else
                         NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Sorry Partner Not Added", Type = Notifications.Wpf.NotificationType.Error });
@@ -306,7 +362,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         {
             //var phoneNumberUtil = PhoneNumbers.PhoneNumberUtil.GetInstance();
             var nationalPhoneNumber = NewBussinessPartner.PhoneNumber;
-           // var phoneNumber = phoneNumberUtil.Parse(nationalPhoneNumber, "US");
+            // var phoneNumber = phoneNumberUtil.Parse(nationalPhoneNumber, "US");
         }
         private async void ClearPartnerDetails()
         {
@@ -327,21 +383,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             CityNotSelected = false;
             WhatsAppNumber = string.Empty;
         }
-        public async void UpdatePartnerProfile()
-        {
-            try
-            {
-                if (SelectedBussinessPartner != null)
-                {
-                    await _bussinessPartnerManager.UpdateBussinessPartnerAsync(SelectedBussinessPartner);
-                    SelectedBussinessPartner = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
-            }
-        }
         #endregion
 
         #region Private Methods
@@ -357,9 +398,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         {
             if (Execute.InDesignMode)
             {
-                IsRemoveParnter = false;
+                IsRemovePartner = true;
                 IsAddPartner = false;
-                IsUpdatePartner = true;
+                IsUpdatePartner = false;
             }
             IsLoading = true;
             base.OnActivate();
@@ -617,14 +658,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             get { return _IsUpdatePartner; }
             set { _IsUpdatePartner = value; NotifyOfPropertyChange(nameof(IsUpdatePartner)); }
         }
-        private bool _IsRemoveParnter;
+        private bool _IsRemovePartner;
         /// <summary>
         /// Removing Partner
         /// </summary>
-        public bool IsRemoveParnter
+        public bool IsRemovePartner
         {
-            get { return _IsRemoveParnter; }
-            set { _IsRemoveParnter = value; NotifyOfPropertyChange(nameof(IsRemoveParnter)); }
+            get { return _IsRemovePartner; }
+            set { _IsRemovePartner = value; NotifyOfPropertyChange(nameof(IsRemovePartner)); }
         }
         private BussinessPartnerModel _NewBussinessPartner;
         /// <summary>
@@ -653,7 +694,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         public BussinessPartnerModel SelectedBussinessPartner
         {
             get { return _SelectedBussinessPartner; }
-            set { _SelectedBussinessPartner = value; NotifyOfPropertyChange(nameof(SelectedBussinessPartner)); UpdatePartner(); }
+            set { _SelectedBussinessPartner = value; NotifyOfPropertyChange(nameof(SelectedBussinessPartner)); } //UpdatePartner();
         }
         private List<CityModel> _Cities;
 
