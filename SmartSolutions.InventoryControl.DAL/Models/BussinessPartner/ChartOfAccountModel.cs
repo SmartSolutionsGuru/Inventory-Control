@@ -53,8 +53,8 @@ namespace SmartSolutions.InventoryControl.DAL.Models.BussinessPartner
         FixedAssets = 7,
         [Description("Office/Shop Equipments")]
         OfficeShopEquipments = 8,
-        [Description("Motor Vehicle")]
-        MotorVehicle = 9,
+        [Description("Motor Vehicale")]
+        MotorVehicale = 9,
         [Description("Liabalities")]
         Liabalities = 10,
         [Description("Current Liablities")]

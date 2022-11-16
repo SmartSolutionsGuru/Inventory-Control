@@ -268,10 +268,10 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
-                                <!--<ColumnDefinition Width="*"/>-->
+                                <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="0.5*"/>
                             </Grid.ColumnDefinitions>
-                            <Border Grid.Row="0" Grid.ColumnSpan="17"  Background="{StaticResource LightBlueColorBrush}" CornerRadius="3" Margin="3,4">
+                            <Border Grid.Row="0" Grid.ColumnSpan="17"   Background="{StaticResource LightBlueColorBrush}" CornerRadius="3" Margin="3,4">
                                 <TextBlock Text=" Last Price Of Selected Product is   " FontSize="{StaticResource NormalSize}" Foreground="{StaticResource PureWhiteColorBrush}" FontFamily="{StaticResource MediumFont}" HorizontalAlignment="Center" VerticalAlignment="Center"> <Run Text="{Binding ProductLastPrice,Mode=OneWay}" Foreground="{StaticResource PureWhiteColorBrush}"  FontWeight="ExtraBold"/></TextBlock>
                                 <Border.Style>
                                     <Style TargetType="Border">
@@ -293,6 +293,7 @@
                             <TextBlock Grid.Row="1" Grid.Column="4" Text="Available Stock" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
                             <TextBlock Grid.Row="1" Grid.Column="5" Text="Total" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
                             <TextBlock Grid.Row="1" Grid.Column="6" Text="Warehouse" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="7" Text="Last Price" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
 
                             <!--SelectionChanged="ListView_SelectionChanged"-->
                             <ScrollViewer Grid.Row="2" Grid.ColumnSpan="9" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
@@ -314,8 +315,8 @@
                                                     <ColumnDefinition Width="8"/>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="8"/>
-                                                    <!--<ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="8"/>-->
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="8"/>
                                                     <ColumnDefinition Width="0.6*"/>
                                                 </Grid.ColumnDefinitions>
 
@@ -413,7 +414,7 @@
                                                 <TextBox Grid.Row="1" 
                                                          Grid.Column="7" 
                                                          Opacity="0.7" 
-                                                         IsReadOnly="False" 
+                                                         IsReadOnly="True" 
                                                          Height="40" 
                                                          Width="130" 
                                                          VerticalAlignment="Top" 
@@ -441,7 +442,10 @@
                                                           Foreground="{StaticResource GrayColorBrush}"
                                                           ItemsSource="{Binding Warehouses,Mode=OneWay}"
                                                           SelectedItem="{Binding SelectedWarehouse,Mode=TwoWay}"/>
-                                                <StackPanel Grid.Row="1" Grid.Column="13" Orientation="Horizontal" VerticalAlignment="Top" Margin="0 5 0 0">
+                                                <Border Grid.Row="1" Grid.Column="13" Width="130" CornerRadius="5" Background="{StaticResource BlueColorBrush}">
+                                                    <TextBlock Text="{Binding ProductLastPrice}" FontSize="{StaticResource NormalSize}" Foreground="{StaticResource PureWhiteColorBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <StackPanel Grid.Row="1" Grid.Column="15" Orientation="Horizontal" VerticalAlignment="Top" Margin="0 5 0 0">
                                                     <Button Grid.Row="1"  cal:Message.Attach="AddProduct($dataContext)" Margin="0 0 10 0" Height="30" Width="30"  Style="{StaticResource ContentButton}" Background="{StaticResource GreenColorBrush}">
                                                         <Path Height="20" Width="20" Fill="{StaticResource PureWhiteColorBrush}"  Stretch="UniformToFill" Data="{StaticResource Shape_Plus1}"></Path>
                                                     </Button>

@@ -10,6 +10,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 using static SmartSolutions.InventoryControl.DAL.Models.Sales.SaleOrderModel;
 
 namespace SmartSolutions.InventoryControl.DAL.Managers.Sale
@@ -77,6 +78,29 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Sale
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return lastRowId;
+        }
+
+        public async Task<int> GetProductLastPriceAsync(int? productId)
+        {
+
+            int lastPrice = 0;
+            try
+            {
+                if (productId == null || productId == 0) return -1;
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_productId"] = productId;
+                string query = @"SELECT TOP 1 Price FROM SaleOrderDetail Where ProductId = v_productId  Order BY CreatedAt DESC ";
+                var values = await Repository.QueryAsync(query, parameters: parameters);
+                if(values != null || values?.Count > 0)
+                {
+                    lastPrice = values?.FirstOrDefault().GetValueFromDictonary("Price")?.ToString()?.ToInt() ?? 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return lastPrice;
         }
 
         public async Task<SaleOrderModel> GetSaleOrderAsync(int? Id)

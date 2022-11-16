@@ -119,7 +119,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                         {
                             Dictionary<string, string> account = new Dictionary<string, string>();
                             account["Code"] = $"{charAccount.AccountNumber}-{partnerId}";
-                            account["Description"] = charAccount.AccountHeading.ToDescription();
+                            account["Description"] = charAccount.Description;
                             accountCode.Add(account);
                             //accountCode.Add($"{charAccount.AccountNumber}-{partnerId}");
                         }
@@ -128,19 +128,19 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                         {
                             Dictionary<string, string> account = new Dictionary<string, string>();
                             account["Code"] = $"{charAccount.AccountNumber}-{partnerId}";
-                            account["Description"] = charAccount.AccountHeading.ToDescription();
+                            account["Description"] = charAccount.Description;
                             accountCode.Add(account);
                             //accountCode.Add($"{charAccount.AccountNumber}-{partnerId}");
                         }
                         break;
                     case "Shiper":
-                        //TODO: REplace it With Poper Account
-                        charAccount = await _chartOfAccountManager.GetChartOfAccountByHeadingAsync(AccountHeading.MotorVehicle.ToDescription());
+                        //TODO: Replace it With Poper Account
+                        charAccount = await _chartOfAccountManager.GetChartOfAccountByHeadingAsync(AccountHeading.MotorVehicale.ToDescription());
                         if (charAccount != null && !string.IsNullOrEmpty(charAccount.Description))
                         {
                             Dictionary<string, string> account = new Dictionary<string, string>();
                             account["Code"] = $"{charAccount.AccountNumber}-{partnerId}";
-                            account["Description"] = charAccount.AccountHeading.ToDescription();
+                            account["Description"] = charAccount.Description;
                             accountCode.Add(account);
                             //accountCode.Add($"{charAccount.AccountNumber}-{partnerId}");
                         }

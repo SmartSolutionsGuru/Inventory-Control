@@ -96,8 +96,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             ProductGrid = new ObservableCollection<StockOutModel>();
             InvoiceTypes = new List<string> { "Sales", "Sales Return" };
             SelectedInvoiceType = InvoiceTypes.Where(x => x.Equals("Sales")).FirstOrDefault();
-            var partnerType = new List<int?>() { 2, 3 };
-            Partners = (await _bussinessPartnerManager.GetBussinessPartnersByTypeAsync(partnerType)).OrderBy(x => x.Name).ToList();
+            PartnerType = new List<int?>() { 2, 3 };
+            Partners = (await _bussinessPartnerManager.GetBussinessPartnersByTypeAsync(PartnerType)).OrderBy(x => x.Name).ToList();
             //Partners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
             //Products = (await _productManager.GetAllProductsAsync()).ToList();
             //Warehouses = (await _warehouseManager.GetAllWarehousesAsync()).ToList();
@@ -394,7 +394,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             try
             {
                 SelectedSaleType = string.Empty;
-                Partners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
+                Partners = (await _bussinessPartnerManager.GetBussinessPartnersByTypeAsync(PartnerType)).OrderBy(x => x.Name).ToList();
                 SelectedPartner = new BussinessPartnerModel();
                 ProductGrid = new ObservableCollection<StockOutModel>();
                 var newProduct = new StockOutModel();
@@ -516,6 +516,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Properties
+        public List<int?> PartnerType { get; set; } 
+
         private bool _IsValueCredit;
         /// <summary>
         /// Property That is Used for changing Color On basis of DR and CR

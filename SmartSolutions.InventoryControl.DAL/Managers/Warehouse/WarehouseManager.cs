@@ -66,7 +66,10 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Warehouse
                 if (Id == 0) return null;
                 else
                 {
-                    string query = @"SELECT WarehouseId FROM StockIn WHERE ProductId = @v_ProductId";
+                    string query = @"SELECT  WarehouseId FROM OpeningStock WHERE ProductId = @v_ProductId
+                                    Union
+                                    SELECT WarehouseId FROM StockIn WHERE ProductId = @v_ProductId";
+                    //string query = @"SELECT WarehouseId FROM StockIn WHERE ProductId = @v_ProductId";
                     var values = await Repository.QueryAsync(query, parameters: parameters);
                     if (values != null && values?.Count > 0)
                     {

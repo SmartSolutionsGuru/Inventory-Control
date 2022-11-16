@@ -92,7 +92,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
 
             try
             {
-                NewBussinessPartner = null;
+                NewBussinessPartner = new BussinessPartnerModel();
                 IsUpdatePartner = true;
                 IsAddPartner = false;
                 IsRemovePartner = false;
@@ -142,7 +142,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             IsRemovePartner = true;
             try
             {
-                NewBussinessPartner = null;
+                NewBussinessPartner = new BussinessPartnerModel();
                 BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
 
             }
@@ -221,25 +221,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             {
                 IsLoading = true;
                 LoadingMessage = "Saving...";
-                if (!string.IsNullOrEmpty(PartnerMobileNumber))
-                {
-                    NewBussinessPartner?.MobileNumbers.Add(PartnerMobileNumber);
-                }
+                //if (!string.IsNullOrEmpty(PartnerMobileNumber))
+                //{
+                //    NewBussinessPartner?.MobileNumbers.Add(PartnerMobileNumber);
+                //}
                 if (string.IsNullOrEmpty(BussinessName))
                 {
                     BussinessNameError = true;
-                    IsLoading = false;
-                    return;
-                }
-                else if (string.IsNullOrEmpty(FullName))
-                {
-                    FullNameError = true;
-                    IsLoading = false;
-                    return;
-                }
-                else if (NewBussinessPartner?.MobileNumbers.Count == 0)
-                {
-                    MobileNoError = true;
                     IsLoading = false;
                     return;
                 }
@@ -249,31 +237,48 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     IsLoading = false;
                     return;
                 }
-                else if (SelectedCity != null && string.IsNullOrEmpty(SelectedCity?.CityName))
-                {
-                    CityNotSelected = true;
-                    IsLoading = false;
-                    return;
-                }
-                else if (NewBussinessPartner != null && string.IsNullOrEmpty(NewBussinessPartner?.Address))
-                {
-                    AddressError = true;
-                    IsLoading = false;
-                    return;
-                }
+                //else if (string.IsNullOrEmpty(FullName))
+                //{
+                //    FullNameError = true;
+                //    IsLoading = false;
+                //    return;
+                //}
+                //else if (NewBussinessPartner?.MobileNumbers.Count == 0)
+                //{
+                //    MobileNoError = true;
+                //    IsLoading = false;
+                //    return;
+                //}
+
+                //else if (SelectedCity != null && string.IsNullOrEmpty(SelectedCity?.Name))
+                //{
+                //    CityNotSelected = true;
+                //    IsLoading = false;
+                //    return;
+                //}
+                //else if (NewBussinessPartner != null && string.IsNullOrEmpty(NewBussinessPartner?.Address))
+                //{
+                //    AddressError = true;
+                //    IsLoading = false;
+                //    return;
+                //}
                 if (NewBussinessPartner != null)
                 {
                     //GetParsedPhoneNumber(); 
-                    NewBussinessPartner.Name = FullName;
+                    NewBussinessPartner.Name =  string.IsNullOrEmpty(FullName) ? BussinessName : FullName;
                     NewBussinessPartner.BussinessName = BussinessName;
                     NewBussinessPartner.PartnerCategory = SelectedPartnerCategory;
                     NewBussinessPartner.PartnerType = SelectedPartnerType;
-                    NewBussinessPartner.City = SelectedCity;
+                    NewBussinessPartner.City = SelectedCity ?? new CityModel {
+                        Id = 274, Name = "Lahore",Country = new CountryModel { },Province = new ProvinceModel { Id = 1}
+                    };
                     NewBussinessPartner.CreatedBy = AppSettings.LoggedInUser.DisplayName;
                     NewBussinessPartner.WhatsAppNumber = WhatsAppNumber;
-                    //NewBussinessPartner.MobileNumbers.Add(PartnerMobileNumber);
+                    NewBussinessPartner.PhoneNumber = string.IsNullOrEmpty(NewBussinessPartner.PhoneNumber) ? WhatsAppNumber : NewBussinessPartner.PhoneNumber;
+                    NewBussinessPartner.MobileNumbers.Add(string.IsNullOrEmpty(PartnerMobileNumber) ? WhatsAppNumber : PartnerMobileNumber);
+                    NewBussinessPartner.Address = string.IsNullOrEmpty(NewBussinessPartner.Address) ? "Shoe Market Lahore" : NewBussinessPartner.Address;                    //NewBussinessPartner.MobileNumbers.Add(PartnerMobileNumber);
                     var resultPartner = await _bussinessPartnerManager.AddBussinesPartnerAsync(NewBussinessPartner);
-                    if (resultPartner)
+                    if (resultPartner) 
                     {
                         NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Partner Added Successfully", Type = Notifications.Wpf.NotificationType.Success }, areaName: "WindowArea");
                         var newAddedPartner = await _bussinessPartnerManager.GetLastAddedPartner();
@@ -349,6 +354,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     {
                         ClearPartnerDetails();
                     }
+                }
+                else
+                {
+                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Please Enter the Details again ", Type = Notifications.Wpf.NotificationType.Error });
                 }
                 IsLoading = false;
             }

@@ -19,6 +19,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         #region Private Members
         private readonly DAL.Managers.Stock.StockOut.IStockOutManager _stockOutManager;
         private readonly DAL.Managers.Warehouse.IWarehouseManager _warehouseManager;
+        private readonly DAL.Managers.Sale.ISaleOrderManager _saleOrderManager;
         #endregion
 
         #region Constructor
@@ -32,6 +33,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
             SelectedWarehouse = new WarehouseModel();
             _stockOutManager = new StockOutManager();
             _warehouseManager = new DAL.Managers.Warehouse.WarehouseManager();
+            _saleOrderManager = new DAL.Managers.Sale.SaleOrderManager();
         }
         #endregion
 
@@ -46,6 +48,14 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
             get { return _Product; }
             set { _Product = value; GetProductAvailableStock(Product?.Id); }
         }
+        private int _productLastPrice;
+
+        public int ProductLastPrice
+        {
+            get { return _productLastPrice; }
+            set { _productLastPrice = value; NotifyOfPropertyChange(nameof(ProductLastPrice)); }
+        }
+
         public int? SaleInvoiceId { get; set; }
         private int? _Quantity;
         public int? Quantity
@@ -129,9 +139,11 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
             try
             {
                 if (productId == null || productId == 0) return;
-                var availableStock = await _stockOutManager.GetStockInHandAsync(productId);
+                var availableStock = await _stockOutManager.GetStockInHandAsync(productId);              
                 StockInHand = availableStock.Value;
+                ProductLastPrice = await _saleOrderManager.GetProductLastPriceAsync(productId);
                 Warehouses = (await _warehouseManager.GetAllWarehouseByProductId(productId ?? 0)).ToList();
+
                 SelectedWarehouse = Warehouses.FirstOrDefault();
                 NotifyOfPropertyChange(nameof(StockInHand));
                 NotifyOfPropertyChange(nameof(Warehouses));

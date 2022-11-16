@@ -325,12 +325,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                     model.ProductColor = ProductSelectedColor;
                     model.ProductSize = ProductSelectedSize;
                     model.CreatedBy = AppSettings.LoggedInUser.DisplayName;
+                    model.CreatedAt = DateTime.Now; 
                     model.Image = ProductImage;
                     model.ImagePath = _cacheImage.SaveImageToDirectory(ProductImage, ImageName);
                     bool result = await _productManager.AddProductAsync(model);
                     if (result)
                     {
-                        if (InitialQuantity > 0)
+                        if (InitialQuantity > -1)
                         {
                             InitialStock = new OpeningStockModel();
                             InitialStock.Product = await _productManager.GetLastAddedProduct();
