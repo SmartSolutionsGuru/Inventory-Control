@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCompleteTextBox", "Auto
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartSolutions.SQLServer", "SmartSolutions.SQLServer\SmartSolutions.SQLServer.csproj", "{8BEB871D-F8C3-4E07-A3F5-A0F3E90DCDE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications.Wpf", "Notifications.Wpf\Notifications.Wpf.csproj", "{5C9A4F46-263D-4C23-B361-F09E14BB109E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications.Wpf", "..\Notifications.Wpf\Notifications.Wpf\Notifications.Wpf.csproj", "{5C9A4F46-263D-4C23-B361-F09E14BB109E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
