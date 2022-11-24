@@ -86,6 +86,30 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
         #endregion
 
         #region GET
+        public async Task<bool> IsPartnerAlreadyExist(string bussinessName, string mobileNumnber)
+        {
+            bool retVal = false;    
+            try
+            {
+                //null guard
+                if(string.IsNullOrEmpty(bussinessName) || string.IsNullOrEmpty(mobileNumnber)) return false; 
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_bussinessName"] = bussinessName;
+                parameters["@v_mobileNumber"] = mobileNumnber;
+                //
+                string query = @"SELECT * FROM BussinessPartner WHERE BussinessName LIKE @v_bussinessName AND WhatsAppNumber LIKE @v_mobileNumber";
+                var values = await Repository.QueryAsync(query, parameters: parameters);
+                if(values != null)
+                    retVal = true;
+                else
+                    retVal = false;
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
+        }
         public async Task<IEnumerable<BussinessPartnerModel>> GetAllBussinessPartnersAsync(string search = null)
         {
             var partners = new List<BussinessPartnerModel>();
@@ -191,7 +215,10 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 partner.PhoneNumber = value?.GetValueFromDictonary("PhoneNumber")?.ToString();
                 partner.Address = value?.GetValueFromDictonary("Address")?.ToString();
                 var mobileNumber = value?.GetValueFromDictonary("MobileNumber")?.ToString();
-                partner.MobileNumbers = new List<string>(mobileNumber.Split(','));
+                if(mobileNumber != null)
+                {
+                    partner.MobileNumbers = new List<string>(mobileNumber.Split(','));
+                }              
             }
             catch (Exception ex)
             {

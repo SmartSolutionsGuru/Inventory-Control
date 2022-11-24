@@ -2,9 +2,11 @@
 using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.DictionaryUtils;
 using SmartSolutions.Util.LogUtils;
+using SmartSolutions.Util.NumericUtils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.DAL.Managers.Purchase
@@ -104,6 +106,36 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Purchase
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return orderDetailIds;
+        }
+
+        public async Task<int> GetProductLastPriceByPartnerAsync(int? partnerId, int? productId)
+        {
+            int retVal = 0;
+            try
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_partnerId"] = partnerId;
+                parameters["@v_productId"] = productId;
+                string query = @"SELECT Top 1 pod.Id,pod.ProductId,pod.Price, pom.PartnerId 
+                                FROM PurchaseOrderDetails as pod
+                                Inner Join PurchaseOrderMaster as pom
+                                ON pod.PurchaseOrderId = pom.Id
+                                AND pod.ProductId LIKE  @v_productId
+                                AND pom.PartnerId LIKE  @v_partnerId ORDER BY pod.CreatedAt DESC";
+                var values = await Repository.QueryAsync(query, parameters: parameters);
+                if (values != null || values?.Count > 0)
+                {
+                    foreach (var value in values)
+                    {
+                        retVal = value?.GetValueFromDictonary("Price")?.ToString()?.ToInt() ?? 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString, LogMessage.Levels.Error);
+            }
+            return retVal;
         }
         #endregion
         #endregion

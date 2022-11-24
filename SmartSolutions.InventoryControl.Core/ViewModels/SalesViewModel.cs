@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Security.RightsManagement;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels
 {
@@ -127,6 +128,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
             else
                 TotalPrice = 0;
+        }
+        public void IsPartnerSelected()
+        {
+            if (SelectedPartner == null)
+            {
+                NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Please Select Vender/Partner First", Type = Notifications.Wpf.NotificationType.Error });
+                return;
+            }
         }
         public async void GetProductAvailableStock(int? productId)
         {
@@ -451,6 +460,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     PreviousBalance = 0;
                     return;
                 }
+                foreach (var product in ProductGrid) 
+                {
+                    product.Partner = SelectedPartner;
+                }
                 var resultPartner = await _partnerLedgerManager.GetPartnerLedgerLastBalanceAsync(SelectedPartner.Id.Value);
                 if (resultPartner != null)
                     PreviousBalance = resultPartner.CurrentBalance.ToString()?.ToDecimal() ?? 0;
@@ -516,7 +529,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Properties
-        public List<int?> PartnerType { get; set; } 
+        public List<int?> PartnerType { get; set; }
 
         private bool _IsValueCredit;
         /// <summary>

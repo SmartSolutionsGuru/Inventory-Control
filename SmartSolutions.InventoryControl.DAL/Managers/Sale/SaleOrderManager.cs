@@ -89,9 +89,39 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Sale
                 if (productId == null || productId == 0) return -1;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_productId"] = productId;
-                string query = @"SELECT TOP 1 Price FROM SaleOrderDetail Where ProductId = v_productId  Order BY CreatedAt DESC ";
+                string query = @"SELECT TOP 1 Price FROM SaleOrderDetail Where ProductId = @v_productId  Order BY CreatedAt DESC";
                 var values = await Repository.QueryAsync(query, parameters: parameters);
                 if(values != null || values?.Count > 0)
+                {
+                    lastPrice = values?.FirstOrDefault().GetValueFromDictonary("Price")?.ToString()?.ToInt() ?? 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return lastPrice;
+        }
+
+        public async Task<int> GetProductLastPriceByPartnerAsync(int? partnerId, int? productId)
+        {
+            int lastPrice = 0;
+            //null guard
+            if (partnerId == null || productId == null) return 0;
+            try
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_partnerId"] = partnerId;
+                parameters["@v_productId"] = productId;
+                string query = @"SELECT Top 1 sod.Id,sod.ProductId,sod.SaleOrderId,sod.Price,som.PartnerId 
+                                    FROM SaleOrderDetail as sod
+                                    Inner Join SaleOrderMaster as som 
+                                    ON sod.SaleOrderId = som.Id 
+                                    AND som.PartnerId LIKE  @v_partnerId
+                                    AND sod.ProductId LIKE @v_productId
+                                    ORDER BY sod.CreatedAt DESC";
+                var values = await Repository.QueryAsync(query,parameters:parameters);
+                if(values != null && values?.Count > 0) 
                 {
                     lastPrice = values?.FirstOrDefault().GetValueFromDictonary("Price")?.ToString()?.ToInt() ?? 0;
                 }

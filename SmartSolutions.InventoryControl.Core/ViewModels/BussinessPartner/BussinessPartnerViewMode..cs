@@ -109,7 +109,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
         /// <returns></returns>
         public async Task<bool> UpdatePartnerProfile()
         {
-            if(SelectedBussinessPartner != null)
+            if (SelectedBussinessPartner != null)
             {
                 SelectedBussinessPartner.UpdatedBy = AppSettings.LoggedInUser.DisplayName;
                 SelectedBussinessPartner.UpdatedAt = DateTime.Now;
@@ -119,7 +119,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Successfully Updated Partner", Type = Notifications.Wpf.NotificationType.Success });
                     ClearPartnerDetails();
                     BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).ToList();
-                    
+
                     return result;
                 }
                 else
@@ -133,7 +133,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Please Select Partner", Type = Notifications.Wpf.NotificationType.Error });
                 return false;
             }
-          
+
         }
         public async void RemovePartner()
         {
@@ -178,7 +178,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Please Select Partner", Type = Notifications.Wpf.NotificationType.Error });
                 return false;
             }
-           
+
         }
         public void AddMobileNo(BussinessPartnerModel model)
         {
@@ -221,6 +221,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             {
                 IsLoading = true;
                 LoadingMessage = "Saving...";
+               
+               
+
                 //if (!string.IsNullOrEmpty(PartnerMobileNumber))
                 //{
                 //    NewBussinessPartner?.MobileNumbers.Add(PartnerMobileNumber);
@@ -234,6 +237,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 else if (string.IsNullOrEmpty(WhatsAppNumber))
                 {
                     WhatsAppNumberError = true;
+                    IsLoading = false;
+                    return;
+                }
+                var result = await _bussinessPartnerManager.IsPartnerAlreadyExist(BussinessName, WhatsAppNumber);
+                if (result)
+                {
+                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Partner With  this Info Already Exist", Type = Notifications.Wpf.NotificationType.Error }, areaName: "WindowArea");
                     IsLoading = false;
                     return;
                 }
@@ -265,12 +275,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 if (NewBussinessPartner != null)
                 {
                     //GetParsedPhoneNumber(); 
-                    NewBussinessPartner.Name =  string.IsNullOrEmpty(FullName) ? BussinessName : FullName;
+                    NewBussinessPartner.Name = string.IsNullOrEmpty(FullName) ? BussinessName : FullName;
                     NewBussinessPartner.BussinessName = BussinessName;
                     NewBussinessPartner.PartnerCategory = SelectedPartnerCategory;
                     NewBussinessPartner.PartnerType = SelectedPartnerType;
-                    NewBussinessPartner.City = SelectedCity ?? new CityModel {
-                        Id = 274, Name = "Lahore",Country = new CountryModel { },Province = new ProvinceModel { Id = 1}
+                    NewBussinessPartner.City = SelectedCity ?? new CityModel
+                    {
+                        Id = 274,
+                        Name = "Lahore",
+                        Country = new CountryModel { },
+                        Province = new ProvinceModel { Id = 1 }
                     };
                     NewBussinessPartner.CreatedBy = AppSettings.LoggedInUser.DisplayName;
                     NewBussinessPartner.WhatsAppNumber = WhatsAppNumber;
@@ -278,7 +292,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     NewBussinessPartner.MobileNumbers.Add(string.IsNullOrEmpty(PartnerMobileNumber) ? WhatsAppNumber : PartnerMobileNumber);
                     NewBussinessPartner.Address = string.IsNullOrEmpty(NewBussinessPartner.Address) ? "Shoe Market Lahore" : NewBussinessPartner.Address;                    //NewBussinessPartner.MobileNumbers.Add(PartnerMobileNumber);
                     var resultPartner = await _bussinessPartnerManager.AddBussinesPartnerAsync(NewBussinessPartner);
-                    if (resultPartner) 
+                    if (resultPartner)
                     {
                         NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Partner Added Successfully", Type = Notifications.Wpf.NotificationType.Success }, areaName: "WindowArea");
                         var newAddedPartner = await _bussinessPartnerManager.GetLastAddedPartner();
@@ -365,6 +379,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             {
                 IsLoading = false;
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
         private void GetParsedPhoneNumber()

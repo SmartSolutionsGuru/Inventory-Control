@@ -11,5 +11,12 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Purchase
         Task<bool> AddPurchaseOrderDetailAsync(PurchaseOrderDetailModel orderDetail);
         Task<bool> AddPurchaseOrderBulkDetailAsync(List<PurchaseOrderDetailModel> orderDetails);
         Task<List<string>> GetOrderDetailIdByOrderIdAsync(int? orderId);
+        /// <summary>
+        /// Get or 
+        /// </summary>
+        /// <param name="partnerId"></param>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        Task<int>GetProductLastPriceByPartnerAsync(int? partnerId,int? productId);
     }
 }

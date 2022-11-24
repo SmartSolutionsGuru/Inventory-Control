@@ -19,6 +19,34 @@
         public ProductSizeModel ProductSize { get; set; }
         public byte[] Image { get; set; }
         public string ImagePath { get; set; }
+        private string _NameWithColor;
+
+        public string NameWithColor
+        {
+            get 
+            {
+                if(!string.IsNullOrEmpty(ProductColor.Color))
+                {
+                    return $"{Name} ({ProductColor.Color})";
+                }else
+                {
+                    return $"{Name}";
+                }
+            }
+            set 
+            {
+                if(ProductColor  != null) 
+                {
+                    _NameWithColor = $"{value} ( {ProductColor.Color} )";
+                }
+                else
+                {
+                    _NameWithColor = value;
+                }              
+                NotifyOfPropertyChange(nameof(NameWithColor));
+            }
+        }
+
         #endregion
     }
 }

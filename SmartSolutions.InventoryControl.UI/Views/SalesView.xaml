@@ -20,6 +20,7 @@
              cal:Bind.AtDesignTime="True"
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1366">
+    
     <UserControl.Resources>
         <DataTemplate x:Key="ProductTemplate" DataType="{x:Type productModels:ProductModel}">
             <Grid>
@@ -64,14 +65,7 @@
         </DataTemplate>
         <DataTemplate x:Key="ProductDisplayTemplate" DataType="{x:Type productModels:ProductColorModel}">
             <Grid>
-                <TextBlock Text="{Binding Name,Mode=OneWay}"
-                           FontSize="{StaticResource MediumSize}"
-                           FontFamily="{StaticResource MediumFont}"
-                           Foreground="{StaticResource GrayColorBrush}"
-                           Margin="0"
-                           ToolTip="Name"
-                           TextTrimming="CharacterEllipsis"
-                           Padding="0"/>
+                <TextBlock Text="{Binding Name,Mode=OneWay}" FontSize="{StaticResource MediumSize}" Foreground="{StaticResource GrayColorBrush}" Margin="5 0 0 0" ToolTip="Name" TextTrimming="CharacterEllipsis" Padding="0"><Run Text="{Binding ProductColor.Color}"></Run></TextBlock>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="NameTemplate" DataType="{x:Type models:BussinessPartnerModel}">
@@ -330,8 +324,9 @@
                                                                                   Grid.Column="1" 
                                                                                   Margin="0 0" 
                                                                                   BorderBrush="{StaticResource BlueColorBrush}" 
+                                                                                  LostFocus="AutoCompleteTextBox_LostFocus"
                                                                                   BorderThickness="1.7" 
-                                                                                  DisplayMember="Name" 
+                                                                                  DisplayMember="NameWithColor" 
                                                                                   Opacity="0.7" 
                                                                                   VerticalAlignment="Top"  
                                                                                   HorizontalAlignment="Left" 
@@ -417,13 +412,26 @@
                                                          IsReadOnly="True" 
                                                          Height="40" 
                                                          Width="130" 
-                                                         VerticalAlignment="Top" 
+                                                         VerticalAlignment="Center" 
+                                                         VerticalContentAlignment="Center"
+                                                         HorizontalContentAlignment="Left"
+                                                         Padding="8 0 0 0"                      
                                                          Text="{Binding StockInHand,Mode=TwoWay}" 
-                                                         Style="{StaticResource TextBoxVisibilityPathIconStyle}" 
                                                          BorderBrush="{StaticResource BlueColorBrush}" 
-                                                         BorderThickness="1.7" 
-                                                         ControlExtensions:WaterMarkTextExtension.WatermarkText="Stock" />
-                                                <TextBox Grid.Row="1" Grid.Column="9" Opacity="0.7" IsReadOnly="True" Height="40" Width="130" VerticalAlignment="Top" Text="{Binding Total,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Total" />
+                                                         BorderThickness="1.7">
+                                                    <TextBox.Style>
+                                                        <Style TargetType="{x:Type TextBox}" >
+                                                            <Setter Property="FontSize" Value="{StaticResource NormalSize}"/>
+                                                            <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding StockInHand,Converter={StaticResource NegitiveToBoolConverter}}" Value="False">
+                                                                    <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBox.Style>
+                                                </TextBox>
+                                                <TextBox Grid.Row="1" Grid.Column="9" Opacity="0.7" IsReadOnly="True" Height="40" Width="130" VerticalAlignment="Top" Text="{Binding Total,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" />
                                                 <ComboBox Height="40"
                                                           Grid.Row="1"
                                                           Grid.Column="11"
@@ -443,11 +451,11 @@
                                                           ItemsSource="{Binding Warehouses,Mode=OneWay}"
                                                           SelectedItem="{Binding SelectedWarehouse,Mode=TwoWay}"/>
                                                 <Border Grid.Row="1" Grid.Column="13" Width="130" CornerRadius="5" Background="{StaticResource BlueColorBrush}">
-                                                    <TextBlock Text="{Binding ProductLastPrice}" FontSize="{StaticResource NormalSize}" Foreground="{StaticResource PureWhiteColorBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding ProductLastPrice}" FontSize="{StaticResource SubHeadingSize}" Foreground="{StaticResource PureWhiteColorBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                 </Border>
                                                 <StackPanel Grid.Row="1" Grid.Column="15" Orientation="Horizontal" VerticalAlignment="Top" Margin="0 5 0 0">
-                                                    <Button Grid.Row="1"  cal:Message.Attach="AddProduct($dataContext)" Margin="0 0 10 0" Height="30" Width="30"  Style="{StaticResource ContentButton}" Background="{StaticResource GreenColorBrush}">
-                                                        <Path Height="20" Width="20" Fill="{StaticResource PureWhiteColorBrush}"  Stretch="UniformToFill" Data="{StaticResource Shape_Plus1}"></Path>
+                                                    <Button Grid.Row="1" IsDefault="True" cal:Message.Attach="AddProduct($dataContext)" Margin="0 0 10 0" Height="30" Width="30"  Style="{StaticResource ContentButton}" Background="{StaticResource GreenColorBrush}">
+                                                        <Path Height="20" Width="20" Fill="{StaticResource PureWhiteColorBrush}"  Stretch="UniformToFill" Data="{StaticResource Shape_Plus1}"/>
                                                     </Button>
                                                     <Button  Grid.Row="1" cal:Message.Attach="RemoveProduct($dataContext)" Height="30" Width="30" Style="{StaticResource ContentButton}" Background="{StaticResource RedColorBrush}">
                                                         <Path Height="4" Width="17" Fill="{StaticResource PureWhiteColorBrush}" Stretch="UniformToFill" Data="{StaticResource Shape_Minus}"></Path>

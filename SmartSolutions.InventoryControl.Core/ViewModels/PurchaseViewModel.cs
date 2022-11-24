@@ -88,7 +88,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 base.OnActivate();
                 PurchaseTypes = new List<string> { "Purchase", "Purchase Return" };
                 SelectedPurchaseType = PurchaseTypes.Where(x => x.Equals("Purchase")).FirstOrDefault();
-                Products = (await _productManager.GetAllProductsAsync()).ToList();
+                Products = (await _productManager.GetAllProductsWithColorAndSize(string.Empty)).ToList();
                 //Venders = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
                 var partnerType = new List<int?> { 1, 3 };
                 Venders = (await _bussinessPartnerManager.GetBussinessPartnersByTypeAsync(partnerType)).OrderBy(x => x.Name).ToList();
@@ -397,6 +397,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             try
             {
                 if (SelectedPartner == null) return;
+                foreach (var product in ProductGrid) 
+                {
+                    product.Partner = SelectedPartner;
+                }
                 var selectedPartnerLedger = await _partnerLedgerManager.GetPartnerLedgerLastBalanceAsync(SelectedPartner.Id.Value);
 
                 if (selectedPartnerLedger != null)
@@ -442,6 +446,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     InvoiceTotal += product.Total ?? 0;
                 }
                 GrandTotal = InvoiceTotal + PreviousBalance;
+            }
+        }
+        public void VerifySelectedPartner()
+        {
+            if (SelectedPartner == null)
+            {
+                NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Please Select Vender/Partner First", Type = Notifications.Wpf.NotificationType.Error });
+                return;
             }
         }
         public void CalculateDiscountPrice(decimal discountAmount)
@@ -534,6 +546,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private void OnSelectedProduct(ProductModel selectedProduct)
         {
             if (selectedProduct == null) return;
+
             try
             {
                 if (SelectedPurchaseType.Equals("Purchase Return"))

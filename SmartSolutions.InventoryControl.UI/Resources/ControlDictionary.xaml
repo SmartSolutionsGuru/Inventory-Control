@@ -16,6 +16,7 @@
     <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <converter:StringToBrushConverter x:Key="StringToBrushConverter" />
     <converter:StringToDecimalConverter x:Key="StringToDecimalConverter"/>
+    <converter:NegitiveToBoolConverter x:Key="NegitiveToBoolConverter"/>
     <!-- design for scroll Viewer-->
     <Style x:Key="ScrollBarThumb" TargetType="{x:Type Thumb}">
         <Setter Property="OverridesDefaultStyle" Value="true"/>

@@ -337,9 +337,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Product
                             InitialStock.Product = await _productManager.GetLastAddedProduct();
                             InitialStock.Warehouse = SelectedWarehouse;
                             InitialStock.Quantity = InitialQuantity;
-
-
-
                             InitialStock.Price = EstimatedPrice;
                             InitialStock.Warehouse = SelectedWarehouse;
                             InitialStock.Total = InitialQuantity * EstimatedPrice;

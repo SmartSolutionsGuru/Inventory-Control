@@ -123,8 +123,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.BackUp
         public async Task<bool> CreateDifferentialBackupAsync(Server myServer, Database myDatabase, string folderPath)
         {
             bool retVal = false;
-            await Task.Run(() =>
-            {
+            //await Task.Run(() =>
+            //{
                 try
                 {
                     Backup bkpDBDifferential = new Backup();
@@ -168,7 +168,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.BackUp
                     if (myServer.ConnectionContext.IsOpen)
                         myServer.ConnectionContext.Disconnect();
                 }
-            });
+            //});
             return retVal;
         }
 

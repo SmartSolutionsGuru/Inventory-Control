@@ -45,6 +45,10 @@ namespace SmartSolutions.InventoryControl.DAL.Models
         /// Is this object row is deleted or not
         /// </summary>
         public bool? IsDeleted { get; set; }
+        /// <summary>
+        /// gets or set the Busy Status 
+        /// </summary>
+        public bool IsBusy { get; set; }
         #endregion
 
         #region Events

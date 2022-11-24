@@ -203,9 +203,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     {
                         Server myServer = new Server();
                         Database myDatabase = myServer.Databases[ConnectionInfo.Instance.Database];
-                        var result = await _databaseBackupManager.CreateDifferentialBackupAsync(myServer, myDatabase, resultSetting.Description);
-                        if(result)
+                        //var result = await _databaseBackupManager.CreateDifferentialBackupAsync(myServer, myDatabase, resultSetting.Description);
+                        var result = await _databaseBackupManager.CreateFullBackupAsync(myServer, myDatabase, resultSetting.Description);
+                        if (result)
                             NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "BackUp Successfully", Type = Notifications.Wpf.NotificationType.Success });
+                        else
+                            NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "BackUp Not Taken Contact Admin", Type = Notifications.Wpf.NotificationType.Error });
+
                     }
                 }
             }

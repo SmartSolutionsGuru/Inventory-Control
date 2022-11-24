@@ -136,14 +136,20 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         /// <param name="productId"></param>
         public async void GetProductAvailableStock(int? productId)
         {
+            
             try
             {
+                if (IsBusy)
+                    return;
+                IsBusy = true;
                 if (productId == null || productId == 0) return;
                 var availableStock = await _stockOutManager.GetStockInHandAsync(productId);              
                 StockInHand = availableStock.Value;
-                ProductLastPrice = await _saleOrderManager.GetProductLastPriceAsync(productId);
+                if(Partner != null)
+                {
+                    ProductLastPrice = await _saleOrderManager.GetProductLastPriceByPartnerAsync(Partner?.Id, productId);
+                }               
                 Warehouses = (await _warehouseManager.GetAllWarehouseByProductId(productId ?? 0)).ToList();
-
                 SelectedWarehouse = Warehouses.FirstOrDefault();
                 NotifyOfPropertyChange(nameof(StockInHand));
                 NotifyOfPropertyChange(nameof(Warehouses));
@@ -152,6 +158,10 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
             catch (Exception ex)
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
         #endregion
