@@ -84,7 +84,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             {
                 IsLoading = true;
                 LoadingMessage = "Loading...";
-
                 base.OnActivate();
                 PurchaseTypes = new List<string> { "Purchase", "Purchase Return" };
                 SelectedPurchaseType = PurchaseTypes.Where(x => x.Equals("Purchase")).FirstOrDefault();
@@ -123,7 +122,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     ProductSuggetion = new ProductSuggestionProvider(Products);
                 else
                 {
-                   await IoC.Get<IDialogManager>().ShowMessageBoxAsync($"There are No Products {Environment.NewLine}Please add Products To Proceed");
+                    await IoC.Get<IDialogManager>().ShowMessageBoxAsync($"There are No Products {Environment.NewLine}Please add Products To Proceed");
                 }
 
                 ProductGrid.Add(newProduct);
@@ -135,7 +134,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        public async void RemoveProduct(StockInModel product)
+        public void RemoveProduct(StockInModel product)
         {
             try
             {
@@ -144,8 +143,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     ProductGrid.Remove(product);
                     product = new StockInModel();
                     ProductGrid.Add(product);
-                    ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
-                    ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
+                    //ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
+                    //ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
                 }
                 else
                 {
@@ -307,34 +306,34 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                             var payment = new PaymentModel();
                                                             payment.Partner = SelectedPartner;
                                                             payment.PaymentMethod = PurchaseInvoice?.SelectedPaymentType;
-                                                            payment.PaymentType = DAL.Models.PaymentType.DR;
+                                                            payment.PaymentType = DAL.Models.PaymentType.Receivable;
                                                             payment.PaymentImage = PaymentImage;
                                                             payment.PaymentAmount = Payment ?? 0;
                                                             payment.IsPaymentReceived = false;
-                                                            if (payment.PaymentType == DAL.Models.PaymentType.DR)
-                                                                payment.DR = Payment.Value;
+                                                            if (payment.PaymentType == DAL.Models.PaymentType.Receivable)
+                                                                payment.Receivable = Payment.Value;
                                                             else
-                                                                payment.CR = Payment.Value;
+                                                                payment.Payable = Payment.Value;
                                                             payment.Description = $"Payment is Made To {SelectedPartner?.Name} against {productList?.FirstOrDefault()?.PurchaseInvoiceId} at {DateTime.Now}";
                                                             var resultPayment = await _paymentManager.AddPaymentAsync(payment);
                                                         }
                                                         // here we Update the Partner Ledger Account
                                                         BussinessPartnerLedgerModel partnerLedger = new BussinessPartnerLedgerModel();
                                                         partnerLedger.Partner = SelectedPartner;
-                                                        var selectedPartnerBalance = await _partnerLedgerManager.GetPartnerLedgerLastBalanceAsync(SelectedPartner?.Id ?? 0);
-                                                        partnerLedger.CR = InvoiceTotal.Value;
+                                                        var selectedPartnerBalance = await _partnerLedgerManager.GetPartnerLedgerCurrentBalanceAsync(SelectedPartner?.Id ?? 0);
+                                                        partnerLedger.Payable = InvoiceTotal.Value;
                                                         partnerLedger.InvoiceId = productList?.FirstOrDefault()?.PurchaseInvoiceId;
                                                         if (Payment != null || Payment > 0)
                                                         {
                                                             partnerLedger.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(SelectedPartner?.Id);
                                                             partnerLedger.CurrentBalance = selectedPartnerBalance.CurrentBalance + InvoiceTotal.Value - partnerLedger.Payment.PaymentAmount;
-                                                            partnerLedger.DR = partnerLedger.Payment.PaymentAmount;
+                                                            partnerLedger.Receivable = partnerLedger.Payment.PaymentAmount;
                                                         }
                                                         else
                                                         {
                                                             partnerLedger.CurrentBalance = selectedPartnerBalance.CurrentBalance + InvoiceTotal.Value;
                                                         }
-                                                        partnerLedger.CurrentBalanceType = partnerLedger?.CurrentBalance > 0 ? DAL.Models.PaymentType.CR : DAL.Models.PaymentType.DR;
+                                                        partnerLedger.CurrentBalanceType = partnerLedger?.CurrentBalance > 0 ? DAL.Models.PaymentType.Payable : DAL.Models.PaymentType.Receivable;
                                                         partnerLedger.Description = $"{SelectedPartner.Name} Sells Stock Amount Of {InvoiceTotal.Value} Invoice Of{PurchaseInvoice.InvoiceId} At {PurchaseInvoice.CreatedAt}";
                                                         var result = await _partnerLedgerManager.UpdatePartnerCurrentBalanceAsync(partnerLedger);
                                                         if (result)
@@ -397,28 +396,31 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             try
             {
                 if (SelectedPartner == null) return;
-                foreach (var product in ProductGrid) 
+                foreach (var product in ProductGrid)
                 {
                     product.Partner = SelectedPartner;
                 }
-                var selectedPartnerLedger = await _partnerLedgerManager.GetPartnerLedgerLastBalanceAsync(SelectedPartner.Id.Value);
+                var selectedPartnerLedger = await _partnerLedgerManager.GetPartnerLedgerCurrentBalanceAsync(SelectedPartner.Id.Value);
 
                 if (selectedPartnerLedger != null)
                 {
                     PreviousBalance = selectedPartnerLedger.CurrentBalance;
+                    //Becouse it is vender so it will be Payable
                     if (PreviousBalance < 0)
                     {
-                        IsValueCredit = true;
+                        IsValueReceivable = false;
                         PreviousBalance = Math.Abs(PreviousBalance);
-                        BalanceType = DAL.Models.PaymentType.DR;
+                        BalanceType = DAL.Models.PaymentType.Payable;
+
                     }
                     else
                     {
-                        IsValueCredit = false;
-                        BalanceType = DAL.Models.PaymentType.CR;
+                        IsValueReceivable = true;
+                        BalanceType = DAL.Models.PaymentType.Receivable;
                     }
+                    selectedPartnerLedger.CurrentBalanceType = BalanceType;
                     //BalanceType = selectedPartnerLedger.CurrentBalanceType;
-                    BalanceType = selectedPartnerLedger.CurrentBalanceType;
+                    //BalanceType = selectedPartnerLedger.CurrentBalanceType;
                     GrandTotal = PreviousBalance + InvoiceTotal;
                 }
                 else
@@ -445,7 +447,23 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 {
                     InvoiceTotal += product.Total ?? 0;
                 }
-                GrandTotal = InvoiceTotal + PreviousBalance;
+                if (BalanceType == DAL.Models.PaymentType.Receivable)
+                {
+                    if (PreviousBalance == 0)
+                    {
+                        GrandTotal = InvoiceTotal;
+                    }
+                    else
+                    {
+                        GrandTotal = PreviousBalance - InvoiceTotal;
+                    }
+                   
+                }
+                else
+                {
+                    GrandTotal = PreviousBalance + InvoiceTotal;
+                }
+
             }
         }
         public void VerifySelectedPartner()
@@ -591,10 +609,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         /// <summary>
         /// Property That is Used for changing Color On basis of DR and CR
         /// </summary>
-        public bool IsValueCredit
+        public bool IsValueReceivable
         {
             get { return _IsValueCredit; }
-            set { _IsValueCredit = value; NotifyOfPropertyChange(nameof(IsValueCredit)); }
+            set { _IsValueCredit = value; NotifyOfPropertyChange(nameof(IsValueReceivable)); }
         }
 
         private ProductSuggestionProvider _ProductSuggetion;

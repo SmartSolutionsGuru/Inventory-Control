@@ -7,7 +7,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
 {
     public interface IPartnerLedgerManager
     {
-        Task<BussinessPartnerLedgerModel> GetPartnerLedgerLastBalanceAsync(int partnerId);
+        Task<BussinessPartnerLedgerModel> GetPartnerLedgerCurrentBalanceAsync(int partnerId);
         Task<bool> AddPartnerBalanceAsync(BussinessPartnerLedgerModel partnerLedger);
         Task<bool> UpdatePartnerCurrentBalanceAsync(BussinessPartnerLedgerModel partnerLedger);
         Task<IEnumerable<BussinessPartnerLedgerModel>> GetPartnerBalanceSheetAsync(int? PartnerId);

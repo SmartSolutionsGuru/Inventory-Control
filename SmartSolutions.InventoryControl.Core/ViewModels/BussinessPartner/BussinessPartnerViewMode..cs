@@ -320,17 +320,17 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                         if (string.IsNullOrEmpty(SelectedAmountType))
                         {
                             SelectedAmountType = "DR (Receivable)";
-                            payment.PaymentType = DAL.Models.PaymentType.DR;
+                            payment.PaymentType = DAL.Models.PaymentType.Receivable;
                         }
                         else
                         {
-                            payment.PaymentType = SelectedAmountType.Equals("DR (Receivable)") == true ? DAL.Models.PaymentType.DR : DAL.Models.PaymentType.CR;
+                            payment.PaymentType = SelectedAmountType.Equals("DR (Receivable)") == true ? DAL.Models.PaymentType.Receivable : DAL.Models.PaymentType.Payable;
                         }
 
-                        if (payment.PaymentType == DAL.Models.PaymentType.DR)
-                            payment.DR = InitialAmount;
+                        if (payment.PaymentType == DAL.Models.PaymentType.Receivable)
+                            payment.Receivable = InitialAmount;
                         else
-                            payment.CR = InitialAmount;
+                            payment.Payable = InitialAmount;
                         payment.PaymentAmount = InitialAmount;
                         payment.IsPaymentReceived = SelectedAmountType.Equals("DR (Receivable)") ? true : false;
                         payment.CreatedBy = AppSettings.LoggedInUser.DisplayName;
@@ -344,8 +344,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                             partnerLedger.Partner = payment.Partner ?? await _bussinessPartnerManager.GetLastAddedPartner();
                             partnerLedger.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(payment?.Partner.Id);
                             partnerLedger.CurrentBalance = payment.PaymentAmount;
-                            partnerLedger.CR = payment.CR;
-                            partnerLedger.DR = payment.DR;
+                            partnerLedger.Payable = payment.Payable;
+                            partnerLedger.Receivable = payment.Receivable;
                             partnerLedger.CurrentBalanceType = payment.PaymentType;
                             partnerLedger.Description = "Initial Deposit / Balance";
                             partnerLedger.CreatedBy = AppSettings.LoggedInUser.DisplayName;

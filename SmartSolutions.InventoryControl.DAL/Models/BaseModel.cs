@@ -65,8 +65,13 @@ namespace SmartSolutions.InventoryControl.DAL.Models
     }
     public enum PaymentType
     {
-        None = 0,
-        DR = 1,
-        CR = 2
+        //None = 0,
+        //DR = 1,
+        //CR = 2
+        None =0,
+        //Cash Flow In
+        Receivable = 1,
+        //Cash Flow Out
+        Payable = 2
     }
 }

@@ -74,11 +74,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 PaymentImage = PaymentImage;
                 Payment.Partner = SelectedPartner;
 
-                Payment.PaymentType = IsReceiveAmount == true ? DAL.Models.PaymentType.DR : DAL.Models.PaymentType.CR;
-                if (Payment.PaymentType == DAL.Models.PaymentType.DR)
-                    Payment.DR = Amount;
+                //If we recive the Payment then it is CR or Payable vice versa 
+                Payment.PaymentType = IsReceiveAmount == true ? DAL.Models.PaymentType.Payable : DAL.Models.PaymentType.Receivable;
+                if (Payment.PaymentType == DAL.Models.PaymentType.Receivable)
+                    Payment.Receivable = Amount;
                 else
-                    Payment.CR = Amount;
+                    Payment.Payable = Amount;
                 //If Bank is Selected the Enter Amount into Bank
                 if (SelectedPaymentType != null && SelectedPaymentType.Id == 6)
                 {
@@ -86,13 +87,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                         await IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Enter Amount Of Payment",options: Dialogs.MessageBoxOptions.Ok);
                     if (BankAccount != null)
                     {
-                        BankAccount.DR = Payment.DR;
-                        BankAccount.CR = Payment.CR;
+                        BankAccount.Receivable = Payment.Receivable;
+                        BankAccount.Payable = Payment.Payable;
                         BankAccount.Description = $"{SelectedPartner?.Name} Payment is {Payment.PaymentType} At {DateTime.Now} Throught {BankAccount?.Branch?.Name} in {BankAccount.AccountNumber}";
                         await _bankAccountManager.AddBankTransactionAsync(BankAccount); 
                     }
                 }
-                Payment.Description = Description;
+                Payment.Description = string.IsNullOrEmpty(Description) ? $"Payment of {Amount} is made through {SelectedPaymentType.PaymentType} At {DateTime.Now}" : Description;
                 var paymentResult = await _paymentManager.AddPaymentAsync(payment: Payment);
                 if (paymentResult)
                 {
@@ -102,8 +103,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     partnerLedger.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(SelectedPartner?.Id ?? 0);
                     var partnerCurrentStatus = new BussinessPartnerLedgerModel();
                     partnerCurrentStatus = CalculateCurrentBalanceAndBalnceType(partnerLedger);
-                    partnerLedger.DR = Payment.DR;
-                    partnerLedger.CR = Payment.CR;
+                    partnerLedger.Receivable = Payment.Receivable;
+                    partnerLedger.Payable = Payment.Payable;
                     partnerLedger.Description = $"{SelectedPartner.BussinessName} Made Payment {Payment.PaymentType} Amount Of {Amount} through {Payment.PaymentMethod.PaymentType}";
                     partnerLedger.CurrentBalance = partnerCurrentStatus.CurrentBalance;//partnerLedger?.Payment?.PaymentType == DAL.Models.PaymentType.DR ? partnerLedger.CurrentBalance - partnerLedger.Payment.PaymentAmount : partnerLedger.CurrentBalance + partnerLedger.Payment.PaymentAmount;
                     partnerLedger.CurrentBalanceType = partnerCurrentStatus.CurrentBalanceType;//partnerLedger.Payment.PaymentType;
@@ -137,32 +138,32 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 if (partnerLedger.CurrentBalance == 0 && IsReceiveAmount)
                 {
                     retVal.CurrentBalance = Amount;
-                    retVal.CurrentBalanceType = DAL.Models.PaymentType.CR;
+                    retVal.CurrentBalanceType = DAL.Models.PaymentType.Payable;
 
                 }
                 //It Means We are Paying Money and it is our Assets
                 else if (partnerLedger.CurrentBalance == 0 && IsPayAmount)
                 {
                     retVal.CurrentBalance = Amount;
-                    retVal.CurrentBalanceType = DAL.Models.PaymentType.DR;
+                    retVal.CurrentBalanceType = DAL.Models.PaymentType.Receivable;
                 }
                 // We Assume that Partner 
                 if (partnerLedger.CurrentBalance > 0
                     && IsReceiveAmount
-                    && (partnerLedger.CurrentBalanceType == DAL.Models.PaymentType.DR))
+                    && (partnerLedger.CurrentBalanceType == DAL.Models.PaymentType.Receivable))
                 {
                     var result = partnerLedger.CurrentBalance - Amount;
                     //we assume amount recived from Partner is Less then his balance
                     if (result > 0)
                     {
                         partnerLedger.CurrentBalance = result;
-                        partnerLedger.CurrentBalanceType = DAL.Models.PaymentType.DR;
+                        partnerLedger.CurrentBalanceType = DAL.Models.PaymentType.Receivable;
                     }
                     //we assume amount received from partner is greater then his Balance
                     else
                     {
                         partnerLedger.CurrentBalance = Math.Abs(result);
-                        partnerLedger.CurrentBalanceType = DAL.Models.PaymentType.CR;
+                        partnerLedger.CurrentBalanceType = DAL.Models.PaymentType.Payable;
                     }
 
                 }
@@ -179,6 +180,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             SelectedPartner = null;// new BussinessPartnerModel();
             Payment = new PaymentModel();
             CurrentPartnerBalance = 0;
+            Amount = 0;
             PaymentImage = null;
             IsValueCredit = false;
         }
@@ -191,10 +193,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             if (SelectedPartner == null)
                 return;
-            var partnerLedger = await _partnerLedgerManager.GetPartnerLedgerLastBalanceAsync(SelectedPartner?.Id.Value ?? 0);
+            var partnerLedger = await _partnerLedgerManager.GetPartnerLedgerCurrentBalanceAsync(SelectedPartner?.Id.Value ?? 0);
             if (partnerLedger != null)
             {
-                if (partnerLedger.CurrentBalanceType == DAL.Models.PaymentType.DR)
+                if (partnerLedger.CurrentBalanceType == DAL.Models.PaymentType.Receivable)
                     IsValueCredit = true;
                 else
                     IsValueCredit = false;

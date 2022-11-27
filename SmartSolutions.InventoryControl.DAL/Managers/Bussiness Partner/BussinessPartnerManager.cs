@@ -161,8 +161,13 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             var bussinessPartners = new List<BussinessPartnerLedgerModel>();
             try
             {
-                string query = @"SELECT Name,BussinessName,PartnerTypeId,PhoneNumber,MobileNumber,CityId,CurrentBalance,CurrentBalanceType FROM dbo.BussinessPartner bp
-                                INNER JOIN PartnerLedgerAccounts pl ON bp.Id = pl.PartnerId";
+                //string query = @"SELECT Name,BussinessName,PartnerTypeId,PhoneNumber,MobileNumber,CityId,CurrentBalance,CurrentBalanceType FROM dbo.BussinessPartner bp
+                //                INNER JOIN PartnerLedgerAccounts pl ON bp.Id = pl.PartnerId";
+                string query = @"SELECT Name,BussinessName,PartnerTypeId,PhoneNumber,MobileNumber,CityId,
+	                            pl.CurrentBalance FROM dbo.BussinessPartner bp
+	                            INNER JOIN (SELECT PartnerId, (SUM(DR) - SUM(CR)) as CurrentBalance FROM PartnerLedgerAccounts 
+                                Group BY PartnerLedgerAccounts.PartnerId)pl
+                                ON bp.Id = pl.PartnerId";
                 var values = await Repository.QueryAsync(query);
                 if (values != null || values?.Count > 0)
                 {
@@ -175,7 +180,11 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                         partnerLedger.Partner.BussinessName = value?.GetValueFromDictonary("BussinessName")?.ToString();
                         partnerLedger.Partner.PhoneNumber = value?.GetValueFromDictonary("PhoneNumber").ToString();
                         partnerLedger.CurrentBalance = Convert.ToDecimal(value?.GetValueFromDictonary("CurrentBalance").ToString());
-                        partnerLedger.CurrentBalanceType = value?.GetValueFromDictonary("CurrentBalanceType").ToString().ToEnum<PaymentType>() ?? PaymentType.None;
+                        if (partnerLedger.CurrentBalance < 0)
+                            partnerLedger.CurrentBalanceType = PaymentType.Payable;
+                        else
+                            partnerLedger.CurrentBalanceType= PaymentType.Receivable;
+                        //partnerLedger.CurrentBalanceType = value?.GetValueFromDictonary("CurrentBalanceType").ToString().ToEnum<PaymentType>() ?? PaymentType.None;
                         var mobileNumber = value?.GetValueFromDictonary("MobileNumber")?.ToString();
                         if (!string.IsNullOrEmpty(mobileNumber))
                             partnerLedger.Partner.MobileNumbers = new List<string>(mobileNumber.Split(','));

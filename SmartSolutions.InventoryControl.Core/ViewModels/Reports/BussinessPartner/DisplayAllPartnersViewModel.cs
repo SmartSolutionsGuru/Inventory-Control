@@ -75,11 +75,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.BussinessPartn
             }
             else if (SelectedSubCategory.Equals("Business Partner By DR Balance"))
             {
-                BussinessPartners = partners?.Where(x => x.CurrentBalanceType == DAL.Models.PaymentType.DR).ToList();
+                BussinessPartners = partners?.Where(x => x.CurrentBalanceType == DAL.Models.PaymentType.Receivable).ToList();
             }
             else if (SelectedSubCategory.Equals("Business Partner By CR Balance"))
             {
-                BussinessPartners = partners?.Where(x => x.CurrentBalanceType == DAL.Models.PaymentType.CR).ToList();
+                BussinessPartners = partners?.Where(x => x.CurrentBalanceType == DAL.Models.PaymentType.Payable).ToList();
             }
             else if (SelectedSubCategory.Equals("All Business Partners"))
             {

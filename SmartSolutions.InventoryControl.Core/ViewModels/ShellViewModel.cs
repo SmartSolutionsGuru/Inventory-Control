@@ -344,6 +344,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
             catch (Exception ex)
             {
+                ex.ToString();
                 isAdmin = false;
             }
             return isAdmin;

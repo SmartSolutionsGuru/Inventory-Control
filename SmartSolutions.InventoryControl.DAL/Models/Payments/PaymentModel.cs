@@ -26,8 +26,14 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Payments
         public decimal PaymentAmount { get; set; }
         public bool IsPaymentReceived { get; set; }
         public string Description { get; set; }
-        public decimal DR { get; set; }
-        public decimal CR { get; set; }
+        /// <summary>
+        /// gets or set the money Flow In
+        /// </summary>
+        public decimal Receivable { get; set; }
+        /// <summary>
+        /// gets or sets the money flow out
+        /// </summary>
+        public decimal Payable { get; set; }
         #endregion
     }
   

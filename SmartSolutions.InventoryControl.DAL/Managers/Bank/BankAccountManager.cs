@@ -38,8 +38,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
                 parameters["@v_OpeningDate"] = bankAccount?.OpeningDate;
                 parameters["@v_AccountNumber"] = bankAccount?.AccountNumber;
                 parameters["@v_OpeningBalance"] = bankAccount?.OpeningBalance;
-                parameters["@v_DR"] = bankAccount?.DR == null ? DBNull.Value : (object)bankAccount?.DR;
-                parameters["@v_CR"] = bankAccount?.CR == null ? DBNull.Value : (object)bankAccount?.CR;
+                parameters["@v_DR"] = bankAccount?.Receivable == null ? DBNull.Value : (object)bankAccount?.Receivable;
+                parameters["@v_CR"] = bankAccount?.Payable == null ? DBNull.Value : (object)bankAccount?.Payable;
                 parameters["@v_Description"] = bankAccount.Description == null ? DBNull.Value : (object)bankAccount.Description;
                 parameters["@v_IsActive"] = bankAccount.IsActive = true;
                 parameters["@v_CreatedAt"] = bankAccount.CreatedAt == null ? DateTime.Now : bankAccount.CreatedAt;
@@ -68,8 +68,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
                 parameters["@v_AccountType"] = account?.AccountType;
                 parameters["@v_AccountStatus"] = account?.AccountStatus;
                 parameters["@v_OpeningDate"] = account?.OpeningDate == null ? DBNull.Value : (object)account?.OpeningDate;
-                parameters["@v_DR"] = account?.DR == null ? DBNull.Value : (object)account?.DR;
-                parameters["@v_CR"] = account?.CR == null ? DBNull.Value : (object)account?.CR;
+                parameters["@v_DR"] = account?.Receivable == null ? DBNull.Value : (object)account?.Receivable;
+                parameters["@v_CR"] = account?.Payable == null ? DBNull.Value : (object)account?.Payable;
                 parameters["@v_AccountNumber"] = account?.AccountNumber;
                 parameters["@v_OpeningBalance"] = account?.OpeningBalance == null ? DBNull.Value : (object)account?.OpeningBalance;
                 parameters["@v_Description"] = account?.Description;

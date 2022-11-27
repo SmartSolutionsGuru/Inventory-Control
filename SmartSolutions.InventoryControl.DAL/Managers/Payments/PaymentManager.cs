@@ -53,8 +53,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Payments
                 parameters["@v_UpdatedAt"] = payment.UpdatedAt == null ? DBNull.Value : (object)payment.UpdatedAt;
                 parameters["@v_UpdatedBy"] = payment.UpdatedBy == null ? DBNull.Value : (object)payment.UpdatedBy;
                 parameters["@v_Description"] = payment.Description == null ? DBNull.Value : (object)payment.Description;
-                parameters["@v_DR"] = payment.DR == null ? DBNull.Value : (object)payment.DR;
-                parameters["@v_CR"] = payment.CR == null ? DBNull.Value : (object)payment.CR;
+                parameters["@v_DR"] = payment.Receivable == null ? DBNull.Value : (object)payment.Receivable;
+                parameters["@v_CR"] = payment.Payable == null ? DBNull.Value : (object)payment.Payable;
                 string query = @"INSERT INTO Payment(PartnerId,PaymentRefrencePartnerId,PaymentAmount,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy,PaymentMethodId,Description,DR,CR,ImagePath)
                                                  VALUES(@v_PartnerId,@v_PaymentRefrencePartnerId,@v_PaymentAmount,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy,@v_PaymentMethodId,@v_Description,@v_DR,@v_CR,@v_ImagePath)";
                 var result = await Repository.NonQueryAsync(query: query, parameters: parameters);
@@ -85,8 +85,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Payments
                         lastPayment.PaymentType = value?.GetValueFromDictonary("PaymentType")?.ToString()?.ToEnum<PaymentType>() ?? PaymentType.None;
                         lastPayment.PaymentMethod = new PaymentTypeModel { Id = value?.GetValueFromDictonary("PaymentMethodId")?.ToString()?.ToInt() ?? 0 };
                         lastPayment.PaymentAmount = value?.GetValueFromDictonary("PaymentAmount")?.ToString()?.ToDecimal() ?? 0;
-                        lastPayment.DR = Convert.ToDecimal(value?.GetValueFromDictonary("DR").ToString());
-                        lastPayment.CR = Convert.ToDecimal(value?.GetValueFromDictonary("CR").ToString());
+                        lastPayment.Receivable = Convert.ToDecimal(value?.GetValueFromDictonary("DR").ToString());
+                        lastPayment.Payable = Convert.ToDecimal(value?.GetValueFromDictonary("CR").ToString());
                     }
                 }
             }

@@ -55,8 +55,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 parameters["@v_PaymentId"] = partnerLedger?.Payment?.Id;
                 parameters["@v_CurrentBalance"] = partnerLedger.CurrentBalance;
                 parameters["@v_CurrentBalanceType"] = partnerLedger?.CurrentBalanceType;
-                parameters["@v_DR"] = partnerLedger?.DR;
-                parameters["@v_CR"] = partnerLedger.CR;
+                parameters["@v_DR"] = partnerLedger?.Receivable;
+                parameters["@v_CR"] = partnerLedger.Payable;
                 parameters["@v_Description"] = partnerLedger?.Description == null ? DBNull.Value : (object)partnerLedger.Description;
                 parameters["@v_IsActive"] = partnerLedger.IsActive = true;
                 parameters["@v_CreatedAt"] = partnerLedger.CreatedAt == null ? DateTime.Now : partnerLedger.CreatedAt;
@@ -96,8 +96,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                         var paymentId = value?.GetValueFromDictonary("PaymentId")?.ToString()?.ToInt();
                         partnerLedger.InvoiceId = value.GetValueFromDictonary("InvoiceId")?.ToString()?.ToNullableInt();
                         partnerLedger.Payment = await _paymentManager.GetPaymentByIdAsync(paymentId);
-                        partnerLedger.DR = value.GetValueFromDictonary("DR")?.ToString()?.ToDecimal() ?? 0;
-                        partnerLedger.CR = value.GetValueFromDictonary("CR")?.ToString()?.ToDecimal() ?? 0;
+                        partnerLedger.Receivable = value.GetValueFromDictonary("DR")?.ToString()?.ToDecimal() ?? 0;
+                        partnerLedger.Payable = value.GetValueFromDictonary("CR")?.ToString()?.ToDecimal() ?? 0;
                         partnerLedger.Description = value?.GetValueFromDictonary("Description")?.ToString();
                         partnerLedger.CurrentBalance = value?.GetValueFromDictonary("CurrentBalance")?.ToString()?.ToDecimal() ?? 0;
                         partnerLedger.CreatedAt = Convert.ToDateTime(value?.GetValueFromDictonary("CreatedAt")?.ToString());
@@ -115,7 +115,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             return partnerBalanceSheet;
         }
 
-        public async Task<BussinessPartnerLedgerModel> GetPartnerLedgerLastBalanceAsync(int partnerId)
+        public async Task<BussinessPartnerLedgerModel> GetPartnerLedgerCurrentBalanceAsync(int partnerId)
         {
             //Verify Partner Id
             if (partnerId == 0) return null;
@@ -130,9 +130,10 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 else if (Repository.Type == DBTypes.SQLServer)
                 {
                     //query = @"SELECT * FROM PartnerLedgerAccounts WHERE PartnerId = @v_PartnerId Order By 1 DESC";
-                    query = @"SELECT 
-                            (SELECT SUM(CR)  FROM PartnerLedgerAccounts WHERE PartnerId = @v_PartnerId)-(SELECT SUM(DR) FROM PartnerLedgerAccounts WHERE PartnerId = @v_PartnerId)
-                             AS CurrentBalance  Order By 1 DESC";
+                    //query = @"SELECT 
+                    //        (SELECT SUM(CR)  FROM PartnerLedgerAccounts WHERE PartnerId = @v_PartnerId)-(SELECT SUM(DR) FROM PartnerLedgerAccounts WHERE PartnerId = @v_PartnerId)
+                    //         AS CurrentBalance  Order By 1 DESC";
+                    query = @"SELECT (SUM(DR) - SUM(CR)) as CurrentBalance FROM PartnerLedgerAccounts Where PartnerId = @v_PartnerId";
                 }
                 var values = await Repository.QueryAsync(query: query, parameters: parameters);
 
@@ -143,7 +144,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                     partnerLedger.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
                     partnerLedger.Payment = new Models.Payments.PaymentModel { Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt() };
                     partnerLedger.CurrentBalance = value?.GetValueFromDictonary("CurrentBalance")?.ToString()?.ToDecimal() ?? 0;
-                    partnerLedger.CurrentBalanceType = partnerLedger?.CurrentBalance > 0 ? PaymentType.CR : PaymentType.DR;
+                    partnerLedger.CurrentBalanceType = partnerLedger?.CurrentBalance < 0 ? PaymentType.Payable : PaymentType.Receivable;
                     retVal = partnerLedger;
                 }
             }
@@ -165,8 +166,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_PartnerId"] = partnerLedger.Partner?.Id;
                 parameters["@v_PaymentId"] = partnerLedger?.Payment?.Id ?? 0;
-                parameters["@v_DR"] = partnerLedger?.DR == null ? DBNull.Value : (object)partnerLedger?.DR;
-                parameters["@v_CR"] = partnerLedger?.CR == null ? DBNull.Value : (object)partnerLedger?.CR;
+                parameters["@v_DR"] = partnerLedger?.Receivable == null ? DBNull.Value : (object)partnerLedger?.Receivable;
+                parameters["@v_CR"] = partnerLedger?.Payable == null ? DBNull.Value : (object)partnerLedger?.Payable;
                 parameters["@v_InvoiceId"] = partnerLedger?.InvoiceId == null ? DBNull.Value : (object)partnerLedger.InvoiceId;
                 parameters["@v_TransactionId"] = partnerLedger?.TransactionId == null ? DBNull.Value : (object)partnerLedger.TransactionId;
                 parameters["@v_CurrentBalance"] = Math.Abs(partnerLedger.CurrentBalance);

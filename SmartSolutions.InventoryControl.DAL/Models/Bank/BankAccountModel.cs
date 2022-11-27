@@ -27,11 +27,11 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Bank
         /// <summary>
         /// DR is Amount Is Recived in Transaction
         /// </summary>
-        public decimal DR { get; set; }
+        public decimal Receivable { get; set; }
         /// <summary>
         /// Amount is Paid in Transaction
         /// </summary>
-        public decimal CR { get; set; }
+        public decimal Payable { get; set; }
         #endregion
     }
 }
