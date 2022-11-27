@@ -25,12 +25,12 @@
                 <TextBlock Text="{Binding Path=Name}"
                            FontSize="{StaticResource MediumSize}"
                            FontFamily="{StaticResource MediumFont}"
-                           Foreground="{StaticResource LightGrayColorBrush}"/>
+                           Foreground="{StaticResource GrayColorBrush}"/>
                 <TextBlock Grid.Row="1"
                            Text="{Binding Path= City.CityName}"
                            FontSize="{StaticResource SmallSize}"
                            FontFamily="{StaticResource MediumFont}"
-                           Foreground="{StaticResource GrayColorBrush}"/>
+                           Foreground="{StaticResource LightGrayColorBrush}"/>
                 <TextBlock  Grid.Row="2"
                             Text="{Binding PhoneNumber,Mode=OneWay}"
                             FontSize="{StaticResource SmallSize}"

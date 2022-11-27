@@ -4,6 +4,7 @@ using SmartSolutions.InventoryControl.Core.ViewModels.Reports.Product;
 using SmartSolutions.InventoryControl.Core.ViewModels.Reports.Purchase;
 using SmartSolutions.InventoryControl.DAL.Managers.Product;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
+using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -80,7 +81,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
                 "Sale By Ending Date",
                 "Sale of Specific Partner"
             };
-            
+
         }
 
         public void Handle(Screen screen)
@@ -281,7 +282,22 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
 
         }
 
-
+        public void OnGettingText(string searchText)
+        {
+            if (string.IsNullOrEmpty(searchText)) return;
+            try
+            {
+                //IsBusy = true;
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            finally
+            {
+                //IsBusy = false;
+            }
+        }
         #endregion
 
         #region Properties
@@ -427,7 +443,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
         public string SearchText
         {
             get { return _SearchText; }
-            set { _SearchText = value; NotifyOfPropertyChange(nameof(SearchText)); }
+            set { _SearchText = value; NotifyOfPropertyChange(nameof(SearchText)); OnGettingText(SearchText); }
         }
         private List<BussinessPartnerModel> _Partners;
         /// <summary>

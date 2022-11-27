@@ -215,19 +215,22 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 string query = string.Empty;
                 query = @"SELECT * FROM BussinessPartner WHERE Id = @v_Id AND IsActive = 1";
                 var values = await Repository.QueryAsync(query, parameters: parameters);
-                var value = values?.FirstOrDefault();
-
-                partner.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
-                partner.Name = value?.GetValueFromDictonary("Name")?.ToString();
-                partner.BussinessName = value?.GetValueFromDictonary("BussinessName")?.ToString();
-                partner.City = new Models.Region.CityModel { Id = value?.GetValueFromDictonary("City")?.ToString().ToNullableInt() };
-                partner.PhoneNumber = value?.GetValueFromDictonary("PhoneNumber")?.ToString();
-                partner.Address = value?.GetValueFromDictonary("Address")?.ToString();
-                var mobileNumber = value?.GetValueFromDictonary("MobileNumber")?.ToString();
-                if(mobileNumber != null)
+                if(values != null && values?.Count > 0) 
                 {
-                    partner.MobileNumbers = new List<string>(mobileNumber.Split(','));
-                }              
+                    var value = values?.FirstOrDefault();
+                    partner.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                    partner.Name = value?.GetValueFromDictonary("Name")?.ToString();
+                    partner.BussinessName = value?.GetValueFromDictonary("BussinessName")?.ToString();
+                    partner.City = new Models.Region.CityModel { Id = value?.GetValueFromDictonary("City")?.ToString().ToNullableInt() };
+                    partner.PhoneNumber = value?.GetValueFromDictonary("PhoneNumber")?.ToString();
+                    partner.Address = value?.GetValueFromDictonary("Address")?.ToString();
+                    var mobileNumber = value?.GetValueFromDictonary("MobileNumber")?.ToString();
+                    if (mobileNumber != null)
+                    {
+                        partner.MobileNumbers = new List<string>(mobileNumber.Split(','));
+                    }
+                }
+                   
             }
             catch (Exception ex)
             {

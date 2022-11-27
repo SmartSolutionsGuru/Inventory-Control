@@ -175,7 +175,7 @@
                             <Style TargetType="Border">
                                 <Setter Property="Background" Value="{StaticResource BlueColorBrush}"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsValueCredit,Mode=OneWay}" Value="True">
+                                    <DataTrigger Binding="{Binding IsValueReceivable,Mode=OneWay}" Value="True">
                                         <Setter Property="Background" Value="{StaticResource RedColorBrush}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -354,7 +354,6 @@
                                                                                   BorderThickness="1.7" 
                                                                                   DisplayMember="NameWithColor"
                                                                                   LostFocus="AutoCompleteTextBox_LostFocus"
-                                                                                
                                                                                   Opacity="0.7" 
                                                                                   VerticalAlignment="Top" 
                                                                                   HorizontalAlignment="Left" 
@@ -422,14 +421,20 @@
                                                       Foreground="{StaticResource GrayColorBrush}"
                                                       ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl},Path=DataContext.ProductSizes,Mode=TwoWay}"
                                                       SelectedItem="{Binding Product.ProductSize,Mode=TwoWay}"/>-->
-                                                <TextBox Grid.Row="1" Grid.Column="3" Opacity="0.7" Height="40" Width="140" Foreground="{StaticResource GrayColorBrush}" VerticalAlignment="Top" Text="{Binding Quantity,Mode=TwoWay}"  Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Quantity" />
+                                                <TextBox Grid.Row="1" 
+                                                         Grid.Column="3" 
+                                                         Opacity="0.7" 
+                                                         Height="40" 
+                                                         Width="140" 
+                                                         Foreground="{StaticResource GrayColorBrush}" 
+                                                         VerticalAlignment="Top" Text="{Binding Quantity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Quantity" />
                                                 <TextBox Grid.Row="1" 
                                                          Grid.Column="5" 
                                                          Opacity="0.7" 
                                                          Height="40" 
                                                          Width="140"  
                                                          VerticalAlignment="Top" 
-                                                         Text="{Binding Price,Mode=TwoWay,UpdateSourceTrigger=LostFocus,ValidatesOnExceptions=true, ValidatesOnDataErrors=true, NotifyOnValidationError=True, Converter={StaticResource StringToDecimalConverter},ConverterParameter=#\,##0.00}" 
+                                                         Text="{Binding Price,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnExceptions=true, ValidatesOnDataErrors=true, NotifyOnValidationError=True, Converter={StaticResource StringToDecimalConverter},ConverterParameter=#\,##0.00}" 
                                                          Style="{StaticResource TextBoxVisibilityPathIconStyle}" 
                                                          BorderBrush="{StaticResource BlueColorBrush}" 
                                                          BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Price" />

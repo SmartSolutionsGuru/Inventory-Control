@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;
+using SmartSolutions.InventoryControl.Core.ViewModels.Dialogs;
 using SmartSolutions.InventoryControl.DAL;
 using SmartSolutions.InventoryControl.DAL.Managers.Product;
 using SmartSolutions.InventoryControl.DAL.Managers.Product.ProductColor;
@@ -156,17 +157,22 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             try
             {
+                IsLoading = true;
                 ++AutoId;
-                CalculateInvoiceTotal();
-                StockOutModel newproduct = new StockOutModel();
-                //newproduct.InvoiceId = SaleInvoice.InvoiceId;
-                //newproduct.InvoiceGuid = SaleInvoice.InvoiceGuid;
-                ProductGrid.Add(newproduct);
+                var IsAddProduct = CalculateInvoiceTotal();
+                if(IsAddProduct || ProductGrid.Count == 0) 
+                {
+                    StockOutModel newproduct = new StockOutModel();
+                    ProductGrid.Add(newproduct);
+                }
+               
             }
             catch (Exception ex)
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+                IsLoading = false;
             }
+            finally { IsLoading = false; }
         }
         public async void RemoveProduct(StockOutModel product)
         {
@@ -460,7 +466,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     PreviousBalance = 0;
                     return;
                 }
-                foreach (var product in ProductGrid) 
+                foreach (var product in ProductGrid)
                 {
                     product.Partner = SelectedPartner;
                 }
@@ -486,8 +492,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        private void CalculateInvoiceTotal()
+        private bool CalculateInvoiceTotal()
         {
+            bool retVal = false;
             try
             {
                 if (ProductGrid != null || ProductGrid?.Count > 0)
@@ -496,8 +503,21 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                         InvoiceTotal = 0;
                     foreach (var product in ProductGrid)
                     {
-
-                        InvoiceTotal += product.Total ?? 0;
+                        if ((product.Price == null || product.Price == 0) && (product.Quantity == null || product.Quantity == 0))
+                        {
+                            IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please complete the entry first", "Smart Solutions", MessageBoxOptions.Ok);
+                            retVal = false;
+                            return retVal;
+                        }
+                        if (product.Quantity > 0 && product.Total == 0)
+                        {
+                            product.Total = product.Price * product.Quantity;
+                        }
+                        else
+                        {
+                            InvoiceTotal += product.Total ?? 0;
+                        }
+                         retVal = true;
                     }
                 }
                 if (BalanceType == DAL.Models.PaymentType.Receivable)
@@ -510,21 +530,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     {
                         GrandTotal = PreviousBalance + InvoiceTotal.Value;
                     }
-
                 }
                 else
                 {
                     GrandTotal = PreviousBalance - InvoiceTotal.Value;
                 }
-                //if (PreviousBalance > 0)
-                //    GrandTotal = (InvoiceTotal.Value + PreviousBalance);
-                //else
-                //    GrandTotal = (InvoiceTotal.Value - PreviousBalance);
+
             }
             catch (Exception ex)
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
+            return retVal;
         }
         private void OnSelectedInvoiceType(string invoiceType)
         {

@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using iText.StyledXmlParser.Jsoup.Helper;
 using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;
 using SmartSolutions.InventoryControl.DAL;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
@@ -14,6 +15,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels
 {
@@ -115,23 +117,31 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             try
             {
+               await Task.Delay(1000);
                 ++AutoId;
                 var newProduct = new StockInModel();
-                CalculateInvoiceTotal();
-                if (Products != null && Products?.Count > 0)
-                    ProductSuggetion = new ProductSuggestionProvider(Products);
-                else
+                var IsAddProduct = CalculateInvoiceTotal();
+                if (IsAddProduct || ProductGrid.Count == 0)
                 {
-                    await IoC.Get<IDialogManager>().ShowMessageBoxAsync($"There are No Products {Environment.NewLine}Please add Products To Proceed");
-                }
 
-                ProductGrid.Add(newProduct);
-                SelectedProduct = new ProductModel();
-                SelectedWarehouse = new WarehouseModel();
+                    if (Products != null && Products?.Count > 0)
+                        ProductSuggetion = new ProductSuggestionProvider(Products);
+                    else
+                        await IoC.Get<IDialogManager>().ShowMessageBoxAsync($"There are No Products {Environment.NewLine}Please add Products To Proceed");
+
+
+                    ProductGrid.Add(newProduct);
+                    SelectedProduct = new ProductModel();
+                    SelectedWarehouse = new WarehouseModel();
+                }
             }
             catch (Exception ex)
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            finally
+            {
+                //IsLoading = false;
             }
         }
         public void RemoveProduct(StockInModel product)
@@ -438,33 +448,41 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        private void CalculateInvoiceTotal()
+        private bool CalculateInvoiceTotal()
         {
+            bool retVal = false;
             if (ProductGrid != null && ProductGrid?.Count > 0)
             {
                 InvoiceTotal = 0;
                 foreach (var product in ProductGrid)
                 {
-                    InvoiceTotal += product.Total ?? 0;
+                    if ((product.Price == null || product.Price == 0) && (product.Quantity == null || product.Quantity == 0))
+                    {
+                        IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please complete the entry first", "Smart Solutions",Dialogs.MessageBoxOptions.Ok);
+                        retVal = false;
+                        return retVal;
+                    }
+                    if (product.Quantity > 0 && product.Total == 0)
+                    {
+                        product.Total = product.Price * product.Quantity;
+                    }
+                    else
+                    {
+                        InvoiceTotal += product.Total ?? 0;
+                    }
+                    retVal = true;
                 }
                 if (BalanceType == DAL.Models.PaymentType.Receivable)
                 {
                     if (PreviousBalance == 0)
-                    {
                         GrandTotal = InvoiceTotal;
-                    }
                     else
-                    {
                         GrandTotal = PreviousBalance - InvoiceTotal;
-                    }
-                   
                 }
                 else
-                {
                     GrandTotal = PreviousBalance + InvoiceTotal;
-                }
-
             }
+            return retVal;
         }
         public void VerifySelectedPartner()
         {
