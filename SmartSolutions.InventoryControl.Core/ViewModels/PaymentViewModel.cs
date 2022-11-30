@@ -74,7 +74,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 PaymentImage = PaymentImage;
                 Payment.Partner = SelectedPartner;
 
-                //If we recive the Payment then it is CR or Payable vice versa 
+                //If we recive the Payment then it is Payable/CR or Payable vice versa 
                 Payment.PaymentType = IsReceiveAmount == true ? DAL.Models.PaymentType.Payable : DAL.Models.PaymentType.Receivable;
                 if (Payment.PaymentType == DAL.Models.PaymentType.Receivable)
                     Payment.Receivable = Amount;
@@ -201,6 +201,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 else
                     IsValueCredit = false;
                 CurrentPartnerBalance = partnerLedger.CurrentBalance;
+                if(CurrentPartnerBalance < 0)
+                {
+                    CurrentPartnerBalance = Math.Abs(CurrentPartnerBalance);
+                }
                 AmountType = partnerLedger?.CurrentBalanceType.ToString();
                 IsAmountAvailable = true;
             }
@@ -379,7 +383,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public decimal Amount
         {
             get { return _Amount; }
-            set { _Amount = value; NotifyOfPropertyChange(nameof(AmountType)); }
+            set { _Amount = value; NotifyOfPropertyChange(nameof(Amount)); }
         }
         private List<PaymentTypeModel> _PaymentTypes;
         /// <summary>

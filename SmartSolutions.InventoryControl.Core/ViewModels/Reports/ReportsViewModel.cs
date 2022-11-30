@@ -146,42 +146,49 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
                     IsDisplayCombo = false;
                     IsDatePickerVisible = false;
                     IsComboBoxVisible = false;
+                    SearchText = string.Empty;
                     Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner By Vendor":
                     IsDisplayCombo = false;
                     IsComboBoxVisible = false;
+                    SearchText = string.Empty;
                     Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner By Seller":
                     IsDisplayCombo = false;
                     IsComboBoxVisible = false;
+                    SearchText = string.Empty;
                     Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner By City":
                     IsDisplayCombo = false;
                     IsComboBoxVisible = false;
+                    SearchText = string.Empty;
                     Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner By DR Balance":
                     IsDisplayCombo = false;
                     IsComboBoxVisible = false;
+                    SearchText = string.Empty;
                     Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner By CR Balance":
                     IsDisplayCombo = false;
                     IsComboBoxVisible = false;
+                    SearchText = string.Empty;
                     Handle(selectedReportSubCategory);
                     Handle(IoC.Get<DisplayAllPartnersViewModel>());
                     break;
                 case "Business Partner Balance sheet":
                     IsDisplayCombo = true;
                     IsComboBoxVisible = true;
+                    SearchText = string.Empty;
                     OnSelectingBalanceSheet();
                     break;
                 #endregion
@@ -284,10 +291,19 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
 
         public void OnGettingText(string searchText)
         {
-            if (string.IsNullOrEmpty(searchText)) return;
+            //if (string.IsNullOrEmpty(searchText)) return;
             try
             {
-                //IsBusy = true;
+                IsLoading = true;
+                //if(SelectedReportCategory.Equals("Business Partners") 
+                //    && SelectedReportSubCategory.Equals("All Business Partners"))
+                //{
+                    IsDisplayCombo = false;
+                    IsDatePickerVisible = false;
+                    IsComboBoxVisible = false;
+                    Handle(SelectedReportCategory);
+                    Handle(IoC.Get<DisplayAllPartnersViewModel>());
+                //}
             }
             catch (Exception ex)
             {
@@ -295,7 +311,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports
             }
             finally
             {
-                //IsBusy = false;
+                IsLoading = false;
             }
         }
         #endregion

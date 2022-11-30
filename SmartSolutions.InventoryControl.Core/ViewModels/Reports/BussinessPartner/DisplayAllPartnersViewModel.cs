@@ -43,13 +43,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.BussinessPartn
             if (message == null) return;
             if (message is ReportsViewModel)
             {
-                var result = (ReportsViewModel)message;
-                SelectedSubCategory = result.SelectedReportSubCategory;
+                MyReport = (ReportsViewModel)message;
+                SelectedSubCategory = MyReport.SelectedReportSubCategory;
+                SearchText = MyReport.SearchText;
 
             }
             else if (message is string)
             {
                 SelectedSubCategory = (string)message;
+                SearchText = MyReport.SearchText;
                 await GetPartnersByCategory();
             }
 
@@ -57,38 +59,92 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.BussinessPartn
 
         private async Task GetPartnersByCategory()
         {
-            var partners = (await _bussinessPartnerManager.GetAllBussinessPartnersWithBalanceAsync()).ToList();
+            var partners = (await _bussinessPartnerManager.GetAllBussinessPartnersWithBalanceAsync()).OrderBy(x=>x.Partner.Name).ToList();
             if (SelectedSubCategory.Equals("Business Partner By Vendor"))
             {
                 List<int?> partnerTypes = new List<int?> { 1, 3 };
-                BussinessPartners = partners.Where(x => x.Partner?.PartnerType?.Id == 1 || x.Partner?.PartnerType?.Id == 3).ToList();
+                if (!string.IsNullOrEmpty(SearchText)) 
+                {
+                    BussinessPartners = partners?.Where(x => x.Partner?.PartnerType?.Id == 1 || x.Partner?.PartnerType?.Id == 3).ToList();
+                    BussinessPartners = BussinessPartners.Where(p=>p.Partner.Name.ToUpper().StartsWith(SearchText.ToUpper())).OrderBy(s => s.Partner.Name).ToList();
+                }
+                else
+                {                
+                    BussinessPartners = partners.Where(x => x.Partner?.PartnerType?.Id == 1 || x.Partner?.PartnerType?.Id == 3).ToList();
+                }
+              
             }
             else if (SelectedSubCategory.Equals("Business Partner By Seller"))
             {
                 List<int?> partnerTypes = new List<int?> { 2, 3 };
-                BussinessPartners = partners.Where(x => x.Partner?.PartnerType?.Id == 2 || x.Partner?.PartnerType?.Id == 3).ToList();
+                if(!string.IsNullOrEmpty(SearchText)) 
+                {
+                    BussinessPartners = partners.Where(x => x.Partner?.PartnerType?.Id == 2 || x.Partner?.PartnerType?.Id == 3).ToList();
+                    BussinessPartners = BussinessPartners.Where(p => p.Partner.Name.ToUpper().StartsWith(SearchText.ToUpper())).ToList();
+                }
+                else
+                {
+                    BussinessPartners = partners.Where(x => x.Partner?.PartnerType?.Id == 2 || x.Partner?.PartnerType?.Id == 3).ToList();
+                }
+               
             }
             else if (SelectedSubCategory.Equals("Business Partner By City"))
             {
                 int cityId = 274;
-                BussinessPartners = partners?.Where(x => x.Partner?.City?.Id == cityId).ToList();
+                if (!string.IsNullOrEmpty(SearchText)) 
+                {
+                    BussinessPartners = partners?.Where(x => x.Partner?.City?.Id == cityId).ToList();
+                    BussinessPartners = BussinessPartners.Where(x=>x.Partner.Name.ToUpper().StartsWith(SearchText.ToUpper())).ToList();
+                } 
+                else 
+                {
+                    BussinessPartners = partners?.Where(x => x.Partner?.City?.Id == cityId).ToList();
+                }
+               
             }
             else if (SelectedSubCategory.Equals("Business Partner By DR Balance"))
             {
-                BussinessPartners = partners?.Where(x => x.CurrentBalanceType == DAL.Models.PaymentType.Receivable).ToList();
+                if(!string.IsNullOrEmpty(SearchText)) 
+                {
+                    BussinessPartners = partners?.Where(x => x.CurrentBalanceType == DAL.Models.PaymentType.Receivable).ToList();
+                    BussinessPartners = BussinessPartners.Where(x=>x.Partner.Name.ToUpper().StartsWith(SearchText.ToUpper())).ToList();
+                }
+                else
+                {
+                    BussinessPartners = partners?.Where(x => x.CurrentBalanceType == DAL.Models.PaymentType.Receivable).ToList();
+                }
+               
             }
             else if (SelectedSubCategory.Equals("Business Partner By CR Balance"))
             {
-                BussinessPartners = partners?.Where(x => x.CurrentBalanceType == DAL.Models.PaymentType.Payable).ToList();
+                if (!string.IsNullOrEmpty(SearchText))
+                {
+                    BussinessPartners = partners?.Where(x => x.CurrentBalanceType == DAL.Models.PaymentType.Payable).ToList();
+                    BussinessPartners = BussinessPartners.Where(x=>x.Partner.Name.ToUpper().StartsWith(SearchText.ToUpper())).ToList();
+                }
+                else
+                {
+                    BussinessPartners = partners?.Where(x => x.CurrentBalanceType == DAL.Models.PaymentType.Payable).ToList();
+                }
             }
             else if (SelectedSubCategory.Equals("All Business Partners"))
             {
-                BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersWithBalanceAsync()).ToList();
+
+                if (!string.IsNullOrEmpty(SearchText))
+                {
+                    BussinessPartners = partners?.Where(x => x.Partner.Name.ToUpper().StartsWith(SearchText.ToUpper())).ToList();
+                }
+                else
+                {
+                    BussinessPartners = (await _bussinessPartnerManager.GetAllBussinessPartnersWithBalanceAsync()).OrderBy(x=>x.Partner.Name).ToList();
+                }
+
             }
         }
         #endregion
 
         #region Properties
+        public ReportsViewModel MyReport { get; set; }
         public string SelectedSubCategory { get; set; }
         private List<BussinessPartnerLedgerModel> _BussinessPartners;
 
@@ -113,6 +169,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.BussinessPartn
             get { return message; }
             set { message = value; NotifyOfPropertyChange(nameof(Message)); }
         }
+
+        public string SearchText { get; set; }
 
         #endregion
     }

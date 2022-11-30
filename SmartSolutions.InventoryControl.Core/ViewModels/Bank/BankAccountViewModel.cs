@@ -47,6 +47,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Bank
             {
                 var dlg = IoC.Get<BankViewModel>();
                 await IoC.Get<IDialogManager>().ShowDialogAsync(dlg);
+                Banks = (await _bankManager.GetAllBanksAsync()).ToList();
+                SelectedBank = Banks?.LastOrDefault();
 
             }
             catch (Exception ex)

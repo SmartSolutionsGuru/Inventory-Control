@@ -117,19 +117,25 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             try
             {
-               await Task.Delay(1000);
-                ++AutoId;
+                IsLoading = true;
+                bool IsAddProduct = CalculateInvoiceTotal();
                 var newProduct = new StockInModel();
-                var IsAddProduct = CalculateInvoiceTotal();
+                if(SelectedPartner != null)
+                {
+                    newProduct.Partner = SelectedPartner;
+                }              
                 if (IsAddProduct || ProductGrid.Count == 0)
                 {
-
+                   
                     if (Products != null && Products?.Count > 0)
+                    {                      
+                        ++AutoId;
                         ProductSuggetion = new ProductSuggestionProvider(Products);
+                    }                      
                     else
+                    {
                         await IoC.Get<IDialogManager>().ShowMessageBoxAsync($"There are No Products {Environment.NewLine}Please add Products To Proceed");
-
-
+                    }
                     ProductGrid.Add(newProduct);
                     SelectedProduct = new ProductModel();
                     SelectedWarehouse = new WarehouseModel();
@@ -141,7 +147,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
             finally
             {
-                //IsLoading = false;
+                IsLoading = false;
             }
         }
         public void RemoveProduct(StockInModel product)
@@ -529,7 +535,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     newInvoiceTotal = InvoiceTotal.Value - DiscountPrice.Value;
                 }
             }
-
             return newInvoiceTotal;
         }
         public void OnPaymentRecived()

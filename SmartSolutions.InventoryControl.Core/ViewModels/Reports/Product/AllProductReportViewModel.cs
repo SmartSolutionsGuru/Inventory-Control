@@ -100,6 +100,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.Product
         #endregion
 
     }
+    #region [Display Class]
+
+    /// <summary>
+    /// Class that is used for displaing grid
+    /// </summary>
     public class DisplayProduct
     {
         public string ProductName { get; set; }
@@ -110,4 +115,5 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.Product
         public bool IsQuantityNegitive { get; set; }
         public int Quantity { get; set; }
     }
+    #endregion
 }

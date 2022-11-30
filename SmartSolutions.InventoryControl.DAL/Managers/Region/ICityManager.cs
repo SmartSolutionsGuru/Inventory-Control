@@ -30,6 +30,13 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Region
         /// <param name="searchText"></param>
         /// <returns></returns>
         Task<IEnumerable<CityModel>> GetCitiesAsync(string searchText);
+
+        /// <summary>
+        /// Add City or Town if not Added
+        /// </summary>
+        /// <param name="city"></param>
+        /// <returns>Return True if add vice versa</returns>
+        Task<bool> AddCityAsync(CityModel city);
         
     }
 }
