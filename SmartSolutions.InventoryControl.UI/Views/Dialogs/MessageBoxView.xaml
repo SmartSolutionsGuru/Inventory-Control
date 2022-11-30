@@ -98,10 +98,10 @@
                         </ColumnDefinition.Style>
                     </ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="Ok" Grid.Column="0" Style="{StaticResource ContentButton}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="7,0" Background="{StaticResource BlueColorBrush}" Padding="0,5" FontSize="18"
+                <Button x:Name="Ok" IsDefault="True" Grid.Column="0" Style="{StaticResource ContentButton}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="7,0" Background="{StaticResource BlueColorBrush}" Padding="0,5" FontSize="18"
                     Visibility="{Binding OkVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Content="{Binding OkText, TargetNullValue=Ok, FallbackValue=Ok}" MaxWidth="250" />
-                <Button x:Name="Yes" Grid.Column="1" Style="{StaticResource ContentButton}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="7,0" Background="{StaticResource GreenColorBrush}" Padding="0,5" FontSize="18"
+                <Button x:Name="Yes" IsDefault="True" Grid.Column="1" Style="{StaticResource ContentButton}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="7,0" Background="{StaticResource GreenColorBrush}" Padding="0,5" FontSize="18"
                     Visibility="{Binding YesVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Content="{Binding YesText, TargetNullValue=Yes, FallbackValue=Yes}" MaxWidth="250" />
                 <Button x:Name="No" Grid.Column="2"  Style="{StaticResource ContentButton}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="7,0" Background="{StaticResource BlueColorBrush}" Padding="0,5" FontSize="18"

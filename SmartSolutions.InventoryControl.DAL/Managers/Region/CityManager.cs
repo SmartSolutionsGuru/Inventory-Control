@@ -159,6 +159,35 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Region
             }
             return cities;
         }
+
+        public async Task<bool> AddCityAsync(CityModel city)
+        {
+            bool retVal = false;
+            try
+            {
+                //null guard
+                if (city == null) return retVal;
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@_Name"] = city.Name;
+                parameters["@v_CountryId"] = city.Country.Id;
+                parameters["@v_ProvinceId"] = city.Province.Id;
+                parameters["@v_PhoneCode"] = city.PhoneCode  == 0 ? DBNull.Value : (object)city.PhoneCode;
+                parameters["@v_Description"] = city.Description;
+                parameters["@v_IsActive"] = city.IsActive;
+                parameters["@v_IsDeleted"] = city.IsDeleted;
+                parameters["@v_CreatedAt"] = city.CreatedAt;
+                parameters["@v_CreatedBy"] = city.CreatedBy;
+                string query = @"INSERT INTO City (Name,CountryId,ProvinceId,PhoneCode,Description,IsActive,IsDeleted,CreatedAt,CreatedBy) 
+                                           VALUES(@_Name,@v_CountryId,@v_ProvinceId,@v_PhoneCode,@v_Description,@v_IsActive,@v_IsDeleted,@v_CreatedAt,@v_CreatedBy)";
+                var result = await Repository.NonQueryAsync(query,parameters:parameters);
+                retVal = result > 0 ? true : false;
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
+        }
         #endregion
     }
 }

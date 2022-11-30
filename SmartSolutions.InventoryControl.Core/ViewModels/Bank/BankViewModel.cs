@@ -14,6 +14,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Bank
         #region Private Member
         private readonly IBankManager _bankManager;
         #endregion
+
         #region Constructor
         [ImportingConstructor]
         public BankViewModel(IBankManager bankManager)

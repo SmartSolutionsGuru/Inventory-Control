@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;
+using SmartSolutions.InventoryControl.Core.ViewModels.Dialogs;
 using SmartSolutions.InventoryControl.DAL;
 using SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner;
 using SmartSolutions.InventoryControl.DAL.Managers.Region;
@@ -205,6 +206,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 if (string.IsNullOrEmpty(searchText)) return;
                 Cities = (await _cityManager.GetCitiesAsync(searchText)).ToList();
 
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+        }
+        public void AddCity()
+        {
+            try
+            {
+                var dlg = IoC.Get<AddCityDialogViewModel>();
+                IoC.Get<IDialogManager>().ShowDialogAsync(dlg);
             }
             catch (Exception ex)
             {

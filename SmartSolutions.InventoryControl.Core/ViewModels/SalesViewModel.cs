@@ -157,15 +157,19 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             try
             {
-                IsLoading = true;
-                ++AutoId;
-                var IsAddProduct = CalculateInvoiceTotal();
+                IsLoading = true;               
+                var IsAddProduct = CalculateInvoiceTotal(true);
+              
                 if(IsAddProduct || ProductGrid.Count == 0) 
                 {
+                    ++AutoId;
                     StockOutModel newproduct = new StockOutModel();
+                    if(SelectedPartner != null)
+                    {
+                        newproduct.Partner = SelectedPartner;
+                    }
                     ProductGrid.Add(newproduct);
-                }
-               
+                }              
             }
             catch (Exception ex)
             {
@@ -191,7 +195,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     --AutoId;
                     ProductGrid.Remove(product);
                 }
-                CalculateInvoiceTotal();
+                CalculateInvoiceTotal(false);
                 GrandTotal = InvoiceTotal.Value + PreviousBalance;
             }
             catch (Exception ex)
@@ -492,7 +496,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        private bool CalculateInvoiceTotal()
+        private bool CalculateInvoiceTotal(bool isShowMessageBox)
         {
             bool retVal = false;
             try
@@ -503,7 +507,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                         InvoiceTotal = 0;
                     foreach (var product in ProductGrid)
                     {
-                        if ((product.Price == null || product.Price == 0) && (product.Quantity == null || product.Quantity == 0))
+                        if ((product.Price == null || product.Price == 0) || (product.Quantity == null || product.Quantity == 0) && isShowMessageBox == true)
                         {
                             IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please complete the entry first", "Smart Solutions", MessageBoxOptions.Ok);
                             retVal = false;

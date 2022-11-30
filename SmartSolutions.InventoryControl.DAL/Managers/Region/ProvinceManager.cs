@@ -35,7 +35,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Region
                 if (countryId == null || countryId == 0) return null;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_countryId"] = countryId;
-                string query = "SELECT * FROM Province WHERE CountryId = @countryId";
+                string query = "SELECT * FROM Province WHERE CountryId = @v_countryId";
                 var values = await Repository.QueryAsync(query, parameters: parameters);
                 if (values != null || values?.Count > 0)
                 {

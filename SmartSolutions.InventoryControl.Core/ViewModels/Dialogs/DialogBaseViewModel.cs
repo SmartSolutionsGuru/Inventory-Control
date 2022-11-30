@@ -3,6 +3,7 @@ using SmartSolutions.Util.LogUtils;
 using System;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
 {
@@ -17,6 +18,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         private readonly IWindowManager _windowManager;
         private readonly Func<IMessageBox> createMessageBox;
         //private readonly IMessageBox createMessageBox;
+        private readonly Dispatcher _dispatcher;
         #endregion
 
         #region Constructor
@@ -65,9 +67,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
             }
         }
 
-        public override void ActivateItem(IScreen item)
+        public override async void ActivateItem(IScreen item)
         {
-            base.ActivateItem(item);
+            try
+            {
+                base.ActivateItem(item);
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString());
+            }
+
+
         }
         public override void DeactivateItem(IScreen item, bool close)
         {
@@ -139,6 +150,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
 
         public async Task<MessageBoxOptions> ShowMessageBoxAsync(string message, string title = "Smart Solutions", MessageBoxOptions options = MessageBoxOptions.Ok, string yesText = null, string noText = null, string okText = null, string cancelText = null, bool alignCenter = false)
         {
+
             var box = createMessageBox();
             box.DisplayName = title;
             box.Options = options;
@@ -166,6 +178,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
                 showDialog_ResetEvent = new System.Threading.ManualResetEvent(false);
                 showDialog_ResetEvent.WaitOne();
             });
+
 
             return box.Selection;
         }

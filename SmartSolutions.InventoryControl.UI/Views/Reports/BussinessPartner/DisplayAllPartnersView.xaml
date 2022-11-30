@@ -52,7 +52,7 @@
                         <Style TargetType="DataGridCell" BasedOn="{StaticResource DataGridCellStyle}">
                             <Setter Property="Foreground" Value="{StaticResource GrayColorBrush}"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding CurrentBalanceType,Mode=OneWay}" Value="CR">
+                                <DataTrigger Binding="{Binding CurrentBalanceType,Mode=OneWay}" Value="Payable">
                                     <Setter Property="Foreground" Value="{StaticResource RedColorBrush}"/>
                                 </DataTrigger>
                             </Style.Triggers>

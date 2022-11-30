@@ -532,6 +532,9 @@
     <Compile Include="Views\BussinessPartner\PartnerBalanceView.xaml.cs">
       <DependentUpon>PartnerBalanceView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialogs\AddCityDialogView.xaml.cs">
+      <DependentUpon>AddCityDialogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\BankPaymentDialogView.xaml.cs">
       <DependentUpon>BankPaymentDialogView.xaml</DependentUpon>
     </Compile>
@@ -639,6 +642,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\BussinessPartner\PartnerBalanceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\AddCityDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
