@@ -145,7 +145,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Region
                     {
                         var city = new CityModel();
                         city.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
-                        city.Name = value?.GetValueFromDictonary("Name")?.ToString();
+                        city.CityName = city.Name = value?.GetValueFromDictonary("Name")?.ToString();
                         city.PhoneCode = value?.GetValueFromDictonary("CityCode")?.ToString().ToInt() ?? 0;
                         city.Province.Id = value?.GetValueFromDictonary("ProvinceId")?.ToString()?.ToNullableInt() ?? 0;
                         city.Country.Id = value?.GetValueFromDictonary("CountrId")?.ToString()?.ToNullableInt() ?? 0;
@@ -187,6 +187,38 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Region
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return retVal;
+        }
+        /// <summary>
+        /// get the City By Name
+        /// </summary>
+        /// <param name="cityName">city Name</param>
+        /// <returns>Return City object</returns>
+        public async Task<CityModel> GetCityByNameAsync(string cityName)
+        {
+            CityModel city = new CityModel();
+            if (string.IsNullOrEmpty(cityName)) return null;
+            try
+            {
+                Dictionary<string,object> parameters = new Dictionary<string, object>();
+                parameters["@v_Name"] = cityName;
+                string query = @"SELECT * FROM City WHERE Name = @v_Name";
+               var values = await Repository.QueryAsync(query, parameters: parameters);
+                if(values.Any())
+                {
+                    foreach (var value in values) 
+                    {
+                        city.Id = value?.GetValueFromDictonary("Id")?.ToString().ToInt();
+                        city.Name = city.CityName = value?.GetValueFromDictonary("Name")?.ToString();
+                        city.PhoneCode = value?.GetValueFromDictonary("PhoneCode")?.ToString()?.ToNullableInt() ?? 0;
+                        city.Country = new CountryModel { Id = value?.GetValueFromDictonary("CountryCode")?.ToString()?.ToInt() };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return city;
         }
         #endregion
     }

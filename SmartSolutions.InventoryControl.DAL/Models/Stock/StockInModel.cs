@@ -1,4 +1,5 @@
-﻿using SmartSolutions.InventoryControl.DAL.Managers.Purchase;
+﻿using Fractions;
+using SmartSolutions.InventoryControl.DAL.Managers.Purchase;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.DAL.Models.Product;
 using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
@@ -32,7 +33,6 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Stock
         public BussinessPartnerModel Partner { get; set; }
         public PurchaseOrderModel PurchaseOrder { get; set; }
         public PurchaseOrderDetailModel PurchaseOrderDetail { get; set; }
-        //public ProductModel Product { get; set; }
         private ProductModel _Product;
 
         public ProductModel Product
@@ -48,6 +48,13 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Stock
             get { return _Quantity; }
             set { _Quantity = value; NotifyOfPropertyChange(nameof(Quantity)); }
         }
+        //private decimal? _Price;
+        //public decimal? Price
+        //{
+        //    get { return _Price; }
+        //    set { _Price = value; NotifyOfPropertyChange(nameof(Price)); OnPriceChange(); }
+        //}
+
         private decimal? _Price;
         public decimal? Price
         {
@@ -97,7 +104,11 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Stock
         }
         private void OnPriceChange()
         {
-            if (Quantity == 0 || Price == 0) return;
+            //if (Quantity == 0 || Quantity == null || Price == 0 || Price == null) return;
+            if (Price == null)
+                Price = 0;
+            if(Quantity == null)
+                Quantity = 0;
             Total = Quantity * (decimal)Price;
 
         }

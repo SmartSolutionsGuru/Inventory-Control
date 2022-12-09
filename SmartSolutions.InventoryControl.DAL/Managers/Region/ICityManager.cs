@@ -37,6 +37,12 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Region
         /// <param name="city"></param>
         /// <returns>Return True if add vice versa</returns>
         Task<bool> AddCityAsync(CityModel city);
-        
+        /// <summary>
+        /// get the City By City Name
+        /// </summary>
+        /// <param name="cityName"></param>
+        /// <returns></returns>
+        Task<CityModel> GetCityByNameAsync(string cityName);
+
     }
 }

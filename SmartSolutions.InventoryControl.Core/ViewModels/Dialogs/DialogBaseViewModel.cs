@@ -3,6 +3,7 @@ using SmartSolutions.Util.LogUtils;
 using System;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Threading;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
@@ -71,7 +72,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         {
             try
             {
-                base.ActivateItem(item);
+                if (Application.Current.Dispatcher.CheckAccess())
+                {
+                    base.ActivateItem(item);
+                }
+                else
+                {
+                    //Other wise re-invoke the method with UI thread access
+                    Application.Current.Dispatcher.Invoke(new System.Action(() => base.ActivateItem(item)));
+                }
             }
             catch (Exception ex)
             {

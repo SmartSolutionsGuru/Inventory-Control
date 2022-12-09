@@ -3,10 +3,12 @@ using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.DAL.Managers.Purchase
 {
+    [Export(typeof(IPurchaseReturnManager)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class PurchaseReturnManager : BaseManager, IPurchaseReturnManager
     {
         #region Private Members
@@ -20,6 +22,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Purchase
         }
         #endregion
 
+        #region [Methods]      
         /// <summary>
         /// Create Purchase Return Invoice 
         /// </summary>
@@ -54,5 +57,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Purchase
             }
             return retVal;
         }
+        #endregion
     }
 }

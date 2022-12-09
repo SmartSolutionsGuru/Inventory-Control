@@ -93,8 +93,7 @@ namespace SmartSolutions.InventoryControl.UI.Views
                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-
-        private void AutoCompleteTextBox_LostFocus(object sender, RoutedEventArgs e)
+        private void AutoCompleteTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             ViewModel?.VerifySelectedPartner();
         }

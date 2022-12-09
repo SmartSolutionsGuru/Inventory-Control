@@ -105,22 +105,13 @@ namespace SmartSolutions.InventoryControl.UI.Views
                 {
                     ViewModel.GetProductAvailableStock(ViewModel?.SelectedInventoryProduct?.Product?.Id ?? 0);
                 }
-                //if(ViewModel.SelectedInventoryProduct.ProductSize != null 
-                //    && ViewModel.SelectedInventoryProduct.ProductColor != null 
-                //    && ViewModel.SelectedInventoryProduct.Product != null)
-                //{
-                //    ViewModel.SelectedInventoryProduct.Product.ProductColor = ViewModel?.SelectedInventoryProduct?.ProductColor;
-                //    ViewModel.SelectedInventoryProduct.Product.ProductSize = ViewModel?.SelectedInventoryProduct?.ProductSize;
-                //    ViewModel.GetProductAvailableStock(ViewModel.SelectedInventoryProduct?.Product?.Id ?? 0);
-                //}  
             }
             catch (Exception ex)
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-
-        private void AutoCompleteTextBox_LostFocus(object sender, RoutedEventArgs e)
+        private void AutoCompleteTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             ViewModel?.IsPartnerSelected();
         }

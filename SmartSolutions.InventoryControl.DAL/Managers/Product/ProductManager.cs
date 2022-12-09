@@ -125,22 +125,23 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Product
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_partnerId"] = partnerId;
-                string query = @"SELECT s.ProductId  , p.Name,p.ProductTypeId,p.ProductSubTypeId,p.ProductColorId,p.Image,p.IsActive 
-                               FROM StockIn s
-                               Inner Join Product p ON p.Id = s.ProductId 
-                               WHERE s.PartnerId = @v_partnerId";
-                var values = await Repository.QueryAsync(query, parameters: parameters);
+                //string query = @"SELECT s.ProductId  , p.Name,p.ProductTypeId,p.ProductSubTypeId,p.ProductColorId,p.ProductSizeId,p.IsActive 
+                //               FROM StockIn s
+                //               Inner Join Product p ON p.Id = s.ProductId 
+                //               WHERE s.PartnerId = @v_partnerId";
+                string procedure = "spGetProductWithColorAndSizeOfPartner";
+                var values = await Repository.QueryAsync(procedure:procedure, parameters: parameters);
                 if (values != null || values?.Count > 0)
                 {
                     foreach (var value in values)
                     {
                         var product = new ProductModel();
-                        product.Id = value.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                        product.Id = value.GetValueFromDictonary("ProductId")?.ToString()?.ToInt();
                         product.Name = value?.GetValueFromDictonary("Name")?.ToString();
                         product.ProductType = new ProductTypeModel { Id = value?.GetValueFromDictonary("ProductTypeId")?.ToString()?.ToInt() };
-                        product.ProductSubType = new ProductSubTypeModel { Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt() };
-                        product.ProductColor = new ProductColorModel { Id = value.GetValueFromDictonary("Id")?.ToString()?.ToInt() };
-                        product.Image = value?.GetValueFromDictonary("Image") as byte[];
+                        product.ProductSubType = new ProductSubTypeModel { Id = value?.GetValueFromDictonary("ProductSubTypeId")?.ToString()?.ToInt() };
+                        product.ProductColor = new ProductColorModel { Id = value.GetValueFromDictonary("ProductColorId")?.ToString()?.ToInt(),Color = value?.GetValueFromDictonary("Color")?.ToString() };
+                        product.ProductSize = new ProductSizeModel { Id = value?.GetValueFromDictonary("ProductSizeId")?.ToString()?.ToInt() ,Size = value?.GetValueFromDictonary("Size")?.ToString()};
                         product.IsActive = value?.GetValueFromDictonary("IsActive")?.ToString()?.ToNullableBoolean();
                         products.Add(product);
                     }

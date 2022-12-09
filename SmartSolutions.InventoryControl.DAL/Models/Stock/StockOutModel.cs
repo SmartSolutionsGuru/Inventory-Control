@@ -125,7 +125,11 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Inventory
         #region Private Helpers
         private void OnPriceChange()
         {
-            if (Quantity == 0 || Price == 0) return;
+            // if (Quantity == 0 || Price == 0) return;
+            if (Price == null)
+                Price = 0;
+            if(Quantity == null)
+                Quantity = 0;
             Total = Quantity * (decimal)Price;
 
         }

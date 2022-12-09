@@ -212,18 +212,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        public void AddCity()
-        {
-            try
             {
-                var dlg = IoC.Get<AddCityDialogViewModel>();
-                IoC.Get<IDialogManager>().ShowDialogAsync(dlg);
-            }
-            catch (Exception ex)
-            {
-                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
-            }
-        }
         public void Cancel()
         {
             TryClose();

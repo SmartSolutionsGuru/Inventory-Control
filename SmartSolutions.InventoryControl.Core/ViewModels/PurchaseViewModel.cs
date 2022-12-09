@@ -36,6 +36,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private readonly DAL.Managers.Purchase.IPurchaseOrderManager _purchaseOrderManager;
         private readonly DAL.Managers.Purchase.IPurchaseOrderDetailManager _purchaseOrderDetailManager;
         private readonly DAL.Managers.Payments.IPaymentManager _paymentManager;
+        private readonly DAL.Managers.Purchase.IPurchaseReturnManager _purchaseReturnManager;
         #endregion
 
         #region [Constructor]
@@ -54,7 +55,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                 , DAL.Managers.Payments.IPaymentTypeManager paymentTypeManager
                                 , DAL.Managers.Purchase.IPurchaseOrderManager purchaseOrderManager
                                 , DAL.Managers.Purchase.IPurchaseOrderDetailManager purchaseOrderDetailManager
-                                , DAL.Managers.Payments.IPaymentManager paymentManager)
+                                , DAL.Managers.Payments.IPaymentManager paymentManager
+                                , DAL.Managers.Purchase.IPurchaseReturnManager purchaseReturnManager)
         {
             _stockInManager = stockInManager;
             _inventoryManager = inventoryManager;
@@ -69,6 +71,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             _purchaseOrderManager = purchaseOrderManager;
             _purchaseOrderDetailManager = purchaseOrderDetailManager;
             _paymentManager = paymentManager;
+            _purchaseReturnManager = purchaseReturnManager;
         }
         #endregion
 
@@ -120,18 +123,18 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 IsLoading = true;
                 bool IsAddProduct = CalculateInvoiceTotal();
                 var newProduct = new StockInModel();
-                if(SelectedPartner != null)
+                if (SelectedPartner != null)
                 {
                     newProduct.Partner = SelectedPartner;
-                }              
+                }
                 if (IsAddProduct || ProductGrid.Count == 0)
                 {
                    
                     if (Products != null && Products?.Count > 0)
-                    {                      
+                    {
                         ++AutoId;
                         ProductSuggetion = new ProductSuggestionProvider(Products);
-                    }                      
+                    }
                     else
                     {
                         await IoC.Get<IDialogManager>().ShowMessageBoxAsync($"There are No Products {Environment.NewLine}Please add Products To Proceed");
@@ -251,7 +254,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                         purchaseOrderDetail.ProductColor = product?.Product?.ProductColor;
                                         purchaseOrderDetail.ProductSize = product?.Product?.ProductSize;
                                         purchaseOrderDetail.Total = product?.Total.Value;
-                                        purchaseOrderDetail.Price = product?.Price.Value;
+                                        purchaseOrderDetail.Price = (decimal)product?.Price.Value;
                                         purchaseOrderDetail.Quantity = product?.Quantity.Value;
                                         purchaseOrderDetail.Warehouse = product?.Warehouse;
                                         purchaseOrderDetail.IsActive = true;
@@ -321,6 +324,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                             // Here Payment is made
                                                             var payment = new PaymentModel();
                                                             payment.Partner = SelectedPartner;
+                                                            //TODO: here we Enter the Cash or Bank system
                                                             payment.PaymentMethod = PurchaseInvoice?.SelectedPaymentType;
                                                             payment.PaymentType = DAL.Models.PaymentType.Receivable;
                                                             payment.PaymentImage = PaymentImage;
@@ -435,8 +439,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                         BalanceType = DAL.Models.PaymentType.Receivable;
                     }
                     selectedPartnerLedger.CurrentBalanceType = BalanceType;
-                    //BalanceType = selectedPartnerLedger.CurrentBalanceType;
-                    //BalanceType = selectedPartnerLedger.CurrentBalanceType;
                     GrandTotal = PreviousBalance + InvoiceTotal;
                 }
                 else
@@ -447,6 +449,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 {
                     //Here we Get Only those Product Which are sell by that Specific Partner
                     Products = (await _productManager.GetAllProductsPurchasedByPartnerAsync(SelectedPartner?.Id)).ToList();
+                    ProductSuggetion = new ProductSuggestionProvider(Products);
+
                 }
             }
             catch (Exception ex)
@@ -464,13 +468,13 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 {
                     if ((product.Price == null || product.Price == 0) && (product.Quantity == null || product.Quantity == 0))
                     {
-                        IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please complete the entry first", "Smart Solutions",Dialogs.MessageBoxOptions.Ok);
+                        IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please complete the entry first", "Smart Solutions", Dialogs.MessageBoxOptions.Ok);
                         retVal = false;
                         return retVal;
                     }
                     if (product.Quantity > 0 && product.Total == 0)
                     {
-                        product.Total = product.Price * product.Quantity;
+                        product.Total = (decimal)product.Price * product.Quantity;
                     }
                     else
                     {
@@ -491,10 +495,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             return retVal;
         }
         public void VerifySelectedPartner()
-        {
+            {
             if (SelectedPartner == null)
             {
-                NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Please Select Vender/Partner First", Type = Notifications.Wpf.NotificationType.Error });
+                IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Select Vender/Partner First","smart Solutions",Dialogs.MessageBoxOptions.Ok);
+                //NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Please Select Vender/Partner First", Type = Notifications.Wpf.NotificationType.Error });
                 return;
             }
         }
@@ -575,6 +580,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 }
                 else
                 {
+                    if (PurchaseInvoice != null)
+                        PurchaseInvoice.InvoiceId = _purchaseInvoiceManager.GenrateInvoiceNumber("P");
                     IsPurchaseSelected = true;
                 }
             }
@@ -584,15 +591,16 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
         }
 
-        private void OnSelectedProduct(ProductModel selectedProduct)
+        private async void OnSelectedProduct(ProductModel selectedProduct)
         {
-            if (selectedProduct == null) return;
+            if (selectedProduct == null || SelectedPartner == null) return;
 
             try
             {
                 if (SelectedPurchaseType.Equals("Purchase Return"))
                 {
-                    //TODO: Here we Move the Purchase Return Form
+                    Products = (await _productManager.GetAllProductsPurchasedByPartnerAsync(SelectedPartner?.Id)).ToList();
+                    ProductSuggetion = new ProductSuggestionProvider(Products);
                 }
             }
             catch (Exception ex)

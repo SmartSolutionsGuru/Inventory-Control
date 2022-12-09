@@ -9,6 +9,7 @@ using System.Text;
 using SmartSolutions.Util.LogUtils;
 using SmartSolutions.InventoryControl.DAL;
 using System.Diagnostics.Metrics;
+using SmartSolutions.Util.StrUtils;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
 {
@@ -26,7 +27,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
 
         #region [Constructor]
         [ImportingConstructor]
-        public AddCityDialogViewModel(ICountryManager countryManager, 
+        public AddCityDialogViewModel(ICountryManager countryManager,
                                     IProvinceManager provinceManager,
                                     ICityManager cityManager)
         {
@@ -39,7 +40,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         {
             base.OnActivate();
             Countries = (await _countryManager.GetCountriesAsync()).ToList();
-            SelectedCountry = Countries.FirstOrDefault(x=>x.Name.ToUpper().Equals("Pakistan".ToUpper()));
+            SelectedCountry = Countries.FirstOrDefault(x => x.Name.ToUpper().Equals("Pakistan".ToUpper()));
             Provinces = (await _provinceManager.GetProvinceByCountryIdAsync(SelectedCountry.Id)).ToList();
             SelectedProvince = Provinces?.FirstOrDefault();
         }
@@ -48,27 +49,45 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         {
             TryClose();
         }
-        public void Submit()
+        public async void Submit()
         {
             IsLoading = true;
             try
             {
-                if(!string.IsNullOrEmpty(CityName))
+                if (!string.IsNullOrEmpty(CityName))
                 {
-                    City = new CityModel()
+                    //Verify city Already exist in list or not
+                    var resultCity = await _cityManager.GetCityByNameAsync(CityName);
+                    if (string.IsNullOrEmpty(resultCity.CityName))
                     {
-                        Name = CityName,
-                        Country = SelectedCountry,
-                        Province = SelectedProvince,
-                        PhoneCode = Convert.ToInt32(CityCode),
-                        CreatedAt = DateTime.Now,
-                        CreatedBy = AppSettings.LoggedInUser.DisplayName,
-                        IsActive = true,
-                        IsDeleted = false,
-                        Description = $"City {CityName} With {SelectedCountry.Name} and {SelectedProvince.Name} is Added At {DateTime.Now} With {AppSettings.LoggedInUser.Name}"
+                        City = new CityModel()
+                        {
+                            Name = CityName,
+                            Country = SelectedCountry,
+                            Province = SelectedProvince,
+                            PhoneCode = Convert.ToInt32(CityCode),
+                            CreatedAt = DateTime.Now,
+                            CreatedBy = AppSettings.LoggedInUser.DisplayName,
+                            IsActive = true,
+                            IsDeleted = false,
+                            Description = $"City {CityName} With {SelectedCountry.Name} and {SelectedProvince.Name} is Added At {DateTime.Now} With {AppSettings.LoggedInUser.Name}"
 
-                    };
-                    _cityManager.AddCityAsync(City);
+                        };
+                        var result = await _cityManager.AddCityAsync(City);
+                        if (result)
+                        {
+                            NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "City Added Successfully", Type = Notifications.Wpf.NotificationType.Success });
+                        }
+                        else
+                        {
+                            NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "City not  Added", Type = Notifications.Wpf.NotificationType.Error });
+                        }
+                    }
+                    else
+                    {
+                        NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "City Already  Exist", Type = Notifications.Wpf.NotificationType.Error });
+                    }
+
                 }
             }
             catch (Exception ex)
@@ -78,6 +97,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
             finally
             {
                 IsLoading = false;
+                TryClose();
             }
         }
         public void Cancel()
@@ -88,6 +108,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
 
 
         #region [Properties]
+
         public CityModel City { get; set; }
 
         private List<DAL.Models.Region.CountryModel> _Countries;
@@ -132,7 +153,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         public string CityName
         {
             get { return _CityName; }
-            set { _CityName = value; NotifyOfPropertyChange(nameof(CityName)); }
+            set 
+            {
+                if(!string.IsNullOrEmpty(value))
+                {
+                    _CityName = value;
+                    _CityName = _CityName.CapitalizeFirstLetter();
+                }              
+                NotifyOfPropertyChange(nameof(CityName));
+            }
         }
         private string _CityCode;
         /// <summary>

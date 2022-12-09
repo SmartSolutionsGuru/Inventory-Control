@@ -30,7 +30,7 @@ namespace SmartSolutions.InventoryControl.UI.Converters
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
+      {
             var  val = value as string;
             decimal? convertDecimal = null;
             if (!string.IsNullOrEmpty(val))
