@@ -212,7 +212,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-            {
+            
         public void Cancel()
         {
             TryClose();

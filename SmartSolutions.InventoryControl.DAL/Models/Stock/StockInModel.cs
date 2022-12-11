@@ -30,6 +30,9 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Stock
         #endregion
 
         #region Properties
+        /// <summary>
+        /// get or set Partner for Invoice
+        /// </summary>
         public BussinessPartnerModel Partner { get; set; }
         public PurchaseOrderModel PurchaseOrder { get; set; }
         public PurchaseOrderDetailModel PurchaseOrderDetail { get; set; }
@@ -38,7 +41,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Stock
         public ProductModel Product
         {
             get { return _Product; }
-            set { _Product = value; NotifyOfPropertyChange(nameof(Product)); GetProductLastPrice(Partner?.Id, Product?.Id); }
+            set { _Product = value; NotifyOfPropertyChange(nameof(Product)); GetProductLastPrice(Partner?.Id, Product?.Id);}
         }
 
         public int? PurchaseInvoiceId { get; set; }
@@ -69,11 +72,21 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Stock
             set { _Total = value; NotifyOfPropertyChange(nameof(Total)); }
         }
 
-        public string Description { get; set; }
         /// <summary>
-        /// gets or set warehouse
+        /// gets or set Description
         /// </summary>
-        public WarehouseModel Warehouse { get; set; }
+        public string Description { get; set; }
+       
+        private WarehouseModel _Warehouse;
+        /// <summary>
+        /// gets or set warehouse for Item
+        /// </summary>
+        public WarehouseModel Warehouse
+        {
+            get { return _Warehouse; }
+            set { _Warehouse = value; NotifyOfPropertyChange(nameof(Warehouse)); }
+        }
+
 
         private int _ProductLastPrice;
         /// <summary>

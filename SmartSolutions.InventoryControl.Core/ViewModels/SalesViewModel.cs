@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using iText.StyledXmlParser.Jsoup.Helper;
 using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;
 using SmartSolutions.InventoryControl.Core.ViewModels.Dialogs;
 using SmartSolutions.InventoryControl.DAL;
@@ -160,17 +161,21 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             {
                 IsLoading = true;               
                 var IsAddProduct = CalculateInvoiceTotal(true);
-              
-                if(IsAddProduct || ProductGrid.Count == 0) 
+                var resultAddProduct = VerifyEmptyProduct(ProductGrid.LastOrDefault());
+
+                if(!resultAddProduct)
                 {
-                    ++AutoId;
-                    StockOutModel newproduct = new StockOutModel();
-                    if(SelectedPartner != null)
+                    if (IsAddProduct || ProductGrid.Count == 0)
                     {
-                        newproduct.Partner = SelectedPartner;
+                        ++AutoId;
+                        StockOutModel newproduct = new StockOutModel();
+                        if (SelectedPartner != null)
+                        {
+                            newproduct.Partner = SelectedPartner;
+                        }
+                        ProductGrid.Add(newproduct);
                     }
-                    ProductGrid.Add(newproduct);
-                }              
+                }                       
             }
             catch (Exception ex)
             {
@@ -201,7 +206,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
             catch (Exception ex)
             {
-
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
@@ -508,12 +512,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                         InvoiceTotal = 0;
                     foreach (var product in ProductGrid)
                     {
-                        if ((product.Price == null || product.Price == 0) || (product.Quantity == null || product.Quantity == 0) && isShowMessageBox == true)
-                        {
-                            IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please complete the entry first", "Smart Solutions", MessageBoxOptions.Ok);
-                            retVal = false;
-                            return retVal;
-                        }
+                       
                         if (product.Quantity > 0 && product.Total == 0)
                         {
                             product.Total = product.Price * product.Quantity;
@@ -545,6 +544,19 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             catch (Exception ex)
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
+        }
+        private bool VerifyEmptyProduct(StockOutModel product)
+        {
+            //null guard
+            if (product == null) return false;
+            bool retVal = false;
+            if ((product.Price == null || product.Price == 0) || (product.Quantity == null || product.Quantity == 0))
+            {
+                IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please complete the entry first", "Smart Solutions", MessageBoxOptions.Ok);
+                retVal = true;
+                return retVal;
             }
             return retVal;
         }

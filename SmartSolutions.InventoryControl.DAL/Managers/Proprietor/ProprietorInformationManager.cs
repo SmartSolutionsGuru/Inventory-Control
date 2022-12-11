@@ -70,7 +70,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Proprietor
             {
                 string query = @"SELECT * FROM ProprietorInfo WHERE IsActive = 1";
                 var values = await Repository.QueryAsync(query);
-                if(values != null || values.Count > 0)
+                if(values != null || values?.Count > 0)
                 {
                     var value = values.FirstOrDefault();
                     proprietorInfo.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();

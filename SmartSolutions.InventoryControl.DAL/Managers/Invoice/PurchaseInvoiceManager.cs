@@ -74,7 +74,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Invoice
             List<PurchaseInvoiceModel> purchases = new List<PurchaseInvoiceModel>();
             try
             {
-                string query = $"SELECT * FROM PurchaseInvoice WHERE ISActive = 1";
+                string query = $"SELECT * FROM PurchaseInvoice WHERE IsActive = 1";
                 var values = await Repository.QueryAsync(query);
                 if (values != null && values?.Count > 0)
                 {

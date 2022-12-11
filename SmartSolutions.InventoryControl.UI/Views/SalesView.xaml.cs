@@ -115,5 +115,69 @@ namespace SmartSolutions.InventoryControl.UI.Views
         {
             ViewModel?.IsPartnerSelected();
         }
+        /// <summary>
+        /// text Box For Total for Invoice
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var control = sender as TextBox;
+            if (!string.IsNullOrEmpty(control.Text))
+            {
+                System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US");
+                var valueBefore = Int64.Parse(control.Text, System.Globalization.NumberStyles.AllowThousands);
+                control.Text = String.Format(culture, "{0:N0}", valueBefore);
+                control.Select(control.Text.Length, 0);
+            }
+        }
+        /// <summary>
+        /// Grand total TextBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
+        {
+            var control = sender as TextBox;
+            if (!string.IsNullOrEmpty(control.Text))
+            {
+                System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US");
+                var valueBefore = Int64.Parse(control.Text, System.Globalization.NumberStyles.AllowThousands);
+                control.Text = String.Format(culture, "{0:N0}", valueBefore);
+                control.Select(control.Text.Length, 0);
+            }
+        }
+        /// <summary>
+        /// TextBox For Invoice total
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextBox_TextChanged_2(object sender, TextChangedEventArgs e)
+        {
+            var control = sender as TextBox;
+            if (!string.IsNullOrEmpty(control.Text))
+            {
+                System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US");
+                var valueBefore = Int64.Parse(control.Text, System.Globalization.NumberStyles.AllowThousands);
+                control.Text = String.Format(culture, "{0:N0}", valueBefore);
+                control.Select(control.Text.Length, 0);
+            }
+        }
+        /// <summary>
+        /// TextBox for Payment
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextBox_TextChanged_3(object sender, TextChangedEventArgs e)
+        {
+            var control = sender as TextBox;
+            if (!string.IsNullOrEmpty(control.Text))
+            {
+                System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US");
+                var valueBefore = Int64.Parse(control.Text, System.Globalization.NumberStyles.AllowThousands);
+                control.Text = String.Format(culture, "{0:N0}", valueBefore);
+                control.Select(control.Text.Length, 0);
+            }
+        }
     }
 }

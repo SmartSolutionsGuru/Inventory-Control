@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using iText.StyledXmlParser.Jsoup.Helper;
 using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;
+using SmartSolutions.InventoryControl.Core.ViewModels.Dialogs;
 using SmartSolutions.InventoryControl.DAL;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.DAL.Models.Inventory;
@@ -93,7 +94,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 PurchaseTypes = new List<string> { "Purchase", "Purchase Return" };
                 SelectedPurchaseType = PurchaseTypes.Where(x => x.Equals("Purchase")).FirstOrDefault();
                 Products = (await _productManager.GetAllProductsWithColorAndSize(string.Empty)).ToList();
-                //Venders = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
                 var partnerType = new List<int?> { 1, 3 };
                 Venders = (await _bussinessPartnerManager.GetBussinessPartnersByTypeAsync(partnerType)).OrderBy(x => x.Name).ToList();
                 ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
@@ -109,6 +109,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 AutoId = 0;
                 AddProduct(model);
                 IsLoading = false;
+                Payment = 0;
+                DiscountPrice = 0;
 
             }
             catch (Exception ex)
@@ -122,27 +124,38 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             {
                 IsLoading = true;
                 bool IsAddProduct = CalculateInvoiceTotal();
-                var newProduct = new StockInModel();
-                if (SelectedPartner != null)
+                // Indicates wheather product is Filled or Not
+                var resultIndicator = VerifyEmptyProduct(ProductGrid.LastOrDefault());
+                if(!resultIndicator)
                 {
-                    newProduct.Partner = SelectedPartner;
-                }
-                if (IsAddProduct || ProductGrid.Count == 0)
-                {
-                   
-                    if (Products != null && Products?.Count > 0)
+                    var newProduct = new StockInModel();
+                    if (SelectedPartner != null)
                     {
-                        ++AutoId;
-                        ProductSuggetion = new ProductSuggestionProvider(Products);
+                        newProduct.Partner = SelectedPartner;
+                        newProduct.Warehouse = Warehouses.FirstOrDefault();
                     }
                     else
                     {
-                        await IoC.Get<IDialogManager>().ShowMessageBoxAsync($"There are No Products {Environment.NewLine}Please add Products To Proceed");
+                        newProduct.Warehouse = Warehouses.FirstOrDefault();
                     }
-                    ProductGrid.Add(newProduct);
-                    SelectedProduct = new ProductModel();
-                    SelectedWarehouse = new WarehouseModel();
-                }
+                    if (IsAddProduct || ProductGrid.Count == 0)
+                    {
+
+                        if (Products != null && Products?.Count > 0)
+                        {
+                            ++AutoId;
+                            ProductSuggetion = new ProductSuggestionProvider(Products);
+                        }
+                        else
+                        {
+                            await IoC.Get<IDialogManager>().ShowMessageBoxAsync($"There are No Products {Environment.NewLine}Please add Products To Proceed");
+                        }
+                        ProductGrid.Add(newProduct);
+                        SelectedProduct = new ProductModel();
+                        SelectedWarehouse = new WarehouseModel();
+
+                    }
+                }               
             }
             catch (Exception ex)
             {
@@ -162,8 +175,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     ProductGrid.Remove(product);
                     product = new StockInModel();
                     ProductGrid.Add(product);
-                    //ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
-                    //ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
                 }
                 else
                 {
@@ -319,7 +330,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                     var resultStockIn = await _stockInManager.AddBulkStockInAsync(productList);
                                                     if (resultStockIn)
                                                     {
-                                                        if (Payment != null || Payment > 0)
+                                                        if (Payment != null && Payment > 0)
                                                         {
                                                             // Here Payment is made
                                                             var payment = new PaymentModel();
@@ -336,24 +347,25 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                                 payment.Payable = Payment.Value;
                                                             payment.Description = $"Payment is Made To {SelectedPartner?.Name} against {productList?.FirstOrDefault()?.PurchaseInvoiceId} at {DateTime.Now}";
                                                             var resultPayment = await _paymentManager.AddPaymentAsync(payment);
+                                                            if(resultPayment)
+                                                            {
+                                                                BussinessPartnerLedgerModel partnerPayment = new BussinessPartnerLedgerModel();
+                                                                partnerPayment.Partner = SelectedPartner;
+                                                                partnerPayment.Receivable = Payment.Value;
+                                                                var lastPayment =await  _paymentManager.GetLastPaymentByPartnerIdAsync(SelectedPartner?.Id ?? 0);
+                                                                if (lastPayment != null)
+                                                                    partnerPayment.Payment.Id = lastPayment.Id;
+                                                                partnerPayment.Description = $"Amount of {payment.PaymentAmount} is Paid To {SelectedPartner.BussinessName} At {DateTime.Now} ";
+                                                                await _partnerLedgerManager.AddPartnerBalanceAsync(partnerPayment);
+                                                            }
+
                                                         }
                                                         // here we Update the Partner Ledger Account
                                                         BussinessPartnerLedgerModel partnerLedger = new BussinessPartnerLedgerModel();
                                                         partnerLedger.Partner = SelectedPartner;
-                                                        var selectedPartnerBalance = await _partnerLedgerManager.GetPartnerLedgerCurrentBalanceAsync(SelectedPartner?.Id ?? 0);
+                                                        //var selectedPartnerBalance = await _partnerLedgerManager.GetPartnerLedgerCurrentBalanceAsync(SelectedPartner?.Id ?? 0);
                                                         partnerLedger.Payable = InvoiceTotal.Value;
                                                         partnerLedger.InvoiceId = productList?.FirstOrDefault()?.PurchaseInvoiceId;
-                                                        if (Payment != null || Payment > 0)
-                                                        {
-                                                            partnerLedger.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(SelectedPartner?.Id);
-                                                            partnerLedger.CurrentBalance = selectedPartnerBalance.CurrentBalance + InvoiceTotal.Value - partnerLedger.Payment.PaymentAmount;
-                                                            partnerLedger.Receivable = partnerLedger.Payment.PaymentAmount;
-                                                        }
-                                                        else
-                                                        {
-                                                            partnerLedger.CurrentBalance = selectedPartnerBalance.CurrentBalance + InvoiceTotal.Value;
-                                                        }
-                                                        partnerLedger.CurrentBalanceType = partnerLedger?.CurrentBalance > 0 ? DAL.Models.PaymentType.Payable : DAL.Models.PaymentType.Receivable;
                                                         partnerLedger.Description = $"{SelectedPartner.Name} Sells Stock Amount Of {InvoiceTotal.Value} Invoice Of{PurchaseInvoice.InvoiceId} At {PurchaseInvoice.CreatedAt}";
                                                         var result = await _partnerLedgerManager.UpdatePartnerCurrentBalanceAsync(partnerLedger);
                                                         if (result)
@@ -387,7 +399,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             try
             {
-                SelectedPurchaseType = string.Empty;
+                SelectedPurchaseType = "Purchase";
                 Venders = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
                 SelectedPartner = new BussinessPartnerModel();
                 ProductGrid = new ObservableCollection<StockInModel>();
@@ -466,12 +478,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 InvoiceTotal = 0;
                 foreach (var product in ProductGrid)
                 {
-                    if ((product.Price == null || product.Price == 0) && (product.Quantity == null || product.Quantity == 0))
-                    {
-                        IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please complete the entry first", "Smart Solutions", Dialogs.MessageBoxOptions.Ok);
-                        retVal = false;
-                        return retVal;
-                    }
+
                     if (product.Quantity > 0 && product.Total == 0)
                     {
                         product.Total = (decimal)product.Price * product.Quantity;
@@ -494,31 +501,39 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             }
             return retVal;
         }
-        public void VerifySelectedPartner()
+        private bool VerifyEmptyProduct(StockInModel product)
+        {
+            //null guard
+            if (product == null) return false;
+            bool retVal = false;
+            if ((product.Price == null || product.Price == 0)
+                && (product.Quantity == null || product.Quantity == 0))
             {
+                IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please complete the entry first", "Smart Solutions", Dialogs.MessageBoxOptions.Ok);
+                retVal = true;
+                return retVal;
+            }
+            return retVal;
+        }
+        public void VerifySelectedPartner()
+        {
             if (SelectedPartner == null)
             {
-                IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Select Vender/Partner First","smart Solutions",Dialogs.MessageBoxOptions.Ok);
-                //NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Please Select Vender/Partner First", Type = Notifications.Wpf.NotificationType.Error });
+                IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Select Vender/Partner First", "smart Solutions", Dialogs.MessageBoxOptions.Ok);
                 return;
             }
         }
+        /// <summary>
+        /// Calculate discount Price for Invoice
+        /// </summary>
+        /// <param name="discountAmount"></param>
         public void CalculateDiscountPrice(decimal discountAmount)
         {
-            //if (percentDiscount != 0)
-            //{
-            //    decimal newInvoiceTotal = ReCalculateInvoicePrice();
-            //    if (newInvoiceTotal > 0 && newInvoiceTotal > InvoiceTotal)
-            //    {
-            //        InvoiceTotal = newInvoiceTotal;
-            //    }
-            //    DiscountPrice = InvoiceTotal * PercentDiscount / 100;
-            //    InvoiceTotal = InvoiceTotal - DiscountPrice;
-            //    GrandTotal = InvoiceTotal + PreviousBalance;
-            //}
+
             if (discountAmount != 0)
             {
-                InvoiceTotal = InvoiceTotal - discountAmount;
+                CalculateInvoiceTotal();
+                InvoiceTotal = InvoiceTotal - (discountAmount + Payment);
                 GrandTotal = InvoiceTotal + PreviousBalance;
             }
         }
@@ -544,7 +559,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         public void OnPaymentRecived()
         {
-            GrandTotal = PreviousBalance + (InvoiceTotal - Payment);
+            CalculateInvoiceTotal();
+            GrandTotal = PreviousBalance + (InvoiceTotal - Payment - DiscountPrice);
         }
         public async void FilterVenders(string searchText)
         {
@@ -613,6 +629,38 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             if (ProductSuggetion == null || ProductSuggetion.SuggestedProducts.Count == 0)
             {
                 ProductSuggetion = new ProductSuggestionProvider(Products);
+            }
+        }
+        public async void OnSelectingPaymentType(PaymentTypeModel paymentType)
+        {
+            // null guard
+            if (paymentType == null) return;
+            switch (paymentType.Name)
+            {
+                case "Cash":
+                    break;
+                case "Bank":
+                    var dlg = IoC.Get<BankPaymentDialogViewModel>();
+                   await IoC.Get<IDialogManager>().ShowDialogAsync(dlg);
+                    break;
+                case "Jazz Cash":
+                    var jazzDlg = IoC.Get<MobileAccountPaymentDialogViewModel>();
+                    await IoC.Get<IDialogManager>().ShowDialogAsync(jazzDlg);
+                    break;
+                case "Ubl Omni":
+                    var ublDlg = IoC.Get<MobileAccountPaymentDialogViewModel>();
+                    await IoC.Get<IDialogManager>().ShowDialogAsync(ublDlg);
+                    break;
+                case "Easy paisa":
+                    var easyDlg = IoC.Get<MobileAccountPaymentDialogViewModel>();
+                    await IoC.Get<IDialogManager>().ShowDialogAsync(easyDlg);
+                    break;
+                case "Partial":
+                    break;
+                case "Credit":
+                    break;
+                default:
+                    break;
             }
         }
         #endregion
@@ -719,6 +767,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             set { _PurchaseInvoice = value; NotifyOfPropertyChange(nameof(PurchaseInvoice)); }
         }
 
+        private PaymentTypeModel _SelectedPaymentType;
+        /// <summary>
+        /// Selected Payment Type
+        /// </summary>
+        public PaymentTypeModel SelectedPaymentType
+        {
+            get { return _SelectedPaymentType; }
+            set { _SelectedPaymentType = value; NotifyOfPropertyChange(nameof(SelectedPaymentType)); OnSelectingPaymentType(SelectedPaymentType); }
+        }
 
         private BussinessPartnerModel _SelectedPartner;
         public BussinessPartnerModel SelectedPartner

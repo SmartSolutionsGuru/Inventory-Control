@@ -119,7 +119,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 parameters["@v_searchText"] = search == null ? search = string.Empty : search;
                 string query = string.Empty;
                 //query = @"SELECT * FROM BussinessPartner Where Name LIKE @v_searchText + '%' AND IsActive = 1";
-                query = @"SELECT * FROM BussinessPartner Where Name LIKE @v_searchText + '%' AND IsActive = 1";
+                //query = @"SELECT * FROM BussinessPartner Where Name LIKE @v_searchText + '%' AND IsActive = 1";
+                query = @"SELECT * FROM BussinessPartner Where BussinessName LIKE @v_searchText + '%' AND IsActive = 1";
                 var values = await Repository.QueryAsync(query, parameters: parameters);
                 if (values != null)
                 {

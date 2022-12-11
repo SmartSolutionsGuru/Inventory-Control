@@ -74,17 +74,23 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
+                <TextBlock Text="{Binding Path=BussinessName}"
+                           FontSize="{StaticResource MediumSize}"
+                           FontFamily="{StaticResource MediumFont}"
+                           Foreground="{StaticResource GrayColorBrush}"/>
                 <TextBlock Text="{Binding Path=Name}"
+                           Grid.Row="1"
                            FontSize="{StaticResource MediumSize}"
                            FontFamily="{StaticResource MediumFont}"
                            Foreground="{StaticResource GrayColorBrush}"/>
                 <TextBlock Text="{Binding City.Name,Mode=OneWay}"
-                           Grid.Row="1"
+                           Grid.Row="2"
                            FontSize="{StaticResource SmallSize}"
                            FontFamily="{StaticResource MediumFont}"
                            Foreground="{StaticResource LightGrayColorBrush}"/>
-                <TextBlock  Grid.Row="2"
+                <TextBlock  Grid.Row="3"
                             Text="{Binding PhoneNumber,Mode=OneWay}"
                             FontSize="{StaticResource SmallSize}"
                             Foreground="{StaticResource LightGrayColorBrush}"
@@ -93,7 +99,7 @@
         </DataTemplate>
         <DataTemplate x:Key="DisplayNameTemplate" DataType="{x:Type models:BussinessPartnerModel}">
             <Grid>
-                <TextBlock Text="{Binding Path=Name}"
+                <TextBlock Text="{Binding Path=BussinessName}"
                        Foreground="{StaticResource GrayColorBrush}"
                        FontFamily="{StaticResource MediumFont}"
                        FontSize="{StaticResource MediumSize}"/>
@@ -193,20 +199,7 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                        <!--<autoComplete:AutoCompleteTextBox Grid.Column="1" 
-                                                          Height="50"
-                                                          Width="250"
-                                                          Padding="8 0 0 0"
-                                                          Opacity="0.7"
-                                                          Watermark="Enter Vender Name"
-                                                          DisplayMember="Name"
-                                                          FontFamily="{StaticResource MediumFont}"
-                                                          Provider="{Binding PartnerSuggetion,Mode=TwoWay}"
-                                                          SelectedItem="{Binding SelectedPartner,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                                                          ItemTemplate="{StaticResource NameTemplate}"
-                                                          FontSize="{StaticResource MediumSize}"
-                                                          Foreground="{StaticResource GrayColorBrush}"
-                                                          Style="{StaticResource AutoCompleteTextBoxStyle}"/>-->
+                     
                         <userControl:SearchableComboBox Grid.Column="1" 
                                                         Height="50"
                                                         Width="250"
@@ -280,8 +273,6 @@
                             </Border>
                             <TextBlock Grid.Row="1" Grid.Column="0" Text="Item #" Margin="5 0 0 0" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Center"/>
                             <TextBlock Grid.Row="1" Grid.Column="1" Text="Product" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="10 0 0 0"/>
-                            <!--<TextBlock Grid.Row="1" Grid.Column="2" Text="Product Color" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
-                            <TextBlock Grid.Row="1" Grid.Column="3" Text="Product Size" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>-->
                             <TextBlock Grid.Row="1" Grid.Column="2" Text="Quantity" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="10 0 0 0"/>
                             <TextBlock Grid.Row="1" Grid.Column="3" Text="Price" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
                             <TextBlock Grid.Row="1" Grid.Column="4" Text="Available Stock" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource MediumSize}" HorizontalAlignment="Left" Margin="5 0 0 0"/>
@@ -337,78 +328,28 @@
                                                                                   Watermark="Product Name" 
                                                                                   FontFamily="{StaticResource MediumFont}" 
                                                                                   FontSize="{StaticResource MediumSize}"/>
-                                                <!--<userControl:SearchableComboBox  Height="40"
-                                                                                 Width="130"
-                                                                                 Grid.Row="1"
-                                                                                 Grid.Column="1"
-                                                                                 Foreground="{StaticResource GrayColorBrush}"
-                                                                                 BorderBrush="{StaticResource BlueColorBrush}"
-                                                                                 BorderThickness="1.7"
-                                                                                 Style="{StaticResource BaseSearchableComboBox}"
-                                                                                 IsEditable="True"
-                                                                                 ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.Products,Mode=OneWay}"
-                                                                                 SelectedItem="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.SelectedInventoryProduct.Product,Mode=TwoWay}"
-                                                                                 FontFamily="{StaticResource MediumFont}"
-                                                                                 FontSize="{StaticResource MediumSize}"
-                                                                                 SearchCharCount="0"
-                                                                                 SearchCounter="ProductSearchCounter"
-                                                                                 ItemTemplate="{StaticResource ProductTemplate}"
-                                                                                 AltSelectionBoxItemTemplate="{StaticResource ProductDisplayTemplate}"
-                                                                                 ControlExtensions:WaterMarkTextExtension.WatermarkText="Select Product"/>-->
-                                                <!--<ComboBox Height="40"
-                                                          Grid.Row="1"
-                                                          Grid.Column="3"
-                                                          Width="130"
-                                                          Style="{StaticResource BaseComboBox}"
-                                                          BorderBrush="{StaticResource BlueColorBrush}"
-                                                          BorderThickness="1.7"
-                                                          DisplayMemberPath="Color"
-                                                          ControlExtensions:WaterMarkTextExtension.WatermarkText="Product Color"
-                                                          Opacity="0.7"
-                                                          VerticalAlignment="Top"
-                                                          Margin="0 0 0 0"
-                                                          Padding="15 0 0 0"
-                                                          HorizontalAlignment="Left"
-                                                          FontFamily="{StaticResource MediumFont}"
-                                                          FontSize="{StaticResource MediumSize}"
-                                                          Foreground="{StaticResource GrayColorBrush}"
-                                                          ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=DataContext.ProductColors,Mode=TwoWay}"
-                                                          SelectedItem="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.SelectedInventoryProduct.ProductColor,Mode=TwoWay}"/>
-                                                <ComboBox Height="40"
-                                                      Grid.Row="1"
-                                                      Grid.Column="5"
-                                                      Width="130"
-                                                      VerticalAlignment="Top"
-                                                      Style="{StaticResource BaseComboBox}"
-                                                      BorderBrush="{StaticResource BlueColorBrush}"
-                                                      BorderThickness="1.7"
-                                                      DisplayMemberPath="Size"
-                                                      ControlExtensions:WaterMarkTextExtension.WatermarkText="Product Size"
-                                                      Opacity="0.7"
-                                                      Margin="0 0 0 0"
-                                                      Padding="15 0 0 0"
-                                                      FontFamily="{StaticResource MediumFont}"
-                                                      FontSize="{StaticResource MediumSize}"
-                                                      Foreground="{StaticResource GrayColorBrush}"
-                                                      ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=DataContext.ProductSizes,Mode=TwoWay}"
-                                                      SelectedItem="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListView},Path=DataContext.SelectedInventoryProduct.ProductSize,Mode=TwoWay}"/>-->
+                                            
+                                               
+                                                    
                                                 <TextBox Grid.Row="1" 
                                                          Grid.Column="3" 
                                                          Opacity="0.7" 
                                                          Height="40" 
                                                          Width="130" 
+                                                         FontWeight="DemiBold"
                                                          Foreground="{StaticResource GrayColorBrush}" 
                                                          VerticalAlignment="Top" 
-                                                         Text="{Binding Quantity,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                         Text="{Binding Quantity,Mode=TwoWay,StringFormat={}{0:N2},UpdateSourceTrigger=PropertyChanged}"
                                                          Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Quantity" />
                                                 <!--, Converter={StaticResource StringToDecimalConverter},ConverterParameter=#\,##0.00-->
                                                 <TextBox Grid.Row="1" 
                                                          Grid.Column="5" 
-                                                         Opacity="0.7" 
+                                                         Opacity="0.7"
+                                                         FontWeight="DemiBold"
                                                          Height="40" 
                                                          Width="130" 
                                                          VerticalAlignment="Top" 
-                                                         Text="{Binding Price,Mode=TwoWay,StringFormat={}{0:N2},UpdateSourceTrigger=PropertyChanged,ValidatesOnExceptions=true, ValidatesOnDataErrors=true, NotifyOnValidationError=True}" 
+                                                         Text="{Binding Price,StringFormat={}{0:N2},Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnExceptions=true, ValidatesOnDataErrors=true, NotifyOnValidationError=True}" 
                                                          Style="{StaticResource TextBoxVisibilityPathIconStyle}"  
                                                          BorderBrush="{StaticResource BlueColorBrush}" 
                                                          BorderThickness="1.7" 
@@ -421,6 +362,7 @@
                                                          IsReadOnly="True" 
                                                          Height="40" 
                                                          Width="130" 
+                                                         FontWeight="DemiBold"
                                                          VerticalAlignment="Center" 
                                                          VerticalContentAlignment="Center"
                                                          HorizontalContentAlignment="Left"
@@ -440,7 +382,7 @@
                                                         </Style>
                                                     </TextBox.Style>
                                                 </TextBox>
-                                                <TextBox Grid.Row="1" Grid.Column="9" Opacity="0.7" IsReadOnly="True" Height="40" Width="130" VerticalAlignment="Top" Text="{Binding Total,Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" />
+                                                <TextBox Grid.Row="1" Grid.Column="9" Opacity="0.7" FontWeight="DemiBold" IsReadOnly="True" Height="40" Width="130" VerticalAlignment="Top" Text="{Binding Total,StringFormat={}{0:N2},Mode=TwoWay}" Style="{StaticResource TextBoxVisibilityPathIconStyle}" BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" />
                                                 <ComboBox Height="40"
                                                           Grid.Row="1"
                                                           Grid.Column="11"
@@ -563,16 +505,16 @@
                             </StackPanel>-->
                             <StackPanel Grid.Column="2">
                                 <TextBlock Text="Discount Amount" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" HorizontalAlignment="Left" Margin="20 0 0 0" FontSize="{StaticResource MediumSize}"/>
-                                <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150"  Margin="0 5 0 0"  VerticalAlignment="Top" Text="{Binding SaleInvoice.Discount,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Discount Price" />
+                                <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150"  Margin="0 5 0 0"  VerticalAlignment="Top" Text="{Binding SaleInvoice.Discount,StringFormat={}{0:N2},Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Discount Price" />
                             </StackPanel>
 
                             <StackPanel Grid.Column="4">
                                 <TextBlock Text="Payment" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" HorizontalAlignment="Left" Margin="20 0 0 0" FontSize="{StaticResource MediumSize}"/>
-                                <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150" Margin="0 5 0 0"  VerticalAlignment="Top" Text="{Binding Price,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Price" />
+                                <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150" FontWeight="DemiBold"  Margin="0 5 0 0"  VerticalAlignment="Top" Text="{Binding Price,StringFormat={}{0:N2},Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Price" />
                             </StackPanel>
                             <StackPanel Grid.Column="3">
                                 <TextBlock Text="Invoice Total" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" HorizontalAlignment="Left" Margin="20 0 0 0" FontSize="{StaticResource MediumSize}"/>
-                                <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150" Margin="0 5 0 0"  VerticalAlignment="Top" IsReadOnly="True" Text="{Binding InvoiceTotal,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Grand Total" />
+                                <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150" Margin="0 5 0 0" FontWeight="DemiBold" VerticalAlignment="Top" IsReadOnly="True" Text="{Binding InvoiceTotal,StringFormat={}{0:N2},Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Grand Total" />
                             </StackPanel>
 
                         </Grid>

@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using SmartSolutions.InventoryControl.DAL;
 using SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder;
 using System;
 using System.Collections.Generic;

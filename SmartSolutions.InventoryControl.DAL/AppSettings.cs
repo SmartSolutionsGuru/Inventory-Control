@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SmartSolutions.InventoryControl.DAL
 {
-   public class AppSettings
+    public class AppSettings
     {
         /// <summary>
         /// The directory where the app is runing
