@@ -486,10 +486,10 @@
                                           Height="40"
                                           Width="150"
                                           Margin="0 0 0 0"
-                                          Padding="5 0 0 0"
+                                          Padding="15 0 0 0"
                                           DisplayMemberPath="Name"
                                           ItemsSource="{Binding  SaleInvoice.PaymentTypes,Mode=OneWay}"
-                                          SelectedItem="{Binding SaleInvoice.SelectedPaymentType,Mode=TwoWay}"
+                                          SelectedItem="{Binding SelectedPaymentType,Mode=TwoWay}"
                                           Style="{StaticResource BaseComboBox}"
                                           ControlExtensions:WaterMarkTextExtension.WatermarkText="Payment Type"
                                           Foreground="{StaticResource GrayColorBrush}"
@@ -505,12 +505,12 @@
                             </StackPanel>-->
                             <StackPanel Grid.Column="2">
                                 <TextBlock Text="Discount Amount" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" HorizontalAlignment="Left" Margin="20 0 0 0" FontSize="{StaticResource MediumSize}"/>
-                                <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150"  Margin="0 5 0 0"  VerticalAlignment="Top" Text="{Binding SaleInvoice.Discount,StringFormat={}{0:N2},Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Discount Price" />
+                                <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150" FontWeight="DemiBold" Margin="0 5 0 0"  VerticalAlignment="Top" Text="{Binding DiscountPrice,StringFormat={}{0:N2},Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Delay=300}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Discount Price" />
                             </StackPanel>
 
                             <StackPanel Grid.Column="4">
                                 <TextBlock Text="Payment" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" HorizontalAlignment="Left" Margin="20 0 0 0" FontSize="{StaticResource MediumSize}"/>
-                                <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150" FontWeight="DemiBold"  Margin="0 5 0 0"  VerticalAlignment="Top" Text="{Binding Price,StringFormat={}{0:N2},Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Price" />
+                                <TextBox Grid.Row="0" Grid.Column="2" Opacity="0.7" Height="40" Width="150" FontWeight="DemiBold"  Margin="0 5 0 0"  VerticalAlignment="Top" Text="{Binding Payment,StringFormat={}{0:N2},Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,Delay=300}" Style="{StaticResource TextBoxVisibilityPathIconStyle}"  BorderBrush="{StaticResource BlueColorBrush}" BorderThickness="1.7" ControlExtensions:WaterMarkTextExtension.WatermarkText="Price" />
                             </StackPanel>
                             <StackPanel Grid.Column="3">
                                 <TextBlock Text="Invoice Total" Foreground="{StaticResource GrayColorBrush}" FontFamily="{StaticResource MediumFont}" HorizontalAlignment="Left" Margin="20 0 0 0" FontSize="{StaticResource MediumSize}"/>

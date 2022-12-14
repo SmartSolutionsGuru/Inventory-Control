@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Caliburn.Micro" Version="3.2.0" />
+    <PackageReference Include="Fractions" Version="7.2.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.0" />
     <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="161.47021.0" />

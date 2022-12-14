@@ -101,9 +101,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             SelectedInvoiceType = InvoiceTypes.Where(x => x.Equals("Sales")).FirstOrDefault();
             PartnerType = new List<int?>() { 2, 3 };
             Partners = (await _bussinessPartnerManager.GetBussinessPartnersByTypeAsync(PartnerType)).OrderBy(x => x.Name).ToList();
-            //Partners = (await _bussinessPartnerManager.GetAllBussinessPartnersAsync()).OrderBy(x => x.Name).ToList();
-            //Products = (await _productManager.GetAllProductsAsync()).ToList();
-            //Warehouses = (await _warehouseManager.GetAllWarehousesAsync()).ToList();
             Products = (await _productManager.GetAllProductsWithColorAndSize(string.Empty)).ToList();
             ProductSizes = (await _productSizeManager.GetProductAllSizeAsync()).ToList();
             ProductColors = (await _productColorManager.GetProductAllColorsAsync()).ToList();
@@ -119,6 +116,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             AutoId = 0;
             AddProduct(inventoryModel);
             SelectedInventoryProduct = inventoryModel;
+            Payment = 0;
+            DiscountPrice = 0;
             IsLoading = false;
         }
         public void OnGettingPrice()
@@ -135,7 +134,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             if (SelectedPartner == null)
             {
-                //NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Please Select Vender/Partner First", Type = Notifications.Wpf.NotificationType.Error });
                 IoC.Get<IDialogManager>().ShowMessageBoxAsync("Please Select Vender/Partner First", "smart Solutions", Dialogs.MessageBoxOptions.Ok);
                 return;
             }
@@ -354,6 +352,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                         var payment = new PaymentModel();
                                                         payment.Partner = SelectedPartner;
                                                         payment.PaymentMethod = SaleInvoice?.SelectedPaymentType;
+                                                        //TODO: Here we Add the Payment Method
                                                         payment.PaymentType = DAL.Models.PaymentType.Payable;
                                                         payment.PaymentImage = PaymentImage;
                                                         payment.PaymentAmount = Payment ?? 0;
@@ -364,6 +363,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                             payment.Receivable = Payment.Value;
                                                         payment.Description = $"Payment is Made To {SelectedPartner?.Name} against {productList?.FirstOrDefault()?.SaleInvoiceId} at {DateTime.Now}";
                                                         var resultPayment = await _paymentManager.AddPaymentAsync(payment);
+                                                        if(resultPayment) 
+                                                        {
+                                                            var partnerLedgerPayment = new BussinessPartnerLedgerModel();
+                                                            partnerLedgerPayment.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(SelectedPartner?.Id);
+                                                            partnerLedgerPayment.Partner = SelectedPartner;
+                                                            partnerLedgerPayment.Description = $"Amount of {payment.PaymentAmount} is received From {SelectedPartner.BussinessName} At {DateTime.Now}";
+                                                           await _partnerLedgerManager.AddPartnerBalanceAsync(partnerLedgerPayment);
+                                                        }
                                                     }
                                                     // here we Update the Partner Ledger Account
                                                     BussinessPartnerLedgerModel partnerLedger = new BussinessPartnerLedgerModel();
@@ -371,16 +378,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                     var selectedPartnerBalance = await _partnerLedgerManager.GetPartnerLedgerCurrentBalanceAsync(SelectedPartner?.Id ?? 0);
                                                     partnerLedger.Receivable = InvoiceTotal.Value;
                                                     partnerLedger.InvoiceId = productList?.FirstOrDefault()?.SaleInvoiceId;
-                                                    if (Payment != null || Payment > 0)
-                                                    {
-                                                        partnerLedger.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(SelectedPartner?.Id);
-                                                        partnerLedger.CurrentBalance = selectedPartnerBalance.CurrentBalance + InvoiceTotal.Value - partnerLedger.Payment.PaymentAmount;
-                                                        partnerLedger.Receivable = partnerLedger.Payment.PaymentAmount;
-                                                    }
-                                                    else
-                                                    {
-                                                        partnerLedger.CurrentBalance = selectedPartnerBalance.CurrentBalance + InvoiceTotal.Value;
-                                                    }
                                                     partnerLedger.CurrentBalanceType = partnerLedger?.CurrentBalance > 0 ? DAL.Models.PaymentType.Payable : DAL.Models.PaymentType.Receivable;
                                                     partnerLedger.Description = $"{SelectedPartner.Name} Sells Stock Amount Of {InvoiceTotal.Value} Invoice Of{SaleInvoice.InvoiceId} At {SaleInvoice.CreatedAt}";
                                                     var result = await _partnerLedgerManager.UpdatePartnerCurrentBalanceAsync(partnerLedger);
@@ -575,7 +572,63 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
+        private void OnPaymentRecieved()
+        {
+            CalculateInvoiceTotal(false);
+            GrandTotal = PreviousBalance + (InvoiceTotal - Payment ?? 0 - DiscountPrice);
+        }
+        /// <summary>
+        /// Calculate discount Price for Invoice
+        /// </summary>
+        /// <param name="discountAmount"></param>
+        public void CalculateDiscount(decimal discountAmount)
+        {
 
+            if (discountAmount != 0)
+            {
+                CalculateInvoiceTotal(false);
+                InvoiceTotal = InvoiceTotal - (discountAmount + Payment);
+                GrandTotal = InvoiceTotal ?? 0 + PreviousBalance;
+            }
+        }
+        public async void OnSelectingPaymentType(PaymentTypeModel paymentType)
+        {
+            // null guard
+            if (paymentType == null) return;
+            switch (paymentType.Name)
+            {
+                case "Cash":
+                    break;
+                case "Bank":
+                    var dlg = IoC.Get<BankPaymentDialogViewModel>();
+                    await IoC.Get<IDialogManager>().ShowDialogAsync(dlg);
+                    break;
+                case "Jazz Cash":
+                    var jazzDlg = IoC.Get<MobileAccountPaymentDialogViewModel>();
+                    jazzDlg.SelectedMobileOperater = paymentType.Name;
+                    jazzDlg.Amount = Payment ?? 0;
+                    await IoC.Get<IDialogManager>().ShowDialogAsync(jazzDlg);
+                    break;
+                case "Ubl Omni":
+                    var ublDlg = IoC.Get<MobileAccountPaymentDialogViewModel>();
+                    ublDlg.SelectedMobileOperater = paymentType.Name;
+                    ublDlg.Amount = Payment ?? 0;
+                    await IoC.Get<IDialogManager>().ShowDialogAsync(ublDlg);
+                    break;
+                case "Easy paisa":
+                    var easyDlg = IoC.Get<MobileAccountPaymentDialogViewModel>();
+                    easyDlg.SelectedMobileOperater = paymentType?.Name;
+                    easyDlg.Amount = Payment ?? 0;
+                    await IoC.Get<IDialogManager>().ShowDialogAsync(easyDlg);
+                    break;
+                case "Partial":
+                    break;
+                case "Credit":
+                    break;
+                default:
+                    break;
+            }
+        }
         #endregion
 
         #region Properties
@@ -620,7 +673,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public decimal? Payment
         {
             get { return _Payment; }
-            set { _Payment = value; NotifyOfPropertyChange(nameof(Payment)); }
+            set { _Payment = value; NotifyOfPropertyChange(nameof(Payment)); OnPaymentRecieved(); }
         }
 
         private decimal? _InvoiceTotal;
@@ -727,6 +780,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             get { return _SaleInvoice; }
             set { _SaleInvoice = value; NotifyOfPropertyChange(nameof(SaleInvoice)); }
         }
+        private PaymentTypeModel _SelectedPaymentType;
+
+        public PaymentTypeModel SelectedPaymentType
+        {
+            get { return _SelectedPaymentType; }
+            set { _SelectedPaymentType = value; NotifyOfPropertyChange(nameof(SelectedPaymentType)); OnSelectingPaymentType(SelectedPaymentType); }
+        }
+
         private ProductSuggestionProvider _ProductSuggetion;
         /// <summary>
         /// List of Product Suggestions
@@ -867,7 +928,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public decimal DiscountPrice
         {
             get { return _DiscountPrice; }
-            set { _DiscountPrice = value; NotifyOfPropertyChange(nameof(DiscountPrice)); }
+            set { _DiscountPrice = value; NotifyOfPropertyChange(nameof(DiscountPrice)); CalculateDiscount(DiscountPrice); }
         }
         private decimal _PreviousBalance;
         /// <summary>
@@ -911,8 +972,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
 
             }
         }
-
-
         #endregion
     }
 }

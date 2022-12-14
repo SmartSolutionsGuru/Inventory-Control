@@ -538,6 +538,9 @@
     <Compile Include="Views\Dialogs\BankPaymentDialogView.xaml.cs">
       <DependentUpon>BankPaymentDialogView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Dialogs\MobileAccountPaymentDialogView.xaml.cs">
+      <DependentUpon>MobileAccountPaymentDialogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Dialogs\PathInsertionView.xaml.cs">
       <DependentUpon>PathInsertionView.xaml</DependentUpon>
     </Compile>
@@ -658,6 +661,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Dialogs\MessageBoxView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\MobileAccountPaymentDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

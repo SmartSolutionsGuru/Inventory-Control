@@ -65,10 +65,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
                             Name = CityName,
                             Country = SelectedCountry,
                             Province = SelectedProvince,
-                            PhoneCode = Convert.ToInt32(CityCode),
+                            PhoneCode = Int32.Parse(string.IsNullOrEmpty(CityCode) == true ? "0" : CityCode),
                             CreatedAt = DateTime.Now,
                             CreatedBy = AppSettings.LoggedInUser.DisplayName,
-                            IsActive = true,
+                            IsActive = true, 
                             IsDeleted = false,
                             Description = $"City {CityName} With {SelectedCountry.Name} and {SelectedProvince.Name} is Added At {DateTime.Now} With {AppSettings.LoggedInUser.Name}"
 

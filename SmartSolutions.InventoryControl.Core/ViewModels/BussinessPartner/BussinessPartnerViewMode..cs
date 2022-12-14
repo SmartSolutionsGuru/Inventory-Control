@@ -212,7 +212,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-            
+        public async void AddCity()
+        {
+            var dlg = IoC.Get<AddCityDialogViewModel>();
+            await IoC.Get<IDialogManager>().ShowDialogAsync(dlg);
+            Cities = (await _cityManager.GetCitiesByCountryNameAsync("Pakistan")).ToList();
+        }
         public void Cancel()
         {
             TryClose();
@@ -223,8 +228,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
             {
                 IsLoading = true;
                 LoadingMessage = "Saving...";
-               
-               
+
+
 
                 //if (!string.IsNullOrEmpty(PartnerMobileNumber))
                 //{

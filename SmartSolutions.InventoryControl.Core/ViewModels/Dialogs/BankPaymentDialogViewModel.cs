@@ -36,8 +36,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         #region Methods
         protected override async void OnActivate()
         {
-            base.OnActivate(); 
-            Banks = (await  _bankManager.GetAllBanksAsync()).ToList();
+            base.OnActivate();
+            Banks = (await _bankManager.GetAllBanksAsync()).ToList();
 
         }
         private async void OnSelectedBank(BankModel selectedBank)
@@ -45,7 +45,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
             try
             {
                 if (selectedBank == null) return;
-               Branches =  (await  _bankBranchManager.GetBankBrachesByBankIdAsync(selectedBank.Id ?? 0)).ToList();
+                Branches = (await _bankBranchManager.GetBankBrachesByBankIdAsync(selectedBank.Id ?? 0)).ToList();
             }
             catch (Exception ex)
             {
@@ -54,7 +54,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         }
         private async void OnSelectedBranch(BankBranchModel selectedBranch)
         {
-           if(selectedBranch == null) return;
+            if (selectedBranch == null) return;
             BankAccounts = (await _bankAccountManager.GetAllBankAccountByBranchAsync(SelectedBranch?.Id)).ToList();
         }
         public void Close()
@@ -65,23 +65,24 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         {
             TryClose();
         }
-        public void Submit()
+        public async void Submit()
         {
             try
             {
-                if(SelectedBankAccount == null)
+                if (SelectedBankAccount == null)
                     NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Please Select Bank Account", Type = Notifications.Wpf.NotificationType.Error });
                 else
                 {
                     SelectedBankAccount.Branch = SelectedBranch;
                     SelectedBankAccount.Branch.Bank = SelectedBank;
+                    //await _bankAccountManager.AddBankTransactionAsync(SelectedBankAccount);
                     _eventAggregator.PublishOnBackgroundThread(this);
                     TryClose();
                 }
             }
             catch (Exception ex)
             {
-               LogMessage.Write(ex.ToString(),LogMessage.Levels.Error);
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
 
         }
@@ -128,7 +129,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
             set { _SelectedBranch = value; NotifyOfPropertyChange(nameof(SelectedBranch)); OnSelectedBranch(SelectedBranch); }
         }
 
-       
+
 
         private List<BankAccountModel> _BankAccounts;
         /// <summary>

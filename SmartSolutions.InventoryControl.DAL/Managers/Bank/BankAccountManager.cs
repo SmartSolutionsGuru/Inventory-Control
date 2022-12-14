@@ -2,9 +2,11 @@
 using SmartSolutions.InventoryControl.Plugins.Repositories;
 using SmartSolutions.Util.DictionaryUtils;
 using SmartSolutions.Util.LogUtils;
+using SmartSolutions.Util.NumericUtils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -149,6 +151,45 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
             {
                 string query = string.Empty;
                 await Repository.QueryAsync(query);
+            }
+            catch (Exception ex)
+            {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return retVal;
+        }
+
+
+        /// <summary>
+        /// Get Bank Account By Bank Name
+        /// </summary>
+        /// <param name="bankName"> Bank Name</param>
+        /// <returns> Return List Of Bank Name</returns>
+        public async Task<IEnumerable<BankAccountModel>> GetBankAccountsByBankAsync(string bankName)
+        {
+            //null guard
+            if (string.IsNullOrEmpty(bankName)) return new List<BankAccountModel>();
+            var retVal = new List<BankAccountModel>();
+            try
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_bankname"] = bankName;
+                string query = @"SELECT * FROM BankAccount WHERE BranchId = 
+                                (SELECT Id FROM BankBranch
+                                WHERE BankId = (SELECT Id FROM Bank WHERE Name = @v_bankname AND IsActive = 1))";
+               var values =  await Repository.QueryAsync(query,parameters:parameters);
+                if(values != null && values?.Count > 0)
+                {
+                    foreach(var value in values) 
+                    {
+                        var bankAccount = new BankAccountModel();
+                        bankAccount.Id = value.GetValueFromDictonary("Id").ToString().ToInt();
+                        bankAccount.AccountNumber = value.GetValueFromDictonary("AccountNumber").ToString();
+                        bankAccount.AccountType = value?.GetValueFromDictonary("AccountType")?.ToString();
+                        bankAccount.AccountStatus = value.GetValueFromDictonary("AccountStatus")?.ToString();
+                        
+                    }
+                }
             }
             catch (Exception ex)
             {

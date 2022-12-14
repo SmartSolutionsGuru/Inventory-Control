@@ -11,6 +11,12 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
         Task<bool> AddBankAccountAsync(BankAccountModel bankAccount);
         Task<IEnumerable<BankAccountModel>> GetAllBankAccountsAsync();
         /// <summary>
+        /// Get All Bank Account By Bank Name
+        /// </summary>
+        /// <param name="bankName"></param>
+        /// <returns></returns>
+        Task<IEnumerable<BankAccountModel>> GetBankAccountsByBankAsync(string bankName);
+        /// <summary>
         /// Get All Bank Accounts From specific branch
         /// </summary>
         /// <param name="branchId">Branch Id</param>

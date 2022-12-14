@@ -85,7 +85,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Bank
         {
             try
             {
-
                 var bankAccount = new BankAccountModel();
                 bankAccount.Branch = SelectedBranch;
                 bankAccount.AccountStatus = SelectedAccountStatus;
