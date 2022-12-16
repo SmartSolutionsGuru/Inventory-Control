@@ -65,7 +65,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         {
             TryClose();
         }
-        public async void Submit()
+        public void Submit()
         {
             try
             {

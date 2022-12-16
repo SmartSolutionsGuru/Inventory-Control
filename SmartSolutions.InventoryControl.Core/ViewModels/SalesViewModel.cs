@@ -7,6 +7,7 @@ using SmartSolutions.InventoryControl.DAL.Managers.Product;
 using SmartSolutions.InventoryControl.DAL.Managers.Product.ProductColor;
 using SmartSolutions.InventoryControl.DAL.Managers.Product.ProductSize;
 using SmartSolutions.InventoryControl.DAL.Models;
+using SmartSolutions.InventoryControl.DAL.Models.Bank;
 using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.DAL.Models.Inventory;
 using SmartSolutions.InventoryControl.DAL.Models.Payments;
@@ -43,6 +44,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private readonly DAL.Managers.Sale.ISaleOrderManager _saleOrderManager;
         private readonly DAL.Managers.Sale.ISaleOrderDetailManager _saleOrderDetailManager;
         private readonly DAL.Managers.Payments.IPaymentManager _paymentManager;
+        private readonly DAL.Managers.Bank.IBankAccountManager _bankAccountManager;
         #endregion
 
         #region Constructor
@@ -63,7 +65,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                               , DAL.Managers.Warehouse.IWarehouseManager warehouseManager
                               , DAL.Managers.Sale.ISaleOrderManager saleOrderManager
                               , DAL.Managers.Sale.ISaleOrderDetailManager saleOrderDetailManager
-                              , DAL.Managers.Payments.IPaymentManager paymentManager)
+                              , DAL.Managers.Payments.IPaymentManager paymentManager
+                              , DAL.Managers.Bank.IBankAccountManager bankAccountManager)
         {
             _productColorManager = productColorManager;
             _productSizeManager = productSizeManager;
@@ -80,6 +83,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             _saleOrderManager = saleOrderManager;
             _saleOrderDetailManager = saleOrderDetailManager;
             _paymentManager = paymentManager;
+            _bankAccountManager = bankAccountManager;
         }
         #endregion
 
@@ -351,7 +355,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                         // Here Payment is made
                                                         var payment = new PaymentModel();
                                                         payment.Partner = SelectedPartner;
-                                                        payment.PaymentMethod = SaleInvoice?.SelectedPaymentType;
+                                                        payment.PaymentMethod = SelectedPaymentType;
+                                                            ;
                                                         //TODO: Here we Add the Payment Method
                                                         payment.PaymentType = DAL.Models.PaymentType.Payable;
                                                         payment.PaymentImage = PaymentImage;
@@ -365,11 +370,38 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                         var resultPayment = await _paymentManager.AddPaymentAsync(payment);
                                                         if(resultPayment) 
                                                         {
-                                                            var partnerLedgerPayment = new BussinessPartnerLedgerModel();
-                                                            partnerLedgerPayment.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(SelectedPartner?.Id);
-                                                            partnerLedgerPayment.Partner = SelectedPartner;
-                                                            partnerLedgerPayment.Description = $"Amount of {payment.PaymentAmount} is received From {SelectedPartner.BussinessName} At {DateTime.Now}";
-                                                           await _partnerLedgerManager.AddPartnerBalanceAsync(partnerLedgerPayment);
+                                                            //First Effect
+                                                            if (SelectedPaymentType != null && SelectedPaymentType.PaymentType == "Bank")
+                                                            {
+                                                                await _bankAccountManager.AddBankTransactionAsync(SelectedBankAccount);
+                                                            }
+                                                            else if (SelectedPaymentType != null &&
+                                                                (SelectedPaymentType.PaymentType.Equals("Jazz Cash")
+                                                                || SelectedPaymentType.PaymentType.Equals("Naya Pay")
+                                                                || SelectedPaymentType.PaymentType.Equals("Eassy Paisa")
+                                                                || SelectedPaymentType.PaymentType.Equals("UBl Omni")))
+                                                            {
+                                                                var resultBankTransaction = await _bankAccountManager.AddBankTransactionAsync(SelectedBankAccount);
+                                                                if (resultBankTransaction)
+                                                                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Success", Message = "Successfully Payment Added To Bank", Type = Notifications.Wpf.NotificationType.Success });
+                                                                else
+                                                                    NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Payment not Added To Bank", Type = Notifications.Wpf.NotificationType.Error });
+                                                            }
+                                                            //2nd Effect
+                                                            BussinessPartnerLedgerModel partnerPayment = new BussinessPartnerLedgerModel();
+                                                            partnerPayment.Partner = SelectedPartner;
+                                                            partnerPayment.Payable = Payment.Value;
+                                                            var lastPayment = await _paymentManager.GetLastPaymentByPartnerIdAsync(SelectedPartner?.Id ?? 0);
+                                                            if (lastPayment != null)
+                                                                partnerPayment.Payment.Id = lastPayment.Id;
+                                                            partnerPayment.Description = $"Amount of {payment.PaymentAmount} is Recieved To {SelectedPartner.BussinessName} At {DateTime.Now} ";
+                                                            await _partnerLedgerManager.AddPartnerBalanceAsync(partnerPayment);
+
+                                                           // var partnerLedgerPayment = new BussinessPartnerLedgerModel();
+                                                           // partnerLedgerPayment.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(SelectedPartner?.Id);
+                                                           // partnerLedgerPayment.Partner = SelectedPartner;
+                                                           // partnerLedgerPayment.Description = $"Amount of {payment.PaymentAmount} is received From {SelectedPartner.BussinessName} At {DateTime.Now}";
+                                                           //await _partnerLedgerManager.AddPartnerBalanceAsync(partnerLedgerPayment);
                                                         }
                                                     }
                                                     // here we Update the Partner Ledger Account
@@ -575,7 +607,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private void OnPaymentRecieved()
         {
             CalculateInvoiceTotal(false);
-            GrandTotal = PreviousBalance + (InvoiceTotal - Payment ?? 0 - DiscountPrice);
+            if(GrandTotal < 0)
+            {
+                GrandTotal = PreviousBalance - (InvoiceTotal - Payment ?? 0 - DiscountPrice);
+            }
+            else
+            {
+                 GrandTotal = PreviousBalance + (InvoiceTotal - Payment ?? 0 - DiscountPrice);
+            }
+
         }
         /// <summary>
         /// Calculate discount Price for Invoice
@@ -602,24 +642,41 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 case "Bank":
                     var dlg = IoC.Get<BankPaymentDialogViewModel>();
                     await IoC.Get<IDialogManager>().ShowDialogAsync(dlg);
+                    SelectedBankAccount = dlg.SelectedBankAccount;
+                    SelectedBankAccount.Payable = Payment.Value;
+                    SelectedBankAccount.Receivable = 0;
+                    SelectedBankAccount.Description = $"Amount Of {Payment} to Account No {SelectedBankAccount.AccountNumber} of Bank {SelectedBankAccount.Branch.Bank.Name} Branch {SelectedBankAccount.Branch.Name} Transfer At {DateTime.Now}";
                     break;
                 case "Jazz Cash":
                     var jazzDlg = IoC.Get<MobileAccountPaymentDialogViewModel>();
                     jazzDlg.SelectedMobileOperater = paymentType.Name;
                     jazzDlg.Amount = Payment ?? 0;
                     await IoC.Get<IDialogManager>().ShowDialogAsync(jazzDlg);
+                    SelectedBankAccount = jazzDlg.SelectedMobileAccount;
+                    SelectedBankAccount.Payable = Payment.Value;
+                    SelectedBankAccount.Receivable = 0;
+                    SelectedBankAccount.Description = $"Amount Of {Payment} to Account No {SelectedBankAccount.AccountNumber} of Bank {SelectedBankAccount.Branch.Bank.Name} Branch {SelectedBankAccount.Branch.Name} Transfer At {DateTime.Now}";
+
                     break;
                 case "Ubl Omni":
                     var ublDlg = IoC.Get<MobileAccountPaymentDialogViewModel>();
                     ublDlg.SelectedMobileOperater = paymentType.Name;
                     ublDlg.Amount = Payment ?? 0;
                     await IoC.Get<IDialogManager>().ShowDialogAsync(ublDlg);
+                    SelectedBankAccount = ublDlg.SelectedMobileAccount;
+                    SelectedBankAccount.Payable = Payment.Value;
+                    SelectedBankAccount.Receivable = 0;
+                    SelectedBankAccount.Description = $"Amount Of {Payment} to Account No {SelectedBankAccount.AccountNumber} of Bank {SelectedBankAccount.Branch.Bank.Name} Branch {SelectedBankAccount.Branch.Name} Transfer At {DateTime.Now}";
                     break;
                 case "Easy paisa":
                     var easyDlg = IoC.Get<MobileAccountPaymentDialogViewModel>();
                     easyDlg.SelectedMobileOperater = paymentType?.Name;
                     easyDlg.Amount = Payment ?? 0;
                     await IoC.Get<IDialogManager>().ShowDialogAsync(easyDlg);
+                    SelectedBankAccount = easyDlg.SelectedMobileAccount;
+                    SelectedBankAccount.Payable = Payment.Value;
+                    SelectedBankAccount.Receivable = 0;
+                    SelectedBankAccount.Description = $"Amount Of {Payment} to Account No {SelectedBankAccount.AccountNumber} of Bank {SelectedBankAccount.Branch.Bank.Name} Branch {SelectedBankAccount.Branch.Name} Transfer At {DateTime.Now}";
                     break;
                 case "Partial":
                     break;
@@ -632,6 +689,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         #endregion
 
         #region Properties
+        public BankAccountModel SelectedBankAccount { get; set; }
         public List<int?> PartnerType { get; set; }
 
         private bool _IsValueCredit;

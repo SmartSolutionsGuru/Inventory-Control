@@ -90,9 +90,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Bank
                 bankAccount.AccountStatus = SelectedAccountStatus;
                 bankAccount.AccountType = SelectedAccountType;
                 bankAccount.AccountNumber = BankAccountNumber;
-                bankAccount.OpeningDate = AccountOpeningDate;
-                bankAccount.OpeningBalance = InitialBalance;
-                bankAccount.Description = Description;
+                bankAccount.OpeningDate = AccountOpeningDate ?? DateTime.Now;
+                bankAccount.OpeningBalance = InitialBalance ?? 0;
+                bankAccount.Description = Description ?? $" Bank Account With Account number {bankAccount.AccountNumber} with Inital Balance Of {InitialBalance} Created At{DateTime.Now}";
                 bankAccount.CreatedBy = AppSettings.LoggedInUser.DisplayName;
                 var verificationResult = await _bankAccountManager.IsAccountAlreadyExist(SelectedBranch?.Id, BankAccountNumber);
                 if (verificationResult == false)

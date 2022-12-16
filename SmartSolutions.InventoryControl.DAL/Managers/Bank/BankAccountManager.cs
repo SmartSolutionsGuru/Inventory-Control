@@ -187,7 +187,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
                         bankAccount.AccountNumber = value.GetValueFromDictonary("AccountNumber").ToString();
                         bankAccount.AccountType = value?.GetValueFromDictonary("AccountType")?.ToString();
                         bankAccount.AccountStatus = value.GetValueFromDictonary("AccountStatus")?.ToString();
-                        
+                        retVal.Add(bankAccount);
                     }
                 }
             }

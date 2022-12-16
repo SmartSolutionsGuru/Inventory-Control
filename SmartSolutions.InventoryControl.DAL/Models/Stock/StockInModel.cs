@@ -51,12 +51,6 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Stock
             get { return _Quantity; }
             set { _Quantity = value; NotifyOfPropertyChange(nameof(Quantity)); }
         }
-        //private decimal? _Price;
-        //public decimal? Price
-        //{
-        //    get { return _Price; }
-        //    set { _Price = value; NotifyOfPropertyChange(nameof(Price)); OnPriceChange(); }
-        //}
 
         private decimal? _Price;
         public decimal? Price

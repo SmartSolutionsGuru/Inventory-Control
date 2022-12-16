@@ -8,6 +8,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
     {
         Task<IEnumerable<BankBranchModel>> GetAllBankBranchesAsync();
         Task<IEnumerable<BankBranchModel>> GetBankBrachesByBankIdAsync(int? Id);
+        Task<IEnumerable<BankBranchModel>> GetBankBranchesByBankNameAsync(string bankName);
         Task<bool> AddBankBranchAsync(BankBranchModel bankBranch);
     }
 }

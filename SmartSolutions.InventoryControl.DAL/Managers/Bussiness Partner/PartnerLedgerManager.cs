@@ -56,7 +56,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 parameters["@v_CurrentBalance"] = partnerLedger.CurrentBalance;
                 parameters["@v_CurrentBalanceType"] = partnerLedger?.CurrentBalanceType;
                 parameters["@v_DR"] = partnerLedger?.Receivable;
-                parameters["@v_CR"] = partnerLedger.Payable;
+                parameters["@v_CR"] = partnerLedger?.Payable;
                 parameters["@v_Description"] = partnerLedger?.Description == null ? DBNull.Value : (object)partnerLedger.Description;
                 parameters["@v_IsActive"] = partnerLedger.IsActive = true;
                 parameters["@v_CreatedAt"] = partnerLedger.CreatedAt == null ? DateTime.Now : partnerLedger.CreatedAt;

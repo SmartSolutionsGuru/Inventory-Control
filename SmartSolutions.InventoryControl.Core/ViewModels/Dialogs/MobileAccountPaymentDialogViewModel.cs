@@ -11,12 +11,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
     {
         #region [Private Members]
         private readonly IBankAccountManager _bankAccountManager;
+        private readonly IBankBranchManager _bankBranchManager;
         #endregion
+
         #region [constructor]
         [ImportingConstructor]
-        public MobileAccountPaymentDialogViewModel(IBankAccountManager bankAccountManager)
+        public MobileAccountPaymentDialogViewModel(IBankAccountManager bankAccountManager, IBankBranchManager bankBranchManager)
         {
             _bankAccountManager = bankAccountManager;
+            _bankBranchManager = bankBranchManager;
         }
         #endregion
 
@@ -25,11 +28,25 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
         {
             base.OnActivate();
             MobileOperaters = new List<string> { SelectedMobileOperater};
-            MobileNumbers = (await _bankAccountManager.GetBankAccountsByBankAsync(SelectedMobileOperater)).ToList();
-            if(MobileNumbers == null || MobileNumbers?.Count == 0)
+            var branch = (await _bankBranchManager.GetBankBranchesByBankNameAsync(SelectedMobileOperater)).ToList();
+            MobileAccounts = (await _bankAccountManager.GetBankAccountsByBankAsync(SelectedMobileOperater)).ToList();
+          
+            if(MobileAccounts == null || MobileAccounts?.Count == 0)
             {
                 NotificationManager.Show(new Notifications.Wpf.NotificationContent { Title = "Error", Message = "Please Enter Mobile Account First", Type = Notifications.Wpf.NotificationType.Error });
             }
+            else
+            {
+                MobileAccounts.FirstOrDefault().Branch = branch.FirstOrDefault();
+                SelectedMobileAccount = MobileAccounts.FirstOrDefault();
+            }
+        }
+
+        public void Submit()
+        {
+
+            SelectedMobileAccount.Branch.Bank.Name = SelectedMobileOperater;
+            TryClose();
         }
         public void Close()
         {
@@ -40,6 +57,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
             TryClose(true);
         }
         #endregion
+
         #region [Properties]
         private List<string> _MobileOperaters;
         /// <summary>
@@ -59,23 +77,23 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Dialogs
             get { return _SelectedMobileOperater; }
             set { _SelectedMobileOperater = value; NotifyOfPropertyChange(nameof(SelectedMobileOperater)); }
         }
-        private List<BankAccountModel> _MobileNumbers;
+        private List<BankAccountModel> _MobileAccounts;
         /// <summary>
         /// Mobile No List
         /// </summary>
-        public List<BankAccountModel> MobileNumbers
+        public List<BankAccountModel> MobileAccounts
         {
-            get { return _MobileNumbers; }
-            set { _MobileNumbers = value; NotifyOfPropertyChange(nameof(MobileNumbers)); }
+            get { return _MobileAccounts; }
+            set { _MobileAccounts = value; NotifyOfPropertyChange(nameof(MobileAccounts)); }
         }
-        private string _SelectedMobileNumber;
+        private BankAccountModel _SelectedMobileAccount;
         /// <summary>
         /// Selected Mobile number
         /// </summary>
-        public string SelectedMobileNumber
+        public BankAccountModel SelectedMobileAccount
         {
-            get { return _SelectedMobileNumber; }
-            set { _SelectedMobileNumber = value; NotifyOfPropertyChange(nameof(SelectedMobileNumber)); }
+            get { return _SelectedMobileAccount; }
+            set { _SelectedMobileAccount = value; NotifyOfPropertyChange(nameof(SelectedMobileAccount)); }
         }
         private decimal _Amount;
         /// <summary>

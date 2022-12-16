@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
 {
-    [Export(typeof(IBankBranchManager)),PartCreationPolicy(CreationPolicy.Shared)]
+    [Export(typeof(IBankBranchManager)), PartCreationPolicy(CreationPolicy.Shared)]
     public class BankBranchManager : BaseManager, IBankBranchManager
     {
         #region Private Members
@@ -50,7 +50,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
                 parameters["@v_UpdatedBy"] = bankBranch.UpdatedBy == null ? DBNull.Value : (object)bankBranch.UpdatedBy;
                 string query = @"INSERT INTO BankBranch (Name,BankId,Address,BranchDetail,BussinessPhone,BussinessPhone1,MobilePhone,MobilePhone1,Email,Description,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
                                        VALUES(@v_Name,@v_BankId,@v_Address,@v_BarnchDetail,@v_BussinessPhone,@v_BussinessPhone1,@v_MobilePhone,@v_MobilePhone1,@v_Email,@v_Description,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
-                var result = await Repository.NonQueryAsync(query,parameters:parameters);
+                var result = await Repository.NonQueryAsync(query, parameters: parameters);
                 retVal = result > 0 ? true : false;
             }
             catch (Exception ex)
@@ -108,7 +108,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_Id"] = Id;
                 string query = @"SELECT * FROM BankBranch WHERE BankId = @v_Id AND IsActive = 1";
-                var values = await Repository.QueryAsync(query,parameters:parameters);
+                var values = await Repository.QueryAsync(query, parameters: parameters);
                 if (values != null || values?.Count > 0)
                 {
                     foreach (var value in values)
@@ -130,6 +130,37 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
             }
             catch (Exception ex)
             {
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return branches;
+        }
+
+        public async Task<IEnumerable<BankBranchModel>> GetBankBranchesByBankNameAsync(string bankName)
+        {
+            //null guard
+            if (string.IsNullOrEmpty(bankName)) return new List<BankBranchModel>();
+            var branches = new List<BankBranchModel>();
+            try
+            {
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+                parameters["@v_bankName"] = bankName;
+                string query = @" SELECT * FROM BankBranch
+                               WHERE  BankId  = (SELECT Id FROM Bank WHERE Name = @v_bankName )";
+                var values = await Repository.QueryAsync(query, parameters: parameters);
+                if (values != null && values?.Count > 0)
+                {
+                    foreach (var value in values)
+                    {
+                        var branch = new BankBranchModel();
+                        branch.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
+                        branch.Name = value?.GetValueFromDictonary("Name")?.ToString();
+                        branches.Add(branch);
+                     }
+                }
+            }
+            catch (Exception ex)
+            {
+
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return branches;
