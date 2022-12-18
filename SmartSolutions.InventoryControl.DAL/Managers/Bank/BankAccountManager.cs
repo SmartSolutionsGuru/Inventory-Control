@@ -123,7 +123,11 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bank
             {
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters["@v_BranchId"] = branchId;
-                string query = @"SELECT * FROM dbo.BankAccount WHERE BranchId = @v_BranchId AND IsActive = 1";
+                //string query = @"SELECT * FROM dbo.BankAccount WHERE BranchId = @v_BranchId AND IsActive = 1";
+                string query = @"SELECT Distinct AccountNumber,AccountType,AccountStatus 
+                                FROM BankAccount 
+                                WHERE BranchId = @v_BranchId 
+                                AND IsActive = 1";
                 var values = await Repository.QueryAsync(query, parameters: parameters);
                 if (values != null && values?.Count > 0)
                 {
