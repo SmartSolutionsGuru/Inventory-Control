@@ -75,6 +75,7 @@
                                Height="45"
                                Width="230"
                                IsEnabled="True"
+                               DisplayMemberPath="AccountNumber"
                                FontSize="{StaticResource NormalSize}"
                                Margin="10 5"
                                HorizontalAlignment="Left"
@@ -84,8 +85,8 @@
                                Foreground="{StaticResource GrayColorBrush}"
                                ControlExtensions:WaterMarkTextExtension.WatermarkIconPath="{StaticResource Shape_Bank}"
                                ControlExtensions:WaterMarkTextExtension.WatermarkIconVisibility="Visible"
-                               ItemsSource="{Binding MobileNumbers,Mode=OneWay}"
-                               SelectedItem="{Binding SelectedMobileNumber,Mode=TwoWay}"
+                               ItemsSource="{Binding MobileAccounts,Mode=OneWay}"
+                               SelectedItem="{Binding SelectedMobileAccount,Mode=TwoWay}"
                                BorderBrush="{StaticResource BlueColorBrush}"
                                BorderThickness="0"/>
                 </StackPanel>
