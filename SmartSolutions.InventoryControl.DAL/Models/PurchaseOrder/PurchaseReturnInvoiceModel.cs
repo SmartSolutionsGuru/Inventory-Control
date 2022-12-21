@@ -1,4 +1,5 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
+using SmartSolutions.InventoryControl.DAL.Models.Product;
 using System;
 
 namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
@@ -14,11 +15,11 @@ namespace SmartSolutions.InventoryControl.DAL.Models.PurchaseOrder
         #endregion
 
         #region Properties
-        public string PurchaseReturnId { get; set; }
+        public ProductModel Product { get; set; }
         /// <summary>
         /// Purchase Invoice Id 
         /// </summary>
-        public int PurchaseInvoiceId { get; set; }
+        public string PurchaseInvoiceId { get; set; }
         public Guid PurchaseReturnGuid { get; set; }
         public BussinessPartnerModel Partner { get; set; }
         public string Description { get; set; }

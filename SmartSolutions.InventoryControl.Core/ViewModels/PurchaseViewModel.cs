@@ -230,9 +230,9 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 //Other wise Go for Purchase
                 if (SelectedPurchaseType.Equals("Purchase Return"))
                 {
-                    #region Genrate  Purchase Return Order 
                     var purchasereturnInvoice = new PurchaseReturnInvoiceModel();
                     purchasereturnInvoice.Partner = SelectedPartner;
+                    purchasereturnInvoice.PurchaseInvoiceId = PurchaseInvoice.InvoiceId;
                     #endregion
                 }
                 else
@@ -401,7 +401,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                         Clear();
                                         IsLoading = false;
                                     }
-
                                     #endregion
                                 }
                             }
@@ -490,6 +489,10 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
+        /// <summary>
+        /// Calculate Invoice Total
+        /// </summary>
+        /// <returns></returns>
         private bool CalculateInvoiceTotal()
         {
             bool retVal = false;
@@ -560,21 +563,28 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private decimal ReCalculateInvoicePrice()
         {
             decimal newInvoiceTotal = 0;
-            if (ProductGrid != null || ProductGrid?.Count > 0)
-            {
-                foreach (var product in ProductGrid)
-                {
-                    newInvoiceTotal += product.Total.Value;
-                }
-                if (PercentDiscount > 0)
-                {
-                    newInvoiceTotal = InvoiceTotal.Value - DiscountPrice.Value;
-                }
-                else if (DiscountPrice > 0)
-                {
-                    newInvoiceTotal = InvoiceTotal.Value - DiscountPrice.Value;
-                }
+            if (SelectedPurchaseType == "Purchase Return")
+            {             
+                
             }
+            else
+            {
+                if (ProductGrid != null || ProductGrid?.Count > 0)
+                {
+                    foreach (var product in ProductGrid)
+                    {
+                        newInvoiceTotal += product.Total.Value;
+                    }
+                    if (PercentDiscount > 0)
+                    {
+                        newInvoiceTotal = InvoiceTotal.Value - DiscountPrice.Value;
+                    }
+                    else if (DiscountPrice > 0)
+                    {
+                        newInvoiceTotal = InvoiceTotal.Value - DiscountPrice.Value;
+                    }
+                }
+            }         
             return newInvoiceTotal;
         }
         public void OnPaymentRecived()
@@ -707,7 +717,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     break;
             }
         }
-        #endregion
+
 
         #region Properties
         public List<int?>  PartnerType  { get; set; } 

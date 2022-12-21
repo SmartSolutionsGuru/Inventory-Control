@@ -97,41 +97,5 @@ namespace SmartSolutions.InventoryControl.UI.Views
         {
             ViewModel?.VerifySelectedPartner();
         }
-
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            var control = sender as TextBox;
-            if (!string.IsNullOrEmpty(control.Text))
-            {
-                System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US");
-                var valueBefore = Int64.Parse(control.Text, System.Globalization.NumberStyles.AllowThousands);
-                control.Text = String.Format(culture, "{0:N0}", valueBefore);
-                control.Select(control.Text.Length, 0);
-            }
-        }
-
-        private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
-        {
-            var control = sender as TextBox;
-            if (!string.IsNullOrEmpty(control.Text))
-            {
-                System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US");
-                var valueBefore = Int64.Parse(control.Text, System.Globalization.NumberStyles.AllowThousands);
-                control.Text = String.Format(culture, "{0:N0}", valueBefore);
-                control.Select(control.Text.Length, 0);
-            }
-        }
-
-        private void TextBox_TextChanged_4(object sender, TextChangedEventArgs e)
-        {
-            var control = sender as TextBox;
-            if (!string.IsNullOrEmpty(control.Text))
-            {
-                System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US");
-                var valueBefore = Int64.Parse(control.Text, System.Globalization.NumberStyles.AllowThousands);
-                control.Text = String.Format(culture, "{0:N0}", valueBefore);
-                control.Select(control.Text.Length, 0);
-            }
-        }
     }
 }

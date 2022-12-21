@@ -1,4 +1,5 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
+using SmartSolutions.InventoryControl.DAL.Models.Product;
 using System;
 
 namespace SmartSolutions.InventoryControl.DAL.Models.Sales
@@ -14,7 +15,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.Sales
         #endregion
 
         #region Properties
-        public string SaleReturnId { get; set; }
+        public ProductModel ProductId { get; set; }
         public Guid SaleReturnGuid { get; set; }
         public BussinessPartnerModel Partner { get; set; }
         public string Description { get; set; }

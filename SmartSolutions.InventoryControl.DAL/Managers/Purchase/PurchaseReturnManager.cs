@@ -35,7 +35,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Purchase
             {
                 string query = string.Empty;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters["@v_PurchaseReturnId"] = returnInvoice.PurchaseReturnId;
+                parameters["@v_ProductId"] = returnInvoice.Product?.Id;
                 parameters["@v_PurchaseReturnGuid"] = returnInvoice.PurchaseReturnGuid;
                 parameters["@v_PartnerId"] = returnInvoice.Partner?.Id;
                 parameters["@v_PurchaseInvoiceId"] = returnInvoice.PurchaseInvoiceId;
@@ -46,8 +46,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Purchase
                 parameters["@v_CreatedBy"] = returnInvoice.CreatedBy == null ? DBNull.Value : (object)returnInvoice.CreatedBy;
                 parameters["@v_UpdatedAt"] = returnInvoice.UpdatedAt == null ? DBNull.Value : (object)returnInvoice.UpdatedAt;
                 parameters["@v_UpdatedBy"] = returnInvoice.UpdatedBy == null ? DBNull.Value : (object)returnInvoice.UpdatedBy;
-                query = @"INSERT INTO PurchaseReturnInvoice(PurchaseReturnId,PurchaseReturnGuid,PartnerId,PurchaseInvoiceId,Total,Description,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
-                                                     VALUES(@v_PurchaseReturnId,@v_PurchaseReturnGuid,@v_PartnerId,@v_PurchaseInvoiceId,@v_Total,@v_Description,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
+                query = @"INSERT INTO PurchaseReturnInvoice(ProductId,PurchaseReturnGuid,PartnerId,PurchaseInvoiceId,Total,Description,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy)
+                                                     VALUES(@v_ProductId,@v_PurchaseReturnGuid,@v_PartnerId,@v_PurchaseInvoiceId,@v_Total,@v_Description,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy)";
                 var result = await Repository.NonQueryAsync(query:query,parameters:parameters);
                 retVal = result > 0 ? true : false;
             }
