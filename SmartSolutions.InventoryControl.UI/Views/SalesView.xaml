@@ -119,6 +119,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="0.5*"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.3*"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Bill #" VerticalAlignment="Center" Margin="20 0 0 0" Foreground="{StaticResource GrayColorBrush}" FontSize="{StaticResource MediumSize}" FontFamily='{StaticResource MediumFont}'/>
@@ -128,6 +129,7 @@
                     </StackPanel>
 
                     <TextBlock  Grid.Row="0" Grid.Column="1" FontFamily="{StaticResource MediumFont}" FontSize="{StaticResource HeadingSize}"  Foreground="{StaticResource BlueColorBrush}" Margin="10 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Center"><Run Text="{Binding SelectedInvoiceType,Mode=OneWay}"/><Run Text=" Invoice"></Run></TextBlock>
+                    <Button x:Name="ClearInvoice" Grid.Column="2" Height="40" Width="120" Style="{StaticResource ContentButton}" Background="{StaticResource RedColorBrush}" Content="Clear Invoice" Foreground="{StaticResource PureWhiteColorBrush}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="{StaticResource MediumSize}"></Button>
                 </Grid>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>

@@ -121,6 +121,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             AddProduct(inventoryModel);
             SelectedInventoryProduct = inventoryModel;
             Payment = 0;
+            InvoiceTotal = 0;
             DiscountPrice = 0;
             IsLoading = false;
         }
@@ -161,11 +162,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             try
             {
-                IsLoading = true;               
+                IsLoading = true;
                 var IsAddProduct = CalculateInvoiceTotal(true);
                 var resultAddProduct = VerifyEmptyProduct(ProductGrid.LastOrDefault());
 
-                if(!resultAddProduct)
+                if (!resultAddProduct)
                 {
                     if (IsAddProduct || ProductGrid.Count == 0)
                     {
@@ -177,7 +178,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                         }
                         ProductGrid.Add(newproduct);
                     }
-                }                       
+                }
             }
             catch (Exception ex)
             {
@@ -356,7 +357,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                         var payment = new PaymentModel();
                                                         payment.Partner = SelectedPartner;
                                                         payment.PaymentMethod = SelectedPaymentType;
-                                                            ;
+                                                        
                                                         //TODO: Here we Add the Payment Method
                                                         payment.PaymentType = DAL.Models.PaymentType.Payable;
                                                         payment.PaymentImage = PaymentImage;
@@ -368,7 +369,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                             payment.Receivable = Payment.Value;
                                                         payment.Description = $"Payment is Made To {SelectedPartner?.Name} against {productList?.FirstOrDefault()?.SaleInvoiceId} at {DateTime.Now}";
                                                         var resultPayment = await _paymentManager.AddPaymentAsync(payment);
-                                                        if(resultPayment) 
+                                                        if (resultPayment)
                                                         {
                                                             //First Effect
                                                             if (SelectedPaymentType != null && SelectedPaymentType.PaymentType == "Bank")
@@ -396,12 +397,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                                 partnerPayment.Payment.Id = lastPayment.Id;
                                                             partnerPayment.Description = $"Amount of {payment.PaymentAmount} is Recieved To {SelectedPartner.BussinessName} At {DateTime.Now} ";
                                                             await _partnerLedgerManager.AddPartnerBalanceAsync(partnerPayment);
-
-                                                           // var partnerLedgerPayment = new BussinessPartnerLedgerModel();
-                                                           // partnerLedgerPayment.Payment = await _paymentManager.GetLastPaymentByPartnerIdAsync(SelectedPartner?.Id);
-                                                           // partnerLedgerPayment.Partner = SelectedPartner;
-                                                           // partnerLedgerPayment.Description = $"Amount of {payment.PaymentAmount} is received From {SelectedPartner.BussinessName} At {DateTime.Now}";
-                                                           //await _partnerLedgerManager.AddPartnerBalanceAsync(partnerLedgerPayment);
                                                         }
                                                     }
                                                     // here we Update the Partner Ledger Account
@@ -541,7 +536,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                         InvoiceTotal = 0;
                     foreach (var product in ProductGrid)
                     {
-                       
+
                         if (product.Quantity > 0 && product.Total == 0)
                         {
                             product.Total = product.Price * product.Quantity;
@@ -550,31 +545,52 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                         {
                             InvoiceTotal += product.Total ?? 0;
                         }
-                         retVal = true;
+                        retVal = true;
                     }
                 }
-                if (BalanceType == DAL.Models.PaymentType.Receivable)
-                {
-                    if (PreviousBalance == 0)
-                    {
-                        GrandTotal = InvoiceTotal.Value;
-                    }
-                    else
-                    {
-                        GrandTotal = PreviousBalance + InvoiceTotal.Value;
-                    }
-                }
-                else
-                {
-                    GrandTotal = PreviousBalance - InvoiceTotal.Value;
-                }
-
             }
             catch (Exception ex)
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
+            CalculateGrandtotal();
             return retVal;
+        }
+        public void ClearInvoice()
+        {
+            Clear();
+        }
+        private void CalculateGrandtotal()
+        {
+            if (BalanceType == PaymentType.None) return;
+            if (BalanceType == PaymentType.Receivable)
+            {
+                if (PreviousBalance == 0)
+                {
+                    GrandTotal = InvoiceTotal.Value;
+                }
+                else
+                {
+                    var currentBalance = PreviousBalance + InvoiceTotal.Value;
+                    if(currentBalance > 0)
+                    {
+                        currentBalance = currentBalance + Payment ?? 0;
+                        GrandTotal = currentBalance + DiscountPrice;
+                    }
+                    else
+                    {
+                        //GrandTotal = PreviousBalance + InvoiceTotal.Value;
+                    }
+                   
+                }
+            }
+            else
+            {
+                var currentBalance = PreviousBalance + InvoiceTotal ?? 0;
+                currentBalance = currentBalance - Payment ?? 0;
+                GrandTotal = currentBalance - DiscountPrice;
+                //GrandTotal = PreviousBalance - InvoiceTotal.Value;
+            }
         }
         private bool VerifyEmptyProduct(StockOutModel product)
         {
@@ -607,15 +623,21 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private void OnPaymentRecieved()
         {
             CalculateInvoiceTotal(false);
-            if(GrandTotal < 0)
+            if (BalanceType == PaymentType.Receivable)
             {
-                GrandTotal = PreviousBalance - (InvoiceTotal - Payment ?? 0 - DiscountPrice);
+                GrandTotal = (PreviousBalance + InvoiceTotal ?? 0) - (Payment ?? 0 + DiscountPrice);
             }
             else
             {
-                 GrandTotal = PreviousBalance + (InvoiceTotal - Payment ?? 0 - DiscountPrice);
+                var totalPayment = Payment + DiscountPrice;
+                var totalBill = PreviousBalance - InvoiceTotal;
+                if (totalBill < 0)
+                    GrandTotal = totalBill + totalPayment ?? 0;
+                else
+                    GrandTotal = totalBill - totalPayment ?? 0;
             }
-
+            if (SelectedPaymentType == null)
+                SelectedPaymentType = SaleInvoice.PaymentTypes.FirstOrDefault();
         }
         /// <summary>
         /// Calculate discount Price for Invoice
@@ -623,12 +645,22 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         /// <param name="discountAmount"></param>
         public void CalculateDiscount(decimal discountAmount)
         {
-
             if (discountAmount != 0)
             {
                 CalculateInvoiceTotal(false);
-                InvoiceTotal = InvoiceTotal - (discountAmount + Payment);
-                GrandTotal = InvoiceTotal ?? 0 + PreviousBalance;
+                //if (BalanceType == PaymentType.Receivable)
+                //{
+                //    var totalPayment = discountAmount + Payment;
+                //    var totalBill = InvoiceTotal + PreviousBalance;
+                //    GrandTotal = totalBill - totalPayment ?? 0;
+                //}
+                //else
+                //{
+                //    var totalPayment = discountAmount + Payment;
+                //    var totalBill = InvoiceTotal - PreviousBalance;
+                //    GrandTotal = totalBill - totalPayment ?? 0;
+                //}
+
             }
         }
         public async void OnSelectingPaymentType(PaymentTypeModel paymentType)
