@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Microsoft.SqlServer.Management.Smo;
 using SmartSolutions.InventoryControl.Core.Helpers.SuggestionProvider;
 using SmartSolutions.InventoryControl.Core.ViewModels.Dialogs;
 using SmartSolutions.InventoryControl.DAL;
@@ -39,6 +40,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private readonly DAL.Managers.Payments.IPaymentManager _paymentManager;
         private readonly DAL.Managers.Purchase.IPurchaseReturnManager _purchaseReturnManager;
         private readonly DAL.Managers.Bank.IBankAccountManager _bankAccountManager;
+        private readonly DAL.Managers.Bussiness_Partner.IPartnerSetupAccountManager _partnerSetupAccountManager;
         #endregion
 
         #region [Constructor]
@@ -59,7 +61,8 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                 , DAL.Managers.Purchase.IPurchaseOrderDetailManager purchaseOrderDetailManager
                                 , DAL.Managers.Payments.IPaymentManager paymentManager
                                 , DAL.Managers.Purchase.IPurchaseReturnManager purchaseReturnManager
-                                , DAL.Managers.Bank.IBankAccountManager bankAccountManager)
+                                , DAL.Managers.Bank.IBankAccountManager bankAccountManager
+                                , DAL.Managers.Bussiness_Partner.IPartnerSetupAccountManager partnerSetupAccountManager)
         {
             _stockInManager = stockInManager;
             _inventoryManager = inventoryManager;
@@ -76,6 +79,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             _paymentManager = paymentManager;
             _purchaseReturnManager = purchaseReturnManager;
             _bankAccountManager = bankAccountManager;
+            _partnerSetupAccountManager = partnerSetupAccountManager;
         }
         #endregion
 
@@ -149,6 +153,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                         if (Products != null && Products?.Count > 0)
                         {
                             ++AutoId;
+
                             ProductSuggestion = new ProductSuggestionProvider(Products);
                         }
                         else
@@ -187,7 +192,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     ProductGrid.Remove(product);
                 }
                 //TODO: Here we remove the PurchaseOrderDetail Values  in PurchaseOrderDetail List 
-                //InvoiceTotal = ReCalculateInvoicePrice();
                 CalculateInvoiceTotal();
                 GrandTotal = InvoiceTotal + PreviousBalance;
             }
@@ -228,6 +232,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
 
                 }
                 #endregion
+
 
                 //We Assume that if User Selected Purchase Return Then Perform This Section
                 //Other wise Go for Purchase
@@ -381,6 +386,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                                 BussinessPartnerLedgerModel partnerPayment = new BussinessPartnerLedgerModel();
                                                                 partnerPayment.Partner = SelectedPartner;
                                                                 partnerPayment.Receivable = Payment.Value;
+
                                                                 var lastPayment = await _paymentManager.GetLastPaymentByPartnerIdAsync(SelectedPartner?.Id ?? 0);
                                                                 if (lastPayment != null)
                                                                     partnerPayment.Payment.Id = lastPayment.Id;
@@ -393,6 +399,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                                                         BussinessPartnerLedgerModel partnerLedger = new BussinessPartnerLedgerModel();
                                                         partnerLedger.Partner = SelectedPartner;
                                                         partnerLedger.Payable = GetInvoiceTotal();
+                                                        partnerLedger.PartnerSetupAccount = await _partnerSetupAccountManager.GetPartnerAccountCodeByIdAsync(SelectedPartner.Id.Value, "DR");
                                                         partnerLedger.InvoiceId = productList?.FirstOrDefault()?.PurchaseInvoiceId;
                                                         partnerLedger.Description = $"{SelectedPartner.Name} Sells Stock Amount Of {partnerLedger.Payable} Invoice Of{PurchaseInvoice.InvoiceId} At {PurchaseInvoice.CreatedAt}";
                                                         var result = await _partnerLedgerManager.UpdatePartnerCurrentBalanceAsync(partnerLedger);
@@ -435,10 +442,11 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 if (product.Quantity > 0 && product.Price > 0)
                 {
                     product.Total = (decimal)product.Price * product.Quantity;
-                    total = product.Total ?? 0;
+                    total += product.Total ?? 0;
                 }
             }
-            return total - DiscountPrice ?? 0;
+            //return total - DiscountPrice ?? 0;
+            return total;
         }
         public void ClearInvoice()
         {
@@ -491,13 +499,12 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     {
                         IsValueReceivable = false;
                         PreviousBalance = Math.Abs(PreviousBalance);
-                        BalanceType = DAL.Models.PaymentType.Payable;
-
+                        BalanceType = PaymentType.Payable;
                     }
                     else
                     {
                         IsValueReceivable = true;
-                        BalanceType = DAL.Models.PaymentType.Receivable;
+                        BalanceType = PaymentType.Receivable;
                     }
                     selectedPartnerLedger.CurrentBalanceType = BalanceType;
                     GrandTotal = PreviousBalance + InvoiceTotal ?? 0;
@@ -513,7 +520,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     ProductSuggestion = new ProductSuggestionProvider(Products);
 
                 }
-                ClearGrid();
+                // ClearGrid();
             }
             catch (Exception ex)
             {
@@ -562,33 +569,49 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         private void CalculateGrandTotal()
         {
             if (BalanceType == PaymentType.None) return;
-            if (BalanceType == PaymentType.Receivable)
-            {
-                if (PreviousBalance == 0)
-                {
-                    GrandTotal = InvoiceTotal;
-                }
-                else
-                {
-                    var currentBalance = PreviousBalance - InvoiceTotal;
-                    if (currentBalance < 0)
-                    {
-                        currentBalance += currentBalance + Payment;
-                        GrandTotal = currentBalance + DiscountPrice;
-                    }
-                    else
-                    { //TODO:we have to change the  Previous balance - invoice total
-                        currentBalance = PreviousBalance - InvoiceTotal;
-                        GrandTotal = currentBalance;
-                    }
-                }
-            }
-            else
-            {
-                var currentBalance = PreviousBalance + InvoiceTotal ?? 0;
-                currentBalance = currentBalance - Payment ?? 0;
-                GrandTotal = currentBalance - DiscountPrice ?? 0;
-            }
+            //TODO: Always Payment is deducted from Invoice
+            // discount is added in payment
+            // if Previous balance is Receivable then added in invoice else deduct
+            // that is grand total
+            InvoiceTotal = GetInvoiceTotal();
+            var discountedPayment = Payment + DiscountPrice;
+            InvoiceTotal = PreviousBalance > 0 ? InvoiceTotal + PreviousBalance : InvoiceTotal - PreviousBalance;
+            GrandTotal = InvoiceTotal - discountedPayment;
+
+            //Payment = DiscountPrice + Payment;
+            //decimal? currentBalance = InvoiceTotal - Payment;
+            // if (BalanceType == PaymentType.Receivable)
+            //{
+
+            //GrandTotal = currentBalance.Value + PreviousBalance;
+            //if (PreviousBalance == 0)
+            //{
+            //     GrandTotal = InvoiceTotal - (Payment + DiscountPrice);
+            //}
+            //else
+            //{
+            //    //var currentBalance = PreviousBalance - InvoiceTotal;
+            //    if (currentBalance < 0)
+            //    {
+            //        currentBalance += currentBalance + Payment;
+            //        GrandTotal = currentBalance + DiscountPrice;
+            //    }
+            //    else
+            //    {
+            //        currentBalance = PreviousBalance - InvoiceTotal;
+            //        currentBalance = currentBalance + Payment;
+            //        currentBalance = currentBalance - DiscountPrice;
+            //        GrandTotal = currentBalance;
+            //    }
+            //}
+            //}
+            // else
+            //{
+            //    //var currentBalance = PreviousBalance + InvoiceTotal ?? 0;
+            //    //currentBalance = currentBalance - Payment ?? 0;
+            //    //GrandTotal = currentBalance - DiscountPrice ?? 0;
+            //    GrandTotal = currentBalance - PreviousBalance;
+            //}
 
         }
         private bool VerifyEmptyProduct(StockInModel product)
@@ -629,14 +652,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         {
             if (Payment == 0) return;
             CalculateInvoiceTotal();
-            if (BalanceType == PaymentType.Payable)
-            {
-                GrandTotal = (PreviousBalance + InvoiceTotal) - (Payment + DiscountPrice);
-            }
-            else
-            {
-                GrandTotal = (PreviousBalance - InvoiceTotal) + (Payment + DiscountPrice);
-            }
             SelectedPaymentType = PurchaseInvoice.PaymentTypes.FirstOrDefault();
         }
         public async void FilterVenders(string searchText)
@@ -710,7 +725,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         }
         private void FillSelectedBankBankInfo(BankAccountModel selectedBankAccount)
         {
-            if (selectedBankAccount == null) return; 
+            if (selectedBankAccount == null) return;
             SelectedBankAccount = selectedBankAccount;
             SelectedBankAccount.Payable = Payment.Value;
             SelectedBankAccount.Receivable = 0;
@@ -729,7 +744,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     var dlg = IoC.Get<BankPaymentDialogViewModel>();
                     await IoC.Get<IDialogManager>().ShowDialogAsync(dlg);
                     FillSelectedBankBankInfo(dlg.SelectedBankAccount);
-                
+
                     break;
                 case "Jazz Cash":
                     var jazzDlg = IoC.Get<MobileAccountPaymentDialogViewModel>();
@@ -737,7 +752,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     jazzDlg.Amount = Payment ?? 0;
                     await IoC.Get<IDialogManager>().ShowDialogAsync(jazzDlg);
                     FillSelectedBankBankInfo(jazzDlg.SelectedMobileAccount);
-                    
+
                     break;
                 case "Ubl Omni":
                     var ublDlg = IoC.Get<MobileAccountPaymentDialogViewModel>();
@@ -751,7 +766,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                     easyDlg.SelectedMobileOperater = paymentType.Name;
                     easyDlg.Amount = Payment ?? 0;
                     await IoC.Get<IDialogManager>().ShowDialogAsync(easyDlg);
-                    FillSelectedBankBankInfo(easyDlg.SelectedMobileAccount);                    
+                    FillSelectedBankBankInfo(easyDlg.SelectedMobileAccount);
                     break;
                 case "Partial":
                     //TODO: Have to Do Things Here

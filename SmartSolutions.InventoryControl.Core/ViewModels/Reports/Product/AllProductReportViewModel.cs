@@ -1,11 +1,7 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Managers.Product.ProductType;
-using SmartSolutions.InventoryControl.DAL.Models.Product;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
 
 namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.Product
 {
@@ -103,7 +99,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.Reports.Product
     #region [Display Class]
 
     /// <summary>
-    /// Class that is used for displaing grid
+    /// Class that is used for displaying grid
     /// </summary>
     public class DisplayProduct
     {

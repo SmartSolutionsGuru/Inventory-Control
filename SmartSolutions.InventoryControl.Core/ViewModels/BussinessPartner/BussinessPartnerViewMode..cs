@@ -229,12 +229,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                 IsLoading = true;
                 LoadingMessage = "Saving...";
 
-
-
-                //if (!string.IsNullOrEmpty(PartnerMobileNumber))
-                //{
-                //    NewBussinessPartner?.MobileNumbers.Add(PartnerMobileNumber);
-                //}
                 if (string.IsNullOrEmpty(BussinessName))
                 {
                     BussinessNameError = true;
@@ -254,31 +248,6 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels.BussinessPartner
                     IsLoading = false;
                     return;
                 }
-                //else if (string.IsNullOrEmpty(FullName))
-                //{
-                //    FullNameError = true;
-                //    IsLoading = false;
-                //    return;
-                //}
-                //else if (NewBussinessPartner?.MobileNumbers.Count == 0)
-                //{
-                //    MobileNoError = true;
-                //    IsLoading = false;
-                //    return;
-                //}
-
-                //else if (SelectedCity != null && string.IsNullOrEmpty(SelectedCity?.Name))
-                //{
-                //    CityNotSelected = true;
-                //    IsLoading = false;
-                //    return;
-                //}
-                //else if (NewBussinessPartner != null && string.IsNullOrEmpty(NewBussinessPartner?.Address))
-                //{
-                //    AddressError = true;
-                //    IsLoading = false;
-                //    return;
-                //}
                 if (NewBussinessPartner != null)
                 {
                     //GetParsedPhoneNumber(); 

@@ -43,7 +43,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Payments
                 parameters["@v_PartnerId"] = payment?.Partner?.Id;
                 parameters["@v_PaymentType"] = payment?.PaymentType.ToString();
                 parameters["@v_PaymentMethodId"] = payment?.PaymentMethod?.Id;
-                parameters["@v_PaymentRefrencePartnerId"] = payment?.PaymentRefrencePartner?.Id == null ? DBNull.Value : (object)payment.PaymentRefrencePartner?.Id;
+                parameters["@v_PaymentReferencePartnerId"] = payment?.PaymentRefrencePartner?.Id == null ? DBNull.Value : (object)payment.PaymentRefrencePartner?.Id;
                 //parameters["@v_PaymentImage"] = payment?.PaymentImage == null ? DBNull.Value : (object)payment.PaymentImage;
                 parameters["@v_ImagePath"] = payment?.ImagePath == null ? DBNull.Value : (object)payment?.ImagePath;
                 parameters["@v_PaymentAmount"] = payment?.PaymentAmount;
@@ -55,8 +55,8 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Payments
                 parameters["@v_Description"] = payment.Description == null ? DBNull.Value : (object)payment.Description;
                 parameters["@v_DR"] = payment.Receivable == null ? DBNull.Value : (object)payment.Receivable;
                 parameters["@v_CR"] = payment.Payable == null ? DBNull.Value : (object)payment.Payable;
-                string query = @"INSERT INTO Payment(PartnerId,PaymentRefrencePartnerId,PaymentAmount,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy,PaymentMethodId,Description,DR,CR,ImagePath)
-                                                 VALUES(@v_PartnerId,@v_PaymentRefrencePartnerId,@v_PaymentAmount,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy,@v_PaymentMethodId,@v_Description,@v_DR,@v_CR,@v_ImagePath)";
+                string query = @"INSERT INTO Payment(PartnerId,PaymentReferencePartnerId,PaymentAmount,IsActive,CreatedAt,CreatedBy,UpdatedAt,UpdatedBy,PaymentMethodId,Description,DR,CR,ImagePath)
+                                                 VALUES(@v_PartnerId,@v_PaymentReferencePartnerId,@v_PaymentAmount,@v_IsActive,@v_CreatedAt,@v_CreatedBy,@v_UpdatedAt,@v_UpdatedBy,@v_PaymentMethodId,@v_Description,@v_DR,@v_CR,@v_ImagePath)";
                 var result = await Repository.NonQueryAsync(query: query, parameters: parameters);
                 retVal = result > 0 ? true : false;
             }
@@ -111,7 +111,6 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Payments
                 {
                     var value = values.FirstOrDefault();
                     payment.Id = value?.GetValueFromDictonary("Id")?.ToString()?.ToInt();
-                    //payment.PaymentType = (PaymentType)value?.GetValueFromDictonary("PaymentType")?.ToString()?.ToEnum<PaymentType>();
                     payment.PaymentMethod = new PaymentTypeModel { Id = value?.GetValueFromDictonary("PaymentMethodId")?.ToString()?.ToInt() ?? 0 };
                     payment.PaymentMethod = await _paymentTypeManager.GetPaymentMethodByIdAsync(payment?.PaymentMethod?.Id ?? 0);
                     payment.PaymentAmount = value?.GetValueFromDictonary("PaymentAmount")?.ToString()?.ToDecimal() ?? 0;

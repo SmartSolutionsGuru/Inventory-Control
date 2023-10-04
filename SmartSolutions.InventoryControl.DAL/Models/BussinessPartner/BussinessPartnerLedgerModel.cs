@@ -21,6 +21,7 @@ namespace SmartSolutions.InventoryControl.DAL.Models.BussinessPartner
         public decimal CurrentBalance { get; set; }
         public PaymentType CurrentBalanceType { get; set; }
         public string Description { get; set; }
+        public string PartnerSetupAccount { get; set; }
         /// <summary>
         /// gets or sets Cash flow in (DR)
         /// </summary>

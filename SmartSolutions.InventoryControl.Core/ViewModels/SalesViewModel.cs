@@ -553,14 +553,14 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
-            CalculateGrandtotal();
+            CalculateGrandTotal();
             return retVal;
         }
         public void ClearInvoice()
         {
             Clear();
         }
-        private void CalculateGrandtotal()
+        private void CalculateGrandTotal()
         {
             if (BalanceType == PaymentType.None) return;
             if (BalanceType == PaymentType.Receivable)
@@ -620,7 +620,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
         }
-        private void OnPaymentRecieved()
+        private void OnPaymentReceived()
         {
             CalculateInvoiceTotal(false);
             if (BalanceType == PaymentType.Receivable)
@@ -648,20 +648,15 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
             if (discountAmount != 0)
             {
                 CalculateInvoiceTotal(false);
-                //if (BalanceType == PaymentType.Receivable)
-                //{
-                //    var totalPayment = discountAmount + Payment;
-                //    var totalBill = InvoiceTotal + PreviousBalance;
-                //    GrandTotal = totalBill - totalPayment ?? 0;
-                //}
-                //else
-                //{
-                //    var totalPayment = discountAmount + Payment;
-                //    var totalBill = InvoiceTotal - PreviousBalance;
-                //    GrandTotal = totalBill - totalPayment ?? 0;
-                //}
 
             }
+        }
+        private void FillBankInfo(BankAccountModel selectedBank)
+        {
+            SelectedBankAccount = selectedBank;
+            SelectedBankAccount.Payable = Payment.Value;
+            SelectedBankAccount.Receivable = 0;
+            SelectedBankAccount.Description = $"Amount Of {Payment} to Account No {SelectedBankAccount.AccountNumber} of Bank {SelectedBankAccount.Branch.Bank.Name} Branch {SelectedBankAccount.Branch.Name} Transfer At {DateTime.Now}";
         }
         public async void OnSelectingPaymentType(PaymentTypeModel paymentType)
         {
@@ -674,41 +669,29 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
                 case "Bank":
                     var dlg = IoC.Get<BankPaymentDialogViewModel>();
                     await IoC.Get<IDialogManager>().ShowDialogAsync(dlg);
-                    SelectedBankAccount = dlg.SelectedBankAccount;
-                    SelectedBankAccount.Payable = Payment.Value;
-                    SelectedBankAccount.Receivable = 0;
-                    SelectedBankAccount.Description = $"Amount Of {Payment} to Account No {SelectedBankAccount.AccountNumber} of Bank {SelectedBankAccount.Branch.Bank.Name} Branch {SelectedBankAccount.Branch.Name} Transfer At {DateTime.Now}";
+                    FillBankInfo(dlg.SelectedBankAccount);                   
                     break;
                 case "Jazz Cash":
                     var jazzDlg = IoC.Get<MobileAccountPaymentDialogViewModel>();
                     jazzDlg.SelectedMobileOperater = paymentType.Name;
                     jazzDlg.Amount = Payment ?? 0;
                     await IoC.Get<IDialogManager>().ShowDialogAsync(jazzDlg);
-                    SelectedBankAccount = jazzDlg.SelectedMobileAccount;
-                    SelectedBankAccount.Payable = Payment.Value;
-                    SelectedBankAccount.Receivable = 0;
-                    SelectedBankAccount.Description = $"Amount Of {Payment} to Account No {SelectedBankAccount.AccountNumber} of Bank {SelectedBankAccount.Branch.Bank.Name} Branch {SelectedBankAccount.Branch.Name} Transfer At {DateTime.Now}";
-
+                    FillBankInfo(jazzDlg.SelectedMobileAccount);
                     break;
                 case "Ubl Omni":
                     var ublDlg = IoC.Get<MobileAccountPaymentDialogViewModel>();
                     ublDlg.SelectedMobileOperater = paymentType.Name;
                     ublDlg.Amount = Payment ?? 0;
                     await IoC.Get<IDialogManager>().ShowDialogAsync(ublDlg);
-                    SelectedBankAccount = ublDlg.SelectedMobileAccount;
-                    SelectedBankAccount.Payable = Payment.Value;
-                    SelectedBankAccount.Receivable = 0;
-                    SelectedBankAccount.Description = $"Amount Of {Payment} to Account No {SelectedBankAccount.AccountNumber} of Bank {SelectedBankAccount.Branch.Bank.Name} Branch {SelectedBankAccount.Branch.Name} Transfer At {DateTime.Now}";
+                    FillBankInfo(ublDlg.SelectedMobileAccount);
+                    
                     break;
                 case "Easy paisa":
                     var easyDlg = IoC.Get<MobileAccountPaymentDialogViewModel>();
                     easyDlg.SelectedMobileOperater = paymentType?.Name;
                     easyDlg.Amount = Payment ?? 0;
                     await IoC.Get<IDialogManager>().ShowDialogAsync(easyDlg);
-                    SelectedBankAccount = easyDlg.SelectedMobileAccount;
-                    SelectedBankAccount.Payable = Payment.Value;
-                    SelectedBankAccount.Receivable = 0;
-                    SelectedBankAccount.Description = $"Amount Of {Payment} to Account No {SelectedBankAccount.AccountNumber} of Bank {SelectedBankAccount.Branch.Bank.Name} Branch {SelectedBankAccount.Branch.Name} Transfer At {DateTime.Now}";
+                    FillBankInfo(easyDlg.SelectedMobileAccount);
                     break;
                 case "Partial":
                     break;
@@ -763,7 +746,7 @@ namespace SmartSolutions.InventoryControl.Core.ViewModels
         public decimal? Payment
         {
             get { return _Payment; }
-            set { _Payment = value; NotifyOfPropertyChange(nameof(Payment)); OnPaymentRecieved(); }
+            set { _Payment = value; NotifyOfPropertyChange(nameof(Payment)); OnPaymentReceived(); }
         }
 
         private decimal? _InvoiceTotal;

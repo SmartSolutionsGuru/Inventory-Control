@@ -349,7 +349,7 @@
                                                                                   HorizontalAlignment="Left" 
                                                                                   Style="{StaticResource AutoCompleteTextBoxStyle}" 
                                                                                   ItemTemplate="{StaticResource ProductTemplate}" 
-                                                                                  Provider="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=DataContext.ProductSuggetion,Mode=OneWay}" 
+                                                                                  Provider="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView},Path=DataContext.ProductSuggestion,Mode=OneWay}" 
                                                                                   SelectedItem="{Binding Product,Mode=TwoWay}" 
                                                                                   Watermark="Product Name" 
                                                                                   FontFamily="{StaticResource MediumFont}" 

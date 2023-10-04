@@ -1,10 +1,12 @@
 ﻿using SmartSolutions.InventoryControl.DAL.Models.BussinessPartner;
 using SmartSolutions.InventoryControl.Plugins.Repositories;
+using SmartSolutions.Util.DictionaryUtils;
 using SmartSolutions.Util.EnumUtils;
 using SmartSolutions.Util.LogUtils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
@@ -159,6 +161,39 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
             return accountCode;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="partnerId"></param>
+        /// <param name="descriptionType"></param>
+        /// <returns></returns>
+        public async Task<string> GetPartnerAccountCodeByIdAsync(int partnerId,string descriptionType)
+        {
+            // null guard
+            if(partnerId < 0)  return string.Empty;
+            var setupAccountCode = string.Empty;
+            try
+            {
+                Dictionary<string,object>parameters = new Dictionary<string, object>();
+                parameters["@v_description"] = descriptionType;
+                parameters["@v_partnerId"] = partnerId;
+                string query = @"SELECT * FROM PartnerSetupAccount WHERE PartnerId = @v_partnerId AND Description LIKE '%@v_description%'";
+                var values = await  Repository.QueryAsync(query,parameters:parameters);
+                if(values != null && values?.Count  > 0) 
+                {
+                    var value = values.FirstOrDefault();
+                    setupAccountCode = value.GetValueFromDictonary("PartnerAccountCode")?.ToString() ?? string.Empty;
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
+            }
+            return setupAccountCode;
         }
         #endregion
     }

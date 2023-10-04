@@ -2,19 +2,11 @@
 using SmartSolutions.InventoryControl.UI.Helpers;
 using SmartSolutions.Util.LogUtils;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SmartSolutions.InventoryControl.UI.Views
 {
@@ -54,14 +46,11 @@ namespace SmartSolutions.InventoryControl.UI.Views
             var text = control?.Text;
             if (string.IsNullOrEmpty(text))
                 text = "0";
-            int val = 0;
-            var result = Int32.TryParse(text, out val);
+            var result = Int32.TryParse(text, out _);
             if (result)
             {
                 var value = Convert.ToInt32(text);
-                if (value < 0)
-                    value = 0;
-                //ViewModel.CalculateDiscountPrice(value, 0);
+                _ = value < 0 ? 0 : value;
             }
         }
 
@@ -70,7 +59,6 @@ namespace SmartSolutions.InventoryControl.UI.Views
             try
             {
                 var control = sender as TextBox;
-                if (string.IsNullOrEmpty(control?.Text)) return;
                 ViewModel.FilterVenders(control?.Text);
             }
             catch (Exception ex)
@@ -85,7 +73,6 @@ namespace SmartSolutions.InventoryControl.UI.Views
             {
                 var control = sender as TextBox;
                 var text = control?.Text;
-                //if (string.IsNullOrEmpty(text)) return;
                 ViewModel.FilterProducts(text);
             }
             catch (Exception ex)
@@ -103,22 +90,16 @@ namespace SmartSolutions.InventoryControl.UI.Views
             var control = sender as TextBox;
             if (!string.IsNullOrEmpty(control.Text))
             {
-                System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US");
-                var valueBefore = Int64.Parse(control.Text, System.Globalization.NumberStyles.AllowThousands);
-                control.Text = String.Format(culture, "{0:N0}", valueBefore);
-                control.Select(control.Text.Length, 0);
+                TextFormatConverter(control);
             }
-        }
+        }  
 
         private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
         {
             var control = sender as TextBox;
             if (!string.IsNullOrEmpty(control.Text))
             {
-                System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US");
-                var valueBefore = Int64.Parse(control.Text, System.Globalization.NumberStyles.AllowThousands);
-                control.Text = String.Format(culture, "{0:N0}", valueBefore);
-                control.Select(control.Text.Length, 0);
+                TextFormatConverter(control);
             }
         }
 
@@ -127,11 +108,19 @@ namespace SmartSolutions.InventoryControl.UI.Views
             var control = sender as TextBox;
             if (!string.IsNullOrEmpty(control.Text))
             {
-                System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US");
-                var valueBefore = Int64.Parse(control.Text, System.Globalization.NumberStyles.AllowThousands);
-                control.Text = String.Format(culture, "{0:N0}", valueBefore);
-                control.Select(control.Text.Length, 0);
+                TextFormatConverter(control);
             }
         }
+
+        #region Helper Methods
+      
+        private static void TextFormatConverter(TextBox control)
+        {
+            System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US");
+            var valueBefore = Int64.Parse(control.Text, System.Globalization.NumberStyles.AllowThousands);
+            control.Text = String.Format(culture, "{0:N0}", valueBefore);
+            control.Select(control.Text.Length, 0);
+        }
+        #endregion
     }
 }

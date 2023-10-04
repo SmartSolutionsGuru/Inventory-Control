@@ -1,42 +1,83 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.Core\\SmartSolutions.InventoryControl.Core.csproj": {}
+    "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.Core\\SmartSolutions.InventoryControl.Core.csproj": {}
   },
   "projects": {
-    "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.Core\\SmartSolutions.InventoryControl.Core.csproj": {
+    "C:\\Git\\SmartSolutions\\Inventory-Control\\AutoCompleteTextBox\\AutoCompleteTextBox.csproj": {
+      "version": "1.0.1",
+      "restore": {
+        "projectUniqueName": "C:\\Git\\SmartSolutions\\Inventory-Control\\AutoCompleteTextBox\\AutoCompleteTextBox.csproj",
+        "projectName": "AutoCompleteTextBox",
+        "projectPath": "C:\\Git\\SmartSolutions\\Inventory-Control\\AutoCompleteTextBox\\AutoCompleteTextBox.csproj",
+        "packagesPath": "C:\\Users\\ShababArshad\\.nuget\\packages\\",
+        "outputPath": "C:\\Git\\SmartSolutions\\Inventory-Control\\AutoCompleteTextBox\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\ShababArshad\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\scratch.config"
+        ],
+        "originalTargetFrameworks": [
+          "net452"
+        ],
+        "sources": {
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://riteam.jfrog.io/artifactory/api/nuget/v3/nuget-preview": {}
+        },
+        "frameworks": {
+          "net452": {
+            "targetAlias": "net452",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net452": {
+          "targetAlias": "net452",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400-preview.23330.10\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.Core\\SmartSolutions.InventoryControl.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.Core\\SmartSolutions.InventoryControl.Core.csproj",
+        "projectUniqueName": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.Core\\SmartSolutions.InventoryControl.Core.csproj",
         "projectName": "SmartSolutions.InventoryControl.Core",
-        "projectPath": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.Core\\SmartSolutions.InventoryControl.Core.csproj",
-        "packagesPath": "C:\\Users\\sbutt\\.nuget\\packages\\",
-        "outputPath": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.Core\\obj\\",
+        "projectPath": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.Core\\SmartSolutions.InventoryControl.Core.csproj",
+        "packagesPath": "C:\\Users\\ShababArshad\\.nuget\\packages\\",
+        "outputPath": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.Core\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\"
-        ],
         "configFilePaths": [
-          "C:\\Users\\sbutt\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\ShababArshad\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\scratch.config"
         ],
         "originalTargetFrameworks": [
           "netstandard2.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://riteam.jfrog.io/artifactory/api/nuget/v3/nuget-preview": {}
         },
         "frameworks": {
           "netstandard2.0": {
             "targetAlias": "netstandard2.0",
             "projectReferences": {
-              "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.DAL\\SmartSolutions.InventoryControl.DAL.csproj": {
-                "projectPath": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.DAL\\SmartSolutions.InventoryControl.DAL.csproj"
+              "C:\\Git\\SmartSolutions\\Inventory-Control\\AutoCompleteTextBox\\AutoCompleteTextBox.csproj": {
+                "projectPath": "C:\\Git\\SmartSolutions\\Inventory-Control\\AutoCompleteTextBox\\AutoCompleteTextBox.csproj"
               },
-              "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.Util\\SmartSolutions.Util.csproj": {
-                "projectPath": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.Util\\SmartSolutions.Util.csproj"
+              "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.DAL\\SmartSolutions.InventoryControl.DAL.csproj": {
+                "projectPath": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.DAL\\SmartSolutions.InventoryControl.DAL.csproj"
+              },
+              "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.Util\\SmartSolutions.Util.csproj": {
+                "projectPath": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.Util\\SmartSolutions.Util.csproj"
+              },
+              "C:\\Git\\SmartSolutions\\Notifications.Wpf\\Notifications.Wpf\\Notifications.Wpf.csproj": {
+                "projectPath": "C:\\Git\\SmartSolutions\\Notifications.Wpf\\Notifications.Wpf\\Notifications.Wpf.csproj"
               }
             }
           }
@@ -55,15 +96,35 @@
               "target": "Package",
               "version": "[3.2.0, )"
             },
+            "Fractions": {
+              "target": "Package",
+              "version": "[7.2.0, )"
+            },
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.1.0, )"
+            },
+            "Microsoft.Office.Interop.Excel": {
+              "target": "Package",
+              "version": "[15.0.4795.1001, )"
+            },
+            "Microsoft.SqlServer.SqlManagementObjects": {
+              "target": "Package",
+              "version": "[161.47021.0, )"
+            },
             "NETStandard.Library": {
               "suppressParent": "All",
               "target": "Package",
               "version": "[2.0.3, )",
               "autoReferenced": true
             },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
             "System.ComponentModel.Composition": {
               "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[6.0.0, )"
             }
           },
           "imports": [
@@ -72,47 +133,44 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400-preview.23330.10\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.DAL\\SmartSolutions.InventoryControl.DAL.csproj": {
+    "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.DAL\\SmartSolutions.InventoryControl.DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.DAL\\SmartSolutions.InventoryControl.DAL.csproj",
+        "projectUniqueName": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.DAL\\SmartSolutions.InventoryControl.DAL.csproj",
         "projectName": "SmartSolutions.InventoryControl.DAL",
-        "projectPath": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.DAL\\SmartSolutions.InventoryControl.DAL.csproj",
-        "packagesPath": "C:\\Users\\sbutt\\.nuget\\packages\\",
-        "outputPath": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.DAL\\obj\\",
+        "projectPath": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.DAL\\SmartSolutions.InventoryControl.DAL.csproj",
+        "packagesPath": "C:\\Users\\ShababArshad\\.nuget\\packages\\",
+        "outputPath": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.DAL\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\"
-        ],
         "configFilePaths": [
-          "C:\\Users\\sbutt\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\ShababArshad\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\scratch.config"
         ],
         "originalTargetFrameworks": [
           "netstandard2.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://riteam.jfrog.io/artifactory/api/nuget/v3/nuget-preview": {}
         },
         "frameworks": {
           "netstandard2.0": {
             "targetAlias": "netstandard2.0",
             "projectReferences": {
-              "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.Plugins\\SmartSolutions.InventoryControl.Plugins.csproj": {
-                "projectPath": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.Plugins\\SmartSolutions.InventoryControl.Plugins.csproj"
+              "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.Plugins\\SmartSolutions.InventoryControl.Plugins.csproj": {
+                "projectPath": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.Plugins\\SmartSolutions.InventoryControl.Plugins.csproj"
               },
-              "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.Util\\SmartSolutions.Util.csproj": {
-                "projectPath": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.Util\\SmartSolutions.Util.csproj"
+              "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.Util\\SmartSolutions.Util.csproj": {
+                "projectPath": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.Util\\SmartSolutions.Util.csproj"
               }
             }
           }
@@ -127,6 +185,18 @@
         "netstandard2.0": {
           "targetAlias": "netstandard2.0",
           "dependencies": {
+            "Fractions": {
+              "target": "Package",
+              "version": "[7.2.0, )"
+            },
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.1.0, )"
+            },
+            "Microsoft.SqlServer.SqlManagementObjects": {
+              "target": "Package",
+              "version": "[161.47021.0, )"
+            },
             "NETStandard.Library": {
               "suppressParent": "All",
               "target": "Package",
@@ -135,7 +205,7 @@
             },
             "System.ComponentModel.Composition": {
               "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[6.0.0, )"
             }
           },
           "imports": [
@@ -144,37 +214,34 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400-preview.23330.10\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.Plugins\\SmartSolutions.InventoryControl.Plugins.csproj": {
+    "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.Plugins\\SmartSolutions.InventoryControl.Plugins.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.Plugins\\SmartSolutions.InventoryControl.Plugins.csproj",
+        "projectUniqueName": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.Plugins\\SmartSolutions.InventoryControl.Plugins.csproj",
         "projectName": "SmartSolutions.InventoryControl.Plugins",
-        "projectPath": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.Plugins\\SmartSolutions.InventoryControl.Plugins.csproj",
-        "packagesPath": "C:\\Users\\sbutt\\.nuget\\packages\\",
-        "outputPath": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.Plugins\\obj\\",
+        "projectPath": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.Plugins\\SmartSolutions.InventoryControl.Plugins.csproj",
+        "packagesPath": "C:\\Users\\ShababArshad\\.nuget\\packages\\",
+        "outputPath": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.Plugins\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\"
-        ],
         "configFilePaths": [
-          "C:\\Users\\sbutt\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\ShababArshad\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\scratch.config"
         ],
         "originalTargetFrameworks": [
           "netstandard2.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://riteam.jfrog.io/artifactory/api/nuget/v3/nuget-preview": {}
         },
         "frameworks": {
           "netstandard2.0": {
@@ -205,44 +272,41 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400-preview.23330.10\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.Util\\SmartSolutions.Util.csproj": {
+    "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.Util\\SmartSolutions.Util.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.Util\\SmartSolutions.Util.csproj",
+        "projectUniqueName": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.Util\\SmartSolutions.Util.csproj",
         "projectName": "SmartSolutions.Util",
-        "projectPath": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.Util\\SmartSolutions.Util.csproj",
-        "packagesPath": "C:\\Users\\sbutt\\.nuget\\packages\\",
-        "outputPath": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.Util\\obj\\",
+        "projectPath": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.Util\\SmartSolutions.Util.csproj",
+        "packagesPath": "C:\\Users\\ShababArshad\\.nuget\\packages\\",
+        "outputPath": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.Util\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\"
-        ],
         "configFilePaths": [
-          "C:\\Users\\sbutt\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\ShababArshad\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\scratch.config"
         ],
         "originalTargetFrameworks": [
           "netstandard2.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {}
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://riteam.jfrog.io/artifactory/api/nuget/v3/nuget-preview": {}
         },
         "frameworks": {
           "netstandard2.0": {
             "targetAlias": "netstandard2.0",
             "projectReferences": {
-              "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.Plugins\\SmartSolutions.InventoryControl.Plugins.csproj": {
-                "projectPath": "C:\\Local Disk F_12220201731\\ShababButt\\SmartSolutions\\SmartSolutions.InventoryControl\\Inventory Control\\SmartSolutions.InventoryControl.Plugins\\SmartSolutions.InventoryControl.Plugins.csproj"
+              "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.Plugins\\SmartSolutions.InventoryControl.Plugins.csproj": {
+                "projectPath": "C:\\Git\\SmartSolutions\\Inventory-Control\\SmartSolutions.InventoryControl.Plugins\\SmartSolutions.InventoryControl.Plugins.csproj"
               }
             }
           }
@@ -257,15 +321,27 @@
         "netstandard2.0": {
           "targetAlias": "netstandard2.0",
           "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
+            "Hashids.net": {
+              "target": "Package",
+              "version": "[1.6.1, )"
+            },
             "Microsoft.Extensions.Logging": {
               "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[6.0.0, )"
             },
             "NETStandard.Library": {
               "suppressParent": "All",
               "target": "Package",
               "version": "[2.0.3, )",
               "autoReferenced": true
+            },
+            "itext7": {
+              "target": "Package",
+              "version": "[7.2.2, )"
             }
           },
           "imports": [
@@ -274,12 +350,28 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400-preview.23330.10\\RuntimeIdentifierGraph.json"
         }
+      }
+    },
+    "C:\\Git\\SmartSolutions\\Notifications.Wpf\\Notifications.Wpf\\Notifications.Wpf.csproj": {
+      "restore": {
+        "projectUniqueName": "C:\\Git\\SmartSolutions\\Notifications.Wpf\\Notifications.Wpf\\Notifications.Wpf.csproj",
+        "projectName": "Notifications.Wpf",
+        "projectPath": "C:\\Git\\SmartSolutions\\Notifications.Wpf\\Notifications.Wpf\\Notifications.Wpf.csproj",
+        "frameworks": {
+          "net461": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net461": {}
       }
     }
   }

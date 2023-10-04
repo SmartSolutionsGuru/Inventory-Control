@@ -154,7 +154,7 @@ namespace SmartSolutions.InventoryControl.DAL.Managers.Bussiness_Partner
             {
                 LogMessage.Write(ex.ToString(), LogMessage.Levels.Error);
             }
-            return partners;
+            return partners.OrderBy(p=>p.BussinessName);
         }
 
         public async Task<IEnumerable<BussinessPartnerLedgerModel>> GetAllBussinessPartnersWithBalanceAsync()
